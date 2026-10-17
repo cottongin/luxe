@@ -121,3 +121,8 @@ field_reassign_with_default = "allow"
 nonminimal_bool = "allow"
 match_same_arms = "allow"
 unnecessary_filter_map = "allow"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

@@ -11,6 +11,18 @@ fn copies() -> (tempfile::TempDir, PathBuf, PathBuf) {
     (dir, updated, other)
 }
 
+/// The installer's updater runs from beside the binary even off `PATH`; anything not there, cargo
+/// or brew, is found by name.
+#[test]
+fn a_program_beside_the_binary_runs_from_there() {
+    let dir = tempfile::tempdir().expect("tempdir");
+    let updater = dir.path().join(format!("luxe-cli-update{}", std::env::consts::EXE_SUFFIX));
+    std::fs::write(&updater, b"").expect("a stand-in updater");
+    assert_eq!(program_path("luxe-cli-update", Some(dir.path())), updater);
+    assert_eq!(program_path("brew", Some(dir.path())), PathBuf::from("brew"));
+    assert_eq!(program_path("luxe-cli-update", None), PathBuf::from("luxe-cli-update"));
+}
+
 #[test]
 fn the_version_is_the_last_word_when_it_is_semver() {
     assert_eq!(parse_version("luxe 0.2.0\n").as_deref(), Some("0.2.0"));

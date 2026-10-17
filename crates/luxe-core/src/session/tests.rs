@@ -272,8 +272,8 @@ fn the_on_disk_entry_shape_is_frozen() {
         r#"{"id":"e3","parent_id":"e2","ts":7,"kind":{"kind":"header","data":{"cwd":"/w","created":7}}}"#
     );
 
-    // A link to the pull request a session worked on, copied from the round trip that closed
-    // #146 on luxe-dev: `luxe --from-pr` reads exactly this
+    // A link to the pull request a session worked on, copied from a real round trip that closed
+    // one: `luxe --from-pr` reads exactly this
     let stored = r#"{"id":"f25fd65c-ee99-4db8-9ed9-76aa08ed7fd9","parent_id":"035e7a31-2d6b-410a-b1d1-361920bf0615","ts":1790289080,"kind":{"kind":"pull_request_link","data":{"number":146,"url":"https://github.com/nora-quinn/luxe-dev/pull/146"}}}"#;
     let entry: Entry = serde_json::from_str(stored).unwrap();
     assert_eq!(

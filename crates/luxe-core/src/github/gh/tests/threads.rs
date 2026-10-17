@@ -28,7 +28,7 @@ fn gh_names_a_repository_off_github_com_by_host() {
     assert!(!repository.is("nora-quinn/luxe"));
 }
 
-// From the scratch pull request nora-quinn/luxe-dev#141, posted to and closed for this.
+// From a scratch pull request, posted to and closed for this.
 pub(super) const PR_FILES: &str = include_str!("../../fixtures/pr_files.jsonl");
 pub(super) const THREADS_OWN: &str = include_str!("../../fixtures/review_threads_own.json");
 pub(super) const THREAD_REPLY: &str = include_str!("../../fixtures/thread_reply.json");
@@ -135,8 +135,8 @@ fn the_conversation_comes_with_the_threads() {
     assert!(before.conversation.is_empty() && !before.threads.is_empty());
 }
 
-/// On luxe-dev#169 the reader answered the first comment from Luxe, so it and the answer stay
-/// quiet, and the review's summary is what is still asked.
+/// On a real pull request the reader answered the first comment from Luxe, so it and the answer
+/// stay quiet, and the review's summary is what is still asked.
 #[test]
 fn an_answered_comment_on_a_real_pull_request_asks_nothing() {
     let read = parse_review_threads(THREADS_CONVERSATION).unwrap();

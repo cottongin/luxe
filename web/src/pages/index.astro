@@ -72,7 +72,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
       </div>
 
       <p class="hero__note muted">
-        Works on Linux, macOS, and Windows. <a href="/docs/install/#what-it-needs">Learn more</a>.
+        Works on Linux, macOS, and Windows. <a href="/docs/install/#requirements">Learn more</a>.
       </p>
       </div>
 
@@ -611,8 +611,8 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
     container-type: inline-size;
     grid-area: 1 / 1;
     display: grid;
-    /* An auto track grows to its widest unbreakable line, and the source install command is one:
-       it pushed the column, and everything centered in it, under the demo */
+    /* An auto track grows to its widest unbreakable line, and an install command is one: it pushed
+       the column, and everything centered in it, under the demo */
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     text-align: center;
@@ -956,7 +956,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
   }
 
   /* Centered as a block, but its contents are a terminal: tab labels and a shell command read from
-     the left, and the inherited centering put `cargo install luxe-cli` in the middle of its own box. */
+     the left, and the inherited centering put the install command in the middle of its own box. */
   .hero__install {
     width: min(100%, 44rem);
     margin-bottom: var(--space-3);

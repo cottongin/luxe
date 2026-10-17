@@ -331,14 +331,17 @@ async fn without_a_pull_request_the_checks_on_head_are_read() {
     );
 }
 
-/// Against the real `gh` and luxe-dev's #119, whose getrandom bump failed three jobs: each
-/// comes back with the compiler's error at the end of its tail. `cargo test -- --ignored`.
+/// Against the real `gh` and a pull request of this checkout's repository whose CI failed: each
+/// failing job comes back with the compiler's error at the end of its tail. Run with
+/// `LUXE_FAILED_PR=<number> cargo test -- --ignored`.
 #[tokio::test]
-#[ignore = "needs a signed-in gh and the network"]
+#[ignore = "needs a signed-in gh, the network, and LUXE_FAILED_PR"]
 async fn a_real_failed_run_ends_in_its_error() {
+    let number = std::env::var("LUXE_FAILED_PR")
+        .expect("LUXE_FAILED_PR names a pull request in this repository whose checks failed");
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let github = luxe_core::github::GhCli::new();
-    let text = checks(&github, &root, &["119".into()]).await.unwrap();
-    assert!(text.starts_with("1 check failing on #119"), "{text}");
+    let text = checks(&github, &root, std::slice::from_ref(&number)).await.unwrap();
+    assert!(text.contains(&format!("failing on #{number}")), "{text}");
     assert!(text.contains("##[error]Process completed with exit code"), "{text}");
 }

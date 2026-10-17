@@ -5,19 +5,48 @@ order: 1
 group: "Get started"
 ---
 
-## Install with Cargo
+## Install
+
+On macOS and Linux, the install script puts `luxe` in `~/.local/bin`, or in `$LUXE_INSTALL_DIR`
+when it is set, and adds that to your `PATH`:
 
 ```bash
-cargo install luxe-cli
-luxe --version
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh | sh
 ```
 
-This installs the `luxe` command. You need a recent stable Rust; [rustup](https://rustup.rs)
-installs one.
+On Windows, in PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.ps1 | iex"
+```
+
+With Homebrew, on macOS or Linux:
+
+```bash
+brew install evanwhittaker/tap/luxe
+```
+
+With Cargo, which builds it, so you need Rust 1.89 or newer ([rustup](https://rustup.rs) installs
+one):
+
+```bash
+cargo install --locked luxe-cli
+```
+
+Any of them installs the `luxe` command; `luxe --version` checks it worked.
 
 To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
 and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
 to turn the check off.
+
+### Check a download
+
+Every file on a release carries a build attestation, so you can confirm it came from this
+repository's release workflow and nowhere else:
+
+```bash
+gh attestation verify luxe-cli-x86_64-unknown-linux-gnu.tar.xz --repo evanwhittaker/luxe
+```
 
 ## Build from source
 

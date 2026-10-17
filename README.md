@@ -49,12 +49,20 @@ and [the guide lists them](https://luxe.dev/docs/security/#what-luxe-sends-over-
 ## Install
 
 ```bash
-cargo install luxe-cli
-luxe --version
+# macOS and Linux
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh | sh
+
+# Homebrew
+brew install evanwhittaker/tap/luxe
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.ps1 | iex"
+
+# Cargo (Rust 1.89 or newer)
+cargo install --locked luxe-cli
 ```
 
-You need Rust 1.89 or newer; [rustup](https://rustup.rs) installs it. To update, run the same
-command with `--force`. To build from source:
+To update, run `luxe update`. To build from source:
 
 ```bash
 git clone https://github.com/evanwhittaker/luxe.git

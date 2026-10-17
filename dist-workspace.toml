@@ -1,0 +1,45 @@
+# How Luxe is released. dist reads this and writes .github/workflows/release.yml from it, so the
+# workflow is never edited by hand: change this, then run `dist generate`. Run `dist init` only to
+# move to a new dist version; with `--yes` it answers its own questions and drops settings here.
+#
+# A release starts when a `v<version>` tag is pushed for the version on main. dist builds every
+# target, puts the archives and installers on the GitHub release, then publishes the Homebrew
+# formula and the crates (.github/workflows/publish-crates.yml), and only then announces.
+
+[workspace]
+members = ["cargo:."]
+
+[dist]
+cargo-dist-version = "0.33.0"
+ci = "github"
+targets = [
+    "aarch64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+    "x86_64-apple-darwin",
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+]
+installers = ["shell", "powershell", "homebrew"]
+# Not `~/.cargo/bin`, dist's default: a copy there reads as a cargo install, and `luxe update`
+# would rebuild it from source with a toolchain the installer's users may not have
+install-path = ["$LUXE_INSTALL_DIR/", "~/.local/bin"]
+# The installer's own updater, beside the binary; `luxe update` runs it for an installer copy
+install-updater = true
+tap = "evanwhittaker/homebrew-tap"
+# `brew install evanwhittaker/tap/luxe`, not `luxe-cli`: the command is `luxe`
+formula = "luxe"
+publish-jobs = ["homebrew", "./publish-crates"]
+# A called workflow gets no more than its caller grants: checking out needs `contents`, and
+# Trusted Publishing needs `id-token`
+github-custom-job-permissions = { "publish-crates" = { contents = "read", id-token = "write" } }
+# Provenance for every artifact, so a download can be checked against this repository's build
+github-attestations = true
+pr-run-mode = "plan"
+
+# Pinned to commits, as every other workflow here is, so a moved tag cannot change what a release
+# runs. checkout v6.1.0, upload-artifact v7.0.2, download-artifact v8.0.2, attest v4.2.2
+[dist.github-action-commits]
+"actions/checkout" = "d23441a48e516b6c34aea4fa41551a30e30af803"
+"actions/upload-artifact" = "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+"actions/download-artifact" = "9000827ccba6bdab643e8b6fd33ac0654aef8333"
+"actions/attest" = "1e69f48acb82d1966a394da916b4c1698aa569d6"

@@ -51,7 +51,7 @@ fn a_search_lists_pull_requests_and_issues_with_where_they_are() {
 
 pub(super) const MERGED_NONE: &str = include_str!("../../fixtures/merged_below_none.json");
 
-/// Real answers from restacking a scratch stack on luxe-dev: the bottom squash-merged with its
+/// Real answers from restacking a scratch stack: the bottom squash-merged with its
 /// branch kept, and a layer with nothing merged below it. A retargeted one names the base it
 /// was moved from.
 #[test]
@@ -72,7 +72,7 @@ fn what_merged_below_a_stack_is_read_with_where_it_went() {
 
 pub(super) const STATUS_UNSTACKED: &str =
     include_str!("../../fixtures/branch_status_unstacked.json");
-/// Luxe's own chain on luxe-dev, read from the middle: seven below down to `master`, two above,
+/// A real chain of Luxe's own, read from the middle: seven below down to `master`, two above,
 /// and the evidence that checks wait for trunk — the bottom one has them, this one none.
 #[test]
 fn a_pull_request_in_the_middle_of_a_stack_knows_where_it_sits() {

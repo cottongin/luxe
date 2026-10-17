@@ -3,13 +3,20 @@
 
   type Channel = { id: string; label: string; command: string; note?: string };
 
+  const releases = "https://github.com/evanwhittaker/luxe/releases/latest/download";
   const channels: Channel[] = [
-    { id: "cargo", label: "cargo", command: "cargo install luxe-cli" },
     {
-      id: "source",
-      label: "source",
-      command: "git clone https://github.com/evanwhittaker/luxe && cd luxe && cargo build --release",
+      id: "shell",
+      label: "shell",
+      command: `curl --proto '=https' --tlsv1.2 -LsSf ${releases}/luxe-cli-installer.sh | sh`,
     },
+    { id: "brew", label: "brew", command: "brew install evanwhittaker/tap/luxe" },
+    {
+      id: "windows",
+      label: "windows",
+      command: `powershell -ExecutionPolicy Bypass -c "irm ${releases}/luxe-cli-installer.ps1 | iex"`,
+    },
+    { id: "cargo", label: "cargo", command: "cargo install --locked luxe-cli" },
   ];
 
   let active = $state(channels[0]);

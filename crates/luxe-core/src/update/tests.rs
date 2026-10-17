@@ -31,6 +31,36 @@ fn the_update_steps_are_the_owners_own_commands() {
     assert_eq!(InstallSource::Archive.update_steps(), None, "a download has no owner to ask");
 }
 
+/// The installer's updater beside the binary marks an installer copy wherever it lives, a
+/// `~/.cargo/bin` it was told to use included, and that updater is its update. Without it the
+/// path decides, as before.
+#[test]
+fn the_installers_updater_beside_the_binary_marks_an_installer_copy() {
+    let dir = tempfile::tempdir().expect("tempdir");
+    let bin = dir.path().join(".cargo/bin");
+    std::fs::create_dir_all(&bin).expect("bin dir");
+    let luxe = bin.join(format!("luxe{}", std::env::consts::EXE_SUFFIX));
+    std::fs::write(&luxe, b"").expect("a stand-in luxe");
+    assert_eq!(InstallSource::from_install(&luxe), InstallSource::Cargo, "no updater: the path");
+
+    let updater = bin.join(format!("{INSTALLER_UPDATER}{}", std::env::consts::EXE_SUFFIX));
+    std::fs::write(&updater, b"").expect("a stand-in updater");
+    assert_eq!(InstallSource::from_install(&luxe), InstallSource::Installer);
+    let steps: &[&[&str]] = &[&["luxe-cli-update"]];
+    assert_eq!(InstallSource::Installer.update_steps(), Some(steps));
+}
+
+/// A directory named like the updater is not the updater.
+#[test]
+fn a_directory_named_like_the_updater_does_not_count() {
+    let dir = tempfile::tempdir().expect("tempdir");
+    let luxe = dir.path().join("luxe");
+    std::fs::write(&luxe, b"").expect("a stand-in luxe");
+    let name = format!("{INSTALLER_UPDATER}{}", std::env::consts::EXE_SUFFIX);
+    std::fs::create_dir(dir.path().join(name)).expect("a directory");
+    assert_ne!(InstallSource::from_install(&luxe), InstallSource::Installer);
+}
+
 /// Homebrew is checked first because its Linux and Intel-macOS prefixes sit *inside* paths the
 /// other arms would otherwise claim.
 #[test]
