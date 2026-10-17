@@ -26,8 +26,6 @@
     palette: Record<string, Record<string, string>>;
     /** The variable the preview paints its canvas with, so the frame around it matches. */
     canvas: string;
-    /** List every token with its value under the preview. */
-    swatches?: boolean;
     /** Take turns through the themes on a timer. */
     cycle?: boolean;
     /** Put the theme chips under the picture rather than over it. */
@@ -39,7 +37,6 @@
     themes,
     palette,
     canvas,
-    swatches = false,
     cycle = false,
     chipsBelow = false,
     children,
@@ -93,7 +90,6 @@
   });
 
   const showing = $derived(pointed ?? pinned);
-  const tokens = $derived(themes[showing] ?? {});
 
   /** The preview's palette, as inline custom properties on its frame. */
   const style = $derived(
@@ -154,17 +150,6 @@
     {@render chips()}
   {/if}
 
-  {#if swatches}
-    <dl class="swatches">
-      {#each Object.entries(tokens) as [name, hex] (name)}
-        <div class="swatch">
-          <span class="swatch__chip" style={`background: ${hex}`}></span>
-          <dt>{name}</dt>
-          <dd>{hex}</dd>
-        </div>
-      {/each}
-    </dl>
-  {/if}
 </div>
 
 <style>
@@ -239,38 +224,6 @@
     transition:
       fill 180ms ease,
       stroke 180ms ease;
-  }
-
-  .swatches {
-    display: grid;
-    padding-bottom: var(--space-2);
-    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-    gap: var(--space-1) var(--space-3);
-    margin: 0;
-    font-size: var(--step--2);
-  }
-
-  .swatch {
-    display: flex;
-    align-items: center;
-    gap: 0.6em;
-  }
-
-  .swatch__chip {
-    width: 1em;
-    height: 1em;
-    border: 1px solid var(--luxe-border);
-    flex: none;
-  }
-
-  .swatch dt {
-    color: var(--luxe-text);
-  }
-
-  .swatch dd {
-    margin: 0;
-    color: var(--luxe-muted);
-    font-variant-numeric: tabular-nums;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -37,7 +37,6 @@ const PAGES = [
 		shine: ".hero__mark .wordmark",
 		captures: true,
 	},
-	{ path: "/themes/", expect: [".theme__name", ".masthead__mark"] },
 	// The measured bars come from a JSON a script writes, the part that could go missing
 	{ path: "/tools/", expect: [".bench__bar", ".contrast", ".masthead__mark"] },
 	{ path: "/docs/", expect: [".docs__body", ".docs__nav"] },

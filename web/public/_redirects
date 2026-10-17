@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects: source, destination, status.
+#
+# The themes page folded into the homepage's gallery; a link to it lands on the gallery.
+/themes   /#craft  301
+/themes/  /#craft  301

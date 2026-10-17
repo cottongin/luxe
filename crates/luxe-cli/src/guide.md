@@ -168,8 +168,8 @@ community favorites and of Omarchy's themes:
 { "theme": "nord" }
 ```
 
-An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all at
-[luxe.dev/themes](https://luxe.dev/themes).
+An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all on
+[luxe.dev](https://luxe.dev/#craft).
 
 Code is colored by the theme too: in answers, tool cards, diffs and the preview, keywords take the
 theme's `accentSecondary`, strings its `success`, numbers its `warning`, functions its `accent`,

@@ -223,7 +223,7 @@ const rows = new Map(
   [...bench.repositories].reverse().flatMap((repo) => repo.rows.map((row) => [row.id, row])),
 );
 for (const row of primary.rows) rows.set(row.id, row);
-/** The tightest of the four other agents' limits on the same output: Codex's. */
+/** The tightest of the other agents' limits on the same output: Codex's. */
 const tightest = (row: { forwarded: Record<string, number> }) =>
   Math.min(...Object.values(row.forwarded));
 
@@ -240,8 +240,12 @@ const tokens = (bytes: number) => {
   const count = bytes / 4;
   if (count < 1000) return `${Math.max(1, Math.round(count / 10) * 10)} tokens`;
   if (count < 10_000) return `${(count / 1000).toFixed(1)}k tokens`;
-  return `${Math.round(count / 1000)}k tokens`;
+  if (count < 1_000_000) return `${Math.round(count / 1000)}k tokens`;
+  return `${(count / 1_000_000).toFixed(1)}M tokens`;
 };
+
+/** The head's terminal: the commands whose output Luxe's tool cuts the most, measured like the rest. */
+const terminal = ["git", "module_report", "glob"].flatMap((id) => rows.get(id) ?? []);
 
 const times = (shell: number, tool: number) => {
   const ratio = shell / tool;
@@ -262,11 +266,23 @@ const versus = (cut: number, tool: number) => {
  */
 type Other = { warm: number; cold: number; passed: number; runs: number };
 type CostRow = { model: string; luxe: { passed: number; runs: number } } & Partial<
-  Record<"claude" | "codex" | "opencode" | "pi", Other>
+  Record<"claude" | "codex" | "opencode", Other>
 >;
 const costRows = agentCost.rows as CostRow[];
 const vendorAgent = (row: CostRow) => row.claude ?? row.codex;
 const multiple = (other?: Other) => (other ? `${other.cold.toFixed(2)}×` : "–");
+
+/** The chart's scale: the costliest multiple, rounded up to a half, so 1× (Luxe) sits at a fixed mark. */
+const chartScale =
+  Math.ceil(
+    Math.max(...costRows.flatMap((row) => [vendorAgent(row)?.cold ?? 0, row.opencode?.cold ?? 0])) * 2,
+  ) / 2;
+const chartWidth = (multiple: number) => `${(multiple / chartScale) * 100}%`;
+const chartBars = (row: CostRow) =>
+  [
+    { kind: "vendor", other: vendorAgent(row) },
+    { kind: "opencode", other: row.opencode },
+  ].flatMap(({ kind, other }) => (other ? [{ kind, cold: other.cold }] : []));
 
 /** A bar's share of its row, never so thin it disappears. */
 const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100, 0.6)}%`;
@@ -278,6 +294,8 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
 >
   <div class="page">
     <section class="section section--head">
+      <div class="split">
+      <div>
       <p class="eyebrow">Tools</p>
       <h1>Better than the shell.</h1>
       <div class="prose">
@@ -294,13 +312,41 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
           Measured in a checkout of {primary.name} at <code>{primary.commit}</code>, the codebase
           the harness eval runs in, with its virtualenv in place. The shell row is the command's
           raw output; <em>tightest cut</em> is the least any other agent sends its model of it,
-          which is Codex's 10 KB, head and tail kept. Pi and OpenCode keep up to 50 KB and Claude
-          Code 30,000 characters. A token is about four bytes.
+          which is Codex's 10 KB, head and tail kept. OpenCode keeps up to 50 KB and Claude Code
+          30,000 characters. A token is about four bytes.
         </p>
         <p class="muted note">
           Those are single calls, and across a whole task the bars shrink, because most calls are
           small to begin with. What a whole task costs is <a href="#tasks">below</a>.
         </p>
+      </div>
+      </div>
+      {/* The claim, shown: what the model reads back from a shell command, then from the tool */}
+      <figure class="terminal">
+        <div class="terminal__bar">
+          <span class="terminal__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>{primary.name.toLowerCase()} @ {primary.commit}</span>
+        </div>
+        <dl class="terminal__body">
+          {
+            terminal.map((row) => (
+              <div class="terminal__pair">
+                <dt>
+                  <span class="terminal__prompt">$</span>
+                  {row.shell}
+                </dt>
+                <dd>{tokens(row.shellBytes)}</dd>
+                <dt class="terminal__luxe">
+                  <span class="terminal__prompt">luxe</span>
+                  {row.tool}
+                </dt>
+                <dd class="terminal__luxe">{tokens(row.toolBytes)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <figcaption class="terminal__caption">What the model reads back, measured.</figcaption>
+      </figure>
       </div>
     </section>
 
@@ -308,19 +354,19 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
       <h2 class="group__name">Whole tasks</h2>
       <div class="prose">
         <p>
-          Luxe, Claude Code, Codex, OpenCode and Pi each ran the first twelve Django tasks of
+          Luxe, Claude Code, Codex and OpenCode each ran the first twelve Django tasks of
           SWE-bench Verified Mini, with the same model, the same prompt and the same keys, every
           call metered at the network and priced from one list. Each figure is what the other agent
           spent on the same task, as a multiple of what Luxe spent: above 1× costs more than Luxe.
         </p>
       </div>
+      <div class="split split--tasks">
       <table class="costs">
         <thead>
           <tr>
             <th scope="col">Model</th>
             <th scope="col">Claude Code or Codex</th>
             <th scope="col">OpenCode</th>
-            <th scope="col">Pi</th>
           </tr>
         </thead>
         <tbody>
@@ -332,19 +378,40 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
                 </th>
                 <td>{multiple(vendorAgent(row))}</td>
                 <td>{multiple(row.opencode)}</td>
-                <td>{multiple(row.pi)}</td>
               </tr>
             ))
           }
         </tbody>
       </table>
+      {/* The table's numbers drawn; hidden from screen readers, which have the table */}
+      <figure class="chart" aria-hidden="true" style={`--one: ${chartWidth(1)}`}>
+        <figcaption class="chart__legend">
+          <span class="chart__key chart__key--vendor">Claude Code or Codex</span>
+          <span class="chart__key chart__key--opencode">OpenCode</span>
+          <span class="chart__key chart__key--luxe">Luxe, 1×</span>
+        </figcaption>
+        {
+          costRows.map((row) => (
+            <div class="chart__group">
+              <code class="chart__model">{row.model}</code>
+              {chartBars(row).map(({ kind, cold }) => (
+                <div class={`chart__row chart__row--${kind}`}>
+                  <span class="chart__track">
+                    <span class="chart__bar" style={`width: ${chartWidth(cold)}`} />
+                  </span>
+                  <span class="chart__value">{cold.toFixed(2)}×</span>
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </figure>
+      </div>
       <div class="prose">
         <p class="muted note">
           Every run is charged as a cold start, the way a session begins after a break. Run side
           by side on a warm cache, Claude Code and OpenCode cost up to 2.6× what Luxe does on
-          Claude models. Pass rates overlapped on every model. Pi is the cheapest by design: four
-          tools and a short prompt, with web search, MCP and the rest left to extensions. Graded
-          on one machine rather than in SWE-bench's own containers, so these are not leaderboard
+          Claude models. Pass rates overlapped on every model. Graded on one machine rather than in SWE-bench's own containers, so these are not leaderboard
           scores. Measured at <code>{agentCost.commit}</code>.
         </p>
       </div>
@@ -537,6 +604,190 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     margin-bottom: var(--space-2) !important;
   }
 
+  /* The words, and beside them what they claim, drawn; one column once there is no room. Shares
+     rather than a fixed text column: the prose keeps its own measure, and the drawing gets room for
+     its longest command just above the breakpoint */
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-5) var(--space-6);
+    align-items: center;
+  }
+
+  .split--tasks {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    margin-top: var(--space-5);
+  }
+
+  .split--tasks .costs {
+    margin-top: 0;
+  }
+
+  /* === The head's terminal === */
+
+  .terminal {
+    margin: 0;
+    background: var(--luxe-user-msg-bg);
+    border: var(--border);
+    font-size: var(--step--1);
+  }
+
+  .terminal__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: var(--border);
+    color: var(--luxe-dim);
+  }
+
+  .terminal__dots {
+    display: inline-flex;
+    gap: 0.4em;
+  }
+
+  .terminal__dots i {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: var(--luxe-dim);
+  }
+
+  .terminal__body {
+    margin: 0;
+    padding: var(--space-3);
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .terminal__pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-1) var(--space-3);
+  }
+
+  .terminal__pair dt {
+    color: var(--luxe-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .terminal__pair dd {
+    margin: 0;
+    text-align: right;
+    color: var(--luxe-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .terminal__prompt {
+    color: var(--luxe-dim);
+    margin-right: 0.6em;
+  }
+
+  .terminal__pair .terminal__luxe {
+    color: var(--luxe-accent);
+  }
+
+  .terminal__caption {
+    padding: 0 var(--space-3) var(--space-3);
+    color: var(--luxe-dim);
+    font-size: var(--step--2);
+  }
+
+  /* === The whole-task chart === */
+
+  .chart {
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+    font-size: var(--step--1);
+  }
+
+  .chart__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    color: var(--luxe-muted);
+  }
+
+  .chart__key::before {
+    content: "";
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.5em;
+    vertical-align: -0.05em;
+  }
+
+  .chart__key--vendor::before {
+    background: var(--luxe-dim);
+  }
+
+  .chart__key--opencode::before {
+    background: var(--luxe-muted);
+  }
+
+  .chart__key--luxe::before {
+    width: 2px;
+    height: 1em;
+    background: var(--luxe-accent);
+  }
+
+  .chart__group {
+    display: grid;
+    gap: 0.3em;
+  }
+
+  .chart__model {
+    color: var(--luxe-accent);
+  }
+
+  .chart__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4rem;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .chart__track {
+    position: relative;
+    height: 0.9rem;
+    background: var(--luxe-user-msg-bg);
+  }
+
+  /* Luxe's 1×, drawn through every row: each bar is read against it */
+  .chart__track::after {
+    content: "";
+    position: absolute;
+    top: -0.2rem;
+    bottom: -0.2rem;
+    left: var(--one);
+    width: 2px;
+    background: var(--luxe-accent);
+  }
+
+  .chart__bar {
+    display: block;
+    height: 100%;
+  }
+
+  .chart__row--vendor .chart__bar {
+    background: var(--luxe-dim);
+  }
+
+  .chart__row--opencode .chart__bar {
+    background: var(--luxe-muted);
+  }
+
+  .chart__value {
+    text-align: right;
+    color: var(--luxe-text);
+    font-variant-numeric: tabular-nums;
+  }
+
   /* === Measured === */
 
   .bench {
@@ -678,7 +929,9 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
   }
 
   @media (max-width: 68rem) {
-    .tool {
+    .tool,
+    .split,
+    .split--tasks {
       grid-template-columns: minmax(0, 1fr);
     }
   }

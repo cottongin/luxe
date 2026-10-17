@@ -1,4 +1,4 @@
-# Luxe
+<h1 align="center"><img src="web/src/assets/generated/wordmark-banner.svg" alt="Luxe" width="420"></h1>
 
 Luxe is a coding agent for your terminal, written in Rust. It works in your project with the model
 you choose, then reads back what it changed as a Guided Review, so you can comment, ask for fixes,
