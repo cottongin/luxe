@@ -68,22 +68,31 @@ fn row_content(
         // truncating: an answer cut off at the right edge is one the reader cannot check
         // before sending it.
         None => {
-            let body = if state.editing() {
-                format!("{}▏", state.custom())
-            } else if state.custom().is_empty() {
-                CUSTOM_PLACEHOLDER.to_string()
-            } else {
-                state.custom().to_string()
-            };
             let number = format!("{}. ", i + 1);
             // The text column, wherever a longer number puts it
             let text_at = indent + number.chars().count().saturating_sub(3);
             let room = text_width.saturating_sub(text_at);
-            let (mut wrapped, scrolled) = custom_view(&body, room, custom_rows, state.editing());
+            let (mut wrapped, scrolled) = match state.editing() {
+                true => {
+                    let styles = (label_style, theme.selected_bg);
+                    super::answer::editing_rows(state, room, custom_rows, styles)
+                }
+                false => {
+                    let body = match state.custom() {
+                        "" => CUSTOM_PLACEHOLDER,
+                        typed => typed,
+                    };
+                    let rows = wrapped_rows(body, room, custom_rows);
+                    (
+                        rows.into_iter().map(|row| vec![Span::styled(row, label_style)]).collect(),
+                        false,
+                    )
+                }
+            };
             // An answer of nothing but spaces still owns a row: it is the one the cursor
             // can land on, and the click regions are laid out over the rows there are.
             if wrapped.is_empty() {
-                wrapped.push(String::new());
+                wrapped.push(Vec::new());
             }
             for (index, row) in wrapped.into_iter().enumerate() {
                 let mut line = if index == 0 {
@@ -99,7 +108,7 @@ fn row_content(
                     let lead = if index == 0 { "…" } else { " " };
                     line.push(Span::styled(lead, cursor_style));
                 }
-                line.push(Span::styled(row, label_style));
+                line.extend(row);
                 content.push(line);
             }
         }
@@ -175,25 +184,4 @@ pub(super) fn wrapped_rows(text: &str, width: usize, max_rows: usize) -> Vec<Str
         }
     }
     rows
-}
-
-/// The rows of a typed answer that fit, and whether any were left above them.
-///
-/// While the row is being edited the caret is what has to stay on screen, so the window follows
-/// the tail of the answer; at rest it reads from the top like any other text, with the usual
-/// clipped-tail mark.
-fn custom_view(text: &str, width: usize, max_rows: usize, editing: bool) -> (Vec<String>, bool) {
-    if !editing {
-        return (wrapped_rows(text, width, max_rows), false);
-    }
-    if max_rows == 0 {
-        return (Vec::new(), false);
-    }
-    let rows = wrap_rows(text, width);
-    if rows.len() <= max_rows {
-        return (rows, false);
-    }
-    // a cell short, for the mark that says there is more above
-    let mut rows = wrap_rows(text, width.saturating_sub(1));
-    (rows.split_off(rows.len() - max_rows), true)
 }

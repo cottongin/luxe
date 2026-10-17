@@ -1,9 +1,10 @@
 //! Update notice — whether a newer Luxe exists, and what *this* user should run to get it.
 //!
-//! Luxe does not update itself. What it does is notice that it is behind and say so once, in the
-//! dashboard footer, naming the command that matches how this copy was installed. Telling somebody
-//! who installed through Homebrew to run `cargo install --force` is worse than saying nothing: it
-//! is wrong, and following it leaves them with two Luxes and no idea which one is on `PATH`.
+//! Luxe never rewrites its own binary. It notices that it is behind and says so in the dashboard
+//! footer, and on request runs the update command that matches how this copy was installed, so
+//! the install's owner does the replacing. Telling somebody who installed through Homebrew to run
+//! `cargo install --force` is worse than saying nothing: it is wrong, and following it leaves them
+//! with two Luxes and no idea which one is on `PATH`.
 //!
 //! Everything here is pure or reads a local file. The one network call lives in `luxe-cli`, which
 //! is where outbound requests belong; this module only decides what to make of the answer. That
@@ -82,17 +83,28 @@ impl InstallSource {
         Self::Archive
     }
 
-    /// What to tell the reader to run, or `None` when the honest answer is "however you installed
-    /// it". A wrong command is worse than an absent one, so this refuses to guess.
-    pub fn update_command(&self) -> Option<&'static str> {
+    /// The commands that update this install, in order, each as a program and its arguments, or
+    /// `None` when the honest answer is "however you installed it". A wrong command is worse than
+    /// an absent one, so this refuses to guess.
+    ///
+    /// Run directly rather than through a shell, so nothing in them is ever interpreted. Homebrew
+    /// refreshes its index first, or `upgrade` can find nothing newer than the release the notice
+    /// already read; cargo installs `--locked`, the dependency versions the release was tested with.
+    pub fn update_steps(&self) -> Option<&'static [&'static [&'static str]]> {
         match self {
-            Self::Cargo => Some("cargo install --force luxe-cli"),
-            Self::Homebrew => Some("brew upgrade luxe"),
+            Self::Cargo => Some(&[&["cargo", "install", "--locked", "--force", "luxe-cli"]]),
+            Self::Homebrew => Some(&[&["brew", "update"], &["brew", "upgrade", "luxe"]]),
             // Which package manager owns it is not knowable without querying one, and guessing
             // `apt` on an Arch machine is the failure this whole function exists to avoid.
             Self::SystemPackage => None,
             Self::Archive => None,
         }
+    }
+
+    /// [`Self::update_steps`] as one line a person could type: the steps joined with `&&`.
+    pub fn update_command(&self) -> Option<String> {
+        let steps = self.update_steps()?;
+        Some(steps.iter().map(|step| step.join(" ")).collect::<Vec<_>>().join(" && "))
     }
 
     /// The advice, as a sentence fragment that follows "— ".

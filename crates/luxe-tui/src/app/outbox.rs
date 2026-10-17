@@ -25,6 +25,8 @@ pub struct Outbox {
     pub issue: Option<u64>,
     /// A session of yours to leave this one for, and what the reader carries into it
     pub resume: Option<crate::main_loop::ResumeLaunch>,
+    /// Whether to leave and update Luxe
+    pub update: bool,
     /// Text to hand to the reader's editor and bring back
     pub text_edit: Option<TextEdit>,
     /// A file or folder to open in the reader's editor
@@ -45,7 +47,8 @@ pub struct Outbox {
 
 impl Outbox {
     /// The exit the parked asks end the TUI with, taking them all; when several are parked the
-    /// last of an editor file, a worktree removal, an issue, a resume and a pull request fix wins.
+    /// last of an editor file, a worktree removal, an issue, a resume, a pull request fix and an
+    /// update wins.
     pub fn exit(&mut self) -> Option<TuiExit> {
         [
             self.editor_file.take().map(TuiExit::OpenInEditor),
@@ -53,6 +56,7 @@ impl Outbox {
             self.issue.take().map(TuiExit::TakeUpIssue),
             self.resume.take().map(TuiExit::ResumeSession),
             self.pull_request_fix.take().map(TuiExit::FixPullRequest),
+            std::mem::take(&mut self.update).then_some(TuiExit::Update),
         ]
         .into_iter()
         .flatten()
@@ -93,6 +97,10 @@ mod tests {
             ..Outbox::default()
         };
         assert_eq!(everything.exit(), Some(TuiExit::FixPullRequest(fix)));
+        // An update asked for after a fix is the one taken, and taken once
+        let mut update = Outbox { issue: Some(7), update: true, ..Outbox::default() };
+        assert_eq!(update.exit(), Some(TuiExit::Update));
+        assert_eq!(update.exit(), None);
         let mut removal_then_issue = Outbox {
             worktree_removal: Some(PathBuf::from("/work/.luxe/worktrees/x")),
             issue: Some(7),

@@ -122,6 +122,8 @@ fn run_command(app: &mut App, command: crate::commands::Command) {
         // The mode outlives the session, so it is chosen here rather than in a session made for it
         id::MODE => super::commands::dispatch(app, command),
         id::SESSIONS => app.open_sessions(),
+        // Leaves Luxe, so a session started for it would only be left empty
+        id::UPDATE => app.outbox.update = true,
         _ if command.slash_name() == Some("/quit") => {
             app.should_quit = true;
         }

@@ -67,6 +67,7 @@ words of it you have typed, like `pr` in `/diff pr 142`. A command that stays pl
 | `/auth` | Which providers you are signed in to, and how |
 | `/reload` | Re-read your config and keys without restarting |
 | `/quit` | Leave Luxe. The session is already saved. |
+| `/update` | Leave Luxe and update it, as `luxe update` does |
 
 The Command Palette also lists commands with no slash form, such as **Copy message**, **Swap the
 sidebar's side** and, in a review, **Send comments**.

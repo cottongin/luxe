@@ -64,9 +64,9 @@ ChatTurn@64x20: frame=91595c7c8fb3a9de hits=bc965e96875bbfe6
 ChatPermission@140x44: frame=54ddeb5522ffcb19 hits=063b591e442cd221
 ChatPermission@100x30: frame=b2c0e21530b64523 hits=200049ec7749eeb8
 ChatPermission@64x20: frame=9f98f5664f85406f hits=abbd7bfaa97a4ed0
-ChatPalette@140x44: frame=2563eb3755b4caff hits=bf9355f178f8e332
-ChatPalette@100x30: frame=ef4b4b78ce5ecf34 hits=eae72d9c1c194fee
-ChatPalette@64x20: frame=77258679e0458932 hits=888344c2d380ae7f
+ChatPalette@140x44: frame=3022f8834ce418f2 hits=bf9355f178f8e332
+ChatPalette@100x30: frame=cacc9b3e033c0401 hits=eae72d9c1c194fee
+ChatPalette@64x20: frame=085c324962ef0357 hits=888344c2d380ae7f
 ChatScreenshot@140x44: frame=5aec1b106f841d81 hits=1489393a2950d711
 ChatScreenshot@100x30: frame=709f9e4b32a7c8f6 hits=f8537762de7b55a2
 ChatScreenshot@64x20: frame=0a22c420e0e4092e hits=1e33d25e6f2a5032
@@ -178,7 +178,7 @@ ChangesFailed@64x20: frame=69cdcefbe785c866 hits=27476cdcd9937bea
 ChangesExternal@140x44: frame=fc75aaae10ddb262 hits=d5c3115642e748ad
 ChangesExternal@100x30: frame=522c8250b0f50ac4 hits=3dd17e6200cfb4b5
 ChangesExternal@64x20: frame=a6d2706231364207 hits=6f0e8da295aaa965
-ChatTools+palette: frame=96a7e733812fba95 hits=ca2a2a735278a5bd
+ChatTools+palette: frame=85cc5ae977de2fa6 hits=ca2a2a735278a5bd
 ChatTools+slash: frame=a3ce4c3a7d03f8d0 hits=8adf06de80ecdcb2
 ChatTools+mention: frame=33c4a73f189a3dcc hits=c1b8d78b51a767b7
 ChatTools+model: frame=98b419f1ad7ab1ea hits=c1b8d78b51a767b7

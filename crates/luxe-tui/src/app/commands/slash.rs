@@ -21,6 +21,7 @@ pub(super) fn run_slash(app: &mut App, cmd: &crate::commands::Command) -> bool {
             }
         }
         id::SESSIONS => app.open_sessions(),
+        id::UPDATE => app.outbox.update = true,
         id::MODEL => {
             // Opens the searchable model picker (also reachable from the palette). Selecting a
             // model sends `Action::SetModel`, switching the active model in-session.

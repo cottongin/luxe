@@ -8,10 +8,8 @@ mod motion;
 mod parts;
 
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
-pub(crate) use layout::TextLayout;
 pub use layout::VisualCursor;
-#[cfg(test)]
-use layout::VisualSegment;
+pub(crate) use layout::{TextLayout, VisualSegment};
 use motion::text_command;
 pub use parts::AttachedImage;
 use parts::{shift_offset, PromptPart, PromptPartKind};

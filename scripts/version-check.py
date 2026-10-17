@@ -3,8 +3,11 @@
 
 Compares the workspace version against a base ref, normally the pull request's target:
 
-- a change to what reaches crates.io (anything under `crates/`, `Cargo.toml`, `Cargo.lock`) has to
-  raise the version, and by exactly one semver step, so a typo cannot skip a release;
+- a change to what reaches crates.io (anything under `crates/`, `Cargo.toml`, `Cargo.lock`) on top
+  of a released version has to raise it, and by exactly one semver step, so a typo cannot skip a
+  release. A version is released once a `v<version>` tag marks it. Until then it already names the
+  release this change will ship in, so no bump is owed; it may still move, but only to another
+  single step past the last release, as when a breaking change turns a pending patch into a minor;
 - the version never goes down, shipped change or not;
 - every internal path dependency names the workspace version, because cargo publishes that number
   and a stale `0.1.0` still resolves locally against a `0.1.1` beside it;
@@ -116,14 +119,38 @@ def problems(base_ref: str) -> list[str]:
     found = []
     if precedence(head) < precedence(base):
         found.append(f"the version went down: {base} -> {head}")
-    elif ships(changed) and not is_one_step(base, head):
-        found.append(bump_message(base, head))
+    elif ships(changed) and (problem := shipped_problem(base, head, released())):
+        found.append(problem)
     manifests = {str(p.relative_to(ROOT)): p.read_text() for p in ROOT.glob("crates/*/Cargo.toml")}
     found += [f"internal dependency not pinned to {head}: {pin}" for pin in stale_pins(manifests, head)]
     changelog = ROOT / "CHANGELOG.md"
     if not changelog.exists() or not changelog_has(changelog.read_text(), head):
         found.append(f"CHANGELOG.md has no `## [{head}]` section")
     return found
+
+
+def released() -> list[str]:
+    """Every version a `v<version>` tag marks."""
+    tags = git("tag", "--list", "v*").split()
+    return [tag[1:] for tag in tags if SEMVER.match(tag[1:])]
+
+
+def shipped_problem(base: str, head: str, released: list[str]) -> str | None:
+    """What is wrong with `head` for a change that ships on top of `base`, or `None`.
+
+    A released base owes one step. An unreleased one already names the coming release, so it may
+    stay, or move to another single step past the last release before it.
+    """
+    if base in released:
+        return None if is_one_step(base, head) else bump_message(base, head)
+    if head == base:
+        return None
+    earlier = [version for version in released if precedence(version) < precedence(base)]
+    last = max(earlier, key=precedence, default=None)
+    if is_one_step(last or base, head):
+        return None
+    since = f"the last release, {last}" if last else f"{base}, which is not released yet"
+    return f"{head} is not one semver step past {since}"
 
 
 def bump_message(base: str, head: str) -> str:

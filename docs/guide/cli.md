@@ -95,6 +95,7 @@ script can tell a failure from an answer without reading the output.
 | `luxe loop fresh` | Reset the run's turn count; see [Autonomous runs](loop.md#start-a-run) |
 | `luxe docs [page]` | Read this guide, offline and for the installed version. `--search <words>` finds lines across every page. |
 | `luxe doctor` | Check which tools, language servers and debug adapters work |
+| `luxe update` | Update Luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
 | `luxe init` | Set up a theme, a provider, the tools and the start screen, and write them to `~/.config/luxe/config.json`. `--defaults` skips the questions, `--force` starts from an empty file; see [Editing](configuration.md#editing). |
 | `luxe wire <log>` | Summarize a `LUXE_WIRE_LOG` capture; see [Troubleshooting](troubleshooting.md#see-what-is-sent-to-the-model). `--tools` breaks the tool schemas' size down per tool. |
 

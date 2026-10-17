@@ -283,12 +283,15 @@ cd web && npm run deploy                 # needs `wrangler login` once
 
 ## Versioning
 
-One version for the whole workspace (`[workspace.package]` in `Cargo.toml`), following semver. A
-pull request to the public repository that changes what ships (`crates/`, `Cargo.toml`,
-`Cargo.lock`) bumps it by exactly one step, updates the internal path-dependency pins to match, and
-adds a `## [x.y.z]` section to `CHANGELOG.md`. The `Version` workflow runs
-`scripts/version-check.py` against the target branch to hold it to that; changes to the site, the
-guide or CI owe no bump.
+One version for the whole workspace (`[workspace.package]` in `Cargo.toml`), following semver, and
+the version on `main` is always the next release. The first pull request to the public repository
+that changes what ships (`crates/`, `Cargo.toml`, `Cargo.lock`) after a release, which is when a
+`v<version>` tag marks the current one, bumps it by exactly one step, updates the internal
+path-dependency pins to match, and adds a `## [x.y.z]` section to `CHANGELOG.md`. Later pull
+requests before the next release owe no bump and add their entries to that section; one that
+breaks something may still move a pending patch to a minor, one step past the last release. The
+`Version` workflow runs `scripts/version-check.py` against the target branch to hold it to that;
+changes to the site, the guide or CI owe nothing.
 
 ```bash
 python3 scripts/version-check.py origin/main    # what the pull request check runs

@@ -176,6 +176,7 @@ fn prompt_budget(available: u16, rows: &[LaidOutRow]) -> usize {
     usize::from(available).saturating_sub(chrome_and_rows(rows)).clamp(1, MAX_PROMPT_ROWS)
 }
 
+mod answer;
 mod rows;
 mod state;
 

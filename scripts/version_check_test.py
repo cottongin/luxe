@@ -146,10 +146,16 @@ class AgainstARepository(unittest.TestCase):
         self.run_git("add", "-A")
         self.run_git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", message)
 
-    def test_a_shipped_change_without_a_bump_fails(self):
+    def test_a_shipped_change_on_a_released_version_without_a_bump_fails(self):
+        self.run_git("tag", "v0.1.0", "main")
         self.write("crates/a/src/lib.rs", "pub fn new() {}\n")
         self.commit("change")
         self.assertIn("leaves the version at 0.1.0", " ".join(vc.problems("main")))
+
+    def test_a_shipped_change_on_an_unreleased_version_needs_no_bump(self):
+        self.write("crates/a/src/lib.rs", "pub fn new() {}\n")
+        self.commit("change")
+        self.assertEqual(vc.problems("main"), [])
 
     def test_a_shipped_change_with_a_bump_passes(self):
         self.write("crates/a/src/lib.rs", "pub fn new() {}\n")
@@ -161,6 +167,31 @@ class AgainstARepository(unittest.TestCase):
         self.write("web/index.html", "<p>hi</p>\n")
         self.commit("change")
         self.assertEqual(vc.problems("main"), [])
+
+
+class ShippedProblem(unittest.TestCase):
+    """The bump a shipped change owes, given which versions have been released."""
+
+    def test_a_released_base_owes_one_step(self):
+        self.assertIsNone(vc.shipped_problem("0.1.0", "0.1.1", ["0.1.0"]))
+        self.assertIn("leaves the version", vc.shipped_problem("0.1.0", "0.1.0", ["0.1.0"]))
+        self.assertIn("not one semver step", vc.shipped_problem("0.1.0", "0.1.2", ["0.1.0"]))
+
+    def test_an_unreleased_base_already_names_the_release(self):
+        self.assertIsNone(vc.shipped_problem("0.1.1", "0.1.1", ["0.1.0"]))
+        self.assertIsNone(vc.shipped_problem("0.1.0", "0.1.0", []), "before any release")
+
+    def test_an_unreleased_base_moves_only_one_step_past_the_last_release(self):
+        self.assertIsNone(vc.shipped_problem("0.1.1", "0.2.0", ["0.1.0"]), "patch became minor")
+        self.assertIn("last release, 0.1.0", vc.shipped_problem("0.1.1", "0.1.2", ["0.1.0"]))
+
+    def test_with_no_release_the_base_is_the_reference(self):
+        self.assertIsNone(vc.shipped_problem("0.1.0", "0.2.0", []))
+        self.assertIn("not released yet", vc.shipped_problem("0.1.0", "0.3.0", []))
+
+    def test_a_later_release_on_another_line_is_not_the_reference(self):
+        # A 1.0.0 tagged elsewhere does not make 0.2.0 a skip from the 0.1.x line
+        self.assertIsNone(vc.shipped_problem("0.1.1", "0.2.0", ["0.1.0", "1.0.0"]))
 
 
 if __name__ == "__main__":

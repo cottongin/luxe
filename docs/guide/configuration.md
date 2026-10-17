@@ -139,17 +139,33 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 { "herdr": false }
 ```
 
-### Update notice
+### Updates
 
-Once a day, Luxe checks whether a newer release exists and says so on the start screen, with the
-command to update. Luxe never updates itself. The check sends nothing about you or your machine; the
-comparison happens locally.
+Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
+*Update available · /update*. The check sends nothing about you or your machine; the comparison
+happens locally.
+
+`/update`, or `luxe update` in a shell, updates Luxe with the command for however you installed
+it, showing each one before it runs:
+
+| Installed with | `luxe update` runs |
+| --- | --- |
+| Cargo | `cargo install --locked --force luxe-cli` |
+| Homebrew | `brew update`, then `brew upgrade luxe` |
+
+Luxe never downloads or replaces its own program; the package manager that installed it does. A
+copy your system's package manager owns is left to it, and a downloaded one points you at the
+releases page. On Windows, Luxe can't be replaced while it runs, so it prints the command to run
+once it has exited. Afterwards it checks that the `luxe` your shell finds is the new version, and
+says so if another copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
+
+To stop the daily check:
 
 ```json title="~/.config/luxe/config.json"
 { "update": { "check": false } }
 ```
 
-`LUXE_UPDATE_CHECK=0` turns it off as well.
+`LUXE_UPDATE_CHECK=0` turns it off as well. `luxe update` still checks when you run it.
 
 ### Launchers
 

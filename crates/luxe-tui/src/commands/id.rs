@@ -34,4 +34,5 @@ pub(crate) const STATUSLINE: &str = "cmd.statusline";
 pub(crate) const THEME: &str = "cmd.theme";
 pub(crate) const THINKING: &str = "cmd.thinking";
 pub(crate) const TOOLS: &str = "cmd.tools";
+pub(crate) const UPDATE: &str = "cmd.update";
 pub(crate) const WORKTREE: &str = "cmd.worktree";

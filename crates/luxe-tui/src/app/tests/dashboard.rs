@@ -381,6 +381,34 @@ fn the_mode_command_on_the_start_screen_stays_on_it() {
     assert!(matches!(actions.as_slice(), [Action::SetMode(mode)] if mode == "plan"), "{actions:?}");
 }
 
+/// `/update` on the start screen leaves Luxe for the CLI's update, which needs the terminal, and
+/// starts no session on the way out.
+#[test]
+fn the_update_command_on_the_start_screen_leaves_to_update() {
+    let (tx, mut rx) = mpsc::channel(100);
+    let mut app = App::new(tx, KeyMap::defaults(), Default::default());
+    app.enter_dashboard(crate::dashboard::DashboardState::new(Vec::new()));
+    let update = crate::commands::CommandRegistry::all().parse_slash("/update").expect("it");
+    app.handle_dashboard_outcome(crate::dashboard::DashOutcome::RunCommand(update));
+    let mut exit = crate::main_loop::TuiExit::Quit;
+    crate::main_loop::collect_exit_for_tests(&mut app, &mut exit);
+    assert_eq!(exit, crate::main_loop::TuiExit::Update);
+    assert!(app.should_quit);
+    assert!(rx.try_recv().is_err(), "no session started for it");
+}
+
+/// From a session, `/update` typed in the composer leaves the same way.
+#[test]
+fn the_update_command_in_a_session_leaves_to_update() {
+    let (tx, _rx) = mpsc::channel(100);
+    let mut app = App::new(tx, KeyMap::defaults(), Default::default());
+    app.editor.insert_text("/update");
+    app.update(Msg::Key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE)));
+    let mut exit = crate::main_loop::TuiExit::Quit;
+    crate::main_loop::collect_exit_for_tests(&mut app, &mut exit);
+    assert_eq!(exit, crate::main_loop::TuiExit::Update);
+}
+
 /// Setup's answers reach the reader's file one key at a time, and skipping writes a file that
 /// chooses nothing, so the first run asks once.
 #[tokio::test]

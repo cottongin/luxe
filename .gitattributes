@@ -37,3 +37,11 @@ shine-text.md       export-ignore
 
 # Development scripts whose inputs are the export-ignored files above
 scripts/tool-ergonomics.sh export-ignore
+
+# Automation that changes the tree on its own. The public repository is this one's export, and each
+# sync replaces its tree, so a bump or a snapshot merged there alone would be reverted by the next
+# sync. Dependabot and the weekly jobs run here, and what they land reaches the public repository
+# with the sync after.
+.github/dependabot.yml                 export-ignore
+.github/workflows/models-snapshot.yml  export-ignore
+.github/workflows/real-servers.yml     export-ignore

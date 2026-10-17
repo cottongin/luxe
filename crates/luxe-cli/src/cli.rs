@@ -11,6 +11,7 @@ pub(crate) mod headless;
 mod models_command;
 mod rpc;
 mod tui;
+pub(crate) mod update_command;
 mod wire_command;
 mod worktree;
 
@@ -39,6 +40,10 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
     // The guide is in the binary and needs nothing else: no project, no settings, no network
     if let Some(SubCommand::Docs(docs)) = &args.command {
         return docs_command::run(docs);
+    }
+    // An update is about this binary, not a project, so it runs from anywhere
+    if let Some(SubCommand::Update(update)) = &args.command {
+        return update_command::run(update.check).await;
     }
     args.validate()?;
     // Where the project begins, which is not always where the shell was standing. Everything after
@@ -114,8 +119,8 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
             }
             SubCommand::Doctor => return run_doctor_command(settings).await,
             SubCommand::Wire(wire_args) => return run_wire_command(wire_args),
-            SubCommand::Docs(_) => {
-                unreachable!("`luxe docs` returned before a project was entered")
+            SubCommand::Docs(_) | SubCommand::Update(_) => {
+                unreachable!("`luxe docs` and `luxe update` return before a project is entered")
             }
         }
     }
