@@ -1,7 +1,7 @@
 //! `git` `checks` — why CI is failing, bounded.
 //!
 //! `gh run view --log-failed` prints every line of every failing step: 3,671 lines for one Clippy
-//! step on luxe-dev, with the error in the last dozen. This reads the same logs through GitHub
+//! step of Luxe's own, with the error in the last dozen. This reads the same logs through GitHub
 //! and keeps the tail of each failing step, says how much it left out, and also lists the failing
 //! checks that are not Actions jobs at all — a commit status from another CI, which that command
 //! cannot see. Reading only; re-running a job stays behind the permission engine's `ask`.

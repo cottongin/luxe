@@ -168,8 +168,8 @@ community favorites and of Omarchy's themes:
 { "theme": "nord" }
 ```
 
-An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all at
-[luxe.dev/themes](https://luxe.dev/themes).
+An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all on
+[luxe.dev](https://luxe.dev/#craft).
 
 Code is colored by the theme too: in answers, tool cards, diffs and the preview, keywords take the
 theme's `accentSecondary`, strings its `success`, numbers its `warning`, functions its `accent`,
@@ -857,14 +857,15 @@ it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
 | --- | --- |
-| Cargo | `cargo install --locked --force luxe-cli` |
+| The install script | `luxe-cli-update`, the updater it put beside `luxe` |
 | Homebrew | `brew update`, then `brew upgrade luxe` |
+| Cargo | `cargo install --locked --force luxe-cli` |
 
-Luxe never downloads or replaces its own program; the package manager that installed it does. A
-copy your system's package manager owns is left to it, and a downloaded one points you at the
-releases page. On Windows, Luxe can't be replaced while it runs, so it prints the command to run
-once it has exited. Afterwards it checks that the `luxe` your shell finds is the new version, and
-says so if another copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
+Luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
+package manager owns is left to it, and a downloaded archive points you at the releases page. On
+Windows, Luxe can't be replaced while it runs, so it prints the command to run once it has exited.
+Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
+copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 
 To stop the daily check:
 
@@ -2129,19 +2130,48 @@ order: 1
 group: "Get started"
 ---
 
-## Install with Cargo
+## Install
+
+On macOS and Linux, the install script puts `luxe` in `~/.local/bin`, or in `$LUXE_INSTALL_DIR`
+when it is set, and adds that to your `PATH`:
 
 ```bash
-cargo install luxe-cli
-luxe --version
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh | sh
 ```
 
-This installs the `luxe` command. You need a recent stable Rust; [rustup](https://rustup.rs)
-installs one.
+On Windows, in PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.ps1 | iex"
+```
+
+With Homebrew, on macOS or Linux:
+
+```bash
+brew install evanwhittaker/tap/luxe
+```
+
+With Cargo, which builds it, so you need Rust 1.89 or newer ([rustup](https://rustup.rs) installs
+one):
+
+```bash
+cargo install --locked luxe-cli
+```
+
+Any of them installs the `luxe` command; `luxe --version` checks it worked.
 
 To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
 and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
 to turn the check off.
+
+### Check a download
+
+Every file on a release carries a build attestation, so you can confirm it came from this
+repository's release workflow and nowhere else:
+
+```bash
+gh attestation verify luxe-cli-x86_64-unknown-linux-gnu.tar.xz --repo evanwhittaker/luxe
+```
 
 ## Build from source
 

@@ -150,14 +150,15 @@ it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
 | --- | --- |
-| Cargo | `cargo install --locked --force luxe-cli` |
+| The install script | `luxe-cli-update`, the updater it put beside `luxe` |
 | Homebrew | `brew update`, then `brew upgrade luxe` |
+| Cargo | `cargo install --locked --force luxe-cli` |
 
-Luxe never downloads or replaces its own program; the package manager that installed it does. A
-copy your system's package manager owns is left to it, and a downloaded one points you at the
-releases page. On Windows, Luxe can't be replaced while it runs, so it prints the command to run
-once it has exited. Afterwards it checks that the `luxe` your shell finds is the new version, and
-says so if another copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
+Luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
+package manager owns is left to it, and a downloaded archive points you at the releases page. On
+Windows, Luxe can't be replaced while it runs, so it prints the command to run once it has exited.
+Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
+copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 
 To stop the daily check:
 

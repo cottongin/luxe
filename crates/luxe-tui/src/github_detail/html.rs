@@ -177,7 +177,7 @@ fn collapse_blank_runs(text: &str) -> String {
 mod tests {
     use super::readable;
 
-    /// Dependabot's commit list, from luxe-dev #197's real body: a summary heading, then a list
+    /// Dependabot's commit list, from a real pull request's body: a summary heading, then a list
     /// of linked commit ids, with an entity decoded and no tag left.
     #[test]
     fn a_dependabot_commit_list_reads_as_a_list() {

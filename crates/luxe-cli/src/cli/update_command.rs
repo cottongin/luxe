@@ -52,7 +52,9 @@ async fn run_steps(steps: &[&[&str]]) -> anyhow::Result<()> {
         let Some((program, args)) = step.split_first() else { continue };
         let line = step.join(" ");
         println!("Running: {line}");
-        let status = tokio::process::Command::new(program)
+        let beside =
+            std::env::current_exe().ok().and_then(|exe| exe.parent().map(Path::to_path_buf));
+        let status = tokio::process::Command::new(program_path(program, beside.as_deref()))
             .args(args)
             .status()
             .await
@@ -62,6 +64,16 @@ async fn run_steps(steps: &[&[&str]]) -> anyhow::Result<()> {
         }
     }
     Ok(())
+}
+
+/// Where to run `program` from: `beside` this binary when it is there, which is where the
+/// installer put its updater, whether or not that directory is on `PATH`; by name otherwise.
+fn program_path(program: &str, beside: Option<&Path>) -> PathBuf {
+    let name = format!("{program}{}", std::env::consts::EXE_SUFFIX);
+    beside
+        .map(|dir| dir.join(name))
+        .filter(|path| path.is_file())
+        .unwrap_or_else(|| PathBuf::from(program))
 }
 
 /// How the update landed, read from the `luxe` a shell would run now.

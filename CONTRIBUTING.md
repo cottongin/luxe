@@ -300,28 +300,25 @@ python3 scripts/version_check_test.py           # the check's own tests
 
 Below 1.0, a minor bump may break config, flags or the `--rpc` protocol; a patch never does.
 
-## Publishing to crates.io
+## Releasing
 
-**In this order.** A crate cannot be published before the crates it depends on exist in the
-registry, and a published version is immutable, so a wrong order burns a version number rather than
-retrying.
-
-```bash
-cargo publish -p luxe-core
-cargo publish -p luxe-providers -p luxe-tools -p luxe-lsp -p luxe-dap -p luxe-mcp -p luxe-tui
-cargo publish -p luxe-cli        # the binary; `cargo install luxe-cli` installs `luxe`
-```
-
-Before the first publish, `cargo package -p luxe-tui` (or any crate with an internal dependency)
-fails with "no matching package named `luxe-core`" — it resolves the `version` on the path dep
-against a registry that has not seen it yet. That is expected rather than a broken manifest. To
-check every manifest at once, package the whole workspace, which resolves the internal graph
-itself:
+A release is a tag. When `main` holds the version to release, with its `CHANGELOG.md` section
+written:
 
 ```bash
-cargo package --workspace --no-verify
-cargo publish --dry-run -p luxe-core     # the one crate that can also verify pre-publish
+git tag v0.2.0 && git push origin v0.2.0
 ```
+
+`.github/workflows/release.yml`, which `dist` generates from `dist-workspace.toml`, then builds
+every target, puts the archives, the install scripts and their updater on the GitHub release with
+an attestation for each file, publishes the Homebrew formula to `evanwhittaker/homebrew-tap`, and
+publishes the crates to crates.io (`publish-crates.yml`) before announcing. Never edit
+`release.yml`; change `dist-workspace.toml` and run `dist generate`.
+
+The crates go up by crates.io Trusted Publishing, so no token is stored: each crate's trusted
+publisher is this repository's `release.yml`. A crate whose version crates.io already has is
+skipped, so a re-run after a partial publish carries on. `cargo publish --workspace --dry-run`
+packages and builds every crate the way the registry will, dependencies first.
 
 ## Development-only files
 

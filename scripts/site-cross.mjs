@@ -37,7 +37,6 @@ const web = fileURLToPath(new URL("../web/", import.meta.url));
 /** Pages worth opening, and what has to be alive on each once it has settled. */
 const PAGES = [
 	{ path: "/", demos: true, stills: true },
-	{ path: "/themes/", demos: false, stills: false },
 	{ path: "/docs/", demos: false, stills: false },
 ];
 

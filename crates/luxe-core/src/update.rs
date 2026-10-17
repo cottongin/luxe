@@ -47,16 +47,32 @@ pub enum InstallSource {
     Homebrew,
     /// A path a distribution's package manager owns (`/usr/bin`, `/bin`).
     SystemPackage,
-    /// A release archive, an installer script, `/usr/local/bin`, or a local build.
+    /// Luxe's own installer script, known by the updater it puts beside the binary.
+    Installer,
+    /// A release archive, `/usr/local/bin`, or a local build.
     Archive,
 }
+
+/// The updater Luxe's installer script puts beside the binary, named `<package>-update` by dist.
+pub const INSTALLER_UPDATER: &str = "luxe-cli-update";
 
 impl InstallSource {
     /// Classify the running binary. Falls back to [`InstallSource::Archive`], which is the state
     /// that gives the most cautious advice ("download the new release") rather than the most
     /// confident.
     pub fn detect() -> Self {
-        std::env::current_exe().map(|path| Self::from_path(&path)).unwrap_or(Self::Archive)
+        std::env::current_exe().map(|path| Self::from_install(&path)).unwrap_or(Self::Archive)
+    }
+
+    /// Classify a binary by what sits beside it, then by its path. The installer's updater beside
+    /// it decides first: the installer puts it wherever it installs, `~/.cargo/bin` included when
+    /// told to, and no path says "installer" on its own.
+    pub fn from_install(binary: &Path) -> Self {
+        let updater = format!("{INSTALLER_UPDATER}{}", std::env::consts::EXE_SUFFIX);
+        match binary.parent().map(|dir| dir.join(updater)) {
+            Some(path) if path.is_file() => Self::Installer,
+            _ => Self::from_path(binary),
+        }
     }
 
     /// Classify a path. Split out from [`Self::detect`] because a function that can only be
@@ -94,6 +110,7 @@ impl InstallSource {
         match self {
             Self::Cargo => Some(&[&["cargo", "install", "--locked", "--force", "luxe-cli"]]),
             Self::Homebrew => Some(&[&["brew", "update"], &["brew", "upgrade", "luxe"]]),
+            Self::Installer => Some(&[&[INSTALLER_UPDATER]]),
             // Which package manager owns it is not knowable without querying one, and guessing
             // `apt` on an Arch machine is the failure this whole function exists to avoid.
             Self::SystemPackage => None,
