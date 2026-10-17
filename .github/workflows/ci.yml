@@ -11,25 +11,18 @@ name: CI
 # workflow costs three runners (Windows sets the wall clock at ~10 minutes warm). The journal moves
 # on nearly every iteration, so this is where the minutes actually go.
 #
-# Deliberately narrow: only paths that are provably not inputs to the build. Nothing under `crates/`
-# is listed, and no `.md` in the tree is pulled in with `include_str!` — checked, not assumed. Adding
-# one later means taking it off this list.
+# So the workflow always starts, and `changes` (scripts/ci-changes.py) decides whether the jobs
+# have work; a prose-only change skips them and `CI passed` still reports. That one job is what a
+# ruleset requires: a required check that never starts, which is what a path filter on the trigger
+# made of every job here, blocks a merge for good.
 on:
   # Re-run the gate on demand — how a timing change to this file gets measured against a warm cache,
   # and how a run that failed on something external gets another go without an empty commit.
   workflow_dispatch:
   push:
     branches: [master, main]
-    paths-ignore: &prose
-      - "**/*.md"
-      - "docs/**"
-      - ".pi/**"
-      - "LICENSE-*"
-      # Dependabot's own schedule: it decides what gets proposed, never what gets built.
-      - ".github/dependabot.yml"
   pull_request:
     branches: [master, main]
-    paths-ignore: *prose
 
 # Least privilege: CI only needs to read the repo.
 permissions:
@@ -52,8 +45,32 @@ env:
   CARGO_PROFILE_TEST_DEBUG: line-tables-only
 
 jobs:
+  changes:
+    name: what changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      # Full history: the diff is taken from a merge base
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: The classifier's own tests
+        run: python3 scripts/ci_changes_test.py
+
+      # A pull request diffs against its target, a push against the tip it replaced
+      - name: Whether anything but prose changed
+        id: diff
+        run: python3 scripts/ci-changes.py "$BASE" >> "$GITHUB_OUTPUT"
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+
   gate:
     name: build · test · clippy · fmt
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     # A bound, because the absence of one cost real money. This job's test step has been hanging on
     # `ubuntu-latest` — the same `cargo nextest run` that takes ~11s locally and passes on the macOS
@@ -156,6 +173,8 @@ jobs:
   # Linux gate. Without this, Windows-only code is the one code path that ships unlinted.
   portability:
     name: build · clippy · test (${{ matrix.os }})
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ${{ matrix.os }}
     # Windows sets the wall clock for the whole workflow: ~10 minutes warm and ~15 cold, building,
     # linting and testing the whole workspace on the slowest runner. This is headroom over that, not
@@ -224,6 +243,8 @@ jobs:
   # trusts that number, and it said 1.85 for months while the dependencies needed 1.88.
   msrv:
     name: msrv
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -242,6 +263,8 @@ jobs:
 
   supply-chain:
     name: cargo-deny
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -266,6 +289,8 @@ jobs:
   # build should not read as a broken harness.
   website:
     name: web build
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -316,3 +341,25 @@ jobs:
       - name: Cross-browser (dev server)
         run: node ../scripts/site-cross.mjs --require webkit
         working-directory: web
+
+  # The one check a ruleset requires. A skipped job reports as passing but a skipped matrix job
+  # reports under no name a ruleset can hold, so this sums them up: it fails when any job failed or
+  # was cancelled, `changes` included, and passes when each one passed or had nothing to check.
+  passed:
+    name: CI passed
+    needs: [changes, gate, portability, msrv, supply-chain, website]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every job passed or had nothing to check
+        run: |
+          echo "results: $RESULTS"
+          for result in $RESULTS; do
+            case "$result" in
+              success | skipped) ;;
+              *) echo "a job ended $result" >&2; exit 1 ;;
+            esac
+          done
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}

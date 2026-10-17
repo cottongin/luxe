@@ -1,8 +1,8 @@
 # Version — a pull request that changes what ships bumps the version by one semver step.
 #
-# Its own workflow, with no path filter, so it can be a required check: CI skips prose-only pull
-# requests, and a required check that never starts blocks the merge forever. Whether a bump is owed
-# is the script's call, from the diff. See scripts/version-check.py for the rules.
+# Its own workflow, with no path filter, so it can be a required check beside `CI passed`: a
+# required check that never starts blocks the merge forever. Whether a bump is owed is the script's
+# call, from the diff. See scripts/version-check.py for the rules.
 name: Version
 
 on:

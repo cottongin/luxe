@@ -10,8 +10,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    # The site reads `docs/guide/` for the manual, which CI's prose filter skips, so a guide-only
-    # change still has to reach here
+    # The site reads `docs/guide/` for the manual, so a guide-only change has to reach here
     paths:
       - "web/**"
       - "docs/guide/**"
