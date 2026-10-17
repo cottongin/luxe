@@ -5,8 +5,9 @@ and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). 
 1.0, a minor bump (0.x.0) may break config, flags or the `--rpc` protocol, and a patch bump never
 does.
 
-A pull request that changes what ships (`crates/`, `Cargo.toml`, `Cargo.lock`) bumps the workspace
-version by one step and adds its section here; `scripts/version-check.py` holds it to that.
+The version on `main` is always the next release. The first change to what ships (`crates/`,
+`Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
+changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
 ## [0.1.0]
 

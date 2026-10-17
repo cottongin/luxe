@@ -9,7 +9,26 @@ fn a_cargo_install_is_told_to_use_cargo() {
     ] {
         assert_eq!(InstallSource::from_path(Path::new(path)), InstallSource::Cargo, "{path}");
     }
-    assert_eq!(InstallSource::Cargo.update_command(), Some("cargo install --force luxe-cli"));
+    assert_eq!(
+        InstallSource::Cargo.update_command().as_deref(),
+        Some("cargo install --locked --force luxe-cli")
+    );
+}
+
+/// The steps are what runs, one program at a time with no shell between, so they are pinned as
+/// argument lists: a flag moved into the wrong step, or a shell operator turned into an argument,
+/// would read the same in the joined line and run very differently.
+#[test]
+fn the_update_steps_are_the_owners_own_commands() {
+    let cargo: &[&[&str]] = &[&["cargo", "install", "--locked", "--force", "luxe-cli"]];
+    let brew: &[&[&str]] = &[&["brew", "update"], &["brew", "upgrade", "luxe"]];
+    assert_eq!(InstallSource::Cargo.update_steps(), Some(cargo));
+    assert_eq!(InstallSource::Homebrew.update_steps(), Some(brew));
+    assert_eq!(
+        InstallSource::Homebrew.update_command().as_deref(),
+        Some("brew update && brew upgrade luxe")
+    );
+    assert_eq!(InstallSource::Archive.update_steps(), None, "a download has no owner to ask");
 }
 
 /// Homebrew is checked first because its Linux and Intel-macOS prefixes sit *inside* paths the
@@ -91,7 +110,7 @@ fn a_notice_names_both_versions_and_the_command() {
     let line = notice.line();
     assert!(line.contains("0.2.0"), "{line}");
     assert!(line.contains("you have 0.1.0"), "{line}");
-    assert!(line.contains("cargo install --force luxe-cli"), "{line}");
+    assert!(line.contains("cargo install --locked --force luxe-cli"), "{line}");
 }
 
 #[test]

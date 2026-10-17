@@ -185,6 +185,7 @@ impl Args {
                 | SubCommand::Init(_)
                 | SubCommand::Models(_)
                 | SubCommand::Sessions(_)
+                | SubCommand::Update(_)
                 | SubCommand::Wire(_),
             ) => false,
         }
@@ -255,6 +256,7 @@ impl Args {
                 | SubCommand::Mcp(_)
                 | SubCommand::Models(_)
                 | SubCommand::Sessions(_)
+                | SubCommand::Update(_)
                 | SubCommand::Wire(_),
             ) => false,
         }

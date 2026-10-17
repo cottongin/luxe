@@ -543,3 +543,84 @@ fn the_measured_height_is_the_height_it_draws() {
     }
     assert_eq!(height(&s, &theme, 0, 20), 0, "no width, no panel");
 }
+
+fn type_answer(state: &mut QuestionPromptState, text: &str) {
+    for c in text.chars() {
+        state.on_key(&key(KeyCode::Char(c)));
+    }
+}
+
+/// The typed answer edits where its caret is: the arrows move it, and typing, Backspace and Delete
+/// act there rather than at the end of the text.
+#[test]
+fn the_typed_answer_edits_at_its_caret() {
+    let mut state = state(false);
+    type_answer(&mut state, "helo");
+    state.on_key(&key(KeyCode::Left));
+    state.on_key(&key(KeyCode::Left));
+    state.on_key(&key(KeyCode::Char('l')));
+    assert_eq!(state.custom(), "hello");
+    state.on_key(&key(KeyCode::Home));
+    state.on_key(&key(KeyCode::Delete));
+    assert_eq!(state.custom(), "ello", "delete takes the character after the caret");
+    state.on_key(&key(KeyCode::End));
+    state.on_key(&key(KeyCode::Backspace));
+    assert_eq!(state.custom(), "ell");
+    assert!(state.editing(), "none of that left the answer");
+}
+
+/// A word jump moves through the answer the way it does in the composer.
+#[test]
+fn a_word_jump_moves_through_the_typed_answer() {
+    let mut state = state(false);
+    type_answer(&mut state, "one two");
+    state.on_key(&KeyEvent::new(KeyCode::Left, KeyModifiers::ALT));
+    type_answer(&mut state, "big ");
+    assert_eq!(state.custom(), "one big two");
+}
+
+/// Up and down move through the rows a long answer wraps to, and up from its first row leaves the
+/// answer for the option above, the way the launcher hands its arrows to the list.
+#[test]
+fn up_and_down_move_through_a_wrapped_answer_then_leave_it() {
+    let mut state = state(false);
+    type_answer(&mut state, "alpha beta gamma delta epsilon zeta eta theta iota kappa");
+    // Drawn once, so the answer has wrapped at the panel's width
+    render(&state, 30, 24);
+    let end = state.answer().cursor();
+
+    state.on_key(&key(KeyCode::Up));
+    assert!(state.editing() && state.answer().cursor() < end, "up reached the row above");
+    state.on_key(&key(KeyCode::Down));
+    assert_eq!(state.answer().cursor(), end, "and down came back");
+
+    // Bounded, so a regression that never leaves fails rather than hangs
+    for _ in 0..10 {
+        if state.editing() {
+            state.on_key(&key(KeyCode::Up));
+        }
+    }
+    assert!(!state.editing(), "up from the first row leaves the answer");
+    assert_eq!(state.selected(), 1, "for the option above it");
+}
+
+/// An answer short enough for one row has nowhere to go: down leaves it at once.
+#[test]
+fn down_from_a_one_row_answer_leaves_it() {
+    let mut state = state(false);
+    type_answer(&mut state, "short");
+    render(&state, 60, 24);
+    state.on_key(&key(KeyCode::Down));
+    assert!(!state.editing());
+    assert_eq!(state.selected(), 0, "down from the last row wraps to the first option");
+}
+
+/// The caret is drawn where typing lands, not after the last character.
+#[test]
+fn the_caret_is_drawn_where_typing_lands() {
+    let mut state = state(false);
+    type_answer(&mut state, "abc");
+    state.on_key(&key(KeyCode::Left));
+    let (text, _) = render(&state, 60, 12);
+    assert!(text.contains("ab▏c"), "the caret sits before the c: {text}");
+}

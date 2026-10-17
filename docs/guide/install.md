@@ -15,8 +15,9 @@ luxe --version
 This installs the `luxe` command. You need a recent stable Rust; [rustup](https://rustup.rs)
 installs one.
 
-To update, run the same command with `--force`. Luxe checks once a day for a newer release and says
-so on the start screen; see [Update notice](configuration.md#update-notice) to turn that off.
+To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
+and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
+to turn the check off.
 
 ## Build from source
 

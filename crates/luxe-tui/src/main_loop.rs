@@ -67,6 +67,8 @@ pub enum TuiExit {
     ///
     /// Args: `(launch)` — the session, and the draft and mode the reader carries into it.
     ResumeSession(ResumeLaunch),
+    /// Leave Luxe and run `luxe update`, which needs the terminal for the package manager.
+    Update,
 }
 
 /// A pull request to fix in a new session, and the comments written reading it, which become the

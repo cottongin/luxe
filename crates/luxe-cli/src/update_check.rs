@@ -74,10 +74,7 @@ pub(crate) fn spawn_check(repo_root: &std::path::Path) {
     if !UpdateState::load(&path).is_stale(update::CHECK_TTL) {
         return;
     }
-    let url = std::env::var("LUXE_UPDATE_URL")
-        .ok()
-        .filter(|value| !value.trim().is_empty())
-        .unwrap_or_else(|| update::RELEASE_MANIFEST_URL.to_string());
+    let url = manifest_url();
 
     tokio::spawn(async move {
         // The timestamp moves whether or not the fetch worked, so an unreachable endpoint is
@@ -91,6 +88,27 @@ pub(crate) fn spawn_check(repo_root: &std::path::Path) {
             tracing::debug!(%error, path = %path.display(), "could not cache the update check");
         }
     });
+}
+
+/// Asks the manifest now, whatever the cache says, and records the answer: the reader asked, as
+/// `luxe update` does, so neither the daily cadence nor the opt-out applies. The request is the
+/// same anonymous one the daily check makes.
+pub(crate) async fn check_now() -> Result<String, String> {
+    let latest = fetch_latest(&manifest_url()).await?;
+    let path = state_path();
+    let state = UpdateState { latest: Some(latest.clone()), checked_at: now_secs() };
+    if let Err(error) = state.store(&path) {
+        tracing::debug!(%error, path = %path.display(), "could not cache the update check");
+    }
+    Ok(latest)
+}
+
+/// The release manifest, with `LUXE_UPDATE_URL` as a test seam.
+fn manifest_url() -> String {
+    std::env::var("LUXE_UPDATE_URL")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| update::RELEASE_MANIFEST_URL.to_string())
 }
 
 /// Seconds since the epoch, or 0 if the clock is unreadable (which reads as "never checked").
@@ -228,6 +246,25 @@ mod tests {
         assert!(notice.line().contains("99.0.0"), "{}", notice.line());
         std::env::remove_var("LUXE_UPDATE_PATH");
         std::env::remove_var("LUXE_UPDATE_CHECK");
+    }
+
+    /// `luxe update` asks whatever the cadence and the opt-out say, since the reader asked, and
+    /// what it learns is cached, so the start screen agrees with it.
+    #[tokio::test]
+    async fn an_asked_for_check_ignores_the_opt_out_and_caches_the_answer() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let cache = dir.path().join("update.json");
+        std::env::set_var("LUXE_UPDATE_PATH", &cache);
+        std::env::set_var("LUXE_UPDATE_CHECK", "0");
+        std::env::set_var(
+            "LUXE_UPDATE_URL",
+            serve_once(r#"{"tag_name":"v99.0.0"}"#, "200 OK").await,
+        );
+        assert_eq!(check_now().await.as_deref(), Ok("99.0.0"));
+        assert_eq!(UpdateState::load(&cache).latest.as_deref(), Some("99.0.0"));
+        for name in ["LUXE_UPDATE_PATH", "LUXE_UPDATE_CHECK", "LUXE_UPDATE_URL"] {
+            std::env::remove_var(name);
+        }
     }
 
     /// Both manifest shapes resolve, so moving off the GitHub API later is a URL change rather

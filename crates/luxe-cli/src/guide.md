@@ -481,6 +481,7 @@ script can tell a failure from an answer without reading the output.
 | `luxe loop fresh` | Reset the run's turn count; see [Autonomous runs](loop.md#start-a-run) |
 | `luxe docs [page]` | Read this guide, offline and for the installed version. `--search <words>` finds lines across every page. |
 | `luxe doctor` | Check which tools, language servers and debug adapters work |
+| `luxe update` | Update Luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
 | `luxe init` | Set up a theme, a provider, the tools and the start screen, and write them to `~/.config/luxe/config.json`. `--defaults` skips the questions, `--force` starts from an empty file; see [Editing](configuration.md#editing). |
 | `luxe wire <log>` | Summarize a `LUXE_WIRE_LOG` capture; see [Troubleshooting](troubleshooting.md#see-what-is-sent-to-the-model). `--tools` breaks the tool schemas' size down per tool. |
 
@@ -555,6 +556,7 @@ words of it you have typed, like `pr` in `/diff pr 142`. A command that stays pl
 | `/auth` | Which providers you are signed in to, and how |
 | `/reload` | Re-read your config and keys without restarting |
 | `/quit` | Leave Luxe. The session is already saved. |
+| `/update` | Leave Luxe and update it, as `luxe update` does |
 
 The Command Palette also lists commands with no slash form, such as **Copy message**, **Swap the
 sidebar's side** and, in a review, **Send comments**.
@@ -844,17 +846,33 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 { "herdr": false }
 ```
 
-### Update notice
+### Updates
 
-Once a day, Luxe checks whether a newer release exists and says so on the start screen, with the
-command to update. Luxe never updates itself. The check sends nothing about you or your machine; the
-comparison happens locally.
+Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
+*Update available · /update*. The check sends nothing about you or your machine; the comparison
+happens locally.
+
+`/update`, or `luxe update` in a shell, updates Luxe with the command for however you installed
+it, showing each one before it runs:
+
+| Installed with | `luxe update` runs |
+| --- | --- |
+| Cargo | `cargo install --locked --force luxe-cli` |
+| Homebrew | `brew update`, then `brew upgrade luxe` |
+
+Luxe never downloads or replaces its own program; the package manager that installed it does. A
+copy your system's package manager owns is left to it, and a downloaded one points you at the
+releases page. On Windows, Luxe can't be replaced while it runs, so it prints the command to run
+once it has exited. Afterwards it checks that the `luxe` your shell finds is the new version, and
+says so if another copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
+
+To stop the daily check:
 
 ```json title="~/.config/luxe/config.json"
 { "update": { "check": false } }
 ```
 
-`LUXE_UPDATE_CHECK=0` turns it off as well.
+`LUXE_UPDATE_CHECK=0` turns it off as well. `luxe update` still checks when you run it.
 
 ### Launchers
 
@@ -2121,8 +2139,9 @@ luxe --version
 This installs the `luxe` command. You need a recent stable Rust; [rustup](https://rustup.rs)
 installs one.
 
-To update, run the same command with `--force`. Luxe checks once a day for a newer release and says
-so on the start screen; see [Update notice](configuration.md#update-notice) to turn that off.
+To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
+and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
+to turn the check off.
 
 ## Build from source
 
@@ -4231,7 +4250,8 @@ There is no telemetry. Luxe connects only to:
 2. Search providers and web pages, when the agent uses `web_search` or `web_fetch`, and GitHub
    when `web_fetch` clones a repository (`"tools": { "clone_repositories": false }` stops it)
 3. The models.dev catalog, to refresh model details (`LUXE_MODELS_DEV_REFRESH=0` stops it)
-4. The update check, once a day (`"update": { "check": false }` stops it)
+4. The update check, once a day (`"update": { "check": false }` stops it), and when you run
+   `luxe update` or `/update`, which then runs your package manager's own update
 5. GitHub, through your own `gh`, when you, the agent or an [RPC client](rpc.md#github-writes) work
    with pull requests and issues. A client can write there only if you start it with
    `--github-writes`.

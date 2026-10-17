@@ -3,8 +3,8 @@
 # Mirrors the local gate (AGENTS.md / PROJECT.md) and adds `--locked` everywhere
 # so a PR can never silently drift `Cargo.lock` (the core supply-chain guard).
 # Third-party actions are pinned to commit SHAs (trailing `# vX` = the tag);
-# Dependabot (.github/dependabot.yml) bumps the SHAs. SHA-pinned `uses:` lines
-# necessarily exceed 80 cols — that's expected.
+# Dependabot bumps the SHAs in the development repository. SHA-pinned `uses:`
+# lines necessarily exceed 80 cols — that's expected.
 name: CI
 
 # A commit that touches only prose cannot change what the compiler or the suite says, and this

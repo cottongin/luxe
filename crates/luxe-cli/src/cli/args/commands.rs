@@ -21,8 +21,18 @@ pub(crate) enum SubCommand {
     Models(ModelsArgs),
     /// List this project's sessions.
     Sessions(SessionsArgs),
+    /// Update Luxe with the command for however it was installed.
+    Update(UpdateArgs),
     /// Summarize a `LUXE_WIRE_LOG` capture.
     Wire(WireArgs),
+}
+
+/// Update arguments.
+#[derive(Parser, Debug)]
+pub(crate) struct UpdateArgs {
+    /// Only say whether a newer release exists, and how to get it.
+    #[arg(long)]
+    pub(crate) check: bool,
 }
 
 /// Docs arguments.

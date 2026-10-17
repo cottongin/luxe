@@ -1,7 +1,9 @@
 //! Question prompt state — which row the cursor is on, what is checked, and what a key does.
 
+use crate::editor::Editor;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use luxe_core::question::{default_selection, QuestionOption, QuestionRequestId};
+use std::cell::Cell;
 
 /// State for an in-flight question modal (one at a time — tools dispatch sequentially).
 #[derive(Clone, Debug)]
@@ -18,9 +20,11 @@ pub struct QuestionPromptState {
     selected: usize,
     /// Per-option checkbox state (multi-select only).
     checked: Vec<bool>,
-    /// The user's free-text answer.
-    custom: String,
-    /// Whether the free-text row is being edited (keystrokes append to `custom`).
+    /// The user's free-text answer: the composer's editor, so the caret moves and edits where it is.
+    custom: Editor,
+    /// Cells the answer last wrapped at on screen, so up and down move through the rows drawn.
+    answer_width: Cell<u16>,
+    /// Whether the free-text row is being edited (keystrokes go to `custom`).
     editing: bool,
     /// Whether the typed answer is checked (multi-select): typing checks it, Space toggles it.
     custom_checked: bool,
@@ -53,7 +57,8 @@ impl QuestionPromptState {
             multi,
             selected,
             checked,
-            custom: String::new(),
+            custom: Editor::new(),
+            answer_width: Cell::new(u16::MAX),
             editing: false,
             custom_checked: false,
         }
@@ -77,14 +82,24 @@ impl QuestionPromptState {
     /// Whether row `i` is checked (multi-select), the typed answer included.
     pub fn is_checked(&self, i: usize) -> bool {
         if i == self.custom_row() {
-            return self.custom_checked && !self.custom.trim().is_empty();
+            return self.custom_checked && !self.custom().trim().is_empty();
         }
         self.checked.get(i).copied().unwrap_or(false)
     }
 
     /// The current free-text entry.
     pub fn custom(&self) -> &str {
+        self.custom.current_input()
+    }
+
+    /// The free-text entry's editor, for drawing it with its caret and selection.
+    pub(crate) fn answer(&self) -> &Editor {
         &self.custom
+    }
+
+    /// Records the width the answer was just drawn at; up and down wrap it the same way.
+    pub(super) fn set_answer_width(&self, width: u16) {
+        self.answer_width.set(width);
     }
 
     /// Whether the free-text row is in edit mode.
@@ -99,7 +114,7 @@ impl QuestionPromptState {
             return;
         }
         self.start_typing();
-        self.custom.push_str(&text);
+        self.custom.insert_text(&text);
     }
 
     /// Move the cursor to `index` (a hover or a click), clamped to range.
@@ -136,7 +151,7 @@ impl QuestionPromptState {
     /// A single answer is one answer. Text left in the typed row while picking another option used
     /// to ride along with it, which made a choice and an abandoned draft one reply.
     fn collect(&self, option: Option<usize>) -> Vec<String> {
-        let custom = self.custom.trim();
+        let custom = self.custom().trim();
         if !self.multi {
             return match option {
                 Some(i) => vec![self.options[i].label.clone()],
@@ -206,7 +221,7 @@ impl QuestionPromptState {
                 if self.multi {
                     QuestionPromptOutcome::Answer(self.collect(None))
                 } else if self.selected == self.custom_row() {
-                    if self.custom.trim().is_empty() {
+                    if self.custom().trim().is_empty() {
                         self.editing = true;
                         QuestionPromptOutcome::Consumed
                     } else {
@@ -217,9 +232,9 @@ impl QuestionPromptState {
                 }
             }
             // Start typing anywhere jumps into the free-text row.
-            KeyCode::Char(c) if !ctrl => {
+            KeyCode::Char(_) if !ctrl => {
                 self.start_typing();
-                self.custom.push(c);
+                self.custom.handle_key(*key);
                 QuestionPromptOutcome::Consumed
             }
             _ => QuestionPromptOutcome::Consumed,
@@ -234,31 +249,56 @@ impl QuestionPromptState {
                 QuestionPromptOutcome::Consumed
             }
             KeyCode::Char('c') if ctrl => {
-                self.custom.clear();
+                self.custom.select_all();
+                self.custom.delete_selection();
                 QuestionPromptOutcome::Consumed
             }
-            KeyCode::Backspace => {
-                self.custom.pop();
-                QuestionPromptOutcome::Consumed
-            }
+            KeyCode::Up | KeyCode::Down => self.vertical_in_answer(key),
+            // The answer is one reply on one line, and Tab means nothing in it
+            KeyCode::Tab | KeyCode::BackTab => QuestionPromptOutcome::Consumed,
+            // Every Enter, Shift+Enter's newline included, is the question's to answer
             KeyCode::Enter => {
                 if self.multi {
                     // Commit the text and submit everything checked plus the free text.
                     self.editing = false;
                     QuestionPromptOutcome::Answer(self.collect(None))
-                } else if self.custom.trim().is_empty() {
+                } else if self.custom().trim().is_empty() {
                     self.editing = false;
                     QuestionPromptOutcome::Consumed
                 } else {
                     QuestionPromptOutcome::Answer(self.collect(None))
                 }
             }
-            KeyCode::Char(c) if !ctrl => {
-                self.custom.push(c);
-                self.custom_checked = true;
+            // Typing, deleting and every caret motion are the composer's own
+            _ => {
+                let before = self.custom().len();
+                self.custom.handle_key(*key);
+                if self.custom().len() > before {
+                    self.custom_checked = true;
+                }
                 QuestionPromptOutcome::Consumed
             }
-            _ => QuestionPromptOutcome::Consumed,
         }
+    }
+
+    /// Up and down move through the rows the answer wraps to; from its first row up, or its last
+    /// row down, they leave it for the options, as the launcher hands its arrows to the list.
+    /// Shift always stays in the answer, where it is selecting.
+    fn vertical_in_answer(&mut self, key: &KeyEvent) -> QuestionPromptOutcome {
+        self.custom.set_viewport_width(self.answer_width.get());
+        let up = key.code == KeyCode::Up;
+        let edge =
+            if up { self.custom.cursor_on_first_row() } else { self.custom.cursor_on_last_row() };
+        if edge && !key.modifiers.contains(KeyModifiers::SHIFT) {
+            self.editing = false;
+            if up {
+                self.move_up();
+            } else {
+                self.move_down();
+            }
+        } else {
+            self.custom.handle_key(*key);
+        }
+        QuestionPromptOutcome::Consumed
     }
 }

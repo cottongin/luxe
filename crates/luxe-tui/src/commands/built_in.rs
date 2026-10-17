@@ -19,6 +19,13 @@ pub(super) fn built_in() -> Vec<Command> {
             .with_slash("/quit")
             .summary("Leaves Luxe; the session is saved as it goes, so nothing is lost.")
             .keywords(&["exit", "close"]),
+        Command::slash(id::UPDATE, "Update Luxe", "/update")
+            .summary("Quits Luxe and updates it with the command for however you installed it.")
+            .detail(
+                "The same as `luxe update`: each command is shown before it runs, in this \
+                 terminal. A copy your system's package manager owns is left to it.",
+            )
+            .keywords(&["upgrade", "version", "release", "new"]),
         Command::action(UiAction::Reload)
             .with_slash("/reload")
             .summary("Re-reads your config and keybindings without restarting.")
