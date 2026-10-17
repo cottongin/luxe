@@ -1,0 +1,61 @@
+build · test · clippy · fmt	Clippy (deny warnings)	﻿2026-09-23T00:21:52.1237712Z ##[group]Run cargo clippy --workspace --all-targets --locked -- -D warnings
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1238219Z ^[[36;1mcargo clippy --workspace --all-targets --locked -- -D warnings^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273268Z shell: /usr/bin/bash -e {0}
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273424Z env:
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273537Z   CARGO_TERM_COLOR: always
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273671Z   CARGO_NET_RETRY: 3
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273809Z   CARGO_PROFILE_DEV_DEBUG: line-tables-only
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1273993Z   CARGO_PROFILE_TEST_DEBUG: line-tables-only
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1274151Z   CARGO_HOME: /home/runner/.cargo
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1274301Z   CARGO_INCREMENTAL: 0
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1274421Z   CACHE_ON_FAILURE: false
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.1274547Z ##[endgroup]
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:52.8991052Z ^[[1m^[[92m    Updating^[[0m crates.io index
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:53.7728577Z ^[[1m^[[92m Downloading^[[0m crates ...
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6356120Z ^[[1m^[[92m  Downloaded^[[0m clap_derive v4.6.7
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6371332Z ^[[1m^[[92m  Downloaded^[[0m clap v4.6.7
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6446961Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.6.7
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6494519Z ^[[1m^[[92m  Downloaded^[[0m dom_smoothie v0.18.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6514279Z ^[[1m^[[92m  Downloaded^[[0m flate2 v1.1.10
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6549748Z ^[[1m^[[92m  Downloaded^[[0m miniz_oxide v0.9.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6567677Z ^[[1m^[[92m  Downloaded^[[0m uuid v1.26.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.6589502Z ^[[1m^[[92m  Downloaded^[[0m zlib-rs v0.6.8
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.8890334Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.151
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:54.8933397Z ^[[1m^[[92m    Checking^[[0m uuid v1.26.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:57.3749054Z ^[[1m^[[92m    Checking^[[0m miniz_oxide v0.9.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:57.4442376Z ^[[1m^[[92m    Checking^[[0m luxe-core v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-core)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:57.5906933Z ^[[1m^[[92m    Checking^[[0m flate2 v1.1.10
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:57.7572311Z ^[[1m^[[92m    Checking^[[0m png v0.18.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:58.2207526Z ^[[1m^[[92m    Checking^[[0m image v0.25.10
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:59.2831850Z ^[[1m^[[92m    Checking^[[0m compression-codecs v0.4.38
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:59.3583644Z ^[[1m^[[92m    Checking^[[0m syntect v5.3.0
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:21:59.9915550Z ^[[1m^[[92m    Checking^[[0m arboard v3.6.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:00.1382015Z ^[[1m^[[92m    Checking^[[0m async-compression v0.4.42
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:00.3048443Z ^[[1m^[[92m    Checking^[[0m tower-http v0.6.11
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:00.4773065Z ^[[1m^[[92m    Checking^[[0m reqwest v0.12.28
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:02.3302231Z ^[[1m^[[92m   Compiling^[[0m tree-sitter v0.26.13
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:03.9306449Z ^[[1m^[[92m    Checking^[[0m dom_smoothie v0.18.1
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:04.1531944Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-typescript v0.23.2
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:05.8653516Z ^[[1m^[[92m    Checking^[[0m luxe-tui v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-tui)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:07.3602389Z ^[[1m^[[92m    Checking^[[0m luxe-tools v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-tools)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:08.7953233Z ^[[1m^[[92m    Checking^[[0m luxe-lsp v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-lsp)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.3956294Z ^[[1m^[[92m    Checking^[[0m luxe-providers v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-providers)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7167169Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `getrandom` in crate `getrandom`^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7191569Z   ^[[1m^[[94m--> ^[[0mcrates/luxe-providers/src/auth/oauth.rs:85:16
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7192240Z    ^[[1m^[[94m|^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7216955Z ^[[1m^[[94m85^[[0m ^[[1m^[[94m|^[[0m     getrandom::getrandom(&mut buffer).expect("OS randomness unavailable");
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7241197Z    ^[[1m^[[94m|^[[0m                ^[[1m^[[91m^^^^^^^^^^[[0m ^[[1m^[[91mnot found in `getrandom`^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:09.7241620Z 
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.1612206Z ^[[1m^[[92m    Checking^[[0m luxe-dap v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-dap)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.6962191Z ^[[1m^[[92m    Checking^[[0m luxe-mcp v0.1.0 (/home/runner/work/luxe-dev/luxe-dev/crates/luxe-mcp)
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7831959Z ^[[1m^[[91merror[E0425]^[[0m^[[1m: cannot find function `getrandom` in crate `getrandom`^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7871280Z    ^[[1m^[[94m--> ^[[0mcrates/luxe-mcp/src/oauth.rs:444:16
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7874093Z     ^[[1m^[[94m|^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7891512Z ^[[1m^[[94m444^[[0m ^[[1m^[[94m|^[[0m     getrandom::getrandom(&mut bytes).expect("OS randomness unavailable");
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7911112Z     ^[[1m^[[94m|^[[0m                ^[[1m^[[91m^^^^^^^^^^[[0m ^[[1m^[[91mnot found in `getrandom`^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:10.7911357Z 
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:11.4452182Z ^[[1mFor more information about this error, try `rustc --explain E0425`.^[[0m
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:11.5096658Z ^[[1m^[[91merror^[[0m: could not compile `luxe-mcp` (lib) due to 1 previous error
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:11.5103967Z ^[[1m^[[33mwarning^[[0m: build failed, waiting for other jobs to finish...
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:11.5111432Z ^[[1m^[[91merror^[[0m: could not compile `luxe-providers` (lib) due to 1 previous error
+build · test · clippy · fmt	Clippy (deny warnings)	2026-09-23T00:22:11.5453006Z ##[error]Process completed with exit code 101.

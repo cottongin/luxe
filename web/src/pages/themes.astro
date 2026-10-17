@@ -1,0 +1,182 @@
+---
+import Base from "../layouts/Base.astro";
+import ThemePreview from "../components/ThemePreview.astro";
+import themeCss from "../assets/generated/tokens.css?raw";
+
+/**
+ * The palette, with its numbers attached.
+ *
+ * Swatches are read out of the generated stylesheet rather than typed here, so this page cannot
+ * disagree with the theme the terminal loads.
+ */
+const readTokens = (block: string) =>
+  [...block.matchAll(/--luxe-([a-z-]+):\s*(#[0-9a-f]{6});/g)].map(([, name, hex]) => ({ name, hex }));
+
+const modes = [
+  { label: "luxe", note: "warm graphite, champagne brass", tokens: readTokens(themeCss) },
+];
+
+/** Relative luminance, so each chip can print its own contrast rather than claim one. */
+function contrast(a: string, b: string) {
+  const lum = (hex: string) => {
+    const parts = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+    const [r, g, bl] = parts.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+---
+
+<Base title="Themes — Luxe" description="Luxe's palette, and the community favorites it ships with.">
+  <div class="page">
+    <section class="section section--head">
+      <p class="eyebrow">Themes</p>
+      <h1>Color that means something.</h1>
+      <div class="prose">
+        <p>
+          Luxe's own palette is warm graphite with a champagne-brass accent, and its hues come from a
+          set of paint colors rather than a terminal convention. Those are mid-luminance by nature,
+          so the hues were kept and the lightness re-derived against a contrast floor.
+        </p>
+        <p>
+          Three rules do the work, and each one is asserted in the test suite rather than eyeballed:
+          every background and gray shares one neutral hue, every accent sits on one lightness
+          plateau so none of them shouts, and nothing drops below 4.5:1 on its own background.
+        </p>
+      </div>
+    </section>
+
+    {
+      modes.map(({ label, note, tokens }) => {
+        const background = tokens.find((t) => t.name === "background")!.hex;
+        return (
+          <section class="section">
+            <div class="theme__head">
+              <h2 class="theme__name">{label}</h2>
+              <p class="muted theme__note">{note}</p>
+            </div>
+            <ul class="swatches">
+              {tokens
+                .filter(
+                  (t) =>
+                    !t.name.startsWith("wordmark") &&
+                    !t.name.startsWith("capture") &&
+                    t.name !== "tile-ink",
+                )
+                .map(({ name, hex }) => (
+                  <li class="swatch">
+                    <span class="swatch__chip" style={`background:${hex}`} />
+                    <span class="swatch__name">{name}</span>
+                    <span class="swatch__hex">{hex}</span>
+                    <span class="swatch__ratio">
+                      {name === "background" ? "—" : `${contrast(hex, background).toFixed(1)}:1`}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        );
+      })
+    }
+
+    <section class="section section--last">
+      <h2>And plenty you may already use.</h2>
+      <div class="prose">
+        <p>
+          Ports that stay true to their originals. Luxe only steps in where a color is too faint to
+          read a word in, or where a theme's "red" isn't red, since a failed test shown in green
+          says the opposite of what happened.
+        </p>
+        <p>
+          Point at one to see it. That's how <code>/theme</code> works in the terminal too: the
+          cursor moves and the whole app repaints, because a palette isn't something you can judge
+          from its name.
+        </p>
+      </div>
+      <ThemePreview swatches />
+      <p class="muted">
+        Set one with <code>"theme": "nord"</code> in <code>~/.config/luxe/config.json</code>, or
+        override individual tokens with a <code>colors</code> map. On Omarchy, Luxe wears your
+        desktop's theme and changes with it when you switch.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .section--head {
+    border-top: 0;
+    padding-top: var(--space-6);
+  }
+
+  .section--last {
+    border-bottom: 0;
+  }
+
+  .prose {
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+  }
+
+  .theme__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .theme__name {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    letter-spacing: 0;
+  }
+
+  .theme__note {
+    margin: 0;
+    font-size: var(--step--1);
+  }
+
+  .swatches {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0 0;
+    display: grid;
+    gap: var(--space-2) var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  }
+
+  .swatch {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr auto auto;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+    padding-block: 0.3rem;
+    border-bottom: 1px solid var(--luxe-border-muted);
+  }
+
+  .swatch__chip {
+    width: 1.6rem;
+    height: 1.6rem;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--luxe-text) 18%, transparent);
+  }
+
+  .swatch__name {
+    color: var(--luxe-text);
+  }
+
+  .swatch__hex,
+  .swatch__ratio {
+    color: var(--luxe-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .swatch__ratio {
+    min-width: 4ch;
+    text-align: right;
+  }
+
+
+</style>

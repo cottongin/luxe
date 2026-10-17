@@ -1,0 +1,297 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import DocsSearch from "../../components/DocsSearch.svelte";
+import CopyMarkdown from "../../components/CopyMarkdown.svelte";
+import { guidePages, grouped, pageHref, markdownHref } from "../../lib/guide";
+import "../../styles/prose.css";
+
+export async function getStaticPaths() {
+  const pages = await guidePages();
+
+  return pages.map((page, index) => ({
+    // The index page owns `/docs` itself, so its slug is empty rather than `/docs/index`.
+    params: { slug: page.id === "index" ? undefined : page.id },
+    props: {
+      page,
+      pages,
+      previous: pages[index - 1],
+      next: pages[index + 1],
+    },
+  }));
+}
+
+const { page, pages, previous, next } = Astro.props;
+const { Content, headings } = await render(page);
+const href = pageHref;
+const sections = grouped(pages);
+
+// Only H2s. A three-level table of contents on a page this size is a second sidebar.
+const toc = headings.filter((heading) => heading.depth === 2);
+---
+
+<Base title={`${page.data.title} — Luxe`} description={page.data.summary}>
+  <div class="page docs">
+    <nav class="docs__nav" aria-label="Documentation">
+      <DocsSearch client:idle />
+      {/* Open, and closed by the script below on a phone, where the list would otherwise sit
+          between the reader and the page they opened. Without JavaScript it stays open. */}
+      <details class="docs__menu" open data-docs-menu>
+        <summary class="docs__menu-toggle">Contents</summary>
+      {
+        sections.map((section) => (
+          <section class="docs__group">
+            <p class="docs__group-name">{section.group}</p>
+            <ol class="docs__list">
+              {section.pages.map((entry) => (
+                <li>
+                  <a
+                    href={href(entry.id)}
+                    class:list={["docs__link", { "is-current": entry.id === page.id }]}
+                    aria-current={entry.id === page.id ? "page" : undefined}
+                  >
+                    {entry.data.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+      </details>
+    </nav>
+    <script>
+      const menu = document.querySelector<HTMLDetailsElement>("[data-docs-menu]");
+      if (menu && matchMedia("(max-width: 48rem)").matches) menu.open = false;
+    </script>
+
+    <article class="docs__body" data-pagefind-body>
+      <header class="docs__head">
+        <h1 class="docs__title">{page.data.title}</h1>
+        <p class="lede docs__summary">{page.data.summary}</p>
+        <CopyMarkdown client:idle href={markdownHref(page.id)} />
+      </header>
+
+      <div class="prose-body">
+        <Content />
+      </div>
+
+      <nav class="docs__pager" aria-label="Pagination">
+        {
+          previous ? (
+            <a class="pager pager--prev" href={href(previous.id)}>
+              <span class="pager__dir">Previous</span>
+              <span class="pager__title">{previous.data.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next && (
+            <a class="pager pager--next" href={href(next.id)}>
+              <span class="pager__dir">Next</span>
+              <span class="pager__title">{next.data.title}</span>
+            </a>
+          )
+        }
+      </nav>
+    </article>
+
+    {
+      toc.length > 1 && (
+        <nav class="docs__toc" aria-label="On this page">
+          <p class="eyebrow">On this page</p>
+          <ol>
+            {toc.map((heading) => (
+              <li>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .docs {
+    display: grid;
+    gap: var(--space-5);
+    /* The middle track is capped rather than fluid. `--page` is set for the front page's two-column
+       sections, and a documentation column that grows to match it is 1200px of prose. */
+    grid-template-columns: 15rem minmax(0, 52rem) 13rem;
+    justify-content: center;
+    align-items: start;
+    padding-block: var(--space-5) var(--space-7);
+  }
+
+  .docs__nav,
+  .docs__toc {
+    position: sticky;
+    top: 5.5rem;
+    font-size: var(--step--1);
+  }
+
+  /* Taller than a laptop screen once grouped, and sticky: it scrolls on its own rather than
+     leaving its last pages below the fold for good */
+  .docs__nav {
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .docs__list,
+  .docs__toc ol {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0 0;
+  }
+
+  .docs__menu-toggle {
+    display: none;
+  }
+
+  .docs__group + .docs__group {
+    margin-top: var(--space-4);
+  }
+
+  .docs__group-name {
+    margin: var(--space-4) 0 0;
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--luxe-dim);
+  }
+
+  .docs__group .docs__list {
+    margin-top: var(--space-2);
+  }
+
+  .docs__link {
+    display: block;
+    padding: 0.32em 0 0.32em 0.8em;
+    text-decoration: none;
+    color: var(--luxe-muted);
+    border-left: 2px solid var(--luxe-border-muted);
+  }
+
+  .docs__link:hover {
+    color: var(--luxe-text);
+    border-left-color: var(--luxe-dim);
+  }
+
+  .docs__link.is-current {
+    color: var(--luxe-accent);
+    border-left-color: var(--luxe-accent);
+  }
+
+  .docs__head {
+    margin-bottom: var(--space-5);
+  }
+
+  .docs__title {
+    font-size: var(--step-3);
+  }
+
+  .docs__summary {
+    margin-top: var(--space-2);
+    max-width: var(--measure);
+  }
+
+  .docs__toc ol {
+    margin-top: var(--space-2);
+  }
+
+  .docs__toc li {
+    margin-bottom: var(--space-2);
+  }
+
+  .docs__toc a {
+    text-decoration: none;
+    color: var(--luxe-muted);
+  }
+
+  .docs__toc a:hover {
+    color: var(--luxe-accent);
+  }
+
+  .docs__pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-7);
+    padding-top: var(--space-4);
+    border-top: var(--border);
+  }
+
+  .pager {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    text-decoration: none;
+    background: var(--luxe-user-msg-bg);
+  }
+
+  .pager--next {
+    text-align: right;
+  }
+
+  .pager__dir {
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--luxe-muted);
+  }
+
+  .pager__title {
+    color: var(--luxe-text);
+  }
+
+  .pager:hover .pager__title {
+    color: var(--luxe-accent);
+  }
+
+  @media (max-width: 68rem) {
+    .docs {
+      grid-template-columns: 13rem minmax(0, 1fr);
+    }
+    .docs__toc {
+      display: none;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .docs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .docs__nav {
+      position: static;
+      max-height: none;
+    }
+    .docs__menu-toggle {
+      display: block;
+      margin-top: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      background: var(--luxe-user-msg-bg);
+      color: var(--luxe-muted);
+      font-size: var(--step--1);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .docs__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1) var(--space-3);
+    }
+    .docs__link {
+      border-left: 0;
+      padding-left: 0;
+    }
+    .docs__link.is-current {
+      border-bottom: 2px solid var(--luxe-accent);
+    }
+  }
+</style>

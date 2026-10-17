@@ -1,0 +1,234 @@
+---
+/**
+ * A few words in a heading that edit themselves, once, when the heading scrolls into view.
+ *
+ * The hero refines one word by restyling it. Section headings take the same gesture one step
+ * further, the way an editor would: a caret lands at the end of the old words, drags a selection
+ * back across them, and types the new ones over it. It reads as the page being revised, which is
+ * the whole idea of the product, and it only ever happens once per heading.
+ *
+ * The finished heading is the one in the markup. The words are real text, styled like the hero's
+ * `em`, so with no JavaScript, with reduced motion, or to a crawler, the heading is the final
+ * sentence. When the script takes over it hides that text visually (a screen reader still reads
+ * it, and only it) and draws the animation from a `data-` attribute through `::before`, which is
+ * neither announced inside `aria-hidden` nor copied with a selection.
+ */
+interface Props {
+  /** What the heading says before it's revised. */
+  from: string;
+  /** What it says after, and what every reader without the animation gets. */
+  to: string;
+}
+const { from, to } = Astro.props;
+---
+
+<span class="refine" data-refine data-from={from} data-to={to}
+  ><span class="refine__text">{to}</span><span class="refine__vis" aria-hidden="true"
+    ><span class="refine__caret"></span></span
+  ></span
+>
+
+<script>
+  // Timings in ms. The drag is quick because pulling a cursor across a word is the fastest thing
+  // a person does; the holds are long enough to read what changed.
+  const BLINK = 900;
+  const DRAG_STEP = 55;
+  const HOLD = 520;
+  const TYPE_BASE = 70;
+  const TYPE_SPREAD = 60;
+  const LINGER = 1100;
+
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
+
+  // Keystroke gaps that look typed rather than metronomic, and come out the same on every visit.
+  const gap = (i: number, ch: string) =>
+    TYPE_BASE + ((i * 37 + ch.charCodeAt(0) * 11) % TYPE_SPREAD) + (ch === " " ? 40 : 0);
+
+  async function play(el: HTMLElement, heading: HTMLElement) {
+    const vis = el.querySelector<HTMLElement>(".refine__vis")!;
+    const from = el.dataset.from ?? "";
+    const to = el.dataset.to ?? "";
+
+    el.dataset.state = "caret";
+    await wait(BLINK);
+
+    // Right to left, a character at a time: the cursor lands past the end and pulls back.
+    el.dataset.state = "select";
+    vis.dataset.sel = from;
+    for (let k = 1; k <= from.length; k++) {
+      const left = 100 - (k / from.length) * 100;
+      vis.style.setProperty("--sel-left", `${left}%`);
+      await wait(DRAG_STEP);
+    }
+    await wait(HOLD);
+
+    // The first keystroke replaces the selection, the rest extend it.
+    el.dataset.state = "type";
+    vis.dataset.sel = "";
+    for (let i = 0; i < to.length; i++) {
+      vis.dataset.text = to.slice(0, i + 1);
+      await wait(gap(i, to[i]));
+    }
+
+    el.dataset.state = "linger";
+    await wait(LINGER);
+    el.dataset.state = "done";
+    el.classList.remove("refine--break");
+    heading.classList.remove("refine-hold");
+    heading.style.removeProperty("min-height");
+  }
+
+  function arm(el: HTMLElement) {
+    const heading = (el.closest("h1, h2, h3") as HTMLElement | null) ?? el;
+    const vis = el.querySelector<HTMLElement>(".refine__vis")!;
+
+    // Measured finished, then set back to the old words, so a revision that wraps differently
+    // cannot move the paragraph under the heading while it plays.
+    const top = () => el.getBoundingClientRect().top - heading.getBoundingClientRect().top;
+    vis.dataset.text = el.dataset.to ?? "";
+    el.dataset.state = "done";
+    el.classList.add("is-live");
+    heading.style.minHeight = `${heading.getBoundingClientRect().height}px`;
+    const finalTop = top();
+    vis.dataset.text = el.dataset.from ?? "";
+    el.dataset.state = "pending";
+
+    // The old words break where the finished heading will, or the line reflows mid-gesture: a
+    // longer revision that wraps gets its line break up front, and a shorter one that fits on the
+    // line holds the old words there too, overhanging by a few letters for a second or two.
+    const pendingTop = top();
+    if (finalTop > pendingTop + 1) el.classList.add("refine--break");
+    else if (pendingTop > finalTop + 1) heading.classList.add("refine-hold");
+
+    const watcher = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        watcher.disconnect();
+        setTimeout(() => play(el, heading), 250);
+      },
+      // All of it on screen, and clear of the bottom quarter, so it plays where it's being read
+      { threshold: 1, rootMargin: "0px 0px -25% 0px" },
+    );
+    watcher.observe(el);
+  }
+
+  if (!calm.matches) {
+    document.querySelectorAll<HTMLElement>("[data-refine]").forEach(arm);
+  }
+</script>
+
+<style>
+  /* Resting state: the finished words, set like the hero's refined one. */
+  .refine {
+    position: relative;
+    white-space: nowrap;
+    font-style: italic;
+    color: var(--luxe-accent);
+  }
+
+  .refine__vis {
+    display: none;
+  }
+
+  .refine--break::before {
+    content: "\A";
+    white-space: pre;
+  }
+
+  :global(.refine-hold) {
+    white-space: nowrap;
+  }
+
+  /* === Animated === */
+
+  .refine.is-live .refine__text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .refine.is-live .refine__vis {
+    display: inline-block;
+    position: relative;
+    /* Room for the highlight to sit in, taken back from the margin so the line does not re-wrap. */
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .refine.is-live .refine__vis::before {
+    content: attr(data-text);
+    white-space: pre;
+  }
+
+  /* The old words are set like the rest of the heading until they are replaced. */
+  .refine.is-live:is([data-state="pending"], [data-state="caret"], [data-state="select"]) {
+    font-style: normal;
+    color: inherit;
+  }
+
+  /* The selection: the same words again, in the site's `::selection` colors, clipped to however
+     much has been dragged over so far. A background cannot invert the text it sits behind, and
+     light text on the accent would be unreadable. */
+  .refine.is-live .refine__vis::after {
+    content: attr(data-sel);
+    position: absolute;
+    inset: 0;
+    padding-inline: inherit;
+    white-space: pre;
+    background: var(--luxe-accent);
+    color: var(--luxe-background);
+    clip-path: inset(0 0 0 var(--sel-left, 100%));
+  }
+
+  .refine.is-live:not([data-state="select"]) .refine__vis::after {
+    display: none;
+  }
+
+  /* A text cursor, not a block: this is an editor, and the hero's block caret belongs to the
+     terminal it prints the logotype in. */
+  .refine__caret {
+    position: absolute;
+    top: 0.12em;
+    bottom: 0.08em;
+    left: calc(100% - 0.06em);
+    width: 0.06em;
+    background: var(--luxe-accent);
+    opacity: 0;
+  }
+
+  .refine.is-live[data-state="select"] .refine__caret {
+    left: var(--sel-left, 100%);
+    opacity: 1;
+  }
+
+  .refine.is-live[data-state="type"] .refine__caret {
+    opacity: 1;
+  }
+
+  .refine.is-live:is([data-state="caret"], [data-state="linger"]) .refine__caret {
+    animation: refine-blink 900ms steps(1, end) infinite;
+  }
+
+  @keyframes refine-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .refine__caret {
+      display: none;
+    }
+  }
+</style>

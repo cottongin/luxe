@@ -1,0 +1,67 @@
+[
+ {
+  "id": "glob",
+  "shell": "find . -name '*.rs'",
+  "tool": "glob",
+  "args": {
+   "pattern": "**/*.rs"
+  }
+ },
+ {
+  "id": "grep",
+  "shell": "rg -n 'fn new'",
+  "tool": "grep",
+  "args": {
+   "pattern": "fn new"
+  }
+ },
+ {
+  "id": "bash",
+  "shell": "cargo tree",
+  "tool": "bash",
+  "args": {
+   "command": "cargo tree"
+  }
+ },
+ {
+  "id": "test",
+  "shell": "cargo test -p grep-regex",
+  "tool": "test",
+  "args": {
+   "command": "cargo test -p grep-regex"
+  }
+ },
+ {
+  "id": "git",
+  "shell": "git log",
+  "tool": "git",
+  "args": {
+   "action": "log"
+  }
+ },
+ {
+  "id": "read_symbol",
+  "shell": "cat crates/searcher/src/searcher/mod.rs",
+  "tool": "read_symbol",
+  "args": {
+   "path": "crates/searcher/src/searcher/mod.rs",
+   "symbol": "search_path"
+  }
+ },
+ {
+  "id": "module_report",
+  "shell": "cat crates/searcher/src/searcher/mod.rs",
+  "tool": "module_report",
+  "args": {
+   "path": "crates/searcher/src/searcher/mod.rs"
+  }
+ },
+ {
+  "id": "read",
+  "shell": "cat crates/searcher/src/searcher/mod.rs",
+  "tool": "read",
+  "args": {
+   "path": "crates/searcher/src/searcher/mod.rs"
+  }
+ }
+]

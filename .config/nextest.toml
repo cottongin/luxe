@@ -1,0 +1,24 @@
+# Nextest configuration — https://nexte.st/docs/configuration/
+#
+# The point of this file is a per-test timeout safety net. Luxe's test *execution* is fast
+# (~30s for the whole workspace once compiled), but a genuinely hung or runaway test — e.g. a
+# process-spawning integration test that never reaps its child, or the historical review-gate
+# fork bomb — could otherwise wedge the machine for many minutes. Nextest kills any test that
+# exceeds the bound below, so a hang costs seconds, not a lost session.
+
+[profile.default]
+# A test running longer than `period` is flagged slow; after `terminate-after` such periods it
+# is terminated (SIGTERM, then SIGKILL after `grace-period`). 30s × 4 = a 120s hard cap — an
+# order of magnitude above the slowest real test (~11s), so it only ever fires on a true hang.
+slow-timeout = { period = "30s", terminate-after = 4, grace-period = "5s" }
+# Print failing test output inline and again in the final summary so hangs/flakes are obvious.
+failure-output = "immediate-final"
+final-status-level = "slow"
+# Local runs shouldn't mask flakiness by retrying.
+retries = 0
+
+# `cargo nextest run --profile ci` — tighter cap, never fail-fast so one hang can't hide others.
+[profile.ci]
+slow-timeout = { period = "30s", terminate-after = 3, grace-period = "5s" }
+fail-fast = false
+failure-output = "immediate-final"

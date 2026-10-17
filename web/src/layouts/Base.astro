@@ -1,0 +1,278 @@
+---
+/** The page shell: head, theme, navigation, footer. */
+import "../assets/generated/tokens.css";
+import "../styles/grain.css";
+import "../styles/base.css";
+import Wordmark from "../components/Wordmark.astro";
+// Imported rather than copied into `public/`: the tile is generated from the art constants, and a
+// second copy at a fixed path is one more thing that can go stale.
+import tile from "../assets/generated/tile.svg?url";
+
+interface Props {
+  title: string;
+  description: string;
+  /**
+   * Whether this page opens on the full wordmark, so the masthead should start out of the way.
+   *
+   * The mark in the corner and the mark filling the hero are the same drawing at two sizes, and
+   * showing both at once reads as a template rather than a front page. Set here rather than
+   * discovered at runtime: the header would otherwise paint and then hide itself, which is the one
+   * outcome worse than leaving it up.
+   */
+  heroMark?: boolean;
+}
+const { title, description, heroMark = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const repo = "https://github.com/evanwhittaker/luxe";
+// The year the site was built: a notice is about the work as published, and the site is published
+// by building it
+const year = new Date().getFullYear();
+
+const nav = [
+  { href: "/docs", label: "Docs" },
+  { href: "/tools", label: "Tools" },
+  { href: "/themes", label: "Themes" },
+  { href: repo, label: "GitHub" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={tile} type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL("/social.png", Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- The two the page opens on. Everything else can arrive when it arrives. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/instrument-serif-regular.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/jetbrains-mono-nfm-regular.woff2" />
+
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class:list={["masthead", heroMark && "masthead--quiet"]}>
+      <div class="page masthead__inner">
+        {/* Drift only. The shine is punctuation, and punctuation on a sticky header that follows
+            the reader down every page is a flicker in the corner of the eye rather than polish. */}
+        <a class="masthead__mark" href="/" aria-label="Luxe — home">
+          <Wordmark />
+        </a>
+        <nav class="masthead__nav">
+          {nav.map(({ href, label }) => <a href={href}>{label}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="page footer__inner">
+        <p class="muted footer__owner">
+          &copy; {year}
+          <a class="footer__profile" href="https://github.com/evanwhittaker">
+            {/* GitHub's mark, from Primer's octicons (MIT) */}
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path
+                d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+              ></path>
+            </svg>evanwhittaker</a
+          >
+        </p>
+        <p class="muted footer__meta">
+          {/* HEAD, not a branch name: GitHub resolves it to whatever the default branch is called */}
+          Luxe is free software under <a href={`${repo}/blob/HEAD/LICENSE-MIT`}>MIT</a>
+          or <a href={`${repo}/blob/HEAD/LICENSE-APACHE`}>Apache 2.0</a>.
+        </p>
+        <p class="muted footer__meta">
+          <a href="/brand">Press kit</a>
+        </p>
+      </div>
+    </footer>
+
+    {
+      heroMark && (
+        <script>
+          {/* The header comes back once the hero's own wordmark has left the screen.
+
+              An observer rather than a scroll handler: the question is "is that element visible",
+              and asking it directly costs one callback per crossing instead of one per frame. The
+              failure mode if this never runs is a header that stays hidden on the front page, so it
+              is written to fail *open* — anything unexpected and the class comes off. */}
+          const mark = document.querySelector("[data-hero-mark]");
+          const masthead = document.querySelector(".masthead");
+          if (mark && masthead && "IntersectionObserver" in window) {
+            new IntersectionObserver(
+              ([entry]) => masthead.classList.toggle("masthead--quiet", entry.isIntersecting),
+              { rootMargin: "-8px 0px 0px 0px" },
+            ).observe(mark);
+          } else {
+            masthead?.classList.remove("masthead--quiet");
+          }
+        </script>
+      )
+    }
+
+    <style>
+      .skip {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip:focus {
+        left: var(--space-3);
+        top: var(--space-3);
+        z-index: 10;
+        background: var(--luxe-accent);
+        color: var(--luxe-background);
+        padding: var(--space-2) var(--space-3);
+      }
+
+      .masthead {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        backdrop-filter: blur(12px);
+        background: color-mix(in oklab, var(--luxe-background) 82%, transparent);
+        border-bottom: var(--border);
+        transition:
+          opacity 0.3s var(--ease),
+          transform 0.3s var(--ease);
+      }
+
+      /* Out of the way while the hero's own wordmark is on screen. Not `display: none` — the header
+         has to keep its place in the layout and stay reachable by the skip link and by Tab, so it
+         moves and fades rather than leaving. `visibility` is what takes it out of the pointer's
+         way without taking it out of the document. */
+      .masthead--quiet {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-100%);
+        transition-duration: 0.2s;
+      }
+
+      /* Someone tabbing into the page gets the header back regardless of scroll position. */
+      .masthead--quiet:focus-within {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .masthead {
+          transition: none;
+        }
+      }
+
+      .masthead__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding-block: var(--space-3);
+      }
+
+      .masthead__mark {
+        display: block;
+        width: 82px;
+        flex: none;
+      }
+
+      .masthead__nav {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        font-size: var(--step--1);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .masthead__nav a {
+        text-decoration: none;
+        color: var(--luxe-muted);
+      }
+      .masthead__nav a:hover {
+        color: var(--luxe-accent);
+      }
+
+      .footer {
+        border-top: var(--border);
+        padding-block: var(--space-5);
+        margin-top: var(--space-7);
+      }
+
+      .footer__inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3) var(--space-5);
+        justify-content: space-between;
+        font-size: var(--step--1);
+      }
+
+      .footer p {
+        margin: 0;
+      }
+
+      .footer__owner {
+        display: flex;
+        align-items: center;
+      }
+
+      /* The mark and the name are one link, so only the name is underlined: a rule under an icon
+         reads as a stray dash */
+      .footer__profile {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45em;
+        margin-left: 0.7em;
+        text-decoration: none;
+        color: inherit;
+        transition: color 150ms var(--ease);
+      }
+
+      .footer__profile:hover {
+        color: var(--luxe-text);
+      }
+
+      .footer__profile svg {
+        width: 1.1em;
+        height: 1.1em;
+        fill: currentColor;
+      }
+
+      @media (max-width: 52rem) {
+        .masthead__nav {
+          gap: var(--space-3);
+        }
+      }
+
+      /* Below this the mark and the nav cannot share a line without the theme toggle falling off the
+         end of it, so they take one each. Dropping a link instead would be cheaper and worse. */
+      @media (max-width: 34rem) {
+        .masthead__inner {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-3);
+        }
+
+        .masthead__nav {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+    </style>
+  </body>
+</html>

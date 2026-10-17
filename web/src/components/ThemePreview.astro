@@ -1,0 +1,39 @@
+---
+/**
+ * The theme gallery with its picture: the dashboard, drawn once for every theme.
+ *
+ * `scripts/site-assets.sh` writes the two halves, `theme-preview.svg` (every color a CSS variable)
+ * and `theme-preview.json` (what each variable is per theme). The picture goes in as the gallery's
+ * slot so it is in the HTML once, rather than serialized a second time into the island's props.
+ */
+import ThemeGallery from "./ThemeGallery.svelte";
+import svg from "../assets/generated/theme-preview.svg?raw";
+import palette from "../assets/generated/theme-preview.json";
+import catalog from "../assets/generated/themes.json";
+
+interface Props {
+  /** List every token of the theme on show, for the page that is about the palettes. */
+  swatches?: boolean;
+  /** Take turns through the themes on their own. */
+  cycle?: boolean;
+  /** Put the theme chips under the picture, where they read better on a narrow screen. */
+  chipsBelow?: boolean;
+}
+const { swatches = false, cycle = false, chipsBelow = false } = Astro.props;
+
+// The frame around the picture wears the picture's own canvas, which is its first rectangle
+const canvas = svg.match(/^<svg[^>]*>\s*<rect [^>]*fill="var\(--(p\d+),/)?.[1];
+if (!canvas) throw new Error("theme-preview.svg has no canvas variable — run scripts/site-assets.sh");
+---
+
+<ThemeGallery
+  client:visible
+  themes={catalog as Record<string, Record<string, string>>}
+  {palette}
+  {canvas}
+  {swatches}
+  {cycle}
+  {chipsBelow}
+>
+  <Fragment set:html={svg} />
+</ThemeGallery>

@@ -1,0 +1,131 @@
+{
+  "benchmark": "SWE-bench Verified Mini, first 12 Django tasks, graded locally",
+  "commit": "5b58b8b0",
+  "rows": [
+    {
+      "model": "claude-haiku-5-5",
+      "luxe": {
+        "passed": 14,
+        "runs": 16
+      },
+      "claude": {
+        "warm": 1.62,
+        "cold": 1.71,
+        "passed": 16,
+        "runs": 16
+      },
+      "opencode": {
+        "warm": 1.65,
+        "cold": 1.16,
+        "passed": 14,
+        "runs": 16
+      },
+      "pi": {
+        "warm": 0.81,
+        "cold": 0.6,
+        "passed": 12,
+        "runs": 16
+      }
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "luxe": {
+        "passed": 21,
+        "runs": 24
+      },
+      "claude": {
+        "warm": 2.0,
+        "cold": 1.98,
+        "passed": 23,
+        "runs": 24
+      },
+      "opencode": {
+        "warm": 2.57,
+        "cold": 1.15,
+        "passed": 20,
+        "runs": 24
+      },
+      "pi": {
+        "warm": 0.81,
+        "cold": 0.44,
+        "passed": 22,
+        "runs": 24
+      }
+    },
+    {
+      "model": "claude-opus-5-5",
+      "luxe": {
+        "passed": 12,
+        "runs": 12
+      },
+      "claude": {
+        "warm": 1.69,
+        "cold": 1.76,
+        "passed": 12,
+        "runs": 12
+      },
+      "opencode": {
+        "warm": 1.97,
+        "cold": 1.14,
+        "passed": 12,
+        "runs": 12
+      },
+      "pi": {
+        "warm": 0.73,
+        "cold": 0.48,
+        "passed": 12,
+        "runs": 12
+      }
+    },
+    {
+      "model": "gpt-6-luna",
+      "luxe": {
+        "passed": 29,
+        "runs": 40
+      },
+      "codex": {
+        "warm": 1.23,
+        "cold": 1.23,
+        "passed": 9,
+        "runs": 16
+      },
+      "opencode": {
+        "warm": 0.97,
+        "cold": 0.97,
+        "passed": 29,
+        "runs": 40
+      },
+      "pi": {
+        "warm": 0.45,
+        "cold": 0.45,
+        "passed": 12,
+        "runs": 16
+      }
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "luxe": {
+        "passed": 36,
+        "runs": 36
+      },
+      "codex": {
+        "warm": 1.73,
+        "cold": 1.73,
+        "passed": 24,
+        "runs": 24
+      },
+      "opencode": {
+        "warm": 1.05,
+        "cold": 1.05,
+        "passed": 36,
+        "runs": 36
+      },
+      "pi": {
+        "warm": 0.44,
+        "cold": 0.44,
+        "passed": 24,
+        "runs": 24
+      }
+    }
+  ]
+}

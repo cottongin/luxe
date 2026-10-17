@@ -1,0 +1,292 @@
+Dashboard@140x44: frame=7428556d77f4c4b8 hits=1cb65015d0bcfe06
+Dashboard@100x30: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard@64x20: frame=2241024789ba0042 hits=b75fb32b555b4fba
+DashboardContextFiles@140x44: frame=1d0f938686119640 hits=74730c4c8fe758ba
+DashboardContextFiles@100x30: frame=7d9f4575520ebfc1 hits=b2dc10b008b38609
+DashboardContextFiles@64x20: frame=406035c59aa9deb4 hits=105b5cc0c2e93aef
+DashboardTyping@140x44: frame=ed239b00aaab51c6 hits=a16f9b12c4525956
+DashboardTyping@100x30: frame=8865b16c9d0ceb43 hits=bf61e1af5ec3e308
+DashboardTyping@64x20: frame=b84228b632019d83 hits=1e0203bf486b2b58
+DashboardMinimal@140x44: frame=966cc3b3d3dc91d4 hits=14f2b70bde20529b
+DashboardMinimal@100x30: frame=17ca6b0881f64485 hits=f4b637d13b248263
+DashboardMinimal@64x20: frame=939001adda3bcbb4 hits=0f39b6e30d251353
+Configuration@140x44: frame=73fbef3e76d36c7c hits=03493dafb9356d07
+Configuration@100x30: frame=644345f8e6340004 hits=04d865ae91d0aa35
+Configuration@64x20: frame=28ea511ad251f8c2 hits=77b9c8af75245265
+Setup@140x44: frame=1ec7d489bf6353bb hits=36aaf8db347382c4
+Setup@100x30: frame=4124eb2f29256470 hits=2d10b9f0a226a5e0
+Setup@64x20: frame=1c978a2a7cabba3b hits=1b0ef6d44f0cf1bd
+SetupTools@140x44: frame=7f80f916b3e06e49 hits=2c443d3127ccc230
+SetupTools@100x30: frame=1985e10dacdabc20 hits=ee965f337121049c
+SetupTools@64x20: frame=8b216818fd028690 hits=a19d86f6dbe23c71
+Settings@140x44: frame=fe898302ba994a90 hits=cd87fca5b2ba4ec8
+Settings@100x30: frame=91f4280764fa0bd6 hits=375d168bbed52454
+Settings@64x20: frame=d476c9a9f087e724 hits=e62f026c0e6c2c68
+SettingsTools@140x44: frame=64c3ec0635cedb70 hits=da22dfea81800160
+SettingsTools@100x30: frame=d2c93a7dd4398630 hits=a1f07d9572d622b1
+SettingsTools@64x20: frame=013360d54995a40d hits=b6f0fa676ba137f1
+ChatIdle@140x44: frame=659adbd49eb40384 hits=9a0a159710153729
+ChatIdle@100x30: frame=37277ebdbb0d0104 hits=f28115f769459349
+ChatIdle@64x20: frame=d5330f1c309a6918 hits=1fd57df076a5e100
+ChatThinking@140x44: frame=914d2bbef64e8920 hits=57dd670de9e41750
+ChatThinking@100x30: frame=713f52d8af6e9871 hits=91183601e552563c
+ChatThinking@64x20: frame=8552649903cdc808 hits=eb606a4e4cfb053a
+ChatStreaming@140x44: frame=c7896b8809869a65 hits=06bab310faee6d54
+ChatStreaming@100x30: frame=cc3ae2d95405065a hits=c63f95971c6a18fc
+ChatStreaming@64x20: frame=970c22c578c362aa hits=a16a29ea4502d9fb
+ChatTools@140x44: frame=d25d186d4f95cc4e hits=db1de58363be363c
+ChatTools@100x30: frame=7cd8b091af2f6451 hits=9d228eaa9af30b84
+ChatTools@64x20: frame=0233bef5bd8bc8b0 hits=9b2b3231b63926ce
+ChatCardBodies@140x44: frame=758842a9d0e7c640 hits=0c7b7867a8415fd2
+ChatCardBodies@100x30: frame=d1c442c5eaa6af7c hits=434a845e1880132c
+ChatCardBodies@64x20: frame=5638628d5920489e hits=328a37efc8b251f0
+ChatWideProse@140x44: frame=766695a5e1a4e777 hits=94dbf7b32b37b330
+ChatWideProse@100x30: frame=4ffb6880f5abff90 hits=bddfef30519a2a3a
+ChatWideProse@64x20: frame=d2f917fcaa50aeca hits=b3b75080bd6ccea1
+ChatToolError@140x44: frame=1d2febb26904d212 hits=0247483feb740b19
+ChatToolError@100x30: frame=bf5d84f32dfbbe41 hits=e17adbd05e6a6d3b
+ChatToolError@64x20: frame=329c49dd3a8bdd5d hits=e4e4f40e90cb3bca
+ChatToolRun@140x44: frame=c68d55e2d8b22582 hits=f1514e1cf2ab0514
+ChatToolRun@100x30: frame=94c5a5920231ad6d hits=ed4e206d929f1002
+ChatToolRun@64x20: frame=b58a55ad577d37b3 hits=116fb38474c732bb
+ChatQuestion@140x44: frame=15b112dccad9caa1 hits=3d24e8bf8375f597
+ChatQuestion@100x30: frame=089f5cfe357b006e hits=0f98bb30ff5537bf
+ChatQuestion@64x20: frame=78a535c57f876301 hits=7681468669569173
+ChatPlan@140x44: frame=9df66741fe062711 hits=7796221e13dac2ac
+ChatPlan@100x30: frame=d61c241010275e79 hits=79c1409c0f886542
+ChatPlan@64x20: frame=97082e9d92c7616d hits=cb490269d9d6b6d3
+ChatPlanReady@140x44: frame=b18f1105c54ae15f hits=23da509548f232f0
+ChatPlanReady@100x30: frame=7e20e1b0a94d94b3 hits=b7ea73f584bfc4ef
+ChatPlanReady@64x20: frame=0e3d9399fae48508 hits=f077305e4d966dff
+ChatTurn@140x44: frame=5524de78f71527eb hits=4a67edb8228eb613
+ChatTurn@100x30: frame=22919d1047132c86 hits=b8ded94d236c0817
+ChatTurn@64x20: frame=91595c7c8fb3a9de hits=bc965e96875bbfe6
+ChatPermission@140x44: frame=54ddeb5522ffcb19 hits=063b591e442cd221
+ChatPermission@100x30: frame=b2c0e21530b64523 hits=200049ec7749eeb8
+ChatPermission@64x20: frame=9f98f5664f85406f hits=abbd7bfaa97a4ed0
+ChatPalette@140x44: frame=2563eb3755b4caff hits=bf9355f178f8e332
+ChatPalette@100x30: frame=ef4b4b78ce5ecf34 hits=eae72d9c1c194fee
+ChatPalette@64x20: frame=77258679e0458932 hits=888344c2d380ae7f
+ChatScreenshot@140x44: frame=5aec1b106f841d81 hits=1489393a2950d711
+ChatScreenshot@100x30: frame=709f9e4b32a7c8f6 hits=f8537762de7b55a2
+ChatScreenshot@64x20: frame=0a22c420e0e4092e hits=1e33d25e6f2a5032
+GuidedReviewError@140x44: frame=4cfe3be8529e0715 hits=e84eb4945912e2b4
+GuidedReviewError@100x30: frame=07e33cea0523c085 hits=e84eb4945912e2b4
+GuidedReviewError@64x20: frame=7ee17e584e74c041 hits=e84eb4945912e2b4
+GuidedReviewReady@140x44: frame=93c8b32b56cc9ca8 hits=b9fc0dc82e8f3e05
+GuidedReviewReady@100x30: frame=5412559966d907a7 hits=e989a0585ceb54fd
+GuidedReviewReady@64x20: frame=9423c21f92e19a55 hits=4d3992136241ee5c
+GuidedReviewWide@140x44: frame=2cb5fd52cb54ad73 hits=9196082cbb32ceb4
+GuidedReviewWide@100x30: frame=5bec2f1dfffa2e23 hits=63cec1ee19f77849
+GuidedReviewWide@64x20: frame=054bc6b4aa95351e hits=bad76b6204796373
+GuidedReviewDemo@140x44: frame=e9a34fa4f5d681f2 hits=4cbdc49254243708
+GuidedReviewDemo@100x30: frame=1b8927d3416974c9 hits=a4a774cf3b1de06f
+GuidedReviewDemo@64x20: frame=7dc1b03916a2c14c hits=6285a73fa0320f8b
+GuidedReviewGuideHidden@140x44: frame=4ccc5fd5a25432cd hits=3f5dd57eab900697
+GuidedReviewGuideHidden@100x30: frame=1b8927d3416974c9 hits=a4a774cf3b1de06f
+GuidedReviewGuideHidden@64x20: frame=7dc1b03916a2c14c hits=6285a73fa0320f8b
+GuidedReviewBrief@140x44: frame=93c8b32b56cc9ca8 hits=b9fc0dc82e8f3e05
+GuidedReviewBrief@100x30: frame=5412559966d907a7 hits=e989a0585ceb54fd
+GuidedReviewBrief@64x20: frame=9423c21f92e19a55 hits=4d3992136241ee5c
+GuidedReviewSend@140x44: frame=a30e6c39c21c427e hits=5c309ee031fdabbc
+GuidedReviewSend@100x30: frame=c86e85c24fbdbaa4 hits=295bff8546ac5c6b
+GuidedReviewSend@64x20: frame=a591ec5be3836381 hits=7bc94e825dcae38d
+GuidedReviewCommit@140x44: frame=4cc439bd9369f7f9 hits=5c309ee031fdabbc
+GuidedReviewCommit@100x30: frame=857f36c8d7170a37 hits=295bff8546ac5c6b
+GuidedReviewCommit@64x20: frame=496c1bf25d193746 hits=7bc94e825dcae38d
+GuidedReviewLarge@140x44: frame=9725bc0b229dd5af hits=baf8c2c1d40d58de
+GuidedReviewLarge@100x30: frame=7e7f0621583d47c8 hits=6218772a3a0dd20b
+GuidedReviewLarge@64x20: frame=476f9bff66256e4a hits=6285a73fa0320f8b
+GuidedReviewPullRequest@140x44: frame=859aa49a1a2e578c hits=ba91554bfac830e6
+GuidedReviewPullRequest@100x30: frame=a3aaff903a650124 hits=67eb66b4b6906e22
+GuidedReviewPullRequest@64x20: frame=b640a09ccd055516 hits=5ff44ae0e6c3d23e
+GuidedReviewPullRequestPost@140x44: frame=109410e9b2b57fc3 hits=690b14ab16bc1e1e
+GuidedReviewPullRequestPost@100x30: frame=04473ef942e51d82 hits=cce795846965ab83
+GuidedReviewPullRequestPost@64x20: frame=f5efbe0cd915551a hits=43822743aab7fbd9
+GuidedReviewOwnPullRequest@140x44: frame=79e00426bd4f760e hits=cd78ebbc38964fa7
+GuidedReviewOwnPullRequest@100x30: frame=19cc5ef1e2b26c61 hits=829d958467e40469
+GuidedReviewOwnPullRequest@64x20: frame=9d153326c5c6ca9c hits=2f7eb834eac5a2d4
+GuidedReviewOpenPullRequest@140x44: frame=58eaec296e19312a hits=5c309ee031fdabbc
+GuidedReviewOpenPullRequest@100x30: frame=5a6c6fd43bd875c8 hits=295bff8546ac5c6b
+GuidedReviewOpenPullRequest@64x20: frame=56311a0f872f93b1 hits=a2624653864bd213
+GuidedReviewFixPullRequest@140x44: frame=1c76ab00e6b949f5 hits=690b14ab16bc1e1e
+GuidedReviewFixPullRequest@100x30: frame=a3db30fff806ce4e hits=cce795846965ab83
+GuidedReviewFixPullRequest@64x20: frame=03b5bd44847811b0 hits=43822743aab7fbd9
+GuidedReviewOpenStack@140x44: frame=4b0fb3b66ac5c4af hits=5c309ee031fdabbc
+GuidedReviewOpenStack@100x30: frame=1087e2e94f701ee0 hits=295bff8546ac5c6b
+GuidedReviewOpenStack@64x20: frame=18d149f328f9aaf7 hits=7bc94e825dcae38d
+GuidedReviewThread@140x44: frame=6083e1ce0a7141c8 hits=5c309ee031fdabbc
+GuidedReviewThread@100x30: frame=030d9bd7aea65c5b hits=295bff8546ac5c6b
+GuidedReviewThread@64x20: frame=3ad4fb901b2d022a hits=7bc94e825dcae38d
+GuidedReviewFindingsEmpty@140x44: frame=869e5fd2dd350adf hits=5c309ee031fdabbc
+GuidedReviewFindingsEmpty@100x30: frame=3535160f60709b02 hits=295bff8546ac5c6b
+GuidedReviewFindingsEmpty@64x20: frame=bc46983e5b7ea1d9 hits=7bc94e825dcae38d
+GuidedReviewFindings@140x44: frame=d70ae7d377745474 hits=363734d0f1e4973a
+GuidedReviewFindings@100x30: frame=1e7470cc57036f6e hits=e4ef9f77a3045de7
+GuidedReviewFindings@64x20: frame=6fd38e3624685efe hits=c920e3f41eb792ec
+GuidedReviewNeedsVerification@140x44: frame=6f9c8e0ac5596006 hits=363734d0f1e4973a
+GuidedReviewNeedsVerification@100x30: frame=d253f88f7446486a hits=e4ef9f77a3045de7
+GuidedReviewNeedsVerification@64x20: frame=a7cb39d88710d85f hits=c920e3f41eb792ec
+GuidedReviewFinish@140x44: frame=acc06edaef0f5e69 hits=5c309ee031fdabbc
+GuidedReviewFinish@100x30: frame=c9e33a5e5f83e5df hits=295bff8546ac5c6b
+GuidedReviewFinish@64x20: frame=4da08d825cde218e hits=7bc94e825dcae38d
+GuidedReviewMedium@140x44: frame=93c8b32b56cc9ca8 hits=b9fc0dc82e8f3e05
+GuidedReviewMedium@100x30: frame=5412559966d907a7 hits=e989a0585ceb54fd
+GuidedReviewMedium@64x20: frame=9423c21f92e19a55 hits=4d3992136241ee5c
+GuidedReviewNarrow@140x44: frame=93c8b32b56cc9ca8 hits=b9fc0dc82e8f3e05
+GuidedReviewNarrow@100x30: frame=5412559966d907a7 hits=e989a0585ceb54fd
+GuidedReviewNarrow@64x20: frame=9423c21f92e19a55 hits=4d3992136241ee5c
+GuidedReviewSplit@140x44: frame=5ffae33f8c536b51 hits=a78bf03b3649b803
+GuidedReviewSplit@100x30: frame=9f9352ff7322ff6b hits=b106905e2c55bab6
+GuidedReviewSplit@64x20: frame=9423c21f92e19a55 hits=4d3992136241ee5c
+GuidedReviewNoise@140x44: frame=ba7f0ed8cd201267 hits=de7f589b3a85d681
+GuidedReviewNoise@100x30: frame=4f60475a545138bd hits=4e69e3bf0097f729
+GuidedReviewNoise@64x20: frame=3528c31dc7357be3 hits=31b20cc44e89c2c4
+GuidedReviewRefreshing@140x44: frame=1668abd1d9025883 hits=9df927e0266ef722
+GuidedReviewRefreshing@100x30: frame=4317b6bf215040e7 hits=295bff8546ac5c6b
+GuidedReviewRefreshing@64x20: frame=09ab7d15dbf61722 hits=7bc94e825dcae38d
+SessionPicker@140x44: frame=912f8377d1180acc hits=9ff439d2a4207bb1
+SessionPicker@100x30: frame=88899dac0687cbcc hits=1b25f7bbb1167a3d
+SessionPicker@64x20: frame=f83d9954bc28b0a4 hits=e1458e2ef219e1d3
+ChatPending@140x44: frame=5ff40dac179e081a hits=d71099c1d790fd9d
+ChatPending@100x30: frame=af25fbea80bc33e0 hits=aed87b5034e6d516
+ChatPending@64x20: frame=6cf055d281a6e059 hits=a326dcaa5154d3d5
+ChatPaste@140x44: frame=a8d0b4eb15876387 hits=c7b811a92cf2a0be
+ChatPaste@100x30: frame=1bc91697dbb32003 hits=ab8dbf94c139d6b6
+ChatPaste@64x20: frame=9a087a91b9e245db hits=c81a12575eed6a9b
+DockWide@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockWide@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
+DockWide@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
+DockPullRequest@140x44: frame=a72cb3bc1796768d hits=3b00f944c7d994d9
+DockPullRequest@100x30: frame=d9977f7217a61374 hits=0ca570204cd54d62
+DockPullRequest@64x20: frame=5f381b5f389b3bbf hits=8defa6fb47bd7b1c
+DockOverlay@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockOverlay@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
+DockOverlay@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
+DockCompact@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockCompact@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
+DockCompact@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
+ChangesWide@140x44: frame=975a9cb87847b355 hits=5d6424db7af8b13b
+ChangesWide@100x30: frame=7f799b893667c928 hits=5ebcfa50c83c624f
+ChangesWide@64x20: frame=3531cf4c1d3f2402 hits=a39e334a4bdaa029
+ChangesNarrow@140x44: frame=4d45021ad9fb0fa7 hits=de2158bdae6d8dfb
+ChangesNarrow@100x30: frame=2ee7cc81d7896506 hits=6dca1cfbcba4056a
+ChangesNarrow@64x20: frame=903e59bd8b8a62f8 hits=98deec46c37135b8
+ChangesFailed@140x44: frame=b8c525886e754d21 hits=88e878b841c4ee77
+ChangesFailed@100x30: frame=aba8595c8158cca4 hits=d3e7f3e0ab644214
+ChangesFailed@64x20: frame=69cdcefbe785c866 hits=27476cdcd9937bea
+ChangesExternal@140x44: frame=fc75aaae10ddb262 hits=d5c3115642e748ad
+ChangesExternal@100x30: frame=522c8250b0f50ac4 hits=3dd17e6200cfb4b5
+ChangesExternal@64x20: frame=a6d2706231364207 hits=6f0e8da295aaa965
+ChatTools+palette: frame=96a7e733812fba95 hits=ca2a2a735278a5bd
+ChatTools+slash: frame=a3ce4c3a7d03f8d0 hits=8adf06de80ecdcb2
+ChatTools+mention: frame=33c4a73f189a3dcc hits=c1b8d78b51a767b7
+ChatTools+model: frame=98b419f1ad7ab1ea hits=c1b8d78b51a767b7
+ChatTools+thinking: frame=3f2738927b6db1ef hits=b78e78ebc5c1a7dc
+ChatTools+theme: frame=1b1a5f40ea00f08f hits=a38042688ec71863
+ChatTools+auth: frame=3a06199e21845eef hits=c1b8d78b51a767b7
+ChatTools+permission: frame=95b9f5bbdfe1bf17 hits=e455918b91b5d273
+ChatTools+question: frame=c49b4cf700798f0d hits=c4d62e93c9c4be28
+ChatTools+menu: frame=e7f786c4e9265de1 hits=f34ee075b3a703ce
+ChatTools+restack: frame=fc33296c0367ab69 hits=1bd4a41c3900100e
+ChatTools+github: frame=52744ce961495ff1 hits=0c880222e467f603
+ChatTools+card: frame=0eb34477cc814b1d hits=0c880222e467f603
+ChatTools+context: frame=7cd8b091af2f6451 hits=9d228eaa9af30b84
+ChatTools+sessions: frame=2a3363497d99b8ff hits=e84eb4945912e2b4
+ChatTools+configuration: frame=644345f8e6340004 hits=04d865ae91d0aa35
+ChatTools+image: frame=43dd64619ec6ac3d hits=0c880222e467f603
+ChatTools+keys: frame=d3c4357fcb28c0cd hits=c1b8d78b51a767b7
+Dashboard+palette: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+slash: frame=bd9dfaabce289d81 hits=452e35ccd107d1e3
+Dashboard+mention: frame=6091ee9a8ba6bb8e hits=2178ca57f0b3cfd3
+Dashboard+model: frame=94b31acf2a644906 hits=de7bc67135fb88ec
+Dashboard+thinking: frame=2e4f1d6cde8c3b6d hits=f64c038377072b2b
+Dashboard+theme: frame=186de30e37569285 hits=0fea45d2fc373428
+Dashboard+auth: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+permission: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+question: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+menu: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+restack: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+Dashboard+github: frame=c30b575f2402e1d9 hits=61fb1916348ca2c3
+Dashboard+card: frame=c30b575f2402e1d9 hits=61fb1916348ca2c3
+Dashboard+context: frame=fa9b603a43071e90 hits=eb277fd5f8d94d5a
+Dashboard+sessions: frame=328d666b34c64dd4 hits=de7bc67135fb88ec
+Dashboard+configuration: frame=644345f8e6340004 hits=04d865ae91d0aa35
+Dashboard+image: frame=c30b575f2402e1d9 hits=61fb1916348ca2c3
+Dashboard+keys: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
+ChatWideProse scrolled: frame=763f6da386997546 hits=3836f0941803048a
+ChatWideProse searching: frame=1878156c08a54641 hits=00e988aa75182c51
+ChatWideProse selecting: frame=8c1edde42c1f3700 hits=bddfef30519a2a3a
+ChatWideProse copied: frame=7757bb42f647c93e hits=bddfef30519a2a3a
+ChangesWide@180x44: frame=2f39ea02da654a31 hits=e9b01340cccc666e
+ChangesNarrow unwrapped: frame=d83dfbbe3d21abf8 hits=29eecb5dbf51e195
+ChangesWide file: frame=4292536a789062da hits=da530d7bf2c94fdf
+ChangesWide file cursor: frame=aacfd7dfe8f072f0 hits=6293b97445fe71a6
+ChangesWide file unwrapped: frame=cbf79ee6830376c5 hits=316acbdf05625e0b
+review help@140x44: frame=ce6ecfdcf523a173 hits=363734d0f1e4973a
+review help@100x30: frame=f556ce437bd29e48 hits=e4ef9f77a3045de7
+review details@140x44: frame=74d4463801d34480 hits=5c309ee031fdabbc
+review details@100x30: frame=cb4dcf6ffd6e894d hits=295bff8546ac5c6b
+review fix@140x44: frame=838fb819819da757 hits=5c309ee031fdabbc
+review fix@100x30: frame=f85765035b22d81c hits=295bff8546ac5c6b
+review draft@140x44: frame=c2cfac053705ba5a hits=363734d0f1e4973a
+review draft@100x30: frame=398aa0fb14254b5a hits=e4ef9f77a3045de7
+review question@140x44: frame=30b0aa4c31f49b53 hits=363734d0f1e4973a
+review question@100x30: frame=56c81f57c56356cb hits=e4ef9f77a3045de7
+review draft edit@140x44: frame=f4e99e3220967bde hits=363734d0f1e4973a
+review draft edit@100x30: frame=b425d6c7bc25bf25 hits=e4ef9f77a3045de7
+review summary@140x44: frame=16feb64b0f59763a hits=363734d0f1e4973a
+review summary@100x30: frame=66368cacf339a182 hits=e4ef9f77a3045de7
+review finish everything@140x44: frame=0aa48c816c942303 hits=363734d0f1e4973a
+review finish everything@100x30: frame=90c8bc722881c43b hits=e4ef9f77a3045de7
+review picker@140x44: frame=af77e5b680302a90 hits=363734d0f1e4973a
+review picker@100x30: frame=c90811b01f419373 hits=e4ef9f77a3045de7
+GuidedReviewReady wrapped: frame=aac55e8c8b78cc70 hits=60425119d3cf41e6
+GuidedReviewSplit wrapped: frame=744f32f79e0e2cdb hits=0f089258f4d432e1
+GuidedReviewFindings wrapped: frame=b633d879925abb7d hits=6dbae16ee902d2ad
+GuidedReviewFindings split: frame=0ca567ccbed0b3c4 hits=ed78edfc97c588fe
+GuidedReviewFindings split wrapped: frame=198214cf1a5d51f4 hits=a1ef3e921a2f268b
+login@100x30: frame=b38ac40b582acab9 hits=fe653c5a7d02c41e
+login-subscription@100x30: frame=d0d2a22124d02530 hits=57ef1e7d5ac5daaf
+login-local@100x30: frame=2e2797e9080feb20 hits=9d3e38903152bd40
+login-method@100x30: frame=25f0337c7e66d84b hits=d7190c558c1be1a3
+login-secret@100x30: frame=8e5caa0414d23337 hits=b05996f46f500728
+login-device@100x30: frame=f57f8bc46fc07b6e hits=b05996f46f500728
+login-failed@100x30: frame=7a68823bb655e435 hits=b05996f46f500728
+github@100x30: frame=29b83b4de4d5e45a hits=6ce218f729777fd8
+github-detail@100x30: frame=8bff1a38ff99681f hits=6ce218f729777fd8
+github-search@100x30: frame=53dba34b1752756a hits=6ce218f729777fd8
+github-conversation@100x30: frame=edf04abf459ed1bd hits=6ce218f729777fd8
+github-draft@100x30: frame=4422c33d0017af09 hits=6ce218f729777fd8
+github-issue@100x30: frame=e3d564c4eef215f3 hits=6ce218f729777fd8
+github-pulls@100x30: frame=cac8411b28b1f011 hits=6ce218f729777fd8
+github-merged@100x30: frame=e82ed89a22ea11e1 hits=6ce218f729777fd8
+mention-files-query@100x30: frame=2eb05c671dab8ebc hits=94f686e59ecfd850
+mention-files-status@100x30: frame=a7d9e3d29bb40d91 hits=93e4a8d7ebc91b2b
+mention-skills@100x30: frame=6e6877b6dd409095 hits=47910cf92223c731
+mention-mcp@100x30: frame=038a9d5361f2bc2f hits=0cef6f71d501ed1c
+mention-jira@100x30: frame=f640a573307765d3 hits=47910cf92223c731
+mention-github@100x30: frame=026d8b9a16953d45 hits=c3ebc406964da748
+mention-github-signed-out@100x30: frame=d1d8c82792308662 hits=b05996f46f500728
+login@64x20: frame=3b1d75fe18a971a0 hits=2b4df26313e3f401
+login-subscription@64x20: frame=36f5e865860fbdc2 hits=2d2883380c90c475
+login-local@64x20: frame=1e111e16e697b7d2 hits=7aff247fdf8c800d
+login-method@64x20: frame=c0818a1d2ffab01b hits=d068b54bba55b395
+login-secret@64x20: frame=f7cb80562502782e hits=a16a29ea4502d9fb
+login-device@64x20: frame=5d3e94107818674f hits=a16a29ea4502d9fb
+login-failed@64x20: frame=8580d73e67e35808 hits=a16a29ea4502d9fb
+github@64x20: frame=59c575f5a335deb0 hits=7c38e58fb5f36453
+github-detail@64x20: frame=15178bfb7c3e702e hits=7c38e58fb5f36453
+github-search@64x20: frame=6b7a8543e3aeafe6 hits=7c38e58fb5f36453
+github-conversation@64x20: frame=080fc4fa2d4992fe hits=7c38e58fb5f36453
+github-draft@64x20: frame=9d8959251dd7d83d hits=7c38e58fb5f36453
+github-issue@64x20: frame=8add8ff54baf5a03 hits=7c38e58fb5f36453
+github-pulls@64x20: frame=b3b0eb63f8cd945a hits=7c38e58fb5f36453
+github-merged@64x20: frame=a84ad5ca4b5dee92 hits=7c38e58fb5f36453
+mention-files-query@64x20: frame=da23adbd6c69989c hits=a584b39e65ff3032
+mention-files-status@64x20: frame=a0e536dce3f224a9 hits=65b02333eb73a649
+mention-skills@64x20: frame=1de91f817235caaa hits=8c5d9faebecd685a
+mention-mcp@64x20: frame=c7116499ec2e6de7 hits=d672d83176bdf2cf
+mention-jira@64x20: frame=7c4e7cbbf9dfbfe4 hits=8c5d9faebecd685a
+mention-github@64x20: frame=38344f549d6e1c2f hits=d672d83176bdf2cf
+mention-github-signed-out@64x20: frame=cfdc0449ca9d0350 hits=a16a29ea4502d9fb

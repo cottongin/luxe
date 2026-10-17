@@ -1,0 +1,1 @@
+{"data":{"disablePullRequestAutoMerge":null},"errors":[{"type":"FORBIDDEN","path":["disablePullRequestAutoMerge"],"locations":[{"line":1,"column":19}],"message":"nora-quinn does not have the correct permissions to execute `DisablePullRequestAutoMerge`"}]}

@@ -1,0 +1,9 @@
+diff --git "a/docs/caf\303\251 \"plan\".md" "b/docs/caf\303\251 \"plan updated\".md"
+similarity index 90%
+rename from docs/café "plan".md
+rename to docs/café "plan updated".md
+--- "a/docs/caf\303\251 \"plan\".md"
++++ "b/docs/caf\303\251 \"plan updated\".md"
+@@ -1 +1 @@
+-old
++new

@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 748" width="1100" height="748" font-family="'JetBrainsMono Nerd Font Mono', 'AdwaitaMono Nerd Font Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16.67">
+  <rect width="1100" height="748" fill="#12100e"/>
+  <g shape-rendering="crispEdges">
+    <rect x="30" y="220" width="430" height="22" fill="#2e2b27"/>
+    <rect x="30" y="264" width="220" height="22" fill="#3f2020"/>
+    <rect x="250" y="264" width="60" height="22" fill="#603434"/>
+    <rect x="310" y="264" width="230" height="22" fill="#3f2020"/>
+    <rect x="570" y="264" width="220" height="22" fill="#1a3124"/>
+    <rect x="790" y="264" width="80" height="22" fill="#2f503d"/>
+    <rect x="870" y="264" width="210" height="22" fill="#1a3124"/>
+    <rect x="30" y="374" width="510" height="22" fill="#3f2020"/>
+    <rect x="570" y="374" width="320" height="22" fill="#1a3124"/>
+    <rect x="890" y="374" width="70" height="22" fill="#2f503d"/>
+    <rect x="960" y="374" width="120" height="22" fill="#1a3124"/>
+    <rect x="30" y="396" width="250" height="22" fill="#3f2020"/>
+    <rect x="280" y="396" width="90" height="22" fill="#603434"/>
+    <rect x="370" y="396" width="170" height="22" fill="#3f2020"/>
+    <rect x="570" y="396" width="120" height="22" fill="#1a3124"/>
+    <rect x="690" y="396" width="50" height="22" fill="#2f503d"/>
+    <rect x="740" y="396" width="150" height="22" fill="#1a3124"/>
+    <rect x="890" y="396" width="10" height="22" fill="#2f503d"/>
+    <rect x="900" y="396" width="180" height="22" fill="#1a3124"/>
+    <rect x="30" y="418" width="510" height="22" fill="#3f2020"/>
+    <rect x="570" y="418" width="510" height="22" fill="#1a3124"/>
+    <rect x="570" y="440" width="510" height="22" fill="#1a3124"/>
+    <rect x="570" y="462" width="510" height="22" fill="#1a3124"/>
+    <rect x="570" y="484" width="510" height="22" fill="#1a3124"/>
+    <rect x="570" y="506" width="510" height="22" fill="#1a3124"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 253.00L555.00 242.00M555.00 253.00L555.00 264.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 275.00L555.00 264.00M555.00 275.00L555.00 286.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 297.00L555.00 286.00M555.00 297.00L555.00 308.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 319.00L555.00 308.00M555.00 319.00L555.00 330.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 363.00L555.00 352.00M555.00 363.00L555.00 374.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 385.00L555.00 374.00M555.00 385.00L555.00 396.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 407.00L555.00 396.00M555.00 407.00L555.00 418.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 429.00L555.00 418.00M555.00 429.00L555.00 440.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 451.00L555.00 440.00M555.00 451.00L555.00 462.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 473.00L555.00 462.00M555.00 473.00L555.00 484.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 495.00L555.00 484.00M555.00 495.00L555.00 506.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 517.00L555.00 506.00M555.00 517.00L555.00 528.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 715.00L20.00 715.00M15.00 715.00L10.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M25.00 715.00L30.00 715.00M25.00 715.00L20.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M35.00 715.00L40.00 715.00M35.00 715.00L30.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M45.00 715.00L50.00 715.00M45.00 715.00L40.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M55.00 715.00L60.00 715.00M55.00 715.00L50.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M65.00 715.00L70.00 715.00M65.00 715.00L60.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M75.00 715.00L80.00 715.00M75.00 715.00L70.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M85.00 715.00L90.00 715.00M85.00 715.00L80.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M95.00 715.00L100.00 715.00M95.00 715.00L90.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M105.00 715.00L110.00 715.00M105.00 715.00L100.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M115.00 715.00L120.00 715.00M115.00 715.00L110.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M125.00 715.00L130.00 715.00M125.00 715.00L120.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M135.00 715.00L140.00 715.00M135.00 715.00L130.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M145.00 715.00L150.00 715.00M145.00 715.00L140.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M155.00 715.00L160.00 715.00M155.00 715.00L150.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M165.00 715.00L170.00 715.00M165.00 715.00L160.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M175.00 715.00L180.00 715.00M175.00 715.00L170.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M185.00 715.00L190.00 715.00M185.00 715.00L180.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M195.00 715.00L200.00 715.00M195.00 715.00L190.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M205.00 715.00L210.00 715.00M205.00 715.00L200.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M215.00 715.00L220.00 715.00M215.00 715.00L210.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M225.00 715.00L230.00 715.00M225.00 715.00L220.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M235.00 715.00L240.00 715.00M235.00 715.00L230.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M245.00 715.00L250.00 715.00M245.00 715.00L240.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M255.00 715.00L260.00 715.00M255.00 715.00L250.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M265.00 715.00L270.00 715.00M265.00 715.00L260.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M275.00 715.00L280.00 715.00M275.00 715.00L270.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M285.00 715.00L290.00 715.00M285.00 715.00L280.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M295.00 715.00L300.00 715.00M295.00 715.00L290.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M305.00 715.00L310.00 715.00M305.00 715.00L300.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M315.00 715.00L320.00 715.00M315.00 715.00L310.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M325.00 715.00L330.00 715.00M325.00 715.00L320.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M335.00 715.00L340.00 715.00M335.00 715.00L330.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M345.00 715.00L350.00 715.00M345.00 715.00L340.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M355.00 715.00L360.00 715.00M355.00 715.00L350.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M365.00 715.00L370.00 715.00M365.00 715.00L360.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M375.00 715.00L380.00 715.00M375.00 715.00L370.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M385.00 715.00L390.00 715.00M385.00 715.00L380.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M395.00 715.00L400.00 715.00M395.00 715.00L390.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M405.00 715.00L410.00 715.00M405.00 715.00L400.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M415.00 715.00L420.00 715.00M415.00 715.00L410.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 715.00L430.00 715.00M425.00 715.00L420.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M435.00 715.00L440.00 715.00M435.00 715.00L430.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M445.00 715.00L450.00 715.00M445.00 715.00L440.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M455.00 715.00L460.00 715.00M455.00 715.00L450.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M465.00 715.00L470.00 715.00M465.00 715.00L460.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M475.00 715.00L480.00 715.00M475.00 715.00L470.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M485.00 715.00L490.00 715.00M485.00 715.00L480.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 715.00L500.00 715.00M495.00 715.00L490.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M505.00 715.00L510.00 715.00M505.00 715.00L500.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M515.00 715.00L520.00 715.00M515.00 715.00L510.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M525.00 715.00L530.00 715.00M525.00 715.00L520.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M535.00 715.00L540.00 715.00M535.00 715.00L530.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M545.00 715.00L550.00 715.00M545.00 715.00L540.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M555.00 715.00L560.00 715.00M555.00 715.00L550.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M565.00 715.00L570.00 715.00M565.00 715.00L560.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M575.00 715.00L580.00 715.00M575.00 715.00L570.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M585.00 715.00L590.00 715.00M585.00 715.00L580.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M595.00 715.00L600.00 715.00M595.00 715.00L590.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M605.00 715.00L610.00 715.00M605.00 715.00L600.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M615.00 715.00L620.00 715.00M615.00 715.00L610.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M625.00 715.00L630.00 715.00M625.00 715.00L620.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M635.00 715.00L640.00 715.00M635.00 715.00L630.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M645.00 715.00L650.00 715.00M645.00 715.00L640.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M655.00 715.00L660.00 715.00M655.00 715.00L650.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M665.00 715.00L670.00 715.00M665.00 715.00L660.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M675.00 715.00L680.00 715.00M675.00 715.00L670.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M685.00 715.00L690.00 715.00M685.00 715.00L680.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M695.00 715.00L700.00 715.00M695.00 715.00L690.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M705.00 715.00L710.00 715.00M705.00 715.00L700.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M715.00 715.00L720.00 715.00M715.00 715.00L710.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M725.00 715.00L730.00 715.00M725.00 715.00L720.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M735.00 715.00L740.00 715.00M735.00 715.00L730.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M745.00 715.00L750.00 715.00M745.00 715.00L740.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M755.00 715.00L760.00 715.00M755.00 715.00L750.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M765.00 715.00L770.00 715.00M765.00 715.00L760.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M775.00 715.00L780.00 715.00M775.00 715.00L770.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M785.00 715.00L790.00 715.00M785.00 715.00L780.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M795.00 715.00L800.00 715.00M795.00 715.00L790.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M805.00 715.00L810.00 715.00M805.00 715.00L800.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M815.00 715.00L820.00 715.00M815.00 715.00L810.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M825.00 715.00L830.00 715.00M825.00 715.00L820.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M835.00 715.00L840.00 715.00M835.00 715.00L830.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M845.00 715.00L850.00 715.00M845.00 715.00L840.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M855.00 715.00L860.00 715.00M855.00 715.00L850.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M865.00 715.00L870.00 715.00M865.00 715.00L860.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M875.00 715.00L880.00 715.00M875.00 715.00L870.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M885.00 715.00L890.00 715.00M885.00 715.00L880.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M895.00 715.00L900.00 715.00M895.00 715.00L890.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M905.00 715.00L910.00 715.00M905.00 715.00L900.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M915.00 715.00L920.00 715.00M915.00 715.00L910.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M925.00 715.00L930.00 715.00M925.00 715.00L920.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M935.00 715.00L940.00 715.00M935.00 715.00L930.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M945.00 715.00L950.00 715.00M945.00 715.00L940.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M955.00 715.00L960.00 715.00M955.00 715.00L950.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M965.00 715.00L970.00 715.00M965.00 715.00L960.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M975.00 715.00L980.00 715.00M975.00 715.00L970.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M985.00 715.00L990.00 715.00M985.00 715.00L980.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M995.00 715.00L1000.00 715.00M995.00 715.00L990.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1005.00 715.00L1010.00 715.00M1005.00 715.00L1000.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1015.00 715.00L1020.00 715.00M1015.00 715.00L1010.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1025.00 715.00L1030.00 715.00M1025.00 715.00L1020.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1035.00 715.00L1040.00 715.00M1035.00 715.00L1030.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1045.00 715.00L1050.00 715.00M1045.00 715.00L1040.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1055.00 715.00L1060.00 715.00M1055.00 715.00L1050.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1065.00 715.00L1070.00 715.00M1065.00 715.00L1060.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1075.00 715.00L1080.00 715.00M1075.00 715.00L1070.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1085.00 715.00L1090.00 715.00M1085.00 715.00L1080.00 715.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1095.00 715.00L1100.00 715.00M1095.00 715.00L1090.00 715.00"/>
+  </g>
+  <text x="0" y="17.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="39.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084" font-weight="700">Type the notification category</tspan><tspan>                                                                                </tspan></text>
+  <text x="0" y="61.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">working tree · 6 to review · 1 accounted for · No feedback yet · Chapters 0/4 · 6 files · +50 −12 · 7 hunks</tspan><tspan>   </tspan></text>
+  <text x="0" y="83.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">01 / 04</tspan><tspan>                                                                                                       </tspan></text>
+  <text x="0" y="105.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#e4dfd6">Make an invalid category unrepresentable</tspan><tspan>                                                                      </tspan></text>
+  <text x="0" y="127.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">A category was a string, so a typo type-checked. This is the type that stops it.</tspan><tspan>                              </tspan></text>
+  <text x="0" y="149.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">› src/notification.rs  +8 −4</tspan><tspan>                                                                                  </tspan></text>
+  <text x="0" y="171.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">1 mechanical change collapsed · 4 lines · f opens them</tspan><tspan>                                                        </tspan></text>
+  <text x="0" y="193.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="215.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="237.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">┃ › @@ -12,4 +12,4 @@ pub struct Notification</tspan><tspan>                                                                </tspan></text>
+  <text x="0" y="259.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">┃ </tspan><tspan fill="#97938c">12 </tspan><tspan> </tspan><tspan fill="#d2a5cd">pub</tspan><tspan> </tspan><tspan fill="#d2a5cd">struct</tspan><tspan> </tspan><tspan fill="#85c7d7">Notification</tspan><tspan> </tspan><tspan fill="#97938c">{</tspan><tspan>                      </tspan><tspan>   </tspan><tspan fill="#97938c">12 </tspan><tspan> </tspan><tspan fill="#d2a5cd">pub</tspan><tspan> </tspan><tspan fill="#d2a5cd">struct</tspan><tspan> </tspan><tspan fill="#85c7d7">Notification</tspan><tspan> </tspan><tspan fill="#97938c">{</tspan><tspan>                        </tspan></text>
+  <text x="0" y="281.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">┃ </tspan><tspan fill="#97938c">13 </tspan><tspan fill="#e68485">-    pub category: </tspan><tspan fill="#e68485" font-weight="700">String</tspan><tspan fill="#e68485">,</tspan><tspan>                      </tspan><tspan>   </tspan><tspan fill="#97938c">13 </tspan><tspan fill="#81caa0">+    pub category: </tspan><tspan fill="#81caa0" font-weight="700">Category</tspan><tspan fill="#81caa0">,</tspan><tspan>                      </tspan></text>
+  <text x="0" y="303.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">┃ </tspan><tspan fill="#97938c">14 </tspan><tspan>     </tspan><tspan fill="#d2a5cd">pub</tspan><tspan fill="#e4dfd6"> title</tspan><tspan fill="#97938c">:</tspan><tspan> </tspan><tspan fill="#85c7d7">String</tspan><tspan fill="#97938c">,</tspan><tspan>                         </tspan><tspan>   </tspan><tspan fill="#97938c">14 </tspan><tspan>     </tspan><tspan fill="#d2a5cd">pub</tspan><tspan fill="#e4dfd6"> title</tspan><tspan fill="#97938c">:</tspan><tspan> </tspan><tspan fill="#85c7d7">String</tspan><tspan fill="#97938c">,</tspan><tspan>                           </tspan></text>
+  <text x="0" y="325.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">┃ </tspan><tspan fill="#97938c">15 </tspan><tspan>     </tspan><tspan fill="#d2a5cd">pub</tspan><tspan fill="#e4dfd6"> body</tspan><tspan fill="#97938c">:</tspan><tspan> </tspan><tspan fill="#85c7d7">String</tspan><tspan fill="#97938c">,</tspan><tspan>                          </tspan><tspan>   </tspan><tspan fill="#97938c">15 </tspan><tspan>     </tspan><tspan fill="#d2a5cd">pub</tspan><tspan fill="#e4dfd6"> body</tspan><tspan fill="#97938c">:</tspan><tspan> </tspan><tspan fill="#85c7d7">String</tspan><tspan fill="#97938c">,</tspan><tspan>                            </tspan></text>
+  <text x="0" y="347.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan fill="#ddc084">  @@ -34,4 +34,8 @@ impl Notification</tspan><tspan>                                                                      </tspan></text>
+  <text x="0" y="369.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan fill="#97938c">34 </tspan><tspan> </tspan><tspan fill="#d2a5cd">impl</tspan><tspan> </tspan><tspan fill="#85c7d7">Notification</tspan><tspan> </tspan><tspan fill="#97938c">{</tspan><tspan>                            </tspan><tspan>   </tspan><tspan fill="#97938c">34 </tspan><tspan> </tspan><tspan fill="#d2a5cd">impl</tspan><tspan> </tspan><tspan fill="#85c7d7">Notification</tspan><tspan> </tspan><tspan fill="#97938c">{</tspan><tspan>                              </tspan></text>
+  <text x="0" y="391.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan fill="#97938c">35 </tspan><tspan fill="#e68485">-    pub fn label(&amp;self) -&gt; &amp;str {</tspan><tspan>              </tspan><tspan>   </tspan><tspan fill="#97938c">35 </tspan><tspan fill="#81caa0">+    pub fn label(&amp;self) -&gt; &amp;</tspan><tspan fill="#81caa0" font-weight="700">'static</tspan><tspan fill="#81caa0"> str {</tspan><tspan>        </tspan></text>
+  <text x="0" y="413.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan fill="#97938c">36 </tspan><tspan fill="#e68485">-        self.category</tspan><tspan fill="#e68485" font-weight="700">.as_str()</tspan><tspan>                 </tspan><tspan>   </tspan><tspan fill="#97938c">36 </tspan><tspan fill="#81caa0">+        </tspan><tspan fill="#81caa0" font-weight="700">match</tspan><tspan fill="#81caa0"> self.category </tspan><tspan fill="#81caa0" font-weight="700">{</tspan><tspan>                    </tspan></text>
+  <text x="0" y="435.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan fill="#97938c">37 </tspan><tspan fill="#e68485">-    }</tspan><tspan>                                          </tspan><tspan>   </tspan><tspan fill="#97938c">37 </tspan><tspan fill="#81caa0">+            Category::Build =&gt; "Build",</tspan><tspan>          </tspan></text>
+  <text x="0" y="457.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan>                                                   </tspan><tspan>   </tspan><tspan fill="#97938c">38 </tspan><tspan fill="#81caa0">+            Category::Deploy =&gt; "Deploy",</tspan><tspan>        </tspan></text>
+  <text x="0" y="479.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan>                                                   </tspan><tspan>   </tspan><tspan fill="#97938c">39 </tspan><tspan fill="#81caa0">+            Category::Incident =&gt; "Incident",</tspan><tspan>    </tspan></text>
+  <text x="0" y="501.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan>                                                   </tspan><tspan>   </tspan><tspan fill="#97938c">40 </tspan><tspan fill="#81caa0">+        }</tspan><tspan>                                        </tspan></text>
+  <text x="0" y="523.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan>                                                   </tspan><tspan>   </tspan><tspan fill="#97938c">41 </tspan><tspan fill="#81caa0">+    }</tspan><tspan>                                            </tspan></text>
+  <text x="0" y="545.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="567.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="589.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="611.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="633.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="655.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="677.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="699.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                              </tspan></text>
+  <text x="0" y="721.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                             </tspan></text>
+  <text x="0" y="743.0" textLength="1100" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#ddc084">space</tspan><tspan fill="#e4dfd6"> next</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">c</tspan><tspan fill="#e4dfd6"> comment</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">a</tspan><tspan fill="#e4dfd6"> ask agent</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">alt+enter</tspan><tspan fill="#e4dfd6"> finish</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">?</tspan><tspan fill="#e4dfd6"> help</tspan><tspan>                                             </tspan></text>
+</svg>

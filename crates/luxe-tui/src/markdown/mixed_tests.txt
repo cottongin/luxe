@@ -1,0 +1,90 @@
+P 4 | Plan
+P 0 | 
+P 97 | Some bold, italic, code and a link (https://example.com) here, with a soft break.⏎And a hard one.
+P 0 | 
+P 8 | 1. First
+P 9 | 2. Second
+P 16 |   • nested point
+P 0 | 
+P 12 |   • [ ] task
+P 0 | 
+P 27 | • > a quote opening an item
+P 0 | 
+P 20 | > A quote with code.
+P 0 | 
+P 23 | > code first in a quote
+P 0 | 
+P 11 | > 󰀦 Warning
+P 15 | > Mind the gap.
+P 0 | 
+W rule 22 |  rust …  copy
+W 12 | fn main() {}
+W rule 22 |  … 
+P 0 | 
+W rule 13 |  …  copy
+W 13 | indented code
+W rule 13 |  … 
+P 20 | <div>raw html</div>⏎
+P 0 | 
+W table | ┌──────┬───────┐ / │ Name │ Value │ / ├──────┼───────┤ / │ key  │    42 │ / │ site │     x │ / └──────┴───────┘
+P 0 | 
+P 44 | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+P 0 | 
+P 19 | Trailing paragraph.
+P 0 | 
+P 21 | > • a list in a quote
+P 0 | 
+P 25 | after the list in a quote
+P 0 | 
+W rule 17 |  …  copy
+W 17 | fenced in a quote
+W rule 17 |  … 
+P 2 | > 
+P 0 | 
+P 26 | after the fence in a quote
+--- reasoning
+P 4 | Plan
+P 0 | 
+P 97 | Some bold, italic, code and a link (https://example.com) here,⏎with a soft break.⏎And a hard one.
+P 0 | 
+P 8 | 1. First
+P 9 | 2. Second
+P 16 |   • nested point
+P 0 | 
+P 12 |   • [ ] task
+P 0 | 
+P 27 | • > a quote opening an item
+P 0 | 
+P 20 | > A quote with code.
+P 0 | 
+P 23 | > code first in a quote
+P 0 | 
+P 11 | > 󰀦 Warning
+P 15 | > Mind the gap.
+P 0 | 
+W rule 22 |  rust …  copy
+W 12 | fn main() {}
+W rule 22 |  … 
+P 0 | 
+W rule 13 |  …  copy
+W 13 | indented code
+W rule 13 |  … 
+P 20 | <div>raw html</div>⏎
+P 0 | 
+W table | ┌──────┬───────┐ / │ Name │ Value │ / ├──────┼───────┤ / │ key  │    42 │ / │ site │     x │ / └──────┴───────┘
+P 0 | 
+P 44 | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+P 0 | 
+P 19 | Trailing paragraph.
+P 0 | 
+P 21 | > • a list in a quote
+P 0 | 
+P 25 | after the list in a quote
+P 0 | 
+W rule 17 |  …  copy
+W 17 | fenced in a quote
+W rule 17 |  … 
+P 2 | > 
+P 0 | 
+P 26 | after the fence in a quote
+answer 93cc658e386d2a8e reasoning d8ea1ef67f372c7e

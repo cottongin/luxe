@@ -1,0 +1,1 @@
+{"data":{"repository":{"viewerPermission":"READ","defaultBranchRef":{"name":"trunk"},"pullRequest":{"headRefName":"remove-claude-md","isCrossRepository":true,"maintainerCanModify":true,"headRepositoryOwner":{"login":"jarrensj"},"headRepository":{"name":"gh-cli","viewerPermission":"READ"}}}}}

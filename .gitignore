@@ -1,0 +1,53 @@
+# Build artifacts
+/target/
+*.log
+*.swp
+*.swo
+*~
+
+# Per-crate build output
+!Cargo.lock
+
+# Python bytecode (scripts/, docs/eval/)
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Luxe-specific
+.luxe/
+# Verification captures — throwaway evidence for one session, megabytes of it.
+.pi/agent-loop/screenshots/
+.pi/agent-loop/shots/
+# The coding agent's own notes, including summaries it writes when it compacts a conversation.
+# Whatever was on screen ends up in here verbatim, so a key pasted into a chat becomes a tracked
+# file, and the next `git add -A` commits it. Untracked on purpose; keep durable prose in docs/.
+.pi/memory/
+/*.png
+
+# Website build artifacts. `web/src/assets/generated` is deliberately NOT ignored: it is derived
+# from this repo, and CI checks it is current.
+web/node_modules/
+web/dist/
+# Wrangler's dev-server scratch: caches, a shim worker, and its source maps.
+web/.wrangler/
+web/.astro/
+
+# cargo-mutants scratch output
+mutants.out/
+mutants.out.old/
+
+# Driver notes from a recording take. Useful while a demo script is being written and worthless
+# afterwards; the cast beside them is the artifact.
+web/src/assets/captures/*.log
+web/src/assets/captures/*.raw.cast
+# What a take said and sent, kept for auditing one that went somewhere unexpected; see site-record.sh
+web/src/assets/captures/*.wire.jsonl
+web/src/assets/captures/*.session.jsonl

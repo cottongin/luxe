@@ -1,0 +1,39 @@
+# Line endings: LF in the repository, and LF in the working tree on every platform.
+#
+# Not a style preference. A Windows clone with git's default `core.autocrlf=true` checks the tree out
+# as CRLF, and then `cargo fmt --check` fails on files nobody touched, byte-exact fixtures stop
+# matching, and a contributor's first commit rewrites every line of whatever they edited. `eol=lf`
+# pins the checkout regardless of the user's own setting.
+#
+# The `text=auto` half also matters for what it *excludes*: a `.png`, a patched font, or the gzipped
+# models.dev snapshot must never go through line-ending normalization, so they are marked explicitly.
+* text=auto eol=lf
+*.png binary
+*.gz  binary
+*.ttf binary
+
+# Development-process artifacts — excluded from published release archives.
+#
+# These are Luxe's own planning spine, journal, and dogfooding memory. Luxe never
+# *requires* them at runtime (every reader treats them as read-if-present), so a fresh
+# consumer repo starts clean. `git archive` (and scripts/publish-clean.sh) drop them via
+# the `export-ignore` attribute below; the files stay in this development repo for history.
+
+# Careful: these are gitattributes patterns, NOT gitignore patterns. A trailing slash matches
+# nothing here, so a directory has to be written `dir/**` or it silently ships anyway.
+PROJECT.md          export-ignore
+ROADMAP.md          export-ignore
+PROGRESS.md         export-ignore
+PLAN.md             export-ignore
+docs/plan/**        export-ignore
+docs/eval/**        export-ignore
+docs/HANDOFF-*.md   export-ignore
+.pi/**              export-ignore
+
+# Loose working notes at the root: a review pass's findings, and third-party reference material that
+# was never ours to redistribute.
+luxe-review-findings.md export-ignore
+shine-text.md       export-ignore
+
+# Development scripts whose inputs are the export-ignored files above
+scripts/tool-ergonomics.sh export-ignore

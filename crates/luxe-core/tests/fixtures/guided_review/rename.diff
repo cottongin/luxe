@@ -1,0 +1,12 @@
+diff --git a/crates/luxe-core/src/old_name.rs b/crates/luxe-core/src/new_name.rs
+similarity index 83%
+rename from crates/luxe-core/src/old_name.rs
+rename to crates/luxe-core/src/new_name.rs
+index 1a2b3c4..5d6e7f8 100644
+--- a/crates/luxe-core/src/old_name.rs
++++ b/crates/luxe-core/src/new_name.rs
+@@ -1,3 +1,3 @@
+-pub fn old_name() {}
++pub fn new_name() {}
+ 
+ pub const VERSION: u8 = 1;

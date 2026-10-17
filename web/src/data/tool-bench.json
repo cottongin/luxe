@@ -1,0 +1,457 @@
+{
+  "repositories": [
+    {
+      "name": "Django",
+      "commit": "04ac9b45a3",
+      "rows": [
+        {
+          "id": "glob",
+          "shell": "find . -name '*.py'",
+          "tool": "glob",
+          "args": {
+            "pattern": "**/*.py"
+          },
+          "shellBytes": 108827,
+          "shellLines": 2615,
+          "toolBytes": 6962,
+          "toolLines": 202,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "grep",
+          "shell": "rg -n 'def delete'",
+          "tool": "grep",
+          "args": {
+            "pattern": "def delete"
+          },
+          "shellBytes": 4384,
+          "shellLines": 56,
+          "toolBytes": 4383,
+          "toolLines": 56,
+          "forwarded": {
+            "pi": 4383,
+            "opencode": 4383,
+            "codex": 4384,
+            "claude": 4384
+          }
+        },
+        {
+          "id": "bash",
+          "shell": "git log --stat -n 30",
+          "tool": "bash",
+          "args": {
+            "command": "git log --stat -n 30"
+          },
+          "shellBytes": 12522,
+          "shellLines": 339,
+          "toolBytes": 3237,
+          "toolLines": 91,
+          "forwarded": {
+            "pi": 12521,
+            "opencode": 12521,
+            "codex": 10240,
+            "claude": 12522
+          }
+        },
+        {
+          "id": "test",
+          "shell": "cd tests && ../.venv/bin/python runtests.py --settings=test_sqlite --parallel 1 delete",
+          "tool": "test",
+          "args": {
+            "command": "cd tests && ../.venv/bin/python runtests.py --settings=test_sqlite --parallel 1 delete"
+          },
+          "shellBytes": 360,
+          "shellLines": 9,
+          "toolBytes": 221,
+          "toolLines": 6,
+          "forwarded": {
+            "pi": 359,
+            "opencode": 359,
+            "codex": 360,
+            "claude": 360
+          }
+        },
+        {
+          "id": "git",
+          "shell": "git log",
+          "tool": "git",
+          "args": {
+            "action": "log"
+          },
+          "shellBytes": 8208668,
+          "shellLines": 217696,
+          "toolBytes": 971,
+          "toolLines": 11,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30003
+          }
+        },
+        {
+          "id": "read_symbol",
+          "shell": "cat django/db/models/deletion.py",
+          "tool": "read_symbol",
+          "args": {
+            "path": "django/db/models/deletion.py",
+            "symbol": "can_fast_delete"
+          },
+          "shellBytes": 15262,
+          "shellLines": 349,
+          "toolBytes": 1678,
+          "toolLines": 39,
+          "forwarded": {
+            "pi": 15261,
+            "opencode": 15261,
+            "codex": 10240,
+            "claude": 15262
+          }
+        },
+        {
+          "id": "module_report",
+          "shell": "cat django/db/models/query.py",
+          "tool": "module_report",
+          "args": {
+            "path": "django/db/models/query.py"
+          },
+          "shellBytes": 81116,
+          "shellLines": 1922,
+          "toolBytes": 1963,
+          "toolLines": 62,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "read",
+          "shell": "cat django/db/models/query.py",
+          "tool": "read",
+          "args": {
+            "path": "django/db/models/query.py"
+          },
+          "shellBytes": 81116,
+          "shellLines": 1922,
+          "toolBytes": 60028,
+          "toolLines": 1292,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        }
+      ]
+    },
+    {
+      "name": "ripgrep",
+      "commit": "3fce3b5",
+      "rows": [
+        {
+          "id": "glob",
+          "shell": "find . -name '*.rs'",
+          "tool": "glob",
+          "args": {
+            "pattern": "**/*.rs"
+          },
+          "shellBytes": 3288,
+          "shellLines": 110,
+          "toolBytes": 3067,
+          "toolLines": 110,
+          "forwarded": {
+            "pi": 3287,
+            "opencode": 3287,
+            "codex": 3288,
+            "claude": 3288
+          }
+        },
+        {
+          "id": "grep",
+          "shell": "rg -n 'fn new'",
+          "tool": "grep",
+          "args": {
+            "pattern": "fn new"
+          },
+          "shellBytes": 8717,
+          "shellLines": 109,
+          "toolBytes": 8716,
+          "toolLines": 109,
+          "forwarded": {
+            "pi": 8716,
+            "opencode": 8716,
+            "codex": 8717,
+            "claude": 8717
+          }
+        },
+        {
+          "id": "bash",
+          "shell": "cargo tree",
+          "tool": "bash",
+          "args": {
+            "command": "cargo tree"
+          },
+          "shellBytes": 3634,
+          "shellLines": 82,
+          "toolBytes": 3655,
+          "toolLines": 85,
+          "forwarded": {
+            "pi": 3633,
+            "opencode": 3633,
+            "codex": 3634,
+            "claude": 3634
+          }
+        },
+        {
+          "id": "test",
+          "shell": "cargo test -p grep-regex",
+          "tool": "test",
+          "args": {
+            "command": "cargo test -p grep-regex"
+          },
+          "shellBytes": 1425,
+          "shellLines": 39,
+          "toolBytes": 157,
+          "toolLines": 6,
+          "forwarded": {
+            "pi": 1424,
+            "opencode": 1424,
+            "codex": 1425,
+            "claude": 1425
+          }
+        },
+        {
+          "id": "git",
+          "shell": "git log",
+          "tool": "git",
+          "args": {
+            "action": "log"
+          },
+          "shellBytes": 754440,
+          "shellLines": 22954,
+          "toolBytes": 480,
+          "toolLines": 11,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30070
+          }
+        },
+        {
+          "id": "read_symbol",
+          "shell": "cat crates/searcher/src/searcher/mod.rs",
+          "tool": "read_symbol",
+          "args": {
+            "path": "crates/searcher/src/searcher/mod.rs",
+            "symbol": "search_path"
+          },
+          "shellBytes": 41168,
+          "shellLines": 1088,
+          "toolBytes": 491,
+          "toolLines": 19,
+          "forwarded": {
+            "pi": 41167,
+            "opencode": 41167,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "module_report",
+          "shell": "cat crates/searcher/src/searcher/mod.rs",
+          "tool": "module_report",
+          "args": {
+            "path": "crates/searcher/src/searcher/mod.rs"
+          },
+          "shellBytes": 41168,
+          "shellLines": 1088,
+          "toolBytes": 1910,
+          "toolLines": 62,
+          "forwarded": {
+            "pi": 41167,
+            "opencode": 41167,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "read",
+          "shell": "cat crates/searcher/src/searcher/mod.rs",
+          "tool": "read",
+          "args": {
+            "path": "crates/searcher/src/searcher/mod.rs"
+          },
+          "shellBytes": 41168,
+          "shellLines": 1088,
+          "toolBytes": 46588,
+          "toolLines": 1088,
+          "forwarded": {
+            "pi": 41167,
+            "opencode": 41167,
+            "codex": 10240,
+            "claude": 30000
+          }
+        }
+      ]
+    },
+    {
+      "name": "Luxe",
+      "commit": "5f057b62",
+      "rows": [
+        {
+          "id": "glob",
+          "shell": "find . -name '*.json'",
+          "tool": "glob",
+          "args": {
+            "pattern": "**/*.json"
+          },
+          "shellBytes": 742537,
+          "shellLines": 8191,
+          "toolBytes": 5965,
+          "toolLines": 115,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "grep",
+          "shell": "rg -n render",
+          "tool": "grep",
+          "args": {
+            "pattern": "render"
+          },
+          "shellBytes": 548943,
+          "shellLines": 3400,
+          "toolBytes": 24038,
+          "toolLines": 86,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30017
+          }
+        },
+        {
+          "id": "bash",
+          "shell": "cargo tree -p luxe-cli",
+          "tool": "bash",
+          "args": {
+            "command": "cargo tree -p luxe-cli"
+          },
+          "shellBytes": 38976,
+          "shellLines": 802,
+          "toolBytes": 4286,
+          "toolLines": 115,
+          "forwarded": {
+            "pi": 38975,
+            "opencode": 38975,
+            "codex": 10240,
+            "claude": 38976
+          }
+        },
+        {
+          "id": "test",
+          "shell": "cargo test -p luxe-tools",
+          "tool": "test",
+          "args": {
+            "command": "cargo test -p luxe-tools"
+          },
+          "shellBytes": 33697,
+          "shellLines": 464,
+          "toolBytes": 1899,
+          "toolLines": 22,
+          "forwarded": {
+            "pi": 33696,
+            "opencode": 33696,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "git",
+          "shell": "git log",
+          "tool": "git",
+          "args": {
+            "action": "log"
+          },
+          "shellBytes": 1109774,
+          "shellLines": 20596,
+          "toolBytes": 2037,
+          "toolLines": 11,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        },
+        {
+          "id": "read_symbol",
+          "shell": "cat crates/luxe-core/src/engine.rs",
+          "tool": "read_symbol",
+          "args": {
+            "path": "crates/luxe-core/src/engine.rs",
+            "symbol": "set_cancelled"
+          },
+          "shellBytes": 37644,
+          "shellLines": 726,
+          "toolBytes": 201,
+          "toolLines": 7,
+          "forwarded": {
+            "pi": 37643,
+            "opencode": 37643,
+            "codex": 10240,
+            "claude": 30058
+          }
+        },
+        {
+          "id": "module_report",
+          "shell": "cat crates/luxe-core/src/engine.rs",
+          "tool": "module_report",
+          "args": {
+            "path": "crates/luxe-core/src/engine.rs"
+          },
+          "shellBytes": 37644,
+          "shellLines": 726,
+          "toolBytes": 2066,
+          "toolLines": 62,
+          "forwarded": {
+            "pi": 37643,
+            "opencode": 37643,
+            "codex": 10240,
+            "claude": 30058
+          }
+        },
+        {
+          "id": "web_fetch",
+          "shell": "curl -sL https://docs.rs/tokio/latest/tokio/",
+          "tool": "web_fetch",
+          "args": {
+            "url": "https://docs.rs/tokio/latest/tokio/"
+          },
+          "shellBytes": 57194,
+          "shellLines": 801,
+          "toolBytes": 21708,
+          "toolLines": 325,
+          "forwarded": {
+            "pi": 51200,
+            "opencode": 51200,
+            "codex": 10240,
+            "claude": 30000
+          }
+        }
+      ]
+    }
+  ]
+}

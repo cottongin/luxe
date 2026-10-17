@@ -1,0 +1,30 @@
+[
+  {
+    "id": "debugpy",
+    "command": ["python3", "-m", "debugpy.adapter"],
+    "extensions": ["py"],
+    "dialect": "debugpy"
+  },
+  {
+    "id": "codelldb",
+    "command": ["codelldb"],
+    "dialect": "lldb"
+  },
+  {
+    "id": "lldb-dap",
+    "command": ["lldb-dap"],
+    "dialect": "lldb"
+  },
+  {
+    "id": "gdb",
+    "command": ["gdb", "--interpreter=dap"],
+    "dialect": "gdb"
+  },
+  {
+    "id": "dlv",
+    "command": ["dlv", "dap", "--client-addr", "${DAP_ADDR}"],
+    "extensions": ["go"],
+    "dialect": "delve",
+    "transport": "tcp_dial_in"
+  }
+]

@@ -1,0 +1,10 @@
+# YAML lint config. 120-col lines: SHA-pinned GitHub Actions (`uses: owner/repo@<40-char-sha>`)
+# legitimately run past 80, and can't be wrapped.
+extends: default
+rules:
+  line-length:
+    max: 120
+    level: warning
+  document-start: disable
+  truthy:
+    check-keys: false

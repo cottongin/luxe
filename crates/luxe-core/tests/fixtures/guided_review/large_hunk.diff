@@ -1,0 +1,32 @@
+diff --git a/crates/luxe-core/src/large.rs b/crates/luxe-core/src/large.rs
+index 1111111..2222222 100644
+--- a/crates/luxe-core/src/large.rs
++++ b/crates/luxe-core/src/large.rs
+@@ -1,3 +1,26 @@
+ pub fn configure() {
+-    old();
++    configure_alpha();
++    configure_beta();
++    configure_gamma();
++    configure_delta();
++    configure_epsilon();
++    configure_zeta();
++    configure_eta();
++    configure_theta();
++    configure_iota();
++    configure_kappa();
++    configure_lambda();
++    configure_mu();
++    configure_nu();
++    configure_xi();
++    configure_omicron();
++    configure_pi();
++    configure_rho();
++    configure_sigma();
++    configure_tau();
++    configure_upsilon();
++    configure_phi();
++    configure_chi();
++    configure_psi();
++    configure_omega();
+ }

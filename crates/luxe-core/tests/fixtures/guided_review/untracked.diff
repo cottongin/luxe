@@ -1,0 +1,10 @@
+diff --git a/dev/null b/crates/luxe-core/src/new_tool.rs
+new file mode 100644
+index 0000000..4b825dc
+--- /dev/null
++++ b/crates/luxe-core/src/new_tool.rs
+@@ -0,0 +1,4 @@
++/// New local tool.
++pub fn new_tool() {
++    tracing::info!("ready");
++}

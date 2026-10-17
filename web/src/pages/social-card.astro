@@ -1,0 +1,97 @@
+---
+/**
+ * The Open Graph card, as a page.
+ *
+ * Not a design file: it is rendered from the same tokens, fonts and logotype as the rest of the
+ * site, so it cannot drift from what it is advertising. Regenerate the PNG with:
+ *
+ *   npm run build && npx astro preview &
+ *   # capture http://localhost:4321/social-card at exactly 1200×630
+ *   # save it to web/public/social.png
+ *
+ * Kept out of the sitemap and out of the navigation; it exists to be photographed.
+ */
+import "../assets/generated/tokens.css";
+import "../styles/grain.css";
+import "../styles/base.css";
+import Wordmark from "../components/Wordmark.astro";
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Luxe — social card</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body class="card">
+    <div class="card__inner">
+      <div class="card__mark"><Wordmark drift={false} /></div>
+      <p class="card__line">Built for agents.<br /><em>Refined</em> for humans.</p>
+      <p class="card__meta">
+        Rust · terminal · plan → build → review · <span class="card__url">luxe.dev</span>
+      </p>
+    </div>
+
+    <style is:global>
+      body.card {
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+      }
+
+      .card__inner {
+        width: 100%;
+        height: 100%;
+        padding: 92px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 34px;
+        /* A hairline frame inset from the edge, cut at the corners — the same gesture as everything
+           else, at the one size where a card has room for it. */
+        position: relative;
+      }
+
+      .card__inner::after {
+        content: "";
+        position: absolute;
+        inset: 40px;
+        border: 1px solid var(--luxe-border-muted);
+      }
+
+      .card__mark {
+        width: 380px;
+      }
+
+      .card__line {
+        font-family: var(--font-display);
+        font-size: 62px;
+        line-height: 1.05;
+        margin: 0;
+        max-width: none;
+        color: var(--luxe-text);
+      }
+
+      .card__line em {
+        font-style: italic;
+        color: var(--luxe-accent);
+      }
+
+      .card__meta {
+        margin: 0;
+        max-width: none;
+        font-size: 21px;
+        letter-spacing: 0.06em;
+        color: var(--luxe-muted);
+      }
+
+      .card__url {
+        color: var(--luxe-accent);
+      }
+    </style>
+  </body>
+</html>

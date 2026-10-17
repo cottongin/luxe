@@ -1,0 +1,23 @@
+diff --git a/crates/luxe-core/src/event.rs b/crates/luxe-core/src/event.rs
+index 4d3c2b1..7a8b9c0 100644
+--- a/crates/luxe-core/src/event.rs
++++ b/crates/luxe-core/src/event.rs
+@@ -18,2 +18,7 @@ pub enum Event {
+     TurnEnded,
++    /// Records activity emitted while a tool is running.
++    ToolProgress {
++        tool: String,
++        message: String,
++    },
+ }
+diff --git a/crates/luxe-tui/src/app/events.rs b/crates/luxe-tui/src/app/events.rs
+index 1a2b3c4..5d6e7f8 100644
+--- a/crates/luxe-tui/src/app/events.rs
++++ b/crates/luxe-tui/src/app/events.rs
+@@ -42,3 +42,6 @@ impl App {
+         match event {
++            Event::ToolProgress { tool, message } => {
++                self.activity.push(tool, message);
++            }
+             Event::TurnEnded => self.finish_turn(),
+         }

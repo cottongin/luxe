@@ -1,0 +1,67 @@
+# Site — ships luxe.dev from `main` of the public repository.
+#
+# Deployed from here rather than by Cloudflare's Git integration: the Pages project takes direct
+# uploads (`web/wrangler.jsonc`), and deploying from a workflow means the render check below stands
+# between a merge and the live site. CI's `website` job already ran the full cross-browser suite on
+# the pull request; this is the last look at exactly the files being uploaded.
+name: Site
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    # The site reads `docs/guide/` for the manual, which CI's prose filter skips, so a guide-only
+    # change still has to reach here
+    paths:
+      - "web/**"
+      - "docs/guide/**"
+      - ".github/workflows/site.yml"
+
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one halfway through an upload.
+concurrency:
+  group: site-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: build · check · deploy
+    # The development repository shares this file and must never publish the site
+    if: github.repository == 'evanwhittaker/luxe'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The Cloudflare secrets live on this environment, so only this job can read them, and an
+    # approval rule added in the repository settings would gate every deploy
+    environment:
+      name: production
+      url: https://luxe.dev
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Build
+        run: npm run build
+        working-directory: web
+
+      - name: Render check
+        run: ./scripts/site-check.sh --no-build
+
+      # `--branch main` decides production: without it Wrangler reports whatever branch it sees, and
+      # anything that is not the project's production branch lands as a preview (see web/README.md)
+      - name: Deploy
+        run: npx wrangler pages deploy dist --branch main
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

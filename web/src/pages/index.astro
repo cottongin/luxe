@@ -1,0 +1,1284 @@
+---
+import Base from "../layouts/Base.astro";
+import Wordmark from "../components/Wordmark.astro";
+import InstallTabs from "../components/InstallTabs.svelte";
+import Still from "../components/Still.astro";
+import Demo from "../components/Demo.svelte";
+import Refine from "../components/Refine.astro";
+import ThemePreview from "../components/ThemePreview.astro";
+import StillSwitch from "../components/StillSwitch.astro";
+import SwitchButtons from "../components/SwitchButtons.astro";
+
+import flagship from "../assets/captures/flagship.cast?url";
+import flagshipMobile from "../assets/captures/flagship.mobile.cast?url";
+import mention from "../assets/captures/mention.cast?url";
+import mentionMobile from "../assets/captures/mention.mobile.cast?url";
+
+import counted from "../assets/generated/facts.json";
+
+/**
+ * The catalog's size, rounded down to a figure nobody has to keep current.
+ *
+ * Derived from `facts.json`, which `scripts/site-assets.sh` counts from the models.dev snapshot, so
+ * it moves when the snapshot does and never needs a hand edit. Rounded because the point is the
+ * breadth, and "8,279" invites a reader to check the last digit.
+ */
+const atLeast = (n: number, step: number) => (Math.floor(n / step) * step).toLocaleString("en-US");
+const models = atLeast(counted.models, 1000);
+const providers = atLeast(counted.providers, 100);
+
+/**
+ * Recording sizes, so a caption and its cast cannot drift apart.
+ *
+ * 120 columns rather than 150: a demo shares its row with a paragraph, and at 150 the type came out
+ * too small to read on a laptop. Below about 130 columns Luxe trades the dock for the statusline,
+ * which is the layout that reads best at this size anyway.
+ */
+const WIDE = { cols: 120, rows: 32 };
+const NARROW = { mobileCols: 72, mobileRows: 24 };
+---
+
+<Base
+  title="Luxe — an agentic coding harness"
+  description="A terminal coding agent with real developer tooling, reviews you can actually read, and nothing sent anywhere you didn't ask."
+  heroMark
+>
+  {/* The opening assembles itself: the words alone, centered, until "Refined" has finished
+      refining; then they slide left and the demo rises from the bottom right to sit beside them.
+      `data-hero` is what the driver script looks for. */}
+  <section class="hero" data-hero>
+    <div class="hero__stage">
+    <div class="page hero__inner">
+      <div class="hero__lead">
+      {/* The logotype prints itself, a column at a time, with a cursor riding the leading edge —
+          which is what a terminal does and the only introduction this product needed. */}
+      <div class="hero__mark" data-hero-mark>
+        <Wordmark shine />
+        <span class="hero__caret" aria-hidden="true"></span>
+      </div>
+
+      <h1 class="hero__line">
+        Built to help you do the work.
+        <br />
+        <em class="hero__refine">Refined<span aria-hidden="true">Refined</span></em> to help you enjoy it.
+      </h1>
+
+      <p class="lede hero__lede">
+      A beautiful coding agent for your terminal. Write, review, and ship code with a single, intuitive workflow.
+      </p>
+
+      <div class="hero__install">
+        <InstallTabs client:load />
+      </div>
+
+      <p class="hero__note muted">
+        Works on Linux, macOS, and Windows. <a href="/docs/install/#what-it-needs">Learn more</a>.
+      </p>
+      </div>
+
+      <div class="hero__demo">
+        {/* `client:visible` does the gating for free here. At rest the plate is translated a screen
+            below the fold, so it is genuinely outside the viewport rather than merely transparent —
+            it neither hydrates nor starts playing until the scroll has actually brought it in. */}
+        <Demo
+          client:visible
+          src={flagship}
+          mobile={flagshipMobile}
+          {...WIDE}
+          {...NARROW}
+          caption="A feature, written, reviewed and ready to ship in a real session with the waiting sped up."
+        />
+      </div>
+    </div>
+    </div>
+  </section>
+  <script is:inline>
+    // Moves the hero's `--p` from 0 to 1 once the opening has played, for the words to slide aside
+    // and the demo to rise in.
+    //
+    // It used to be driven by scroll, through a sticky runway: the first thing a reader's wheel did
+    // was rearrange the hero rather than move the page, which reads as the page not scrolling. Now
+    // the assembly follows the headline's own animation, and anything that says "move on" (a
+    // wheel, a touch, a scroll key) brings it forward rather than being spent on it.
+    //
+    // Inline, and straight after the hero rather than at the end of the page: a deferred script, or
+    // one the parser reaches only after every section, can run after a first paint, and the
+    // assembled hero would be painted and then yanked back apart. Here the resting value is
+    // overwritten before anything below the hero has even been parsed.
+    (() => {
+      const hero = document.querySelector("[data-hero]");
+      if (!hero) return;
+      const inner = hero.querySelector(".hero__inner");
+      const lead = hero.querySelector(".hero__lead");
+      const refine = hero.querySelector(".hero__refine");
+      const wide = matchMedia("(min-width: 68.0625rem)");
+      const calm = matchMedia("(prefers-reduced-motion: reduce)");
+      const moves = ["wheel", "touchmove", "keydown", "scroll"];
+      const keys = ["ArrowDown", "PageDown", "End", " ", "Spacebar"];
+      let assembled = false;
+
+      const measure = () => {
+        // Left column's center to the page's center. The lead is translated by this at p = 0.
+        hero.style.setProperty("--hero-shift", (inner.clientWidth - lead.clientWidth) / 2 + "px");
+      };
+
+      // Moved, or simply set: a page that opens mid-scroll or narrow has nothing to watch arrive
+      const assemble = (moved = true) => {
+        if (assembled) return;
+        assembled = true;
+        if (moved) hero.classList.add("hero--assembling");
+        hero.style.setProperty("--p", "1");
+        moves.forEach((name) => removeEventListener(name, early));
+      };
+
+      // A reader moving on is told nothing by a stage that is still setting itself out
+      function early(event) {
+        if (event.type === "keydown" && !keys.includes(event.key)) return;
+        assemble();
+      }
+
+      const sync = () => {
+        if (wide.matches && !calm.matches && !assembled && scrollY === 0) {
+          measure();
+          hero.style.setProperty("--p", "0");
+          moves.forEach((name) => addEventListener(name, early, { passive: true }));
+        } else {
+          assemble(false);
+          hero.style.removeProperty("--hero-shift");
+        }
+      };
+
+      // A beat after the highlight lifts, which is 75% through the word's 3100ms `refine`: its
+      // last quarter only holds the finished word, and waiting it out read as a stall. The
+      // animation's end stays as the backstop, for a start event that never came.
+      const LIFTED = 3100 * 0.75;
+      const BEAT = 300;
+      refine?.addEventListener("animationstart", (event) => {
+        if (event.target === refine) setTimeout(assemble, LIFTED + BEAT);
+      });
+      refine?.addEventListener("animationend", (event) => {
+        if (event.target === refine) assemble();
+      });
+      addEventListener("resize", () => {
+        if (!assembled && wide.matches) measure();
+      });
+      wide.addEventListener("change", sync);
+      calm.addEventListener("change", sync);
+      sync();
+    })();
+  </script>
+
+  <div class="page" style="counter-reset: section">
+    <section class="section" id="review">
+      <div class="duo">
+        <div class="duo__text">
+          <p class="eyebrow">Guided Review</p>
+          <h2>An agent that <Refine from="shows its" to="explains the" /> work.</h2>
+          <div class="prose">
+            <p>
+              Agents write code faster than anyone can read it. So Luxe reads it back to you, one
+              chapter at a time, in the order it makes sense. Each chapter says what changed, why,
+              and how it was checked, right next to the code.
+            </p>
+            <p>
+              It can read a pull request the same way, regardless of who wrote it. Luxe walks you
+              through the code so you can review work from a teammate, Dependabot, or another agent
+              in a flash. Comment on a line for the agent to address it, or post a review to GitHub
+              without leaving the app.
+            </p>
+          </div>
+          <SwitchButtons
+            for="review-pull-request"
+            label="Reviewing a pull request"
+            labels={["Read it", "Post it"]}
+          />
+        </div>
+        <div class="duo__media">
+          <StillSwitch id="review-pull-request">
+            <Still
+              slot="first"
+              from="generated"
+              name="guided-review-pull-request"
+              narrow="guided-review-pull-request.narrow"
+              caption="A bot's pull request, explained a chapter at a time, with its GitHub discussion alongside."
+            />
+            <Still
+              slot="second"
+              from="generated"
+              name="guided-review-pull-request-post"
+              narrow="guided-review-pull-request-post.narrow"
+              caption="Post a review, complete with a verdict, summary, and comments, right from the app."
+            />
+          </StillSwitch>
+        </div>
+      </div>
+
+      <div class="duo duo--flip">
+        <div class="duo__text">
+          <div class="prose">
+            <p>
+              Not every change needs a full tour, though. The preview lets you view the diffs
+              while the agent keeps working. When using luxe fullscreen, the diffs are placed beside the
+              chat for maximum visibility, while smaller spaces see the diffs take its place.
+            </p>
+            <p>
+              Review the agent's work in one file while it plans work in the next. Ask a question, flag
+              an issue, or steer the agent with ease, then close the diff and return to the chat to stay
+              in the flow. The agent maintains its momentum while you stay informed and in control.
+            </p>
+          </div>
+          <SwitchButtons
+            for="peek-layout"
+            label="The preview's layout"
+            labels={["Beside the chat", "In its place"]}
+          />
+        </div>
+        <div class="duo__media">
+          <StillSwitch id="peek-layout">
+            <Still
+              slot="first"
+              from="generated"
+              name="peek-beside"
+              caption="With room to spare, the diff opens beside the conversation."
+            />
+            <Still
+              slot="second"
+              from="generated"
+              name="peek-over"
+              caption="When short on room, it takes the conversation's place until you close it."
+            />
+          </StillSwitch>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mentions">
+      <div class="duo">
+        <div class="duo__text">
+          <p class="eyebrow">References</p>
+          <h2>Context with a keystroke.</h2>
+          <div class="prose">
+            <p>
+              Type <code>@</code> and grab what you mean: a file, a skill, an issue or pull request,
+              an MCP server, or even something from your own sources, like Jira or Asana.
+            </p>
+            <p>
+              Mentioning context inserts a pointer, not a paste. The agent gets the path or the issue
+              number and reads it when it actually needs to, so a big file never floods the conversation.
+            </p>
+          </div>
+        </div>
+        <div class="duo__media">
+          <Demo
+            client:visible
+            src={mention}
+            mobile={mentionMobile}
+            {...WIDE}
+            {...NARROW}
+            caption="An issue and a skill, picked with @, used to perform a quick fix."
+          />
+        </div>
+      </div>
+
+      <div class="duo duo--flip">
+        <div class="duo__text">
+          <div class="prose">
+            <p>
+              Everything else lives in the Command Palette. It only lists what can run where you
+              are, puts the commands you used last at the top, and tells you what each one does
+              before you run it.
+            </p>
+            <p>
+              In the composer, you can start with a <code>/</code> and the same commands open right
+              above it. Select one to run it, or fill it in and add arguments, like
+              <code>/diff pr 142</code>.
+            </p>
+            <p>
+              Every shortcut is listed in Help, and you can rebind any of them as you see fit.
+            </p>
+          </div>
+          <SwitchButtons
+            for="commands"
+            label="Finding a command"
+            labels={["Command Palette", "Slash commands"]}
+          />
+        </div>
+        <div class="duo__media">
+          <StillSwitch id="commands">
+            <Still
+              slot="first"
+              name="palette"
+              narrow="palette.narrow"
+              caption="Type a few characters to find what you need and how to use it."
+            />
+            <Still
+              slot="second"
+              name="slash"
+              narrow="slash.narrow"
+              caption="A single keystroke can get you to the same commands even faster from the composer."
+            />
+          </StillSwitch>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="git">
+      <div class="duo">
+        <div class="duo__text">
+          <p class="eyebrow">Git and GitHub</p>
+          <h2>As good as it <Refine from="gets" to="gits" />.</h2>
+          <div class="prose">
+            <p>
+              Browse and select an issue with <code>/github</code>, or pick one up with
+              <code>luxe --issue 123</code>. Luxe reads the issue, makes a worktree and
+              a branch for it, and starts a session there. Your own checkout stays exactly
+              how you left it.
+            </p>
+            <p>
+              Once the work is reviewed, a pull request is a keystroke away, drafted from the
+              review you just read with <code>Closes #123</code> already in it. From there, you
+              can keep track of checks, conflicts, and what people are saying. The agent can
+              help you make requested changes and draft replies to comments.
+            </p>
+            <p>
+              Need to handle a bigger change? Try opening it as a stack, one pull request per
+              chapter, and let <code>/stack</code> restack them when the bottom one moves.
+            </p>
+          </div>
+          <SwitchButtons for="github-view" label="A pull request in /github" labels={["Overview", "Conversation"]} />
+        </div>
+        <div class="duo__media">
+          <StillSwitch id="github-view">
+            <Still
+              slot="first"
+              from="generated"
+              name="github-overview"
+              narrow="github-overview.narrow"
+              caption="What needs to happen before the pull request can be merged, and shortcuts to get started."
+            />
+            <Still
+              slot="second"
+              from="generated"
+              name="github-conversation"
+              narrow="github-conversation.narrow"
+              caption="Review the discussion and draft replies with the agent's help."
+            />
+          </StillSwitch>
+        </div>
+      </div>
+
+      <ul class="cards">
+        <li class="card">
+          <h3>Review any pull request</h3>
+          <p>
+            <code>/diff pr 142</code> reads a pull request at the commit GitHub
+            reported. Comment on lines, approve, or request changes without leaving
+            the app.
+          </p>
+        </li>
+        <li class="card">
+          <h3>Answer review threads</h3>
+          <p>
+            Comments on your pull request show up on the lines they're about. Hand one to the
+            agent, then reply and resolve it from the same screen.
+          </p>
+        </li>
+        <li class="card">
+          <h3>Merge from the terminal</h3>
+          <p>
+            <code>/pr</code> lists what's in the way: checks, reviews, conflicts. Work with
+            the agent to deal with it, and merge with a final confirmation when you're ready.
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" id="models">
+      <div class="duo duo--flip">
+        <div class="duo__text">
+          <p class="eyebrow">Models and Providers</p>
+          <h2>Plays well with others.</h2>
+          <div class="prose">
+            <p>
+              Luxe knows more than {models} models from over {providers} providers, through the
+              models.dev catalog, and connects to two dozen of those providers by name. Use a
+              frontier model, a local one through LM Studio or Ollama, or any OpenAI-compatible
+              endpoint. Sign in with a ChatGPT or Copilot subscription,
+              or bring an API key. <code>/model</code> lets you switch mid-session.
+            </p>
+            <p>
+              Luxe gets along with the rest of your setup, too. Files open in <code>$EDITOR</code> on
+              a keypress, <a href="https://herdr.dev" target="_blank">Herdr</a>'s sidebar knows when it's
+              working or waiting on you, and the MCP servers you already run can come along for the ride.
+            </p>
+          </div>
+        </div>
+        <div class="duo__media">
+          <Still
+            name="models"
+            narrow="models.narrow"
+            width={64}
+            caption="Every model you can reach, in one searchable list, with your configured providers first."
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <div class="duo">
+        <div class="duo__text">
+          <p class="eyebrow">The toolset</p>
+          <h2>The right tools for <Refine from="the" to="every" /> job.</h2>
+          <div class="prose">
+            <p>
+              Dedicated tools make actions more legible, especially at agent speeds. Limitations,
+              formatting issues, and inflexible design can make tools less attractive to models, though,
+              resulting in tasks being frequently shelled out in massive chains. So, the bar every tool
+              in luxe has to clear is straightforward: It has to beat the shell command it replaces.
+              <a href="/tools">Here's how each one does.</a>
+            </p>
+            <p>
+              The model gets a real language server instead of grep, a debugger it can actually drive,
+              structural search that understands syntax, git with output that fits, a to-do list
+              that survives compaction, and a way to stop and ask you about the important stuff.
+              For other agents, most of those are plugins that live somewhere else. They're available
+              here out of the box, and <code>/tools</code> shows what's available in a given request.
+            </p>
+          </div>
+        </div>
+        <div class="duo__media">
+          <Still
+            name="tools"
+            width={60}
+            caption="/tools shows you what the model can reach and how to make adjustments."
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="extend">
+      <div class="duo duo--flip">
+        <div class="duo__text">
+          <p class="eyebrow">Extending Luxe</p>
+          <h2>Make it yours.</h2>
+          <div class="prose">
+            <p>
+              Skills teach the agent how you work. Hooks can gate, rewrite or log anything the agent
+              does. MCP servers hand the model new tools, mention sources link extra context, and the
+              RPC protocol drives everything Luxe does, Guided Review and GitHub included, so you can
+              build a whole new front end on top.
+            </p>
+            <p>
+              An extension is a file, or a program that runs externally with the permissions you already
+              have, so installing one is as simple as copying a folder.
+              <br/>
+              <a href="/docs/extending">Check out the docs to learn more.</a>
+            </p>
+          </div>
+        </div>
+        <div class="duo__media">
+          {/* A directory listing rather than a screenshot: the point is that it's files, and a
+              picture of files is a worse way to show that than the files. */}
+          <figure class="tree">
+            <div class="tree__plate plate">
+              <div class="tree__body">
+                <p class="tree__root">~/.config/luxe/</p>
+                <ul class="tree__list">
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">├── </span>config.json</span><span data-trail="│   ">how it looks, which tools exist</span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">├── </span>keybindings.json</span><span data-trail="│   ">your keybinds, your workflow</span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">├── </span>themes/</span><span></span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">│   └── </span>nord.json</span><span data-trail="│       ">dress it up however you like</span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">├── </span>skills/</span><span></span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">│   └── </span>review/</span><span data-trail="│       ">a SKILL.md and any notes it needs</span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">├── </span>hooks.json</span><span data-trail="│   ">gate, rewrite or log tool calls</span></li>
+                  <li><span class="tree__name"><span class="tree__branch" aria-hidden="true">└── </span>mcp.json</span><span data-trail="    ">servers the model can call</span></li>
+                </ul>
+              </div>
+            </div>
+            <figcaption class="tree__caption muted">
+              Everything is a file you can read, diff and share.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="craft">
+      <div class="duo">
+        <div class="duo__text">
+          <p class="eyebrow">Look and Feel</p>
+          <h2>Right at home, in <Refine from="any" to="every" /> home.</h2>
+          <div class="prose">
+            <p>
+              Luxe comes with plenty of themes to suit your style, including community favorites like
+              Catppuccin, Nord, Tokyo Night, GitHub, One Dark, and more. Or, you can stick with its own
+              signature theme, which holds every accent to a contrast floor so every color stays readable.
+            </p>
+            <p>
+              Want to customize further? A theme is a JSON file in <code>~/.config/luxe/themes</code>
+              that names only the colors it changes, so a new one is a few lines to write and share.
+            </p>
+            <p>
+              For users on <a href='https://omarchy.org/' target='_blank'>Omarchy</a>, Luxe wears your desktop's
+              theme and changes with it when you switch.
+            </p>
+          </div>
+        </div>
+        <div class="duo__media">
+          <ThemePreview cycle chipsBelow />
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--center section--last" id="start">
+      <h2>Get <Refine from="started" to="excited" />.</h2>
+      <div class="hero__install start__install">
+        <InstallTabs client:visible />
+      </div>
+      <p class="muted">
+        Then run <code>luxe</code> in a project. The first launch walks you through signing in.
+      </p>
+    </section>
+  </div>
+
+</Base>
+
+<style>
+  /* The hero spends vertical space in proportion to the screen it lands on.
+
+     Fixed padding is a bet on one viewport height, and the bet was wrong everywhere: the demo
+     started at 1005px on every desktop size, which is below the fold at 1080p and a two-inch sliver
+     on anything taller — a terminal cropped to its top border reads as a broken image rather than
+     as an invitation to scroll.
+
+     `svh` rather than `vh` because mobile browsers report `vh` against the *expanded* viewport, so
+     the URL bar's height is added to a measurement taken while it is on screen. */
+  /* `--p` is registered so it can be transitioned: the driver flips it from 0 to 1 once, and the
+     lead's slide and the demo's rise are both written in terms of it. */
+  @property --p {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 1;
+  }
+
+  .hero {
+    --p: 1;
+    position: relative;
+    overflow-x: clip;
+  }
+
+  /* Only for the assembly itself. A transition on `.hero` at all times also animated the driver
+     setting the opening up, 1 to 0, so the demo appeared in place and slid a screen down and out
+     while the wordmark typed. */
+  .hero--assembling {
+    /* Easing in and out: the words gather speed as they leave the middle and settle into their
+       column, and the demo, written in the same `--p`, rises the same way. The site's `--ease` only
+       eases out, so the words left the middle at full speed */
+    transition: --p 1300ms cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .hero__stage {
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    /* The masthead is sticky and sits over this, so the centering has to allow for it or the lead
+       is optically low by half its height. */
+    padding-block: 4.1rem var(--space-6);
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, var(--hero-text)) minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: center;
+    /* The words give way to the demo as the window narrows. A fixed 41rem left a 1200px window
+       with a third of its width for a 120-column terminal — four pixels a character — while the
+       headline sat at full size beside it. The words are what a reader can take small. */
+    --hero-text: clamp(24rem, 36vw, 41rem);
+  }
+
+  /* The lead lives in the left column and is *translated* to the middle for the opening, rather
+     than being centered and translated left.
+
+     That direction matters: the resting position is the one the layout describes, so with no
+     JavaScript, with reduced motion, or before the driver's first frame, the hero is already the
+     assembled two-column thing rather than something waiting to be fixed. `--hero-shift` is the
+     distance from the left column's center to the page's, which only JavaScript can measure —
+     percentages here resolve against the element's own width, which is not the quantity involved. */
+  /* A container, so the mark, the headline and the lede scale with the column they are in rather
+     than with the window, and shrink together instead of the headline outgrowing its column. */
+  .hero__lead {
+    container-type: inline-size;
+    grid-area: 1 / 1;
+    display: grid;
+    /* An auto track grows to its widest unbreakable line, and the source install command is one:
+       it pushed the column, and everything centered in it, under the demo */
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+    align-content: center;
+    transform: translateX(calc(var(--hero-shift, 0px) * (1 - var(--p))));
+  }
+
+  .hero__mark {
+    position: relative;
+    /* The last beat. The word finishes refining at ~5.8s and the hero assembles until ~7.4s; the
+       shine crosses the logotype once it has come to rest, so the opening ends on the mark it
+       started with. Started while the mark was still moving, its leading edge read as a light line
+       down the side of the first letter. */
+    --shine-delay: 7.8s;
+    width: min(74cqi, 30rem);
+    margin-bottom: clamp(var(--space-3), 3svh, var(--space-5));
+  }
+
+  /* === The opening === */
+
+  /* Five keystrokes, at the letter boundaries, unevenly spaced.
+   *
+   * The mark is five paths — `l`, `u`, `x`, `e`, `.` — so a reveal quantized to the 44-cell grid was
+   * quantized to the wrong thing: forty-four even 20ms slices read as a smooth wipe, which is the
+   * one thing typing never looks like. These keyframe positions are the gaps *between letters*, and
+   * the times between them are deliberately irregular — a short reach to `u`, a longer one to `e`,
+   * the full stop arriving late — because evenly spaced keystrokes are the tell that nobody typed.
+   *
+   * `steps(1, end)` per segment is what makes each one a keystroke: the frame holds, then the next
+   * letter is simply there. `clip-path` rather than width, so the box is its final size from the
+   * first frame and nothing below it moves while the mark prints. */
+  .hero__mark :global(svg) {
+    animation: print 1300ms steps(1, end) 1250ms both;
+  }
+
+  @keyframes print {
+    0% {
+      clip-path: inset(0 100% 0 0);
+    }
+    14% {
+      clip-path: inset(0 79.5% 0 0);
+    }
+    31% {
+      clip-path: inset(0 55.7% 0 0);
+    }
+    43% {
+      clip-path: inset(0 33% 0 0);
+    }
+    64% {
+      clip-path: inset(0 9% 0 0);
+    }
+    79%,
+    100% {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* The caret that does the printing. Same duration and the same 44 steps as the reveal, so it sits
+     exactly on the edge it is supposed to be drawing rather than drifting ahead of it. */
+  .hero__caret {
+    position: absolute;
+    top: 6%;
+    bottom: 6%;
+    width: 0.7rem;
+    background: var(--luxe-accent);
+    /* Its resting state is finished and gone, so anything that suppresses the animation — reduced
+       motion, a print stylesheet, a screenshot harness — leaves it invisible past the end of the
+       mark rather than parked on top of a letter. */
+    left: calc(100% - 0.7rem);
+    opacity: 0;
+    animation:
+      caret-blink 1000ms steps(1, end) 250ms both,
+      caret-run 1300ms steps(1, end) 1250ms both,
+      /* `forwards`, not `both`. A backwards fill applies this animation's first keyframe during its
+         own delay, and because it is last in the list it then owns `opacity` for the entire
+         timeline — the blink above ran, changed nothing anyone could see, and the caret sat solid
+         until it faded. Forwards-only leaves the earlier animation in charge until this one starts. */
+      caret-leave 240ms ease-out 2550ms forwards;
+  }
+
+  /* The same keyframe times as the reveal, so the caret is always sitting on the edge it is
+     supposed to be drawing rather than gliding across letters that have not appeared yet. */
+  @keyframes caret-run {
+    0% {
+      left: 0;
+    }
+    14% {
+      left: 20.5%;
+    }
+    31% {
+      left: 44.3%;
+    }
+    43% {
+      left: 67%;
+    }
+    64% {
+      left: 91%;
+    }
+    79%,
+    100% {
+      left: calc(100% - 0.7rem);
+    }
+  }
+
+  /* The caret arrives, waits, and blinks twice before a single letter is typed.
+   *
+   * Something has to be on screen before the typing starts, or the first keystroke lands on an empty
+   * page and there is nothing to understand it as. Two blinks is the pause a person takes before
+   * they begin.
+   *
+   * One iteration with the blinks written out rather than `infinite` with a count: the animation has
+   * to *end lit*, because what follows is a caret that stays solid while it draws. A repeating
+   * on-off pattern ends on whichever half the count lands in, and a caret that vanishes just as the
+   * first letter appears reads as a dropped frame. */
+  @keyframes caret-blink {
+    0%,
+    20% {
+      opacity: 1;
+    }
+    21%,
+    45% {
+      opacity: 0;
+    }
+    46%,
+    70% {
+      opacity: 1;
+    }
+    71%,
+    95% {
+      opacity: 0;
+    }
+    96%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes caret-leave {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  /* Everything under the mark arrives after it, in the order it is read. Small distances and a
+     short stagger: this is punctuation on a page someone came to for a terminal, not a curtain. */
+  .hero__line,
+  .hero__lede,
+  .hero__install,
+  .hero__note {
+    animation: rise 520ms var(--ease) both;
+  }
+
+  .hero__line {
+    animation-delay: 2500ms;
+  }
+  .hero__lede {
+    animation-delay: 2610ms;
+  }
+  .hero__install {
+    animation-delay: 2710ms;
+  }
+  .hero__note {
+    animation-delay: 2800ms;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.6rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Nobody waits for an animation they asked not to see. Everything lands in its final state on the
+     first frame, and the caret never appears at all. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__mark :global(svg),
+    .hero__line,
+    .hero__lede,
+    .hero__install,
+    .hero__note {
+      animation: none;
+    }
+
+    .hero__caret {
+      display: none;
+    }
+  }
+
+  /* "Built to help you do the work." is about 9.7em wide, so 10cqi keeps each line on one line in
+     any column, a hair under the type's cap at a laptop's width */
+  .hero__line {
+    font-size: min(var(--step-4), 10cqi);
+    margin-bottom: var(--space-4);
+  }
+
+  /* The word refines itself.
+   *
+   * It arrives set like the rest of the line, gets selected the way a double-click selects a word,
+   * and comes back italic in the accent. The page editing itself is the one gesture this product
+   * could not borrow from anybody else.
+   *
+   * The highlight is not a decorative box: `::selection` on this site is the accent behind the
+   * background color, and those are the two colors used here, so it reads as a real selection
+   * rather than as a badge that happens to be near some text.
+   *
+   * Resting state is the finished one. The animation holds its first keyframe through the delay via
+   * `both`, so nothing has to be scripted and a suppressed animation lands on the design rather than
+   * on a half-applied step. */
+  .hero__line em {
+    font-style: italic;
+    color: var(--luxe-accent);
+  }
+
+  .hero__refine {
+    position: relative;
+    /* Room for the highlight to sit in, taken back from the margin so the line does not re-wrap. */
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    animation: refine 3100ms 3500ms both;
+  }
+
+  /* The selection is a second copy of the word, revealed right to left.
+   *
+   * A background behind the text cannot invert it, and light text on the accent is unreadable — so
+   * the highlight is the same word again, drawn in the selection's own colors, clipped to whatever
+   * has been "selected" so far. `steps(7)` for seven characters: the selection arrives a letter at a
+   * time, the way a drag does, rather than the whole word blinking on at once.
+   *
+   * Right to left because that is how the gesture reads as deliberate — the cursor lands past the
+   * end of the word and pulls back across it.
+   *
+   * A real element rather than `::after`, because several screen readers announce generated
+   * content and this one sits inside the `h1`: the page's own heading would have read "Built for
+   * agents. Refined Refined for humans." */
+  .hero__refine span {
+    position: absolute;
+    inset: 0;
+    padding-inline: inherit;
+    background: var(--luxe-accent);
+    color: var(--luxe-background);
+    clip-path: inset(0 0 0 100%);
+    /* Not selectable and not clickable: it is a picture of a selection sitting on top of the real
+       word, and letting a reader drag through it would hand them "RefinedRefined". */
+    user-select: none;
+    pointer-events: none;
+    animation: select 3100ms steps(7, end) 3500ms both;
+  }
+
+  /* The swap happens *under* the highlight, on purpose.
+   *
+   * Italic and upright are not the same width, and the line is centered — so the moment the style
+   * changes, everything after it slides about ten pixels. Released first, that reads as a glitch.
+   * Changed while the selection is still lit, the movement happens inside a solid block of accent
+   * and the eye reads what actually happened: the selected word was replaced. */
+  /* The word underneath. It is covered from the moment the selection completes until it releases,
+     so the only visible transitions are the italic snap — which happens *under* the highlight, see
+     below — and the accent it is wearing when the highlight lifts. */
+  @keyframes refine {
+    0%,
+    41% {
+      color: inherit;
+      font-style: normal;
+    }
+    42%,
+    74% {
+      color: inherit;
+      font-style: italic;
+    }
+    75%,
+    100% {
+      color: var(--luxe-accent);
+      font-style: italic;
+    }
+  }
+
+  /* Over 3100ms: 0 → 18%  the drag, ~80ms a character. Quicker than the rest on purpose — pulling a
+                          cursor across a word is the fastest thing a person does here, and at 120ms
+                          it read as hesitant rather than deliberate.
+     18 → 41%   it sits there, selected, long enough to register
+     42%        the swap, still selected: italic and upright are different widths and the line is
+                centered, so the reflow happens inside a solid block of accent and reads as the
+                selected word being replaced rather than as the page twitching
+     42 → 74%   it sits there again, so the change can be read
+     75%        released
+
+     The two holds keep the same real duration they had before the drag was shortened — that is what
+     the percentages are for, and moving the total without moving them would have sped up the part
+     that was already right. */
+  @keyframes select {
+    0% {
+      clip-path: inset(0 0 0 100%);
+      font-style: normal;
+      opacity: 1;
+    }
+    18%,
+    41% {
+      clip-path: inset(0 0 0 0);
+      font-style: normal;
+      opacity: 1;
+    }
+    42%,
+    74% {
+      clip-path: inset(0 0 0 0);
+      font-style: italic;
+      opacity: 1;
+    }
+    75%,
+    100% {
+      clip-path: inset(0 0 0 0);
+      font-style: italic;
+      opacity: 0;
+    }
+  }
+
+  /* Here rather than with the other reduced-motion resets, which are declared further up the sheet
+     than this rule is. Same specificity, so the later one wins — the reset up there looked right and
+     did nothing, leaving the word held on the animation's first keyframe: upright and unaccented,
+     which is the one state the design never wanted to end on. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__refine,
+    .hero__refine span {
+      animation: none;
+    }
+
+    .hero__refine span {
+      display: none;
+    }
+  }
+
+  .hero__lede {
+    font-size: min(var(--step-1), 4.3cqi);
+    max-width: 54ch;
+    margin-bottom: clamp(var(--space-3), 3svh, var(--space-5));
+  }
+
+  /* Centered as a block, but its contents are a terminal: tab labels and a shell command read from
+     the left, and the inherited centering put `cargo install luxe-cli` in the middle of its own box. */
+  .hero__install {
+    width: min(100%, 44rem);
+    margin-bottom: var(--space-3);
+    text-align: left;
+  }
+
+  .hero__note {
+    font-size: var(--step--1);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* A short screen cannot have both a full-size hero and a glimpse of the demo, and the glimpse is
+     the part doing work — so the type gives. Keyed to height rather than width because that is the
+     axis that ran out: a 1366x768 laptop is wide enough for anything and still has only 728px of
+     browser to spend, which the lead was eating whole. */
+  @media (max-height: 900px) {
+    .hero__lead {
+      padding-top: var(--space-4);
+    }
+
+    .hero__mark {
+      width: min(74cqi, 21rem);
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__line {
+      font-size: min(var(--step-3), 10cqi);
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__lede {
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__install {
+      margin-bottom: var(--space-2);
+    }
+  }
+
+  /* The demo is the hero's second half, not a section below it — a reader should meet the product
+     working before they meet a heading about it. `justify-self: stretch` because the hero's grid
+     starts its children at the text's left edge, and the demo centers itself on the page. */
+  /* Rises from the bottom right. A full screen of travel, so at rest it is outside the viewport
+     rather than merely invisible — which is what keeps `client:visible` from hydrating and playing
+     it to an empty room. The horizontal drift is small and clipped by the hero. */
+  .hero__demo {
+    grid-area: 1 / 2;
+    min-width: 0;
+    opacity: var(--p);
+    transform: translate(calc((1 - var(--p)) * 4rem), calc((1 - var(--p)) * 100svh));
+  }
+
+  /* One column below the width where a terminal beside a paragraph is honest. No choreography —
+     the hero is simply the words and then the demo, which a scroll finds where it expects to. */
+  @media (max-width: 68rem) {
+    .hero__stage {
+      min-height: 0;
+      padding-block: var(--space-6);
+    }
+
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero__lead,
+    .hero__demo {
+      grid-area: auto;
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  /* Reduced motion keeps the two-column composition and throws away the assembly: the layout was
+     never the problem, the movement was. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero {
+      transition: none;
+    }
+
+    .hero__lead,
+    .hero__demo {
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  .section {
+    position: relative;
+  }
+
+  .section--last {
+    border-bottom: 0;
+  }
+
+  /* Text and media share a row, and which side the text is on alternates down the page.
+
+     The page is wide enough for this now. It was not before: a 150-column terminal in a side column
+     of a 74rem page is four pixels a character, which is why this started as a single stacked
+     column with the text centered over the media. At 104rem the media track is ~1120px — wider than
+     the 960px the full-bleed version actually rendered at — so the two-column layout costs the
+     demos nothing and buys back the half of a 2560px display that used to be empty.
+
+     The text track is fixed and the media takes the rest, because the terminal is the thing that
+     wants pixels; a reading column past ~60 characters gets worse, not better. */
+  .duo {
+    display: grid;
+    grid-template-columns: minmax(0, var(--text-col)) minmax(0, 1fr);
+    gap: var(--space-5) var(--space-6);
+    align-items: center;
+  }
+
+  .section {
+    --text-col: 34rem;
+  }
+
+  .duo + .duo {
+    margin-top: var(--space-6);
+  }
+
+  .duo__text {
+    grid-area: 1 / 1;
+  }
+
+  /* `min-width: 0` or the terminal's intrinsic width wins the track negotiation and pushes the text
+     column out of the page — the classic grid blowout, and it is silent. */
+  .duo__media {
+    grid-area: 1 / 2;
+    min-width: 0;
+  }
+
+  /* Flipping has to move the track sizes too, not just the contents.
+
+     Swapping only `grid-area` handed the terminal the 28rem text track and the paragraphs the wide
+     one — silently, because both still fit. The demo simply rendered at 445px in a column that had
+     1120 available. */
+  .duo--flip {
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--text-col));
+  }
+
+  .duo--flip .duo__text {
+    grid-area: 1 / 2;
+    text-align: right;
+  }
+
+  .duo--flip .duo__media {
+    grid-area: 1 / 1;
+  }
+
+  /* Right-aligned text has to reach the column's edge, and a paragraph does not by default: `p`
+     carries `max-width: var(--measure)`, which is 68ch of the *mono* face and can be narrower than
+     the track. The box then sits at the track's left and `text-align: right` aligns the text inside
+     that narrower box — leaving the paragraphs indented from the heading above them by whatever the
+     difference happened to be. */
+  .duo--flip .duo__text :is(p, .prose) {
+    margin-inline-start: auto;
+  }
+
+  /* One column, text first, below the width where two of them are honest. */
+  @media (max-width: 68rem) {
+    .duo,
+    .duo--flip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .duo__text,
+    .duo__media,
+    .duo--flip .duo__text,
+    .duo--flip .duo__media {
+      grid-area: auto;
+      text-align: left;
+    }
+
+    .duo--flip .duo__text :is(p, .prose) {
+      margin-inline-start: 0;
+    }
+  }
+
+  /* A section with no media gets a reading column instead of the full page, centered — the width
+     that suits a terminal beside it is not a width anyone can read across. */
+  .section--narrow > * {
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  /* The closing section is a heading, a command and a sentence. Centered, because there is nothing
+     to sit beside and an install line pushed to one edge of a 1664px page reads as a mistake. */
+  .section--center {
+    text-align: center;
+  }
+
+  .section--center > * {
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .section--center p {
+    margin-inline: auto;
+  }
+
+  /* Numbered, by a counter rather than by hand — a label that says `04` while sitting fifth is
+     worse than no number, and hand-typed ones get there the first time a section moves. */
+  .section .eyebrow::before {
+    counter-increment: section;
+    content: counter(section, decimal-leading-zero) " — ";
+    color: var(--luxe-dim);
+  }
+
+  .prose {
+    margin-top: var(--space-4);
+  }
+
+  /* A command is one word to the reader: `luxe --` at the end of one line and `issue 123` at the
+     start of the next reads as two */
+  .prose code {
+    white-space: nowrap;
+  }
+
+
+  /* Three short notes in a row, for the parts of a section that are a list of facts rather than
+     an argument. A plate like everything else, and quiet: the headings carry them. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: var(--space-6) 0 0;
+  }
+
+  .card {
+    padding: var(--space-4);
+    background: var(--luxe-user-msg-bg);
+    border: var(--border);
+  }
+
+  .card h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--step-2);
+    line-height: 1.1;
+    margin: 0 0 var(--space-2);
+  }
+
+  .card p {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--luxe-muted);
+  }
+
+  /* The config directory. Not a capture, so it follows the page's mode rather than wearing the
+     recordings' dark canvas, and it sits on the same plate as the install box. */
+  .tree {
+    margin: 0;
+    width: min(100%, 46rem);
+    margin-inline: auto;
+  }
+
+  .tree__body {
+    margin: 0;
+    padding: var(--space-4);
+    color: var(--luxe-text);
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 0.62rem + 0.35vw, 0.95rem);
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  .tree__root {
+    margin: 0;
+    color: var(--luxe-accent);
+  }
+
+  /* Name and note side by side, like `tree` with comments, until the column is too narrow for
+     both; then the note drops under its name rather than scrolling off the edge. The branches are
+     box-drawing characters, which the terminal face draws at exactly one cell, so they join up. */
+  .tree__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tree__list li {
+    display: grid;
+    grid-template-columns: 26ch minmax(0, 1fr);
+    gap: 0 2ch;
+    white-space: pre;
+    /* JetBrains Mono's ascent and descent: at exactly this height a box-drawing bar meets the one
+       on the next row, as it does in a terminal */
+    line-height: 1.32;
+  }
+
+  .tree__branch {
+    color: var(--luxe-dim);
+  }
+
+  .tree__list li > :last-child {
+    color: var(--luxe-muted);
+    white-space: normal;
+  }
+
+  @media (max-width: 36rem) {
+    .tree__list li {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* A note drops under its name, and carries the tree's bars down beside it so the tree does not
+       break where the note sits */
+    .tree__list li > :last-child:not(:empty)::before {
+      content: attr(data-trail);
+      white-space: pre;
+      color: var(--luxe-dim);
+    }
+  }
+
+  .tree__caption {
+    font-size: var(--step--1);
+    margin-top: var(--space-3);
+  }
+
+  .start__install {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+</style>

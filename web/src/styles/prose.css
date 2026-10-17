@@ -1,0 +1,212 @@
+/* Long-form document styling.
+ *
+ * Scoped to `.prose-body` so it applies to rendered Markdown and to nothing else. Body copy is set
+ * in the mono face like the rest of the site — the manual describes a terminal program, and reading
+ * it in the same face the program uses is worth more than the extra character-width a sans buys.
+ */
+
+/* The *column* is wide enough for a config block; the *prose* inside it is not. Paragraphs and
+   lists keep the measure (`base.css` sets it on `p`), and code, tables and images get the room they
+   need rather than a horizontal scrollbar on every one. */
+.prose-body {
+	max-width: 58rem;
+}
+
+.prose-body :is(ul, ol, blockquote) {
+	max-width: var(--measure);
+}
+
+.prose-body > * + * {
+	margin-top: var(--space-3);
+}
+
+.prose-body h2,
+.prose-body h3,
+.prose-body h4 {
+	font-family: var(--font-display);
+	font-weight: 400;
+	letter-spacing: -0.01em;
+	line-height: 1.15;
+	scroll-margin-top: 6rem;
+}
+
+.prose-body h2 {
+	font-size: var(--step-2);
+	margin-top: var(--space-6);
+	padding-top: var(--space-4);
+	border-top: var(--border);
+}
+
+.prose-body h3 {
+	font-size: var(--step-1);
+	margin-top: var(--space-5);
+}
+
+.prose-body h4 {
+	font-family: var(--font-mono);
+	font-size: var(--step-0);
+	color: var(--luxe-accent);
+	margin-top: var(--space-4);
+}
+
+/* An anchor that only shows when you are near it. */
+.prose-body :is(h2, h3) > a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.prose-body :is(h2, h3) > a::after {
+	content: "#";
+	margin-left: 0.4em;
+	color: var(--luxe-dim);
+	opacity: 0;
+	transition: opacity 150ms var(--ease);
+}
+
+.prose-body :is(h2, h3):hover > a::after,
+.prose-body :is(h2, h3) > a:focus-visible::after {
+	opacity: 1;
+}
+
+.prose-body :is(ul, ol) {
+	padding-left: 1.3em;
+}
+
+.prose-body li + li {
+	margin-top: var(--space-2);
+}
+
+.prose-body :not(pre) > code {
+	background: var(--luxe-user-msg-bg);
+	padding: 0.12em 0.4em;
+	color: var(--luxe-accent);
+}
+
+.prose-body pre {
+	background: var(--luxe-user-msg-bg);
+	padding: var(--space-3) var(--space-4);
+	overflow-x: auto;
+	border-left: 2px solid var(--luxe-border-muted);
+	font-size: var(--step--1);
+	line-height: 1.6;
+	max-width: none;
+}
+
+/* JetBrains Mono's ascent and descent, at which a box-drawing bar meets the next row's */
+.prose-body pre.code-tree {
+	line-height: 1.32;
+}
+
+.prose-body pre code {
+	background: none;
+	padding: 0;
+	color: inherit;
+}
+
+/* A screenshot from the guide: the real interface, drawn by the fixture runner, on the same plate
+   as the code blocks, with its alt text as a caption. */
+.prose-body .guide-shot {
+	margin-inline: 0;
+	max-width: none;
+}
+
+.prose-body .guide-shot__plate {
+	border: var(--border);
+	line-height: 0;
+	overflow-x: auto;
+}
+
+/* Shrunk to a phone's width a 100-column capture is two pixels a character. Below that, it keeps a
+   readable size and scrolls sideways instead. */
+@media (max-width: 40rem) {
+	.prose-body .guide-shot svg {
+		min-width: 38rem;
+	}
+}
+
+.prose-body .guide-shot svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.prose-body .guide-shot figcaption {
+	margin-top: var(--space-2);
+	font-size: var(--step--1);
+	color: var(--luxe-muted);
+}
+
+/* A config example names its file, as a tab on the block: where to paste it is half the example. */
+.prose-body .code-file {
+	margin-inline: 0;
+	max-width: none;
+}
+
+.prose-body .code-file figcaption {
+	display: inline-block;
+	padding: 0.35em var(--space-4);
+	background: var(--luxe-user-msg-bg);
+	border-left: 2px solid var(--luxe-accent);
+	border-bottom: 1px solid var(--luxe-border-muted);
+	color: var(--luxe-muted);
+	font-size: var(--step--1);
+}
+
+.prose-body .code-file pre {
+	margin-top: 0;
+}
+
+/* Shiki emits the theme as custom properties rather than inline colors, so the code sits on the
+   site's own plate instead of the one its theme would paint. */
+.astro-code,
+.astro-code span {
+	color: var(--shiki-dark);
+	background-color: transparent;
+}
+
+.prose-body blockquote {
+	margin: 0;
+	padding-left: var(--space-3);
+	border-left: 2px solid var(--luxe-accent);
+	color: var(--luxe-muted);
+}
+
+.prose-body table {
+	border-collapse: collapse;
+	font-size: var(--step--1);
+	width: 100%;
+	max-width: none;
+	display: block;
+	overflow-x: auto;
+}
+
+.prose-body :is(th, td) {
+	text-align: left;
+	padding: 0.55em 1em 0.55em 0;
+	border-bottom: 1px solid var(--luxe-border-muted);
+	vertical-align: top;
+}
+
+.prose-body th {
+	color: var(--luxe-muted);
+	font-weight: 400;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-size: var(--step--1);
+	white-space: nowrap;
+}
+
+.prose-body hr {
+	border: 0;
+	border-top: var(--border);
+	margin-block: var(--space-5);
+}
+
+.prose-body img {
+	max-width: 100%;
+	height: auto;
+}
+
+.prose-body a {
+	text-decoration-color: var(--luxe-accent);
+}

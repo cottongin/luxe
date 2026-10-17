@@ -1,0 +1,5 @@
+# Everything here is meant to be read.
+User-agent: *
+Allow: /
+
+Sitemap: https://luxe.dev/sitemap-index.xml

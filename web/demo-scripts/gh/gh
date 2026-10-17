@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+"""A stand-in `gh` for the demo project, which has no GitHub to talk to.
+
+The toy project under `web/demo` is fictional, and so is its repository: `acme/todo`. A take that
+shows the `@` picker's GitHub tab needs issues and pull requests to list, and pointing a recording at
+a real repository would put strangers' names and titles on the website. So the recorder puts this
+directory first on `PATH` (`#: bin gh` in a script) and Luxe lists what's here instead.
+
+Everything else about the take is real: the picker, the chips, the model, the tools it calls. The
+answers are the shapes `gh` actually prints (see `crates/luxe-core/src/github/fixtures/`), and it
+refuses anything it doesn't know, loudly, so a take that wanders off the script fails rather than
+showing something made up on the spot. Read-only by construction: nothing here writes or posts.
+"""
+
+import json
+import sys
+
+REPO = "acme/todo"
+URL = f"https://github.com/{REPO}"
+ME = "luxe-demo"
+
+ISSUES = {
+    12: {
+        "title": "`todo due 2026-3-4` misses tasks due that day",
+        "author": "mara-okafor",
+        "updated": "2026-09-28T16:12:00Z",
+        "body": (
+            "Dates without leading zeros don't match anything:\n\n"
+            "```\n$ todo add 'file taxes' --due 2026-03-04\n$ todo due 2026-3-4\nnothing here\n```\n\n"
+            "`todo due 2026-03-04` finds it. I'd expect either both to work or the short one to be "
+            "rejected with a message, not silently match nothing."
+        ),
+    },
+    9: {
+        "title": "`todo done` should match titles case-insensitively",
+        "author": "jon-avery",
+        "updated": "2026-09-26T09:40:00Z",
+        "body": "`todo done Buy milk` fails when the task was added as `buy milk`.",
+    },
+    7: {
+        "title": "A task added with no title is saved anyway",
+        "author": "mara-okafor",
+        "updated": "2026-09-21T13:05:00Z",
+        "body": "`todo add --due 2026-10-01` saves a task whose title is an empty string.",
+    },
+}
+
+PULLS = {
+    15: {"title": "Add `todo edit` to rename a task", "author": "jon-avery", "updated": "2026-09-29T08:30:00Z"},
+    13: {"title": "Sort `todo list` by due date", "author": ME, "updated": "2026-09-27T18:02:00Z"},
+}
+
+
+def node(kind, number, item):
+    return {
+        "__typename": kind,
+        "number": number,
+        "title": item["title"],
+        "url": f"{URL}/{'pull' if kind == 'PullRequest' else 'issues'}/{number}",
+        "state": "OPEN",
+        "isDraft": False,
+        "updatedAt": item["updated"],
+        "repository": {"nameWithOwner": REPO},
+        "author": {"login": item["author"]},
+    }
+
+
+def search(query):
+    if "is:issue" in query:
+        nodes = [node("Issue", n, i) for n, i in ISSUES.items()]
+    elif "review-requested:@me" in query:
+        nodes = [node("PullRequest", 15, PULLS[15])]
+    elif "author:@me" in query:
+        nodes = [node("PullRequest", 13, PULLS[13])]
+    else:
+        nodes = []
+    return {"data": {"search": {"nodes": nodes}}}
+
+
+def flag(args, name):
+    """The value after `name`, from either `-f name=value` style or `--name value`."""
+    for i, arg in enumerate(args):
+        if arg in ("-f", "-F") and i + 1 < len(args) and args[i + 1].startswith(f"{name}="):
+            return args[i + 1].split("=", 1)[1]
+        if arg == f"--{name}" and i + 1 < len(args):
+            return args[i + 1]
+    return None
+
+
+def issue_view(args):
+    number = int(next(a for a in args[2:] if a.isdigit()))
+    issue = ISSUES.get(number)
+    if issue is None:
+        refuse(f"GraphQL: Could not resolve to an issue or pull request with the number of {number}.")
+    if "--json" in args:
+        print(json.dumps({
+            "number": number,
+            "title": issue["title"],
+            "body": issue["body"],
+            "url": f"{URL}/issues/{number}",
+            "author": {"login": issue["author"], "is_bot": False},
+            "comments": [],
+        }))
+        return
+    print(f"{issue['title']} {REPO}#{number}")
+    print(f"Open • {issue['author']} opened • 0 comments\n")
+    print(issue["body"])
+    print(f"\nView this issue on GitHub: {URL}/issues/{number}")
+
+
+def refuse(message):
+    print(message, file=sys.stderr)
+    sys.exit(1)
+
+
+def main(args):
+    if args[:1] == ["--version"]:
+        print("gh version 2.100.0 (demo stand-in)")
+    elif args[:2] == ["auth", "status"]:
+        print(json.dumps({"hosts": {"github.com": [{
+            "state": "success", "active": True, "host": "github.com", "login": ME,
+            "tokenSource": "keyring", "scopes": "repo", "gitProtocol": "https",
+        }]}}))
+    elif args[:2] == ["repo", "view"]:
+        print(json.dumps({"nameWithOwner": REPO, "url": URL, "defaultBranchRef": {"name": "main"}}))
+    elif args[:2] == ["issue", "view"]:
+        issue_view(args)
+    elif args[:2] == ["issue", "list"]:
+        for number, issue in ISSUES.items():
+            print(f"#{number}\tOPEN\t{issue['title']}")
+    elif args[:2] == ["api", "graphql"]:
+        query = flag(args, "query") or ""
+        if "search(" in query:
+            print(json.dumps(search(flag(args, "q") or "")))
+        elif "pullRequests(headRefName" in query:
+            # No pull request for this branch yet, which is the truth for a fresh session
+            print(json.dumps({"data": {"repository": {
+                "defaultBranchRef": {"name": "main"},
+                "pullRequests": {"nodes": []},
+                "stack": {"nodes": []},
+            }, "rateLimit": {"remaining": 4999, "resetAt": "2026-09-29T20:00:00Z"}}}))
+        else:
+            refuse("demo gh: this query isn't part of the demo")
+    else:
+        refuse(f"demo gh: `gh {' '.join(args)}` isn't part of the demo")
+
+
+main(sys.argv[1:])

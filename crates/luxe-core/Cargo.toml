@@ -1,0 +1,85 @@
+[package]
+name = "luxe-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Luxe's engine: the agent loop, session model, context assembly, permissions, and the Provider/Tool/Hook traits"
+repository.workspace = true
+homepage.workspace = true
+
+# Forbidden edges: core must NOT depend on any workspace-internal crate,
+# no HTTP (reqwest), no UI (ratatui, iced). Local process spawning IS allowed
+# for hook-/tool-driven work (review gate, command hooks, formatters, git, MCP
+# stdio) — the hard boundary is no UI and no HTTP/provider deps.
+# Allowed inward edges: providers → core, tools → core, lsp → core,
+# tui/gui/cli → core.
+
+[dependencies]
+thiserror = { workspace = true }
+# the one CommonMark answer to "is this line a link definition", for the instruction filter
+pulldown-cmark = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+futures = { workspace = true }
+async-trait = { workspace = true }
+regex = "1"
+sha2 = "0.11"
+# The OAuth loopback: PKCE (sha2 + base64url), verifier and state randomness, and parsing the
+# redirect a browser hands back. No HTTP client: the listener is a raw socket.
+base64 = { workspace = true }
+getrandom = "0.4"
+url = "2"
+# Hex for the digests above. `sha2` 0.11 returns a `hybrid_array::Array`, which has no `LowerHex`,
+# so `{:x}` is gone; `base16ct` is RustCrypto's own encoder, so it moves with `sha2` rather than
+# against it, and its output is the same lowercase, fixed-width, unseparated string the persisted
+# review ids were minted with.
+base16ct = { version = "1", features = ["alloc"] }
+semver = { workspace = true }
+# Auth prompt answers are secrets more often than not; one redacted, zeroize-on-drop type for all
+# of them means no call site can print one by accident.
+secrecy = { workspace = true }
+# `$EDITOR` is a command line, not a path (`code --wait`), and splitting it is a quoting problem
+shlex = { workspace = true }
+# Whether two instruction or skill paths are one file: a symlink, or `AGENTS.md` matching
+# `agents.md` on a case-insensitive volume. `canonicalize` cannot say, since macOS `realpath` keeps
+# whatever case it was handed. Already in the tree under `walkdir`.
+same-file = "1"
+# The FILES tree, the symbol index and the search tools all walk one way: `.gitignore` honored,
+# one glob dialect (`walk`)
+ignore = "0.4"
+globset = "0.4"
+
+# Killing a timed-out process group, as a syscall rather than a subprocess.
+#
+# `kill(2)` needs one `unsafe` line and this workspace denies those, so the previous version shelled
+# out to `kill(1)`. That turned out to be three problems in a trench coat: a blocking
+# `std::process` spawn-and-wait on an async runtime's thread, a `PATH` lookup that can miss, and an
+# argument shape whose handling differs between the util-linux `kill` and the procps-ng one. rustix
+# wraps the syscall safely, so all three go away and nothing is spawned to reap the spawner.
+# `system` is for `uname().nodename()`: a loop's state file records which machine wrote it, so a
+# project on a shared or synced directory cannot read another box's process id as its own.
+#
+# `stdio` is `dup2_stdin`, which points stdin at the null device once `luxe --rpc` has taken it.
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1", features = ["process", "stdio", "system"] }
+
+# Pointing stdin at the null device on Windows, and keeping the pipe Luxe took out of every child:
+# no safe API does either, and without it every child of `luxe --rpc` stalls behind the protocol
+# read. See `program::take_stdin`.
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_Console"] }
+
+[dev-dependencies]
+tempfile = "3"
+# `tokio::time::pause` — a provider retry's backoff is tested against a paused clock
+tokio = { workspace = true, features = ["test-util"] }
+# Ageing the config lock, which is a *directory*. std can set a file's times but cannot open a
+# directory to do it on Windows (that needs `FILE_FLAG_BACKUP_SEMANTICS`), so the stale-lock test was
+# a `not(unix)` no-op there and the lock was therefore never stale — the writer just timed out.
+filetime = "0.2"
+
+[lints]
+workspace = true

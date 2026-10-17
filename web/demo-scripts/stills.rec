@@ -1,0 +1,46 @@
+# stills — the command palette and the slash picker, standing still.
+#
+# Not a demo: nobody watches this take. It opens the palette with a few letters typed, and
+# `scripts/cast-still.py` cuts the frame out of the raw recording at the time the driver log gives
+# for it. Recorded with `--raw`, so the log's clock and the cast's agree, and the raw take is what's
+# committed as `captures/stills.cast`.
+#
+#   scripts/site-record.sh --raw web/demo-scripts/stills.rec   (then keep stills.raw.cast)
+#   S=web/src/assets/captures
+#   scripts/cast-still.py $S/stills.cast --at <still: palette + 0.5> --out $S/palette.svg
+#   scripts/cast-still.py $S/stills.cast --at <same> --crop 21,6,107,24 --out $S/palette.narrow.svg
+#   scripts/cast-still.py $S/stills.cast --at <still: slash + 0.5> --out $S/slash.svg
+#   scripts/cast-still.py $S/stills.cast --at <same> --crop 43,12,107,24 --out $S/slash.narrow.svg
+#
+# The dirty tree is there so the dock beside the palette has changes to list.
+
+#: cols 150
+#: rows 36
+#: model anthropic/claude-sonnet-5-5
+#: thinking low
+#: glyphs nerd
+#: bin gh
+#: seed bash "$DEMO_SCRIPTS/demo-skills.sh"
+#: setup bash "$DEMO_SCRIPTS/review-change.sh"; git remote add origin https://github.com/acme/todo.git
+
+sleep 3
+mark start
+
+log palette
+mod ctrl k
+sleep 1.5
+type rev
+sleep 2.5
+log still: palette
+sleep 1.5
+key Escape
+sleep 1
+
+log slash
+type /git
+sleep 2.5
+log still: slash
+sleep 1.5
+key Escape
+sleep 1
+mark end

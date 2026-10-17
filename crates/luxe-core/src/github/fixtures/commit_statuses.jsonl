@@ -1,0 +1,13 @@
+{"context":"buildbot/ARM64 MacOS M1 NoGIL 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1270/builds/8723"}
+{"context":"buildbot/x86 Debian Installed with X 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1244/builds/9703"}
+{"context":"buildbot/aarch64 Ubuntu Oddballs 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1868/builds/2298"}
+{"context":"buildbot/AMD64 CentOS9 NoGIL 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1609/builds/7154"}
+{"context":"buildbot/AMD64 Alpine Linux 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/301/builds/16364"}
+{"context":"buildbot/x86 Debian Non-Debug with X 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1245/builds/9595"}
+{"context":"buildbot/ARM Raspbian 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/424/builds/15113"}
+{"context":"buildbot/wasm32-wasi 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1046/builds/13190"}
+{"context":"buildbot/AMD64 Alpine Linux NoGIL 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1819/builds/3211"}
+{"context":"buildbot/AMD64 Windows PGO NoGIL 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1622/builds/5722"}
+{"context":"Azure Pipelines CI","description":"#20260924.53 failed","state":"failure","target_url":"https://dev.azure.com/Python/8e426817-76c0-4b99-ba9e-a48a1e4bd5db/_build/results?buildId=175169"}
+{"context":"buildbot/AMD64 Debian root 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/345/builds/15495"}
+{"context":"buildbot/WASM Emscripten 3.x","description":"Build done.","state":"success","target_url":"https://buildbot.python.org/#/builders/1810/builds/3947"}

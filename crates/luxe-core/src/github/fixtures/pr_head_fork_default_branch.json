@@ -1,0 +1,1 @@
+{"data":{"repository":{"viewerPermission":"READ","defaultBranchRef":{"name":"trunk"},"pullRequest":{"headRefName":"trunk","isCrossRepository":true,"maintainerCanModify":false,"headRepositoryOwner":{"login":"HIHACK1911"},"headRepository":{"name":"cli-go","viewerPermission":"READ"}}}}}

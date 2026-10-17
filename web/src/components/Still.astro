@@ -1,0 +1,176 @@
+---
+/**
+ * A frame lifted out of a real recording.
+ *
+ * Some surfaces do not survive being watched. Guided Review puts a chapter's argument beside the
+ * code it argues about, and a reader meeting that for the first time needs to stop on it — played
+ * at demo speed it registers as motion rather than as information. So these come from the same
+ * captures the demos do, cut with `scripts/cast-still.py`, and there is still one source of truth
+ * for what Luxe looks like.
+ *
+ * A recording bakes its colors in, and the site is drawn in the same theme it was recorded in.
+ *
+ * The markup is inlined for the reason `Shot` documents: an SVG behind `<img src>` is its own
+ * document, cannot see this page's `@font-face`, and would draw every Nerd Font icon as tofu for
+ * everyone who does not already have the face installed.
+ */
+interface Props {
+  /** Capture basename, e.g. `palette`. */
+  name: string;
+  /**
+   * Where the picture comes from: a frame cut out of a recording (the default), or a fixture
+   * `scripts/site-assets.sh` generates from the production view path.
+   *
+   * Either way it is Luxe's own theme, so a fixture and a recording beside it are one product.
+   */
+  from?: "captures" | "generated";
+  /**
+   * A cropped cut of the same moment, for phones.
+   *
+   * The same arithmetic that governs the demos: a 150-column capture shrunk to a 340px column is
+   * about two pixels a character, which is a picture of a screenshot rather than a screenshot. A
+   * *crop* keeps the type readable by showing less — the guide pane without the diff beside it,
+   * the comment box without the surface around it — which is the right trade on a phone, where
+   * nobody was going to read three panes anyway.
+   */
+  narrow?: string;
+  /** What the picture shows. Also the accessible name, so it has to say something. */
+  caption: string;
+  /**
+   * Cap on how wide the plate draws, in rem.
+   *
+   * A 150-column capture wants roughly 74rem to stay legible; a cropped detail wants far less and
+   * looks like a mistake blown up to full width.
+   */
+  width?: number;
+  class?: string;
+}
+const { name, narrow, caption, from = "captures", width = 74, class: className = "" } = Astro.props;
+
+const recorded = import.meta.glob<string>("../assets/captures/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const generated = import.meta.glob<string>("../assets/generated/*.luxe.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const source = (basename: string) => {
+  const key =
+    from === "generated"
+      ? `../assets/generated/${basename}.luxe.svg`
+      : `../assets/captures/${basename}.svg`;
+  return { key, svg: from === "generated" ? generated[key] : recorded[key] };
+};
+
+const escapeXml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+// `role="img"` and the label are the whole accessibility story: without them a screen reader walks
+// the `<text>` rows and reads a terminal dump aloud. With them it is announced once, by its
+// caption, while the text inside stays selectable for anyone who wants to copy a line out of it.
+//
+// Only one of the two cuts is ever exposed: the hidden one is `aria-hidden`, or a reader meets the
+// same picture twice.
+const label = escapeXml(caption);
+
+/**
+ * The wide cut's aspect, read out of its own viewBox.
+ *
+ * A still obeys the same rule a demo does — as large as fits, never wider than the page — and
+ * fitting is a question about height. Without this a short laptop drew a 1184px still beside a
+ * 993px demo in the same section, which is two answers to one question.
+ */
+const wideBox = (source(name).svg ?? "").match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+const aspect = wideBox ? Number(wideBox[1]) / Number(wideBox[2]) : 4;
+
+const capture = (basename: string, variant: string) => {
+  const { key, svg } = source(basename);
+  if (!svg) {
+    const how =
+      from === "generated"
+        ? "add it to SHOTS in scripts/site-assets.sh"
+        : "cut one with scripts/cast-still.py";
+    throw new Error(`no still called ${basename} — ${how}`);
+  }
+  const root = svg.match(/^<svg\b[^>]*>/)?.[0];
+  if (!root) throw new Error(`${key} has no <svg> root to annotate`);
+  const described = variant === "wide" ? `role="img" aria-label="${label}"` : 'aria-hidden="true"';
+  return svg.replace(
+    root,
+    `${root.slice(0, -1)} class="still__img still__img--${variant}" ${described}>` +
+      (variant === "wide" ? `<title>${label}</title>` : ""),
+  );
+};
+---
+
+<figure
+  class:list={["still", className]}
+  style={`--still-width: ${width}rem; --still-aspect: ${aspect.toFixed(3)}`}
+>
+  <div class="still__plate plate">
+    <div class="still__frame">
+      <Fragment set:html={capture(name, "wide")} />
+      {narrow && <Fragment set:html={capture(narrow, "narrow")} />}
+    </div>
+  </div>
+  <figcaption class="still__caption muted">{caption}</figcaption>
+</figure>
+
+<style>
+  /* As wide as asked for, as wide as the viewport's height allows, and never wider than whatever
+     is holding it — the last of those being the one that matters now that a capture sits in a grid
+     track rather than across the page. Without it a 74rem still overran its 64rem column and ate
+     the gap between the picture and the text about it, with no page overflow to give it away. */
+  .still {
+    width: min(
+      var(--still-width),
+      calc((100svh - 8.75rem) * var(--still-aspect)),
+      100%
+    );
+    margin-inline: auto;
+    position: relative;
+  }
+
+  /* The terminal's own background, for the reason `Demo` documents at length: Luxe paints a
+     background into most cells, so a plate in any other color turns the painted ones into
+     rectangles. Generated from the dark theme, and it does not follow the page's mode because the
+     capture does not either. */
+  .still__frame {
+    padding: var(--space-3);
+    background: var(--luxe-capture-bg);
+  }
+
+  /* `:global`, because the capture arrives as markup rather than as elements this component
+     authored, so Astro's scope attribute is never on it. Anchored to the scoped `.still__frame`,
+     so the rule still cannot reach past this component. */
+  .still__frame :global(.still__img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .still__frame :global(.still__img--narrow) {
+    display: none;
+  }
+
+  /* The same breakpoint the demos switch cuts at, so a section does not swap one and keep the
+     other. Only applied where a narrow cut was supplied — `:has` keeps the wide one visible when
+     there is nothing to swap to. */
+  @media (max-width: 719px) {
+    .still__frame:has(.still__img--narrow) :global(.still__img--wide) {
+      display: none;
+    }
+
+    .still__frame :global(.still__img--narrow) {
+      display: block;
+    }
+  }
+
+  .still__caption {
+    font-size: var(--step--1);
+    margin-top: var(--space-3);
+  }
+</style>

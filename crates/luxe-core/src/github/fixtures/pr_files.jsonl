@@ -1,0 +1,2 @@
+{"filename":"rustfmt.toml","patch":"@@ -1,4 +1,4 @@\n-edition = \"2021\"\n+# rustfmt configuration (scratch edit, reverted with the pull request)\n use_small_heuristics = \"Max\"\n max_width = 100\n use_try_shorthand = true","previous_filename":null,"status":"modified"}
+{"filename":"scratch-review-fixture.txt","patch":"@@ -0,0 +1,8 @@\n+Scratch file for capturing GitHub review responses.\n+It is deleted with its pull request.\n+\n+line four\n+line five\n+line six\n+line seven\n+line eight","previous_filename":null,"status":"added"}

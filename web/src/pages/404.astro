@@ -1,0 +1,45 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found — Luxe" description="That page does not exist.">
+  <div class="page missing">
+    <p class="eyebrow">404</p>
+    <h1>Nothing here.</h1>
+    <p class="lede">
+      That page doesn't exist, or it moved.
+    </p>
+    <p>
+      The <a href="/docs">documentation</a> has a search box, and it covers every page of the guide.
+      If you followed a link from somewhere and it should have worked,
+      <a href="https://github.com/evanwhittaker/luxe/issues">say so</a> — a dead link is a bug like
+      any other.
+    </p>
+    <p class="missing__actions">
+      <a class="button" href="/">Home</a>
+      <a class="button button--quiet" href="/docs">Documentation</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .missing {
+    padding-block: var(--space-8) var(--space-7);
+    max-width: var(--measure);
+  }
+
+  .missing h1 {
+    margin-bottom: var(--space-4);
+  }
+
+  .missing .lede {
+    margin-bottom: var(--space-4);
+  }
+
+  .missing__actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    flex-wrap: wrap;
+  }
+</style>

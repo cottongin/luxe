@@ -1,0 +1,42 @@
+[package]
+name = "luxe-tools"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Built-in tools for Luxe: read, write, edit, bash, glob, grep, git, web fetch, and test running"
+repository.workspace = true
+homepage.workspace = true
+
+# Allowed edges: depends on luxe-core only.
+# Provides tool implementations (read, write, edit, bash, grep, glob, etc.).
+
+[dependencies]
+luxe-core = { path = "../luxe-core", version = "0.1.0" }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+async-trait = "0.1"
+anyhow = "1"
+reqwest = { workspace = true }
+base64 = { workspace = true }
+image = { workspace = true }
+url = "2"
+# Web fetch: readability (main-content extraction) + HTML→Markdown. htmd is Apache-2.0 and uses
+# only html5ever; html2md was rejected (GPL-3.0, outside the license allowlist).
+dom_smoothie = "0.18"
+htmd = "0.5"
+# The bash seen-files tracker matches a `find -name` pattern; the walk itself is `luxe_core::walk`
+globset = "0.4"
+shlex = { workspace = true }
+regex = "1"
+# Decoding a size-capped fetch in its declared charset, as reqwest's `text()` does; already in the
+# tree through reqwest's `charset` feature.
+encoding_rs = "0.8"
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

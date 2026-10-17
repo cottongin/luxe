@@ -1,0 +1,398 @@
+/* Luxe — the design system.
+ *
+ * Color is not here: `tokens.css` is generated from the theme JSON the terminal reads, so the site
+ * and the product cannot drift. This file is everything else — type, the plate, spacing, motion.
+ *
+ * The one primitive worth knowing: **the plate**, a square box with a one-pixel rule round it. The
+ * site used to cut two corners of every panel at 45°, after a gesture the terminal has since given
+ * up so that it looks the same in every terminal; square corners are what the product draws now.
+ */
+
+/* === Type === */
+
+@font-face {
+	font-family: "Instrument Serif";
+	src: url("/fonts/instrument-serif-regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Instrument Serif";
+	src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+/* JetBrains Mono, because it is the face most people already have in their terminal, so a capture
+   here looks like Luxe looks for them. Adwaita Mono follows it for the six marks JetBrains Mono does
+   not draw; its subset holds nothing else, so the browser only reaches for it glyph by glyph. */
+@font-face {
+	font-family: "JetBrainsMono Nerd Font Mono";
+	src: url("/fonts/jetbrains-mono-nfm-regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "JetBrainsMono Nerd Font Mono";
+	src: url("/fonts/jetbrains-mono-nfm-bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "JetBrainsMono Nerd Font Mono";
+	src: url("/fonts/jetbrains-mono-nfm-italic.woff2") format("woff2");
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+@font-face {
+	font-family: "AdwaitaMono Nerd Font Mono";
+	src: url("/fonts/adwaita-mono-nfm-regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "AdwaitaMono Nerd Font Mono";
+	src: url("/fonts/adwaita-mono-nfm-bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+	--font-mono:
+		"JetBrainsMono Nerd Font Mono", "AdwaitaMono Nerd Font Mono", "JetBrains Mono",
+		ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+	/* One face for prose too. The site is a document about a terminal program; setting its body in a
+     neutral sans would be borrowing an authority it does not need. */
+	--font-body: var(--font-mono);
+
+	/* Type scale, fluid between a phone and a desktop. */
+	--step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+	--step-0: clamp(0.92rem, 0.89rem + 0.16vw, 1rem);
+	--step-1: clamp(1.1rem, 1.03rem + 0.35vw, 1.3rem);
+	--step-2: clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+	--step-3: clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+	--step-4: clamp(2.8rem, 1.8rem + 4.6vw, 5.6rem);
+
+	/* Spacing, on a 4px grid. */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 1rem;
+	--space-4: 1.5rem;
+	--space-5: 2.5rem;
+	--space-6: 4rem;
+	--space-7: 6.5rem;
+	--space-8: 10rem;
+
+	/* The measure prose is set to, and the width a page's content sits in.
+	   In `ch`, so it is a line length in characters rather than in pixels — which is the thing that
+	   actually governs reading, and the reason a narrower face does not need it re-tuned. */
+	--measure: 68ch;
+	--page: 104rem;
+
+	--border: 1px solid var(--luxe-border-muted);
+	--ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* === Reset, lightly === */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	background: var(--luxe-background);
+	color: var(--luxe-text);
+	font-family: var(--font-body);
+	font-size: var(--step-0);
+	font-weight: 400;
+	line-height: 1.65;
+	-webkit-font-smoothing: antialiased;
+
+	/* A very fine grain over the canvas. Metal is not a flat color, and a large field of one reads
+     as a screen rather than a surface. Kept far below the point where it becomes texture. */
+	background-image: var(--grain);
+	background-size: 128px 128px;
+}
+
+/* Motion is decoration here, and some people get sick from it. */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--font-display);
+	font-weight: 400;
+	line-height: 1.05;
+	letter-spacing: -0.015em;
+	text-wrap: balance;
+	margin: 0;
+}
+
+h1 {
+	font-size: var(--step-4);
+}
+h2 {
+	font-size: var(--step-3);
+}
+h3 {
+	font-size: var(--step-2);
+}
+
+p {
+	margin: 0 0 var(--space-3);
+	max-width: var(--measure);
+	text-wrap: pretty;
+}
+
+a {
+	color: inherit;
+	text-decoration-color: var(--luxe-dim);
+	text-underline-offset: 0.25em;
+	transition:
+		text-decoration-color 150ms var(--ease),
+		color 150ms var(--ease);
+}
+
+a:hover {
+	color: var(--luxe-accent);
+	text-decoration-color: var(--luxe-accent);
+}
+
+code {
+	font-family: var(--font-mono);
+	font-size: 0.94em;
+	color: var(--luxe-accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--luxe-accent);
+	outline-offset: 3px;
+}
+
+::selection {
+	background: var(--luxe-accent);
+	color: var(--luxe-background);
+}
+
+/* === The plate === */
+
+/* A panel: the raised surface inside a one-pixel rule. Screenshot and demo frames, the install
+   box, the search results, the logotype stage. */
+.plate {
+	border: 1px solid var(--luxe-border-muted);
+}
+
+.plate > * {
+	background: var(--luxe-user-msg-bg);
+}
+
+/* === Layout === */
+
+.page {
+	width: min(100% - 2 * var(--space-4), var(--page));
+	margin-inline: auto;
+}
+
+/* Section padding is a share of the screen, not a constant.
+ *
+ * A fixed 6.5rem top and bottom is 208px between one section and the next, which on a laptop is a
+ * quarter of the viewport spent on nothing between a caption and the heading that answers it. It
+ * reads as the page having lost its place. Tied to `svh` it stays generous on a large display,
+ * where there is room to be, and closes up where there is not. */
+.section {
+	padding-block: clamp(var(--space-6), 7svh, var(--space-7));
+	border-top: var(--border);
+}
+
+/* Sections arrive rather than appear.
+ *
+ * Deliberately CSS-only, on a `view()` timeline: an IntersectionObserver would mean shipping
+ * JavaScript whose failure mode is a blank page, and an element that starts at `opacity: 0` and
+ * waits for a script is content held hostage to a network request. Here the resting state IS the
+ * visible one — a browser without scroll-driven animations simply shows the page, and one with them
+ * scrubs the reveal against scroll position, so it tracks the reader's own hand instead of firing a
+ * fixed-length transition at them.
+ *
+ * `entry 0%` to `entry 55%` finishes the move while the block is still arriving, so nothing is
+ * still moving once it is somewhere you might read it. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		/* The leaves, never a `.duo` and its children both: two nested reveals multiply their
+		   opacities and add their transforms, so a section arrived at a quarter opacity from twice
+		   as far away. The hero is excluded outright — it has its own choreography, and its stage is
+		   `position: sticky`, which does not want a second thing animating its transform. */
+		.section > *:not(.duo),
+		.duo__text,
+		.duo__media {
+			animation:
+				rise-in linear both,
+				sink-out linear forwards;
+			animation-timeline: view(), view();
+			animation-range:
+				entry 0% entry 55%,
+				exit 20% exit 100%;
+		}
+
+		/* The media trails the text by a few percent. Both halves arriving on the same frame reads
+		   as one block sliding; a short delay reads as two related things being placed. */
+		.duo__media {
+			animation-range:
+				entry 10% entry 68%,
+				exit 20% exit 100%;
+		}
+	}
+}
+
+@keyframes rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(1.5rem);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Leaving is not arriving in reverse.
+ *
+ * `forwards`, never `both`: a backwards fill would apply this animation's first keyframe before its
+ * own range and, being second in the list, would own `opacity` and `transform` for the whole
+ * timeline — the entry above would run and change nothing visible.
+ *
+ * The curve is deliberately back-loaded. A linear fade from the moment a section starts leaving
+ * dims text somebody is still reading; holding near full opacity for the first 60% puts almost all
+ * of the fade in the stretch where the block is mostly above the fold anyway. It never reaches
+ * zero, because by then there is nothing on screen to reach zero. */
+@keyframes sink-out {
+	0% {
+		opacity: 1;
+		transform: none;
+	}
+	60% {
+		opacity: 0.86;
+		transform: translateY(-0.5rem);
+	}
+	100% {
+		opacity: 0.15;
+		transform: translateY(-2.5rem);
+	}
+}
+
+/* There is no scroll position on paper, so a view-timeline animation sits at its first keyframe and
+ * every section below the first page prints blank. */
+@media print {
+	.section > *,
+	.duo__text,
+	.duo__media,
+	.hero > * {
+		animation: none;
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* A rotated label in the left gutter, so a section announces itself without spending a heading on
+   it. Falls out of the flow entirely below the breakpoint, where there is no gutter. */
+.gutter-label {
+	position: absolute;
+	left: calc(-1 * var(--space-5));
+	top: 0;
+	writing-mode: vertical-rl;
+	font-size: var(--step--1);
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: var(--luxe-dim);
+	user-select: none;
+}
+
+@media (max-width: 60rem) {
+	.gutter-label {
+		display: none;
+	}
+}
+
+/* === Small parts === */
+
+.eyebrow {
+	font-size: var(--step--1);
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--luxe-muted);
+	margin-bottom: var(--space-3);
+}
+
+.lede {
+	font-size: var(--step-1);
+	color: var(--luxe-muted);
+}
+
+.muted {
+	color: var(--luxe-muted);
+}
+
+.button {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	padding: 0.7em 1.3em;
+	font: inherit;
+	font-size: var(--step--1);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border: 0;
+	cursor: pointer;
+	text-decoration: none;
+	background: var(--luxe-accent);
+	color: var(--luxe-background);
+	transition:
+		filter 150ms var(--ease),
+		transform 150ms var(--ease);
+}
+
+.button:hover {
+	color: var(--luxe-background);
+	filter: brightness(1.08);
+}
+
+.button:active {
+	transform: translateY(1px);
+}
+
+.button--quiet {
+	background: transparent;
+	color: var(--luxe-text);
+	box-shadow: inset 0 0 0 1px var(--luxe-border-muted);
+}
+
+.button--quiet:hover {
+	color: var(--luxe-accent);
+	box-shadow: inset 0 0 0 1px var(--luxe-accent);
+}

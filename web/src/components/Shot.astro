@@ -1,0 +1,101 @@
+---
+/**
+ * A terminal capture, in a plate.
+ *
+ * Luxe's own theme, generated from the production view path. SVG: crisp at any zoom, and the text
+ * inside is real text.
+ *
+ * **The markup is inlined, and it has to be.** An SVG loaded through `<img src>` is a document of
+ * its own in secure static mode: it cannot see the embedding page's `@font-face`, so the subset
+ * webfont this site ships never reached a single screenshot. That is invisible to anyone who has
+ * the face installed, which is anyone who works on Luxe. For everyone else the stack fell through
+ * to a system mono advancing some other width than the one the exporter pins `textLength` to, so
+ * every row was squeezed or stretched by the difference, and every Nerd Font icon in the picture
+ * drew as tofu. `<img>` also makes the text unselectable, which is half the reason these are
+ * vectors at all.
+ *
+ * Inline, the face the page already loads for its own body text applies here too, and several on
+ * one page cross-compress inside the HTML rather than being fetched one at a time.
+ *
+ * The asset itself stays font-independent, so a capture pasted into a README still degrades to the
+ * reader's own font — losing shine, not information, which is the standing rule for glyphs.
+ */
+interface Props {
+  /** Fixture scenario name, e.g. `guided-review-wide`. */
+  name: string;
+  /** What the picture shows. Also the accessible name, so it has to say something. */
+  caption: string;
+  class?: string;
+}
+const { name, caption, class: className = "" } = Astro.props;
+
+const shots = import.meta.glob<string>("../assets/generated/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+
+const escapeXml = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/**
+ * One capture's markup, with what an inline copy needs spliced into its root tag.
+ *
+ * `role="img"` and the name are the whole accessibility story here: without them a screen reader
+ * walks the `<text>` rows and reads a terminal dump aloud, where the `<img>` this replaced had an
+ * `alt` and was done. With them the capture is announced once, by its caption, and the rows inside
+ * are skipped — while still being selectable by anyone who wants to copy a command out of it.
+ */
+const capture = (theme: string, variant: string) => {
+  const key = `../assets/generated/${name}.${theme}.svg`;
+  const svg = shots[key];
+  if (!svg) throw new Error(`no capture for ${name}.${theme} — run scripts/site-assets.sh`);
+  const root = svg.match(/^<svg\b[^>]*>/)?.[0];
+  if (!root) throw new Error(`${key} has no <svg> root to annotate`);
+
+  const label = escapeXml(caption);
+  return svg.replace(
+    root,
+    `${root.slice(0, -1)} class="shot__img shot__img--${variant}" role="img" ` +
+      `aria-label="${label}"><title>${label}</title>`,
+  );
+};
+---
+
+<figure class:list={["shot", className]}>
+  <div class="shot__plate plate">
+    <div class="shot__frame">
+      <Fragment set:html={capture("luxe", "dark")} />
+    </div>
+  </div>
+  <figcaption class="shot__caption muted">{caption}</figcaption>
+</figure>
+
+<style>
+  .shot {
+    margin: 0;
+  }
+
+  .shot__frame {
+    padding: var(--space-3);
+  }
+
+  /* `:global`, because the capture arrives as markup rather than as elements this component
+     authored, so Astro's scope attribute is never on it. Anchored to `.shot__frame`, which is
+     scoped, so the rule still cannot reach past this component.
+
+     `height: auto` resolves against the root's own `width`/`height`, which is where a capture's
+     aspect ratio comes from — the export writes both, and a rewrite that dropped them would
+     collapse every frame. */
+  .shot__frame :global(.shot__img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+
+  .shot__caption {
+    font-size: var(--step--1);
+    margin-top: var(--space-3);
+  }
+</style>

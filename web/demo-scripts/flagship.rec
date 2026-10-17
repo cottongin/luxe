@@ -1,0 +1,74 @@
+# flagship — the hero: one small feature, written, reviewed and ready to ship.
+#
+# What using Luxe looks like, at the speed it happens: a request, the agent reading its way in, an
+# edit with its diff, the tests really run, and a reply that says what changed. Then the part no
+# other agent has: the change read back as a Guided Review, a chapter at a time, and finished into a
+# pull request drafted from it. Nothing is staged and nothing is sped up; only the dead air between
+# frames is trimmed. The take ends on the draft and never opens it.
+#
+# The repository is fictional, so `gh` is a stand-in (`gh/gh`) that answers for `acme/todo`: it
+# says the branch has no pull request yet, which is what makes the review offer to open one. The
+# work happens on a branch of its own, since a pull request from `main` into `main` is refused.
+#
+# The two waits on a model that are not dead air, the guide being written and the pull request
+# being drafted, are marked `squeeze`…`resume`: `cast-edit.py` plays each in two seconds, every
+# frame kept, and the clock on screen still says how long it took.
+#
+# The recorder starts Luxe with the dashboard off, so a take opens on the session itself rather
+# than on three seconds of a splash screen it is not about.
+
+#: cols 120
+#: rows 32
+#: speed 1.0
+#: model anthropic/claude-sonnet-5-5
+#: thinking medium
+#: glyphs nerd
+#: bin gh
+#: setup git remote add origin https://github.com/acme/todo.git && git checkout -q -b todo-overdue
+
+# A modal waiting on a person looks exactly like a finished turn, and strands the take. Both
+# the permission panel and the question tool get answered a beat after they appear.
+answer Return hold 3 when Allow once
+answer Return hold 3.5 when Enter submit
+
+sleep 3
+mark start
+sleep 1.2
+
+enter add a `todo overdue` command: open tasks past their due date, oldest first. with a test
+
+log the turn — over when the screen stops changing
+settle 6 max 420
+
+log the review: Ctrl+G writes its guide, and once it says it is ready, Ctrl+G opens it
+sleep 2
+mod ctrl g
+sleep 1
+mark squeeze-guide
+expect review ready max 180
+mark resume-guide
+sleep 1.5
+mod ctrl g
+expect space next max 30
+settle 2 max 60
+sleep 4.5
+key space
+sleep 4.5
+key space
+sleep 3
+
+log finish, into a pull request
+mod alt Return
+expect Open pull request max 15
+sleep 2
+key Down x4
+sleep 1
+key Return
+sleep 1
+mark squeeze-draft
+log the draft
+expect Title max 120
+mark resume-draft
+settle 2 max 60
+sleep 4
+mark end

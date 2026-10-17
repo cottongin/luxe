@@ -1,0 +1,61 @@
+---
+/**
+ * Two stills of one surface in two states, shown one at a time by a pair of buttons elsewhere.
+ *
+ * For a thing that looks different depending on the room it gets, like peek beside the
+ * conversation on a wide terminal and in its place on a narrow one. The buttons are
+ * [`SwitchButtons`], placed wherever the words about the pictures are: this names itself by `id`
+ * and they find it. A carousel that turns on its own was the alternative, and a picture that
+ * changes while you are reading it is a picture you cannot read.
+ *
+ * Both stills sit in one grid cell and the hidden one keeps its space, so the frame is the height
+ * of the taller one whichever is showing and nothing below it moves on a switch. Without
+ * JavaScript both simply show, one above the other, and the buttons stay hidden.
+ */
+interface Props {
+  /** What the buttons point at. */
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+<div class="switch" id={id} data-still-switch>
+  <div class="switch__panel"><slot name="first" /></div>
+  <div class="switch__panel"><slot name="second" /></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-still-switch]").forEach((root) => {
+    const panels = [...root.querySelectorAll<HTMLElement>(":scope > .switch__panel")];
+    const group = document.querySelector<HTMLElement>(`[data-switch-for="${root.id}"]`);
+    if (!group) return;
+    const buttons = [...group.querySelectorAll<HTMLButtonElement>("button")];
+    const show = (at: number) => {
+      buttons.forEach((button, index) => button.setAttribute("aria-pressed", String(index === at)));
+      panels.forEach((panel, index) => panel.toggleAttribute("data-off", index !== at));
+    };
+    buttons.forEach((button, index) => button.addEventListener("click", () => show(index)));
+    root.classList.add("switch--live");
+    group.hidden = false;
+    show(0);
+  });
+</script>
+
+<style>
+  .switch--live {
+    display: grid;
+  }
+
+  .switch--live > .switch__panel {
+    grid-area: 1 / 1;
+  }
+
+  /* Kept in the layout, so the cell stays the taller picture's height */
+  .switch__panel[data-off] {
+    visibility: hidden;
+  }
+
+  .switch:not(.switch--live) > .switch__panel + .switch__panel {
+    margin-top: var(--space-5);
+  }
+</style>

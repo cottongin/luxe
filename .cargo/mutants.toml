@@ -1,0 +1,38 @@
+# cargo-mutants configuration.
+#
+# Not a CI gate — it is the check you reach for on something cost-, security- or format-critical,
+# where a green suite proves less than it looks like it does. See AGENTS.md.
+
+# `cargo test` runs the whole suite as threads in ONE process, and a handful of tests set `HOME` to
+# a temp dir to isolate global config. Those mutations are process-wide, so they break whichever
+# test happens to run beside them — which here surfaces as a failing *unmutated baseline* and no
+# run at all, several minutes after you asked for one.
+test_tool = "nextest"
+
+# nextest runs a thread per core, which is 32 here. Under mutation that is 32 chances at once for a
+# mutant that loops and allocates, and it is memory, not cores, that runs out: one run grew until
+# systemd-oomd killed the terminal it was started from. Eight keeps a baseline quick and the worst
+# case survivable; `scripts/mutants.sh` adds the ceiling that makes it safe either way.
+additional_cargo_test_args = ["--test-threads", "8"]
+
+# Mutants with no observable behavior. Each is equivalent by construction, so anything that
+# "caught" one would be asserting on a log line or on an identity — a test that cannot fail for a
+# reason anybody cares about, which is the opposite of why this tool is here.
+exclude_re = [
+    # Both `<` comparisons in this function guard a `warn!`/`debug!` and nothing else; the value it
+    # returns is `max_tokens.min(available.max(MIN_MAX_TOKENS))`, which no mutant of either
+    # condition can reach.
+    "replace < with (==|>|<=) in clamp_max_tokens_to_context",
+    # `entries[index + 1..]` -> `entries[index * 1..]` re-includes the `Usage` entry the
+    # measurement was read from, and usage entries are inert for context assembly — pinned by
+    # `usage_entries_are_inert_for_estimation`, which is the invariant that makes this equivalent.
+    "replace \\+ with \\* in prompt_tokens",
+    # `observed > 0` -> `observed >= 0` reaches the division for a reported zero, which yields 0.0
+    # and clamps straight back to the 1.0 the guard would have returned. The guard stays because
+    # "nothing measured" is worth saying out loud; it is redundant only while the floor is 1.0, and
+    # `the_kept_tail_is_measured_in_the_tokens_the_provider_charges_for` pins that floor.
+    "replace > with >= in estimate_calibration",
+    # A failing `git remote -v` writes only to stderr, so reading its empty stdout as a success parses
+    # to the same empty list the guard returns. The guard stays because it says what is meant.
+    "replace match guard output.status.success\\(\\) with true in local_remotes",
+]

@@ -1,0 +1,79 @@
+# Characters the fallback tiers are allowed to draw.
+#
+# The `unicode` tier exists for a reader whose font has no private-use icons. That only helps if the
+# substitutes are in the font they fell back to, and for a long time nothing checked: `glyphs.rs`
+# asserted its fallbacks were free of private-use codepoints and one cell wide by the Unicode width
+# property, neither of which is a question about the reader's font. Measured, Liberation Mono — the
+# control font the wordmark probe uses precisely because it is the plainest monospace a distribution
+# ships — was missing twenty of the thirty-one marks the TUI draws at every tier, `◆ ▸ ◉ ✓ ✗ ❮ ❯`
+# among them. Substitutes chosen to be safe, absent from the font that defines bare.
+#
+# So the tier is held to this list instead, and the list is a measurement. Two ways in:
+#
+#   synthesized  U+2500–U+259F. The terminal draws these against the cell box rather than scaling a
+#                font outline into it — alacritty's `builtin_box_drawing`, wezterm's
+#                `custom_block_glyphs`, kitty's box drawing, ghostty's sprite face, Windows
+#                Terminal's `BuiltinGlyphs`. The font is not in the path, so no survey applies.
+#                Not listed below; the range is allowed wholesale.
+#
+#   surveyed     present in every face in the panel. Listed one per line.
+#
+# The panel is the faces a reader plausibly already has, not the ones we would pick:
+#
+#   Liberation Mono      the metric-compatible Arial/Courier stand-in, on every distribution
+#   DejaVu Sans Mono     the classic Linux default
+#   Noto Sans Mono       the Google/ChromeOS default
+#   Cascadia Mono        the Windows Terminal default
+#   Adwaita Mono         the GNOME 48 default
+#   Hack                 common
+#   Fira Code            common
+#   JetBrains Mono       common
+#   Source Code Pro      common
+#
+# Regenerate with `scripts/glyph-survey.py`, which reads the installed files with fontTools and
+# fails rather than guessing when a face is absent. Adding a character here is a claim that every
+# one of those nine faces has it — make the script say so, do not hand-edit.
+#
+# Leaving the list is allowed and sometimes right: the `nerd` tier draws whatever a patched font
+# carries, and that is what the tier is for. This governs the tiers that promise portability.
+
+U+00B1	±	PLUS-MINUS SIGN
+U+00B7	·	MIDDLE DOT
+U+00D7	×	MULTIPLICATION SIGN
+U+00F7	÷	DIVISION SIGN
+U+00A4	¤	CURRENCY SIGN
+U+00A7	§	SECTION SIGN
+U+00AC	¬	NOT SIGN
+U+00B0	°	DEGREE SIGN
+U+00B6	¶	PILCROW SIGN
+U+2013	–	EN DASH
+U+2014	—	EM DASH
+U+2020	†	DAGGER
+U+2021	‡	DOUBLE DAGGER
+U+2022	•	BULLET
+U+2026	…	HORIZONTAL ELLIPSIS
+U+2039	‹	SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+U+203A	›	SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+U+00AB	«	LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+U+00BB	»	RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+U+2190	←	LEFTWARDS ARROW
+U+2191	↑	UPWARDS ARROW
+U+2192	→	RIGHTWARDS ARROW
+U+2193	↓	DOWNWARDS ARROW
+U+2219	∙	BULLET OPERATOR
+U+221A	√	SQUARE ROOT
+U+221E	∞	INFINITY
+U+2248	≈	ALMOST EQUAL TO
+U+2261	≡	IDENTICAL TO
+U+2264	≤	LESS-THAN OR EQUAL TO
+U+2265	≥	GREATER-THAN OR EQUAL TO
+U+25A0	■	BLACK SQUARE
+U+25A1	□	WHITE SQUARE
+U+25AA	▪	BLACK SMALL SQUARE
+U+25AB	▫	WHITE SMALL SQUARE
+U+25B2	▲	BLACK UP-POINTING TRIANGLE
+U+25BA	►	BLACK RIGHT-POINTING POINTER
+U+25BC	▼	BLACK DOWN-POINTING TRIANGLE
+U+25C4	◄	BLACK LEFT-POINTING POINTER
+U+25CB	○	WHITE CIRCLE
+U+25CF	●	BLACK CIRCLE

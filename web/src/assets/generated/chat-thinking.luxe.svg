@@ -1,0 +1,292 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 748" width="1500" height="748" font-family="'JetBrainsMono Nerd Font Mono', 'AdwaitaMono Nerd Font Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16.67">
+  <rect width="1500" height="748" fill="#12100e"/>
+  <g shape-rendering="crispEdges">
+    <rect x="0" y="0" width="100" height="22" fill="#ddc084"/>
+    <rect x="100" y="0" width="10" height="22" fill="#aa9467"/>
+    <rect x="110" y="0" width="10" height="22" fill="#786849"/>
+    <rect x="120" y="0" width="10" height="22" fill="#453c2c"/>
+    <rect x="450" y="110" width="1030" height="22" fill="#201e1a"/>
+    <rect x="450" y="132" width="1030" height="22" fill="#201e1a"/>
+    <rect x="450" y="154" width="1030" height="22" fill="#201e1a"/>
+    <rect x="450" y="484" width="1030" height="22" fill="#201e1a"/>
+    <rect x="450" y="506" width="1030" height="22" fill="#201e1a"/>
+    <rect x="450" y="528" width="1030" height="22" fill="#201e1a"/>
+    <rect x="0" y="660" width="80" height="22" fill="#ddc084"/>
+    <rect x="80" y="660" width="10" height="22" fill="#aa9467"/>
+    <rect x="90" y="660" width="10" height="22" fill="#786849"/>
+    <rect x="100" y="660" width="10" height="22" fill="#453c2c"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 11.00L425.00 0.00M425.00 11.00L425.00 22.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 33.00L425.00 22.00M425.00 33.00L425.00 44.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 55.00L425.00 44.00M425.00 55.00L425.00 66.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 77.00L425.00 66.00M425.00 77.00L425.00 88.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 99.00L425.00 88.00M425.00 99.00L425.00 110.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 121.00L425.00 110.00M425.00 121.00L425.00 132.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 143.00L425.00 132.00M425.00 143.00L425.00 154.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 165.00L425.00 154.00M425.00 165.00L425.00 176.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 187.00L425.00 176.00M425.00 187.00L425.00 198.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 209.00L425.00 198.00M425.00 209.00L425.00 220.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 231.00L425.00 220.00M425.00 231.00L425.00 242.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 253.00L425.00 242.00M425.00 253.00L425.00 264.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 275.00L425.00 264.00M425.00 275.00L425.00 286.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 297.00L425.00 286.00M425.00 297.00L425.00 308.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 319.00L425.00 308.00M425.00 319.00L425.00 330.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 341.00L425.00 330.00M425.00 341.00L425.00 352.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 363.00L425.00 352.00M425.00 363.00L425.00 374.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 385.00L425.00 374.00M425.00 385.00L425.00 396.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 407.00L425.00 396.00M425.00 407.00L425.00 418.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 429.00L425.00 418.00M425.00 429.00L425.00 440.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 451.00L425.00 440.00M425.00 451.00L425.00 462.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 473.00L425.00 462.00M425.00 473.00L425.00 484.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 495.00L425.00 484.00M425.00 495.00L425.00 506.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 517.00L425.00 506.00M425.00 517.00L425.00 528.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 539.00L425.00 528.00M425.00 539.00L425.00 550.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 561.00L425.00 550.00M425.00 561.00L425.00 572.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 583.00L425.00 572.00M425.00 583.00L425.00 594.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 605.00L425.00 594.00M425.00 605.00L425.00 616.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 627.00L425.00 616.00M425.00 627.00L425.00 638.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 649.00L425.00 638.00M425.00 649.00L425.00 660.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 671.00L425.00 660.00M425.00 671.00L425.00 682.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 693.00L425.00 682.00M425.00 693.00L425.00 704.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M445.00 704.00Q445.00 693.00 450.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M545.00 693.00L550.00 693.00M545.00 693.00L540.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M555.00 693.00L560.00 693.00M555.00 693.00L550.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M565.00 693.00L570.00 693.00M565.00 693.00L560.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M575.00 693.00L580.00 693.00M575.00 693.00L570.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M585.00 693.00L590.00 693.00M585.00 693.00L580.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M595.00 693.00L600.00 693.00M595.00 693.00L590.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M605.00 693.00L610.00 693.00M605.00 693.00L600.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M615.00 693.00L620.00 693.00M615.00 693.00L610.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M625.00 693.00L630.00 693.00M625.00 693.00L620.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M635.00 693.00L640.00 693.00M635.00 693.00L630.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M645.00 693.00L650.00 693.00M645.00 693.00L640.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M655.00 693.00L660.00 693.00M655.00 693.00L650.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M665.00 693.00L670.00 693.00M665.00 693.00L660.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M675.00 693.00L680.00 693.00M675.00 693.00L670.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M685.00 693.00L690.00 693.00M685.00 693.00L680.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M695.00 693.00L700.00 693.00M695.00 693.00L690.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M705.00 693.00L710.00 693.00M705.00 693.00L700.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M715.00 693.00L720.00 693.00M715.00 693.00L710.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M725.00 693.00L730.00 693.00M725.00 693.00L720.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M735.00 693.00L740.00 693.00M735.00 693.00L730.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M745.00 693.00L750.00 693.00M745.00 693.00L740.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M755.00 693.00L760.00 693.00M755.00 693.00L750.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M765.00 693.00L770.00 693.00M765.00 693.00L760.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M775.00 693.00L780.00 693.00M775.00 693.00L770.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M785.00 693.00L790.00 693.00M785.00 693.00L780.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M795.00 693.00L800.00 693.00M795.00 693.00L790.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M805.00 693.00L810.00 693.00M805.00 693.00L800.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M815.00 693.00L820.00 693.00M815.00 693.00L810.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M825.00 693.00L830.00 693.00M825.00 693.00L820.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M835.00 693.00L840.00 693.00M835.00 693.00L830.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M845.00 693.00L850.00 693.00M845.00 693.00L840.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M855.00 693.00L860.00 693.00M855.00 693.00L850.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M865.00 693.00L870.00 693.00M865.00 693.00L860.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M875.00 693.00L880.00 693.00M875.00 693.00L870.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M885.00 693.00L890.00 693.00M885.00 693.00L880.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M895.00 693.00L900.00 693.00M895.00 693.00L890.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M905.00 693.00L910.00 693.00M905.00 693.00L900.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M915.00 693.00L920.00 693.00M915.00 693.00L910.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M925.00 693.00L930.00 693.00M925.00 693.00L920.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M935.00 693.00L940.00 693.00M935.00 693.00L930.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M945.00 693.00L950.00 693.00M945.00 693.00L940.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M955.00 693.00L960.00 693.00M955.00 693.00L950.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 693.00L970.00 693.00M965.00 693.00L960.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M975.00 693.00L980.00 693.00M975.00 693.00L970.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M985.00 693.00L990.00 693.00M985.00 693.00L980.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 693.00L1000.00 693.00M995.00 693.00L990.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1005.00 693.00L1010.00 693.00M1005.00 693.00L1000.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1015.00 693.00L1020.00 693.00M1015.00 693.00L1010.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1025.00 693.00L1030.00 693.00M1025.00 693.00L1020.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1035.00 693.00L1040.00 693.00M1035.00 693.00L1030.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1045.00 693.00L1050.00 693.00M1045.00 693.00L1040.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1055.00 693.00L1060.00 693.00M1055.00 693.00L1050.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1065.00 693.00L1070.00 693.00M1065.00 693.00L1060.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1075.00 693.00L1080.00 693.00M1075.00 693.00L1070.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1085.00 693.00L1090.00 693.00M1085.00 693.00L1080.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1095.00 693.00L1100.00 693.00M1095.00 693.00L1090.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1105.00 693.00L1110.00 693.00M1105.00 693.00L1100.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1115.00 693.00L1120.00 693.00M1115.00 693.00L1110.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1125.00 693.00L1130.00 693.00M1125.00 693.00L1120.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1135.00 693.00L1140.00 693.00M1135.00 693.00L1130.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1145.00 693.00L1150.00 693.00M1145.00 693.00L1140.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1155.00 693.00L1160.00 693.00M1155.00 693.00L1150.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1165.00 693.00L1170.00 693.00M1165.00 693.00L1160.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1175.00 693.00L1180.00 693.00M1175.00 693.00L1170.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1185.00 693.00L1190.00 693.00M1185.00 693.00L1180.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1195.00 693.00L1200.00 693.00M1195.00 693.00L1190.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1205.00 693.00L1210.00 693.00M1205.00 693.00L1200.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1215.00 693.00L1220.00 693.00M1215.00 693.00L1210.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 693.00L1230.00 693.00M1225.00 693.00L1220.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1235.00 693.00L1240.00 693.00M1235.00 693.00L1230.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1245.00 693.00L1250.00 693.00M1245.00 693.00L1240.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1255.00 693.00L1260.00 693.00M1255.00 693.00L1250.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1265.00 693.00L1270.00 693.00M1265.00 693.00L1260.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1275.00 693.00L1280.00 693.00M1275.00 693.00L1270.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1285.00 693.00L1290.00 693.00M1285.00 693.00L1280.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1295.00 693.00L1300.00 693.00M1295.00 693.00L1290.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1305.00 693.00L1310.00 693.00M1305.00 693.00L1300.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1315.00 693.00L1320.00 693.00M1315.00 693.00L1310.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1325.00 693.00L1330.00 693.00M1325.00 693.00L1320.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1335.00 693.00L1340.00 693.00M1335.00 693.00L1330.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1345.00 693.00L1350.00 693.00M1345.00 693.00L1340.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1355.00 693.00L1360.00 693.00M1355.00 693.00L1350.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1365.00 693.00L1370.00 693.00M1365.00 693.00L1360.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1375.00 693.00L1380.00 693.00M1375.00 693.00L1370.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1385.00 693.00L1390.00 693.00M1385.00 693.00L1380.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1395.00 693.00L1400.00 693.00M1395.00 693.00L1390.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1405.00 693.00L1410.00 693.00M1405.00 693.00L1400.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1415.00 693.00L1420.00 693.00M1415.00 693.00L1410.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1425.00 693.00L1430.00 693.00M1425.00 693.00L1420.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1435.00 693.00L1440.00 693.00M1435.00 693.00L1430.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1445.00 693.00L1450.00 693.00M1445.00 693.00L1440.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1455.00 693.00L1460.00 693.00M1455.00 693.00L1450.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1465.00 693.00L1470.00 693.00M1465.00 693.00L1460.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1475.00 693.00L1480.00 693.00M1475.00 693.00L1470.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1485.00 693.00L1490.00 693.00M1485.00 693.00L1480.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1495.00 704.00Q1495.00 693.00 1490.00 693.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 715.00L425.00 704.00M425.00 715.00L425.00 726.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M445.00 715.00L445.00 704.00M445.00 715.00L445.00 726.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1495.00 715.00L1495.00 704.00M1495.00 715.00L1495.00 726.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 737.00L425.00 726.00M425.00 737.00L425.00 748.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M445.00 726.00Q445.00 737.00 450.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M455.00 737.00L460.00 737.00M455.00 737.00L450.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M465.00 737.00L470.00 737.00M465.00 737.00L460.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M475.00 737.00L480.00 737.00M475.00 737.00L470.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M485.00 737.00L490.00 737.00M485.00 737.00L480.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M495.00 737.00L500.00 737.00M495.00 737.00L490.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M505.00 737.00L510.00 737.00M505.00 737.00L500.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M515.00 737.00L520.00 737.00M515.00 737.00L510.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M525.00 737.00L530.00 737.00M525.00 737.00L520.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M535.00 737.00L540.00 737.00M535.00 737.00L530.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M545.00 737.00L550.00 737.00M545.00 737.00L540.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M555.00 737.00L560.00 737.00M555.00 737.00L550.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M565.00 737.00L570.00 737.00M565.00 737.00L560.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M575.00 737.00L580.00 737.00M575.00 737.00L570.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M585.00 737.00L590.00 737.00M585.00 737.00L580.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M595.00 737.00L600.00 737.00M595.00 737.00L590.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M605.00 737.00L610.00 737.00M605.00 737.00L600.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M615.00 737.00L620.00 737.00M615.00 737.00L610.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M625.00 737.00L630.00 737.00M625.00 737.00L620.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M635.00 737.00L640.00 737.00M635.00 737.00L630.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M645.00 737.00L650.00 737.00M645.00 737.00L640.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M655.00 737.00L660.00 737.00M655.00 737.00L650.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M665.00 737.00L670.00 737.00M665.00 737.00L660.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M675.00 737.00L680.00 737.00M675.00 737.00L670.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M685.00 737.00L690.00 737.00M685.00 737.00L680.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M695.00 737.00L700.00 737.00M695.00 737.00L690.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M705.00 737.00L710.00 737.00M705.00 737.00L700.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M715.00 737.00L720.00 737.00M715.00 737.00L710.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M725.00 737.00L730.00 737.00M725.00 737.00L720.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M735.00 737.00L740.00 737.00M735.00 737.00L730.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M745.00 737.00L750.00 737.00M745.00 737.00L740.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M755.00 737.00L760.00 737.00M755.00 737.00L750.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M765.00 737.00L770.00 737.00M765.00 737.00L760.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M775.00 737.00L780.00 737.00M775.00 737.00L770.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M785.00 737.00L790.00 737.00M785.00 737.00L780.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M795.00 737.00L800.00 737.00M795.00 737.00L790.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M805.00 737.00L810.00 737.00M805.00 737.00L800.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M815.00 737.00L820.00 737.00M815.00 737.00L810.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M825.00 737.00L830.00 737.00M825.00 737.00L820.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M835.00 737.00L840.00 737.00M835.00 737.00L830.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M845.00 737.00L850.00 737.00M845.00 737.00L840.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M855.00 737.00L860.00 737.00M855.00 737.00L850.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M865.00 737.00L870.00 737.00M865.00 737.00L860.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M875.00 737.00L880.00 737.00M875.00 737.00L870.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M885.00 737.00L890.00 737.00M885.00 737.00L880.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M895.00 737.00L900.00 737.00M895.00 737.00L890.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M905.00 737.00L910.00 737.00M905.00 737.00L900.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M915.00 737.00L920.00 737.00M915.00 737.00L910.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M925.00 737.00L930.00 737.00M925.00 737.00L920.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M935.00 737.00L940.00 737.00M935.00 737.00L930.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M945.00 737.00L950.00 737.00M945.00 737.00L940.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M955.00 737.00L960.00 737.00M955.00 737.00L950.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 737.00L970.00 737.00M965.00 737.00L960.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M975.00 737.00L980.00 737.00M975.00 737.00L970.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M985.00 737.00L990.00 737.00M985.00 737.00L980.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 737.00L1000.00 737.00M995.00 737.00L990.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1005.00 737.00L1010.00 737.00M1005.00 737.00L1000.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1015.00 737.00L1020.00 737.00M1015.00 737.00L1010.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1025.00 737.00L1030.00 737.00M1025.00 737.00L1020.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1035.00 737.00L1040.00 737.00M1035.00 737.00L1030.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1045.00 737.00L1050.00 737.00M1045.00 737.00L1040.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1055.00 737.00L1060.00 737.00M1055.00 737.00L1050.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1065.00 737.00L1070.00 737.00M1065.00 737.00L1060.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1075.00 737.00L1080.00 737.00M1075.00 737.00L1070.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1085.00 737.00L1090.00 737.00M1085.00 737.00L1080.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1095.00 737.00L1100.00 737.00M1095.00 737.00L1090.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1105.00 737.00L1110.00 737.00M1105.00 737.00L1100.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1115.00 737.00L1120.00 737.00M1115.00 737.00L1110.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1125.00 737.00L1130.00 737.00M1125.00 737.00L1120.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1135.00 737.00L1140.00 737.00M1135.00 737.00L1130.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1145.00 737.00L1150.00 737.00M1145.00 737.00L1140.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1155.00 737.00L1160.00 737.00M1155.00 737.00L1150.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1165.00 737.00L1170.00 737.00M1165.00 737.00L1160.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1175.00 737.00L1180.00 737.00M1175.00 737.00L1170.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1185.00 737.00L1190.00 737.00M1185.00 737.00L1180.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1195.00 737.00L1200.00 737.00M1195.00 737.00L1190.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1205.00 737.00L1210.00 737.00M1205.00 737.00L1200.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1215.00 737.00L1220.00 737.00M1215.00 737.00L1210.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 737.00L1230.00 737.00M1225.00 737.00L1220.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1235.00 737.00L1240.00 737.00M1235.00 737.00L1230.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1245.00 737.00L1250.00 737.00M1245.00 737.00L1240.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1255.00 737.00L1260.00 737.00M1255.00 737.00L1250.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1265.00 737.00L1270.00 737.00M1265.00 737.00L1260.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1275.00 737.00L1280.00 737.00M1275.00 737.00L1270.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1285.00 737.00L1290.00 737.00M1285.00 737.00L1280.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1295.00 737.00L1300.00 737.00M1295.00 737.00L1290.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1305.00 737.00L1310.00 737.00M1305.00 737.00L1300.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1315.00 737.00L1320.00 737.00M1315.00 737.00L1310.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1325.00 737.00L1330.00 737.00M1325.00 737.00L1320.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1335.00 737.00L1340.00 737.00M1335.00 737.00L1330.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1345.00 737.00L1350.00 737.00M1345.00 737.00L1340.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1355.00 737.00L1360.00 737.00M1355.00 737.00L1350.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1365.00 737.00L1370.00 737.00M1365.00 737.00L1360.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1375.00 737.00L1380.00 737.00M1375.00 737.00L1370.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1385.00 737.00L1390.00 737.00M1385.00 737.00L1380.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1395.00 737.00L1400.00 737.00M1395.00 737.00L1390.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1405.00 737.00L1410.00 737.00M1405.00 737.00L1400.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1415.00 737.00L1420.00 737.00M1415.00 737.00L1410.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1425.00 737.00L1430.00 737.00M1425.00 737.00L1420.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1435.00 737.00L1440.00 737.00M1435.00 737.00L1430.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1445.00 737.00L1450.00 737.00M1445.00 737.00L1440.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1455.00 737.00L1460.00 737.00M1455.00 737.00L1450.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1465.00 737.00L1470.00 737.00M1465.00 737.00L1460.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1475.00 737.00L1480.00 737.00M1475.00 737.00L1470.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1485.00 737.00L1490.00 737.00M1485.00 737.00L1480.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1495.00 726.00Q1495.00 737.00 1490.00 737.00"/>
+  </g>
+  <text x="0" y="17.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">PROJECT</tspan><tspan>                                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="39.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">Waiting for workspace state…</tspan><tspan>             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="61.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="83.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="105.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="127.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="149.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>   </tspan><tspan fill="#ddc084">Refactor the parser to stream tokens instead of buffering.</tspan><tspan>                                              </tspan></text>
+  <text x="0" y="171.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="193.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="215.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-weight="700" font-style="italic">Tracing the buffering</tspan><tspan>                                                                                    </tspan></text>
+  <text x="0" y="237.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="259.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-style="italic">The buffering happens in </tspan><tspan fill="#faaa51" font-style="italic">Parser::feed</tspan><tspan fill="#97938c" font-style="italic">, which collects the whole input before yielding.</tspan><tspan>                   </tspan></text>
+  <text x="0" y="281.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-style="italic">I can turn it into an iterator adapter that emits tokens as bytes arrive, keeping a small carry</tspan><tspan>          </tspan></text>
+  <text x="0" y="303.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-style="italic">buffer for partial tokens.</tspan><tspan>                                                                               </tspan></text>
+  <text x="0" y="325.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="347.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-weight="700" font-style="italic">Edge cases</tspan><tspan>                                                                                               </tspan></text>
+  <text x="0" y="369.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="391.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-style="italic">• a multi-byte token split across two chunks must not be dropped</tspan><tspan>                                         </tspan></text>
+  <text x="0" y="413.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-style="italic">• </tspan><tspan fill="#faaa51" font-style="italic">feed</tspan><tspan fill="#97938c" font-style="italic"> still has to report a trailing partial token as an error</tspan><tspan>                                          </tspan></text>
+  <text x="0" y="435.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="457.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">I'll convert </tspan><tspan fill="#faaa51">Parser::feed</tspan><tspan fill="#e4dfd6"> into a streaming adapter with a carry buffer for split tokens.</tspan><tspan>                 </tspan></text>
+  <text x="0" y="479.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="501.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="523.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>   </tspan><tspan fill="#ddc084">Good. Now add tests for the split-token case.</tspan><tspan>                                                           </tspan></text>
+  <text x="0" y="545.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="567.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="589.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c" font-weight="700" font-style="italic">Planning the test</tspan><tspan fill="#97938c"> · +1 more line</tspan><tspan>                                                                         </tspan></text>
+  <text x="0" y="611.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="633.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Added a byte-at-a-time table test covering split-token boundaries.</tspan><tspan>                                       </tspan></text>
+  <text x="0" y="655.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="677.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">MODEL</tspan><tspan>                                  </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="699.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">lmstudio           </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b         </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                                 </tspan></text>
+  <text x="0" y="721.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">thinking           </tspan><tspan fill="#e4dfd6">󰌵 off                 </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                        </tspan><tspan> </tspan></text>
+  <text x="0" y="743.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">mode               </tspan><tspan fill="#e4dfd6">󱌣 build               </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                          </tspan></text>
+</svg>

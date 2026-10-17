@@ -1,0 +1,7 @@
+diff --git a/vendor/example b/vendor/example
+index 0123456..89abcde 160000
+--- a/vendor/example
++++ b/vendor/example
+@@ -1 +1 @@
+-Subproject commit 0123456789012345678901234567890123456789
++Subproject commit 89abcdef0123456789abcdef0123456789abcdef

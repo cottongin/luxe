@@ -1,0 +1,74 @@
+{
+  "flagship": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 120,
+    "rows": 32,
+    "theme": "luxe",
+    "script": "web/demo-scripts/flagship.rec"
+  },
+  "flagship.mobile": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 72,
+    "rows": 24,
+    "theme": "luxe",
+    "script": "web/demo-scripts/flagship.rec"
+  },
+  "mention": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 120,
+    "rows": 32,
+    "theme": "luxe",
+    "script": "web/demo-scripts/mention.rec"
+  },
+  "mention.mobile": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 72,
+    "rows": 24,
+    "theme": "luxe",
+    "script": "web/demo-scripts/mention.rec"
+  },
+  "stills": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 150,
+    "rows": 36,
+    "theme": "luxe",
+    "script": "web/demo-scripts/stills.rec"
+  },
+  "stills-models": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 108,
+    "rows": 24,
+    "theme": "luxe",
+    "script": "web/demo-scripts/stills-models.rec"
+  },
+  "stills-models.narrow": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 76,
+    "rows": 24,
+    "theme": "luxe",
+    "script": "web/demo-scripts/stills-models.rec"
+  },
+  "stills-tools": {
+    "recorded": "2026-10-16",
+    "commit": "daba64ed",
+    "dirty": true,
+    "cols": 150,
+    "rows": 36,
+    "theme": "luxe",
+    "script": "web/demo-scripts/stills-tools.rec"
+  }
+}

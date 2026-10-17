@@ -1,0 +1,529 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Luxe config",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Path or URL of this configuration schema."
+    },
+    "theme": {
+      "type": "string",
+      "description": "Theme name: a built-in (luxe, catppuccin, nord, tokyo-night, and more — /theme lists them all), the name of a file in themes/, or omarchy to follow the Omarchy desktop's theme. When omitted, Luxe follows Omarchy when it is running there, and uses luxe otherwise."
+    },
+    "colors": {
+      "type": "object",
+      "description": "Per-token color overrides layered over the active theme. Keys are theme tokens (e.g. diffAddBg, diffDelBg, accent, selectedBg); values are #rrggbb, an ANSI index 0-255, or an empty string for the terminal default. Unknown or unparseable entries are ignored.",
+      "additionalProperties": { "type": "string" }
+    },
+    "show_key_hints": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the key hint beside messages waiting for a turn, such as alt+up to edit them. Default: true."
+    },
+    "mouse": {
+      "type": "boolean",
+      "default": true,
+      "description": "Capture the mouse for wheel scroll and clicks (default true). Capturing suppresses the terminal's native click-drag text selection while active — hold Shift to bypass it, or toggle at runtime with /mouse. Set false to start with capture off."
+    },
+    "dashboard": {
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "properties": {
+            "style": {
+              "type": "string",
+              "enum": ["launcher", "minimal"],
+              "default": "launcher",
+              "description": "launcher (default) lists your sessions and commands under the prompt; minimal shows the prompt alone, and the list waits for the down arrow."
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "default": true,
+      "description": "The start screen: a prompt that is also a search over your sessions and commands. true (default) shows it, false opens straight into a conversation, and { \"style\": \"minimal\" } shows the prompt alone."
+    },
+    "banner_animation": {
+      "type": "boolean",
+      "default": true,
+      "description": "Animate the dashboard wordmark: a shine crosses the letters every few seconds. Default: true. Set to false for a still logotype (it costs no frames either way while resting)."
+    },
+    "glyphs": {
+      "type": "string",
+      "enum": ["auto", "nerd", "nerd_wide", "unicode", "ascii"],
+      "default": "auto",
+      "description": "How much glyph fidelity the TUI asks for. Icons are decoration \u2014 the words beside them carry the meaning \u2014 so every setting is fully usable. nerd draws Material Design icons from a Nerd Font (the look Luxe ships with); nerd_wide draws the same icons with a second cell of clearance, for a Nerd Font's non-Mono cut, whose icons carry two cells of ink behind a one-cell advance and so paint over the space after them; unicode uses Geometric Shapes and Arrows only, so no patched font is needed; ascii reduces to plain punctuation for a minimal or non-UTF-8 terminal. auto (default) picks nerd where those glyphs can actually be drawn \u2014 kitty bundles its own symbol font, and elsewhere fontconfig is asked whether any installed font provides them \u2014 and unicode otherwise. auto never picks nerd_wide: both cuts of a face report the same advance, so there is nothing to measure."
+    },
+    "images": {
+      "type": "string",
+      "enum": ["auto", "pixels", "blocks", "off"],
+      "default": "auto",
+      "description": "How an inline image is drawn. pixels uses the kitty graphics protocol; blocks uses half-block cells, which are coarse but need no protocol; off prints a line naming the image and its size. auto (default) picks pixels where the terminal is known to draw them and blocks everywhere else."
+    },
+    "tools": {
+      "type": "object",
+      "description": "Which built-in tools the model is offered. A deny-list, because the useful question is which one to take away.",
+      "properties": {
+        "disabled": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tools to leave unregistered, by name. read, write, edit and bash are the agent's irreducible core and stay registered whatever this says."
+        },
+        "format_on_save": {
+          "type": "boolean",
+          "description": "Run the formatter on each file the agent writes or edits. On by default. rustfmt and gofmt always apply; biome, ruff and taplo only where the project has their config."
+        },
+        "clone_repositories": {
+          "type": "boolean",
+          "description": "Let web_fetch clone a GitHub repository URL into the project's .luxe/gh-cache/ so the agent can search the real files. On by default. Off, the repository is read as a web page instead."
+        }
+      },
+      "additionalProperties": false
+    },
+    "notifications": {
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "array",
+          "items": { "type": "string", "enum": ["turn", "permission", "question", "review"] },
+          "uniqueItems": true
+        }
+      ],
+      "default": false,
+      "description": "Send a desktop notification while the terminal is in the background: true for every moment below, or a list of them. turn: a turn finished or failed. permission: a tool call is waiting for your approval. question: the agent asked you something. review: a Guided Review finished writing its guide. It goes through the terminal as an escape sequence, so the terminal has to show them: Ghostty, iTerm2, kitty, WezTerm, Warp and foot do. Inside tmux it needs `set -g allow-passthrough on`; inside herdr, herdr shows its own instead."
+    },
+    "notification_method": {
+      "type": "string",
+      "enum": ["auto", "osc9", "osc777"],
+      "default": "auto",
+      "description": "Which escape sequence a notification is sent as. auto (default) picks OSC 9 for Ghostty, iTerm2, kitty, WezTerm and Warp, OSC 777 for foot, and sends nothing to a terminal it does not know. osc9 or osc777 sends that sequence regardless, for a terminal auto does not recognize."
+    },
+    "bell": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ring the terminal bell when a turn finishes or fails, or a permission prompt or question waits on you. Off by default: terminals turn a bell into an attention request, and a window manager that honors one takes focus away from whatever you walked off to do."
+    },
+    "herdr": {
+      "type": "boolean",
+      "default": true,
+      "description": "When Luxe runs in a herdr pane, report whether it is working, idle or waiting on you, so herdr's sidebar, notifications and `herdr agent wait` follow it. On by default; nothing is sent outside herdr."
+    },
+    "diff": {
+      "type": "object",
+      "description": "How every surface draws a diff: the edit/write tool card, the preview beside the conversation, and Guided Review. One setting, because the three differ only in how much room they have.",
+      "properties": {
+        "layout": {
+          "type": "string",
+          "enum": ["auto", "unified", "split"],
+          "default": "auto",
+          "description": "One column or two. 'auto' (default) draws two wherever the surface can give each column 44 cells of code after its line-number gutter, and one below that — so the same rule lands differently on a tool card, the preview and a full-screen review, because each has different chrome around it. 'unified' always stacks one column. 'split' draws two wherever two can be laid out at all, including for an all-additions change that auto would leave unified. ctrl+b flips it for the session."
+        },
+        "word_wrap": {
+          "type": "boolean",
+          "default": false,
+          "description": "Soft-wrap long lines (with a continuation glyph) instead of scrolling them sideways. Only Guided Review has the choice — a tool card and the preview cannot scroll sideways, so they always wrap rather than putting content out of reach. Toggle at runtime with w; works in both layouts."
+        }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "description": "Guided Review preferences. How its diffs are drawn is under `diff`, with every other surface's.",
+      "properties": {
+        "context_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra project-relative planning files a review reads for context, on top of PLAN.md and AGENTS.md. Each must resolve inside the opened project."
+        },
+        "exclude": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Project-relative globs a review leaves out, e.g. [\"PROGRESS.md\", \"docs/design/**\"]. Luxe's own .luxe/ directory is always excluded and needs no entry. Supports *, ** and ?; a trailing / matches a directory and everything under it. Excluded files are counted and named in the Brief, never silently dropped."
+        }
+      },
+      "additionalProperties": false
+    },
+    "dock": {
+      "type": "object",
+      "description": "Context Dock (full-height sidebar) preferences.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["auto", "shown", "hidden"],
+          "default": "auto",
+          "description": "Show the Context Dock automatically on wide terminals, always, or never."
+        },
+        "position": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "default": "left",
+          "description": "Which side the full-height sidebar occupies."
+        }
+      },
+      "additionalProperties": false
+    },
+    "agent": {
+      "type": "object",
+      "description": "Agent-loop behavior.",
+      "properties": {
+        "max_tool_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cap on tool-call round-trips within a single turn. Omit for no cap (the default): a turn runs until the model stops calling tools or you cancel it. When set, the final round-trip runs without tools so the model wraps up with a summary instead of being cut off. LUXE_MAX_TOOL_ITERATIONS overrides this (use 0/off/none to lift a configured cap for one run)."
+        },
+        "remember_model": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remember the model and thinking level picked in a session and use them next launch. Precedence: --model/--thinking flag, then LUXE_MODEL/LUXE_PROVIDER, then what you last picked, then default_model in models.json — and nothing under that, because Luxe never picks a model for you. Set false to always start from the configured default."
+        },
+        "on_ask": {
+          "type": "string",
+          "enum": ["allow", "deny"],
+          "default": "allow",
+          "description": "What an `ask` resolves to in a run with nobody to ask — headless, `luxe loop`, and a review agent. Those runs cannot prompt, so every ask rule (the built-in guardrails on out-of-project work and a force push, a hook's escalation, anything permissions.json marks `ask`) collapses to one answer. allow is the default; deny refuses the call and tells the model the run is unattended, so it takes another route rather than retrying. --on-ask overrides this for one run. A project's config may set deny and may not set allow — tighten-only, the same rule as its permissions.json. Interactive runs ignore it: there the answer is yours."
+        },
+        "cache_warming": {
+          "type": "string",
+          "enum": ["off", "streaming", "idle"],
+          "default": "streaming",
+          "description": "When Luxe keeps a conversation's prompt cache alive through a long wait, by re-sending the last request with a one-token cap just before the cache entry expires (five minutes on Anthropic, unless supports_long_cache_retention asks for an hour). A refresh is a cache read of the prompt; the write it saves is usually ten times that. streaming (the default) does it while a turn is running — a slow tool, a permission prompt, a question — where the next request is certain. idle also does it for up to 30 minutes after a turn ends, where a reply is a guess, so a refresh is sent only on a conversation large enough to make the guess pay. off never does. Either way nothing is sent unless it is expected to save at least $0.05, never on a subscription plan, and its cost shows on /cost as cache warming. A project's config may turn this down and may not turn it up."
+        },
+        "default_mode": {
+          "type": "string",
+          "enum": ["build", "plan"],
+          "default": "build",
+          "description": "The mode a session starts in. build changes files and runs commands; plan reads, asks and writes only plan.files. --plan starts one session in plan mode, and shift+tab switches during a session."
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "description": "What a claimed phase has to clear in a continuous loop. Stage one is these acceptance commands; stage two is a reviewer in a fresh context (gate.review, configured under reviewer). Both are opt-in \u2014 with neither set, a claim is taken at its word. A project's commands replace the global list rather than appending to it.",
+      "properties": {
+        "commands": {
+          "type": "array",
+          "description": "Commands that must all succeed before a phase advances, each as [\"program\", \"arg\", \u2026]. No shell is interposed, so use [\"sh\", \"-c\", \"\u2026\"] for shell features \u2014 which names a platform.",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          }
+        },
+        "timeout_secs": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 600,
+          "description": "How long any one acceptance command may run before it is killed as a group."
+        },
+        "review": {
+          "type": "boolean",
+          "description": "Whether a reviewer reads each claimed phase once the commands pass. It runs in a fresh context, on reviewer.model when that is set and on the run's own model otherwise. Unset means on exactly when reviewer.model is set."
+        }
+      },
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "description": "Plan mode: reads, asks, and writes only the plan.",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["PLAN.md"],
+          "description": "Project-relative files or globs plan mode may write. The first plain file is where the plan goes, or a file matching the first glob when there is none. PLAN.md when empty."
+        },
+        "model": { "$ref": "#/definitions/model" },
+        "thinking": { "$ref": "#/definitions/thinking" }
+      },
+      "additionalProperties": false
+    },
+    "reviewer": {
+      "type": "object",
+      "description": "The reviewer /review and the loop's gate ask: a second opinion in a fresh context that changes nothing. Its model defaults to the session's.",
+      "properties": {
+        "model": { "$ref": "#/definitions/model" },
+        "thinking": { "$ref": "#/definitions/thinking" },
+        "tools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Tools a review may call. Absent or empty means the built-in read-only list. Whatever is named, a review changes nothing: its mode refuses every write."
+        }
+      },
+      "additionalProperties": false
+    },
+    "lsp": {
+      "type": "object",
+      "description": "Language-server behavior. Read from the global config only — a project does not get a say in whether its own binaries may run.",
+      "properties": {
+        "project_servers": {
+          "type": "string",
+          "enum": ["auto", "always", "never"],
+          "default": "auto",
+          "description": "Whether to run a program the project installed for itself — a language server in node_modules/.bin, or the formatter in its virtualenv — which is often the only copy that matches the project. auto uses it with a human at the keyboard and refuses when nobody is there (headless, the loop, the review agent) unless --trust-project says otherwise; always includes those; never uses only programs found on PATH and in the usual install directories. Format-on-save reads the same answer."
+        }
+      },
+      "additionalProperties": false
+    },
+    "worktree": {
+      "type": "object",
+      "description": "Whether sessions work in a checkout of their own.",
+      "properties": {
+        "always": {
+          "type": "boolean",
+          "default": false,
+          "description": "Give every new session its own git worktree under .luxe/worktrees/, on a branch of its own, as --worktree does: the agent's edits never land in your checkout, and abandoning the work is removing the worktree. Sessions, reviews and logs stay with the project. A resumed session re-enters the worktree it had."
+        }
+      },
+      "additionalProperties": false
+    },
+    "launchers": {
+      "type": "array",
+      "description": "Programs a key hands the terminal to — gh-dash, lazygit, anything that takes over a terminal and gives it back. Luxe keeps running underneath, a turn included, and redraws when the program exits; text the program writes to the file named by $LUXE_HANDOFF lands in the composer. Read from the global config only: a key that runs a program a repository named is arbitrary execution.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string", "description": "The chord that starts it, like alt+l." },
+          "command": { "type": "string", "description": "The program, looked up on PATH." },
+          "args": { "type": "array", "items": { "type": "string" }, "description": "Its arguments." }
+        },
+        "required": ["key", "command"],
+        "additionalProperties": false
+      }
+    },
+    "mentions": {
+      "type": "array",
+      "description": "Programs the @ picker lists as sources of their own, each a tab after Files and GitHub: Jira issues, Asana tasks, anything a script can reach. The program prints one JSON object a line — {\"id\", \"label\", \"detail\", \"text\"} — a picked row inserts @[kind:id], and its text is what the model is sent. Read from the global config only: a source runs a program.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "The tab's name, like Jira." },
+          "kind": { "type": "string", "description": "The reference's kind, as in @[jira:PROJ-12]; the name in lowercase when unset. Not file, skill, github or mcp." },
+          "command": { "type": "string", "description": "The program, looked up on PATH." },
+          "args": { "type": "array", "items": { "type": "string" }, "description": "Its arguments." },
+          "icon": { "type": "string", "description": "A glyph drawn beside the tab's name, like a Nerd Font's md-jira (U+F0303). Drawn where the Nerd Font icons are; a tag otherwise, and when unset." }
+        },
+        "required": ["name", "command"],
+        "additionalProperties": false
+      }
+    },
+    "github": {
+      "type": "object",
+      "description": "How Luxe keeps up with GitHub: the checked-out branch's pull request, and what /github lists. The refresh interval is read from the global config only — how often Luxe calls out on a timer is not a decision a repository you cloned makes; a project may add its own /github sections.",
+      "properties": {
+        "refresh_secs": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 60,
+          "description": "Seconds between background checks of the branch's pull request once nothing is in flight. While checks run, or for ten minutes after a push, it looks every 15 seconds, or at this interval if that is shorter; after two minutes out of focus, every five minutes. 0 turns background checks off; checks that follow something you did, like a push or /pr, still happen. Each check is one GraphQL query against the hourly budget your gh shares with other tools."
+        },
+        "sections": {
+          "type": "array",
+          "description": "The sections /github lists, each a GitHub search as the site's search box takes it; {repo} stands for the checkout's repository. Replaces the defaults: review requested, mine, assigned issues, every pull request and every issue, all in this repository.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "What the section's tab says." },
+              "query": { "type": "string", "description": "The GitHub search that fills it, e.g. is:open is:pr label:needs-review repo:{repo}." }
+            },
+            "required": ["name", "query"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "update": {
+      "type": "object",
+      "description": "Whether Luxe checks for a newer release. Read from the global config only — whether Luxe reaches the network on your behalf is not a decision a repository you cloned makes.",
+      "properties": {
+        "check": {
+          "type": "boolean",
+          "default": true,
+          "description": "Look for a newer release, at most once a day, and mention it under the dashboard's footer. Luxe never updates itself; the notice names the command that matches how you installed it. The request sends nothing about you — no version, no platform, no identifier — and every failure is silent. Set false, or LUXE_UPDATE_CHECK=0, to turn it off."
+        }
+      },
+      "additionalProperties": false
+    },
+    "compaction": {
+      "type": "object",
+      "description": "When a long conversation gets summarized, and what survives it.",
+      "properties": {
+        "auto": {
+          "type": "boolean",
+          "default": true,
+          "description": "Summarize automatically once the window fills. Off leaves it to /compact, and a session that overflows fails its next request rather than shortening itself."
+        },
+        "at": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "default": 0.9,
+          "description": "Share of the usable window at which that happens. Eliding stale tool output starts one tenth earlier."
+        },
+        "keep_recent": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 20000,
+          "description": "Tokens of the newest conversation kept verbatim rather than summarized. Capped at half the usable window, so a figure larger than the model cannot stall compaction on the sessions that need it most."
+        },
+        "reserve": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 20000,
+          "description": "Tokens held back for the reply when deciding whether the window is full."
+        },
+        "prune": {
+          "type": "boolean",
+          "default": true,
+          "description": "Elide stale tool output as a last step before summarizing. Off goes straight to a summary, which keeps less detail but never rewrites history mid-session."
+        },
+        "summarizer": {
+          "type": "string",
+          "pattern": "^[^/]+/.+$",
+          "description": "Model that writes the summary, as provider/id. Defaults to whichever model is active; a smaller one here is usually the best value in this file, since summarizing is the most expensive call a long session makes and the least demanding."
+        }
+      },
+      "additionalProperties": false
+    },
+    "conversation": {
+      "type": "object",
+      "description": "Conversation canvas width and tool detail defaults.",
+      "properties": {
+        "prose_max_width": {
+          "type": "integer",
+          "minimum": 72,
+          "maximum": 120,
+          "default": 120,
+          "description": "Maximum prose width in terminal cells. Read only under alignment 'left' or 'center' \u2014 the default 'full' fills the pane and ignores both caps. Invalid values fall back to 120."
+        },
+        "wide_block_max_width": {
+          "type": "integer",
+          "minimum": 72,
+          "maximum": 140,
+          "default": 140,
+          "description": "Maximum width for code, tables, and tool details in terminal cells. Read only under alignment 'left' or 'center', like prose_max_width. Invalid values fall back to 140."
+        },
+        "tool_details": {
+          "type": "string",
+          "enum": ["errors", "all", "collapsed"],
+          "default": "errors",
+          "description": "Whether failed calls, all calls, or no calls start with details expanded."
+        },
+        "alignment": {
+          "type": "string",
+          "enum": ["left", "center", "full"],
+          "default": "full",
+          "description": "Horizontal placement of conversation content. 'full' (default) fills the whole width, ignoring the prose cap; 'left' anchors content to the left with readable width caps; 'center' centers it within those caps."
+        },
+        "growth": {
+          "type": "string",
+          "enum": ["top", "bottom"],
+          "default": "bottom",
+          "description": "Vertical growth of the transcript when content is shorter than the viewport. 'bottom' (default) anchors messages just above the input and grows upward (chat-style); 'top' anchors them under the header and grows downward."
+        },
+        "thinking": {
+          "type": "string",
+          "enum": ["shown", "collapsed", "hidden"],
+          "default": "shown",
+          "description": "How model reasoning (thinking) is displayed. 'shown' (default) renders it inline in muted italic; 'collapsed' shows a one-line peek you can expand with enter/space (like a tool card); 'hidden' omits it. Reasoning is always recorded on the session regardless of this setting."
+        },
+        "scroll_lines": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 3,
+          "description": "Lines one mouse-wheel notch scrolls the conversation. Values outside 1-20 fall back to 3. The scrollbar thumb can also be dragged, and PageUp/PageDown move a full viewport."
+        },
+        "activity_bar": {
+          "type": "string",
+          "enum": ["bars", "dots", "off"],
+          "default": "bars",
+          "description": "The indicator above the composer while a turn runs: a comet shaded in the theme accent that sweeps the rail, runs off the end, waits a beat, and returns the way it came. Its cells dim and thin as they trail away, so the far tail converges on the rail and disappears, and the rail is lit by the comet rather than drawn at a fixed weight, so the bar's ends melt into the canvas. 'bars' (default) uses block-element segments, which every terminal font draws at exact cell fractions; 'dots' is softer and lighter; 'off' keeps the elapsed time and interrupt hint without the motion. The slanted, upright and braille rails are retired \u2014 whether a font draws those at one cell wide is unmeasurable, so the setting was a coin toss; a config naming one falls back to 'bars'."
+        },
+        "image_max_rows": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 200,
+          "default": 24,
+          "description": "Rows an inline image may occupy before it is scaled down to fit. Values outside 3-200 fall back to 24. Capped again at half the transcript's height, so one tall screenshot cannot swallow the window."
+        },
+        "tool_runs": {
+          "type": "string",
+          "enum": ["fold", "cards"],
+          "default": "fold",
+          "description": "How a run of lookups one message asked for is drawn. 'fold' (default) collapses the run into one line that names the lookup happening now and settles into a count; select it or click it to see every card it stands for. 'cards' keeps each call on its own card. Only lookups fold, and a failure never does."
+        },
+        "stream_reveal": {
+          "type": "string",
+          "enum": ["smooth", "off"],
+          "default": "smooth",
+          "description": "How streamed reasoning and prose land on screen. 'smooth' (default) paces them at the rate the model is actually producing, with the newest characters fading up out of the background, because a provider's delivery is nothing like its production: one measured at a single ~75-character delta every ~470 ms, which paints as two visible jumps a second. Tool cards, your own messages and everything else appear immediately either way, and anything that needs you \u2014 a permission prompt, a question, an error, a keystroke \u2014 shows the rest at once. 'off' paints each arrival the instant it lands."
+        }
+      },
+      "additionalProperties": false
+    },
+    "statusline": {
+      "type": "object",
+      "description": "Statusline visibility, module order, and appearance.",
+      "properties": {
+        "visibility": {
+          "type": "string",
+          "enum": ["auto", "shown", "hidden"],
+          "default": "auto",
+          "description": "Show the bottom statusline always, never, or automatically (auto = shown unless the full-height sidebar sits beside the conversation). Toggle at runtime via the command palette, /statusline, or the bound key."
+        },
+        "style": {
+          "type": "string",
+          "enum": ["slab", "flat"],
+          "default": "slab",
+          "description": "How modules are drawn: 'slab' gives each one a half-capped block colored off the theme accent, receding into the background; 'flat' draws tinted text straight on the bar. The Context Dock's section headings follow the same setting. Neither needs a patched font."
+        },
+        "left": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["project", "branch", "pr", "todo", "changes", "cwd", "activity"]
+          },
+          "uniqueItems": true,
+          "default": ["project", "branch", "pr", "todo", "changes"],
+          "description": "Left-side modules in rendered order from the outer edge toward the center. Default: project, branch, pr, todo, changes. 'pr' is the branch's pull request on GitHub — its number, failing or running checks, a request for changes, unresolved threads — and renders nothing when the branch has none or GitHub cannot be asked. 'todo' leads with the checklist ratio and renders nothing at all when the session has no plan. 'changes' says how many files this session has touched and which key opens them, and renders nothing when the worktree is clean. 'cwd' is opt-in now that the project name says where you are, and 'activity' because a running turn already announces itself above the composer. Project and branch stay shown even when the Context Dock also shows them; omit a module from an explicit list to hide it."
+        },
+        "right": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["context", "cost", "tokens", "thinking", "model"]
+          },
+          "uniqueItems": true,
+          "default": ["context", "cost", "tokens", "thinking", "model"],
+          "description": "Right-side modules in rendered left-to-right order, from the center toward the outer edge. 'context' leads because it rides bare on the bar, where its fill coloring reads without a surface competing with it. Omit a module to hide it."
+        },
+        "thinking_colors": {
+          "type": "boolean",
+          "default": false,
+          "description": "Color the thinking module by level: muted off, text minimal, yellow low, green medium, blue high, purple xhigh, magenta ultra."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "model": {
+      "type": "string",
+      "pattern": "^[^/]+/.+$",
+      "description": "Model as provider/id, e.g. anthropic/claude-sonnet-4-20250514. Only the first slash separates them, so a namespaced id keeps its own (openrouter/anthropic/claude-sonnet-4). An id no catalog knows still works, on provider-aware defaults. Each model keeps its own prompt cache, so a switch reads the conversation again at full price."
+    },
+    "thinking": {
+      "type": "string",
+      "enum": ["off", "minimal", "low", "medium", "high", "xhigh", "ultra"],
+      "description": "Reasoning level, clamped to what the model supports."
+    }
+  },
+  "additionalProperties": false
+}

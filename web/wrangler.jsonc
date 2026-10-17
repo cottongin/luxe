@@ -1,0 +1,17 @@
+{
+  // luxe.dev — a static site on Cloudflare Pages.
+  //
+  // Present so the deploy is described in the repository rather than only in a dashboard: with this
+  // file, `wrangler pages deploy` needs no flags and a fresh clone can ship the site. The Git
+  // integration reads the same settings, so the two cannot disagree.
+  //
+  // There are no bindings, no functions, and no server: the whole site is files. That is deliberate
+  // — it is the one deployment that cannot break for a reason specific to us.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "luxe-dev",
+  "pages_build_output_dir": "dist",
+  // Must not run ahead of the workerd bundled with the installed wrangler, or `pages dev` refuses to
+  // boot ("requires compatibility date X, newest supported is Y"). Nothing here uses the runtime, so
+  // this only ever needs to be a date that exists — never today's.
+  "compatibility_date": "2026-08-01"
+}

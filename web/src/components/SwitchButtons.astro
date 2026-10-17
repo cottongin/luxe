@@ -1,0 +1,73 @@
+---
+/**
+ * The buttons for a [`StillSwitch`], wherever the words about its pictures are.
+ *
+ * Hidden until the switch's script finds them, so a reader without JavaScript is not offered a
+ * control that does nothing.
+ */
+interface Props {
+  /** The `id` of the `StillSwitch` these drive. */
+  for: string;
+  /** What each state is called, in the order of the switch's `first` and `second` slots. */
+  labels: [string, string];
+  /** Names the pair for assistive technology. */
+  label: string;
+}
+const { for: target, labels, label } = Astro.props;
+---
+
+<div class="switch-buttons" role="group" aria-label={label} aria-controls={target} data-switch-for={target} hidden>
+  {
+    labels.map((name, index) => (
+      <button type="button" aria-pressed={index === 0 ? "true" : "false"}>
+        {name}
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .switch-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+
+  .switch-buttons[hidden] {
+    display: none;
+  }
+
+  /* On the right-hand column the buttons line up with the text above them */
+  :global(.duo--flip) .switch-buttons {
+    justify-content: flex-end;
+  }
+
+  button {
+    font: inherit;
+    font-size: var(--step--1);
+    padding: 0.3em 0.8em;
+    color: var(--luxe-muted);
+    background: none;
+    border: 1px solid var(--luxe-border-muted);
+    cursor: pointer;
+    transition:
+      color 150ms var(--ease),
+      border-color 150ms var(--ease);
+  }
+
+  button:hover {
+    color: var(--luxe-text);
+  }
+
+  button[aria-pressed="true"] {
+    color: var(--luxe-accent);
+    border-color: var(--luxe-accent);
+  }
+
+  @media (max-width: 68rem) {
+    :global(.duo--flip) .switch-buttons {
+      justify-content: flex-start;
+    }
+  }
+</style>

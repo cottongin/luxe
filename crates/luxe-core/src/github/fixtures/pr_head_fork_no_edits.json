@@ -1,0 +1,1 @@
+{"data":{"repository":{"viewerPermission":"READ","defaultBranchRef":{"name":"trunk"},"pullRequest":{"headRefName":"patch-1","isCrossRepository":true,"maintainerCanModify":false,"headRepositoryOwner":{"login":"DynamoIVII"},"headRepository":{"name":"cli","viewerPermission":"READ"}}}}}

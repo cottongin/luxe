@@ -1,0 +1,65 @@
+# mention — reference an issue and a skill with `@`, then let the agent go.
+#
+# The picker is the demo, so the take is mostly typing: `@` opens on files, Tab walks to GitHub,
+# a filter finds the issue, Enter makes it a chip; then `@` again for a skill. Sending it is the
+# last beat, and the take ends once the agent has visibly picked both up.
+#
+# The repository is fictional, so `gh` is a stand-in (`gh/gh`) that answers for `acme/todo` and
+# refuses anything else. Everything else is real, including the model reading the issue it was
+# pointed at.
+
+#: cols 120
+#: rows 32
+#: speed 1.0
+#: model anthropic/claude-sonnet-5-5
+#: thinking medium
+#: glyphs nerd
+#: bin gh
+#: seed bash "$DEMO_SCRIPTS/demo-skills.sh"
+#: setup git remote add origin https://github.com/acme/todo.git
+
+answer Return hold 3 when Allow once
+answer Return hold 3.5 when Enter submit
+
+sleep 3
+mark start
+sleep 1
+
+type fix
+key space
+sleep 0.3
+type @
+sleep 1.6
+
+log walk the tabs to GitHub
+key Tab
+sleep 1.6
+key Tab
+expect #12 max 20
+sleep 2.2
+
+log narrow to the issue and insert it
+type miss
+sleep 1.8
+key Return
+sleep 1.2
+
+type with
+key space
+sleep 0.3
+type @
+sleep 1.2
+key Tab
+sleep 1.0
+type test
+sleep 1.6
+key Return
+sleep 1.8
+
+log send it
+key Return
+
+log the agent reads both
+settle 5 max 240
+sleep 2.5
+mark end

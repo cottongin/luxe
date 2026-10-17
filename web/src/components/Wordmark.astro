@@ -1,0 +1,240 @@
+---
+/**
+ * The logotype, and the light that crosses it.
+ *
+ * The paths are read at build time out of the generated `wordmark.svg`, which is itself derived from
+ * the art constants the TUI draws — so there is one drawing, not a web copy of one.
+ *
+ * Two motions, both the terminal's, to the millisecond.
+ *
+ * The **drift** is the brushed-metal one: each letter swings between the accent and the accent cut
+ * back toward the canvas, a half-period apart across the mark, so one slow wave runs `l` to `.` and
+ * never folds back. 7 s, because it is a reflection moving rather than an indicator — fast enough
+ * to read as motion if you look, slow enough that you never catch it starting.
+ *
+ * The **shine** is the punctuation: a band leaning `/` crosses in 1.6 s, then the mark rests for 5 s.
+ * It is drawn in the terminal's own grid rather than in the SVG's — see `band` below — because the
+ * lean is one cell per row, and a cell is twice as tall as it is wide.
+ *
+ * Same numbers as `DRIFT_TICKS`/`DRIFT_DEPTH`/`SWEEP_TICKS`/`REST_TICKS`/`LEAN`/`BAND`, because a
+ * signature that moves differently in two places is two signatures. The colors and the shine's
+ * strength come from the generated tokens rather than percentages restated here, for the same
+ * reason.
+ */
+import wordmark from "../assets/generated/wordmark.svg?raw";
+
+interface Props {
+  /** Play the shine. Off for a mark that is decoration rather than the page's subject. */
+  shine?: boolean;
+  /** Play the drift. Off only where the mark must hold still — the social card is a screenshot. */
+  drift?: boolean;
+  class?: string;
+}
+const { shine = false, drift = true, class: className = "" } = Astro.props;
+
+// The four letter paths, in order. Everything else about the file is regenerated shape.
+const paths = [...wordmark.matchAll(/<path[^>]*d="([^"]+)"/g)].map((m) => m[1]);
+const viewBox = wordmark.match(/viewBox="([^"]+)"/)?.[1] ?? "0 0 540 176";
+const [, , width, height] = viewBox.split(/\s+/).map(Number);
+
+// The grid the art is drawn on, carried by the generated file. Everything about the shine is stated
+// in cells, exactly as the terminal states it, and one `scale()` puts it back into the SVG's box.
+const [cellW, cellH] = (wordmark.match(/data-cell="([^"]+)"/)?.[1] ?? "10 22")
+  .split(/\s+/)
+  .map(Number);
+const columns = width / cellW;
+const rows = height / cellH;
+
+/**
+ * The highlight, in cells — the terminal's `LEAN`, `BAND` and `Pass`, not a reading of them.
+ *
+ * The band's iso-lines are `column + LEAN * row = k`, so the gradient runs along the *normal* to
+ * those lines, `(1, LEAN)`. Stating that in the SVG's box means an angle, and an angle derived by
+ * eye comes out mirrored: the gradient vector is perpendicular to the stripe you are trying to
+ * draw, so `/` and `\` look like the same arithmetic until you see it move.
+ */
+const LEAN = 1;
+const BAND = 0.3;
+const span = columns - 1 + LEAN * (rows - 1);
+const half = Math.max(span * BAND, 1);
+const travel = span + 2 * half;
+// The gradient's own reach along `(1, LEAN)`: far enough that `axis` falls by `2 * half` over it.
+const reach = (2 * half) / (1 + LEAN * LEAN);
+// The band is nonzero only where `axis` is inside that span, which bounds the rect exactly.
+const bandWidth = 2 * half + LEAN * rows;
+// Where the band waits between passes: a cell clear of the mark rather than touching it. Flush
+// with the first letter, a mark moving by fractional pixels could antialias a hairline of the band
+// down its left edge. The sweep travels the extra cell, so the pass itself is unchanged.
+const PARK = 1;
+
+// Smooth 0→1 with zero slope at both ends — the terminal's `smoothstep`, sampled rather than
+// approximated with an easing curve. A linear ramp is what the shine had, and it creases along the
+// ridge and stops dead at each shoulder: a stripe laid over the letters instead of light crossing
+// them. Seventeen stops put the error below a level part in a thousand.
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
+const stops = Array.from({ length: 17 }, (_, i) => i / 16).map((offset) => ({
+  offset,
+  opacity: smoothstep(1 - Math.abs(2 * offset - 1)),
+}));
+
+// Unique per instance: two wordmarks on a page must not share a mask id.
+const uid = `lx-${Math.random().toString(36).slice(2, 8)}`;
+
+// Where each letter sits in the drift, as a fraction of the loop. Half a period is spread across
+// the mark (the terminal's `DRIFT_SPREAD`), and the offsets are negative so every letter is already
+// mid-swing on the first frame — otherwise the whole mark starts lit together and pulses once,
+// which is a logo blinking at you rather than metal catching the light.
+const phase = (i: number) => (-1 + (i / Math.max(paths.length - 1, 1)) * 0.5).toFixed(4);
+---
+
+<svg
+  class:list={["wordmark", className, { "wordmark--drift": drift }]}
+  viewBox={viewBox}
+  role="img"
+  aria-label="Luxe"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>Luxe</title>
+  {
+    shine && (
+      <defs>
+        <mask id={`${uid}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width={width} height={height}>
+          {paths.map((d) => <path d={d} fill="#fff" />)}
+        </mask>
+        {/* In cells, along the normal to the band's iso-lines: offset 0 sits at `axis = -2 * half`
+            and offset 1 at `axis = 0`, so the ridge lands halfway and the profile either side of it
+            is the terminal's own falloff. */}
+        <linearGradient
+          id={`${uid}-band`}
+          gradientUnits="userSpaceOnUse"
+          x1={-reach}
+          y1={-reach * LEAN}
+          x2="0"
+          y2="0"
+        >
+          {stops.map(({ offset, opacity }) => (
+            <stop
+              offset={offset.toFixed(4)}
+              stop-color="#fff"
+              stop-opacity={opacity.toFixed(4)}
+            />
+          ))}
+        </linearGradient>
+      </defs>
+    )
+  }
+  <g class="wordmark__ink">
+    {
+      paths.map((d, i) => (
+        <path d={d} fill={`var(--luxe-wordmark-${i + 1})`} style={`--drift-phase: ${phase(i)}`} />
+      ))
+    }
+  </g>
+  {
+    shine && (
+      /* The mask belongs on the wrapper, never on the band. An element's own transform redefines the
+         user space its `userSpaceOnUse` mask resolves in, so a masked rect drags the letters along
+         with it and the two never meet — a shine that is present in the DOM, throws nothing, and
+         paints nothing on any page. `site-smoke.mjs` checks the pixels rather than the markup. */
+      <g mask={`url(#${uid}-mask)`} class="wordmark__shine">
+        {/* One scale, and everything inside is cells: the rect, the gradient, and the sweep's own
+            travel. The scale is anisotropic, which is the point — it shears the band by exactly the
+            cell's 1:2.2, so the stripe lands at the angle the terminal draws and not near it. */}
+        <g transform={`scale(${cellW} ${cellH})`}>
+          <rect
+            class="wordmark__band"
+            x={-bandWidth - PARK}
+            y="0"
+            width={bandWidth}
+            height={rows}
+            fill={`url(#${uid}-band)`}
+          />
+        </g>
+      </g>
+    )
+  }
+</svg>
+
+<style define:vars={{ sweepWidth: `${travel + PARK}px` }}>
+  .wordmark {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 212 ticks of the terminal's 33 ms animation clock. Deliberately not a divisor of the sweep's
+     6.6 s: the two lights would land in step every pass and read as one loop repeating. */
+  .wordmark--drift .wordmark__ink path {
+    animation: wordmark-drift 6.996s linear infinite;
+    animation-delay: calc(var(--drift-phase, 0) * 6.996s);
+  }
+
+  /* The terminal's `DEPTH * (1 - cos(turn)) / 2`, sampled every eighth of a turn. Written out
+     rather than approximated with an easing curve: a raised cosine is what makes the swing read as
+     one light moving over metal instead of a group of letters taking turns fading. */
+  @keyframes wordmark-drift {
+    0%,
+    100% {
+      fill: var(--luxe-wordmark-lit);
+    }
+    12.5%,
+    87.5% {
+      fill: color-mix(in oklab, var(--luxe-wordmark-dim) 15%, var(--luxe-wordmark-lit));
+    }
+    25%,
+    75% {
+      fill: color-mix(in oklab, var(--luxe-wordmark-dim) 50%, var(--luxe-wordmark-lit));
+    }
+    37.5%,
+    62.5% {
+      fill: color-mix(in oklab, var(--luxe-wordmark-dim) 85%, var(--luxe-wordmark-lit));
+    }
+    50% {
+      fill: var(--luxe-wordmark-dim);
+    }
+  }
+
+  /* How far the shine may push, which the terminal decides per theme: a light theme's letters are
+     saturated mid-tones on near-white and wash out long before a dark theme's do. The stops carry
+     the shape, this carries the strength. */
+  .wordmark__shine {
+    opacity: var(--luxe-wordmark-shine, 0.62);
+  }
+
+  /* 1.6 s of travel in a 6.6 s cycle is 24.2% — the rest of the loop is the rest between passes.
+     Holding the band off-canvas for three quarters of the cycle is the whole point: a shine that
+     repeats promptly stops reading as light and starts reading as a strobe. The travel is in cells,
+     because the band is drawn inside the scale that puts the grid back into the SVG's box. */
+  /* `--shine-delay` holds the first pass off, for a caller that has an opening of its own.
+     The front page types the logotype in before anything else happens, and a shine crossing letters
+     that have not been drawn yet is light with nothing to fall on. Only the first pass is delayed:
+     the cycle carries on every 6.6s after it. */
+  .wordmark__band {
+    animation: wordmark-sweep 6.6s linear var(--shine-delay, 0s) infinite;
+    will-change: transform;
+  }
+
+  @keyframes wordmark-sweep {
+    0% {
+      transform: translateX(0);
+    }
+    24.2% {
+      transform: translateX(var(--sweepWidth));
+    }
+    100% {
+      transform: translateX(var(--sweepWidth));
+    }
+  }
+
+  /* A logo that flashes is exactly what a vestibular trigger looks like. Both motions stop; the
+     paths keep the still fills, which are the frame the terminal freezes at `STILL_TICK`. */
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark__band {
+      display: none;
+    }
+
+    .wordmark--drift .wordmark__ink path {
+      animation: none;
+    }
+  }
+</style>

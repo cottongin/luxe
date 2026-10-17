@@ -1,0 +1,38 @@
+[package]
+name = "luxe-providers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "LLM provider adapters for Luxe: OpenAI-compatible and Anthropic streaming, tool calls, usage, and auth"
+repository.workspace = true
+homepage.workspace = true
+
+# Allowed edges: depends on luxe-core only.
+# Provides LLM provider adapters (OpenAI-compat, Anthropic, Gemini).
+
+[dependencies]
+luxe-core = { path = "../luxe-core", version = "0.1.0" }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+secrecy = { workspace = true }
+reqwest = { workspace = true }
+futures = { workspace = true }
+async-trait = { workspace = true }
+# Inflates the embedded models.dev snapshot. Already in the binary via image/png + syntect,
+# so making it direct here costs nothing new.
+flate2 = "1"
+# OAuth: JWT claim decoding. PKCE and the loopback listener are `luxe_core::oauth_loopback`; URL
+# building rides on reqwest's `url` re-export.
+base64 = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"
+# `tokio::time::pause` — the device-code poller's pacing is tested against a paused clock rather
+# than by sleeping through it.
+tokio = { workspace = true, features = ["test-util"] }
+
+[lints]
+workspace = true

@@ -1,0 +1,318 @@
+# CI — the canonical quality gate + supply-chain checks on every push/PR.
+#
+# Mirrors the local gate (AGENTS.md / PROJECT.md) and adds `--locked` everywhere
+# so a PR can never silently drift `Cargo.lock` (the core supply-chain guard).
+# Third-party actions are pinned to commit SHAs (trailing `# vX` = the tag);
+# Dependabot (.github/dependabot.yml) bumps the SHAs. SHA-pinned `uses:` lines
+# necessarily exceed 80 cols — that's expected.
+name: CI
+
+# A commit that touches only prose cannot change what the compiler or the suite says, and this
+# workflow costs three runners (Windows sets the wall clock at ~10 minutes warm). The journal moves
+# on nearly every iteration, so this is where the minutes actually go.
+#
+# Deliberately narrow: only paths that are provably not inputs to the build. Nothing under `crates/`
+# is listed, and no `.md` in the tree is pulled in with `include_str!` — checked, not assumed. Adding
+# one later means taking it off this list.
+on:
+  # Re-run the gate on demand — how a timing change to this file gets measured against a warm cache,
+  # and how a run that failed on something external gets another go without an empty commit.
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths-ignore: &prose
+      - "**/*.md"
+      - "docs/**"
+      - ".pi/**"
+      - "LICENSE-*"
+      # Dependabot's own schedule: it decides what gets proposed, never what gets built.
+      - ".github/dependabot.yml"
+  pull_request:
+    branches: [master, main]
+    paths-ignore: *prose
+
+# Least privilege: CI only needs to read the repo.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_NET_RETRY: "3"
+  # Nothing here opens a debugger, and the debug info CI does not use is expensive to produce — on
+  # Windows every one of the workspace's ~40 test binaries gets a PDB written beside it, which is a
+  # large part of what makes that runner the slowest thing in this file. Line tables keep a
+  # backtrace readable, and the `file:line` in an assertion comes from `#[track_caller]` rather than
+  # from here, so a failure still says where it happened.
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
+  CARGO_PROFILE_TEST_DEBUG: line-tables-only
+
+jobs:
+  gate:
+    name: build · test · clippy · fmt
+    runs-on: ubuntu-latest
+    # A bound, because the absence of one cost real money. This job's test step has been hanging on
+    # `ubuntu-latest` — the same `cargo nextest run` that takes ~11s locally and passes on the macOS
+    # and Windows runners — and without a timeout it burned 50 minutes before the runner was lost, on
+    # every push and every Dependabot PR.
+    #
+    # It is also the diagnostic: on timeout GitHub signals the process, and nextest answers a signal
+    # by naming the tests still in flight. A capped run therefore says *which* test is stuck, which
+    # 50 minutes of silence and a discarded log never did.
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust (stable + clippy + rustfmt)
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo + target
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+
+      - name: Install nextest
+        uses: taiki-e/install-action@26e9283f268b880168bdbd2c545dfcd60ec2c6ab # v2.87.13
+        with:
+          tool: nextest
+
+      - name: Format check
+        run: cargo fmt --all --check
+
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Build
+        run: cargo build --workspace --all-targets --locked
+
+      # One command again. The bisect that lived here found both hangs, and neither was slowness:
+      # `command_hooks` wrote a 256KB event into a hook that never reads its stdin with no bound on
+      # the write, and `program::kill_tree` then shelled out to `kill(1)` — a blocking spawn-and-wait
+      # on the async runtime's thread, through a `PATH` lookup, to a binary whose argument handling
+      # differs between util-linux and procps-ng. Ubuntu had the second `kill`; macOS and Arch did
+      # not, which is why exactly one runner hung.
+      - name: Test (nextest, ci profile)
+        run: cargo nextest run --workspace --profile ci --locked
+
+      # The example targets carry their own guards, and both `cargo test` and nextest skip them
+      # unless the target opts in with `test = true`. Belt and braces: run them explicitly, so a
+      # dropped opt-in cannot silently retire a generator's tests the way it already did once.
+      - name: Test (examples)
+        run: cargo test --workspace --examples --locked
+
+      # Everything under web/src/assets/generated is derived from this repo — the logotype from the
+      # art constants, the color tokens from the theme JSON, the screenshots and demos from the
+      # production view path. Stale assets are how a site quietly starts advertising a build that no
+      # longer exists, so regeneration is checked rather than trusted.
+      - name: Site assets are current
+        run: scripts/site-assets.sh --check
+
+      # The webfonts are subset to exactly the characters those assets draw, and they are rebuilt by
+      # hand — so an asset regenerated above can quietly outgrow them, and every character it gained
+      # renders as a box with its own codepoint printed inside. That shipped for nine days across
+      # thirty-one glyphs, every Nerd Font icon among them. This half needs no fonttools: the build
+      # records what it covered and this compares two sorted lists.
+      - name: Webfonts cover the assets
+        run: scripts/site-fonts.sh --check
+
+      # The one part of docs/brand/voice.md a machine can judge. Everything else in it — evidence
+      # with claims, naming the trade-off — is a human's call, and a checker that pretended otherwise
+      # would be one nobody trusts.
+      - name: Voice
+        run: python3 scripts/voice-check.py
+
+      # The guide's links, frontmatter and, on rewritten pages, its voice. Its config examples,
+      # flags and slash commands are checked by `guide_check`, in the test step above.
+      - name: Guide
+        run: python3 scripts/docs-check.py
+
+      # Ratchets: a file or function over its limit fails unless allowlisted, and the lists only
+      # shrink. See the scripts' own docs for the limits.
+      - name: File sizes
+        run: python3 scripts/size-check.py
+
+      - name: Function lengths
+        run: python3 scripts/fn-length-check.py
+
+      # The docs are held where the comment passes left them: a broken intra-doc link, or a bare URL,
+      # is a warning rustdoc prints and nobody reads, so it fails here instead.
+      - name: Docs build clean
+        run: cargo doc --workspace --no-deps --locked
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  # Does it build and pass on the platforms nobody develops on? Linux above is the canonical gate —
+  # `fmt` is an answer about the source, not about the OS, so running it three times would only
+  # triple the noise from one rule. What cannot be known without a real runner is whether the code
+  # *compiles and behaves* off unix: a `cfg` that forgot Windows, a `$HOME` that isn't set, a POSIX
+  # shell that isn't there. That is what this job is for.
+  #
+  # Clippy does run per-platform, and for a reason the Windows audit turned up: a lint only ever sees
+  # the code its target compiles, so every `#[cfg(windows)]` block in the tree is invisible to the
+  # Linux gate. Without this, Windows-only code is the one code path that ships unlinted.
+  portability:
+    name: build · clippy · test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Windows sets the wall clock for the whole workflow: ~10 minutes warm and ~15 cold, building,
+    # linting and testing the whole workspace on the slowest runner. This is headroom over that, not
+    # a target.
+    timeout-minutes: 45
+    strategy:
+      # One platform's failure should not hide another's, and there are only two.
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust (stable + clippy)
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          components: clippy
+
+      # Defender scans every file rustc writes, and a Rust build writes a great many small ones. The
+      # runner is thrown away at the end of the job, so there is nothing here to protect — and an
+      # exclusion that cannot be set costs speed, not correctness, which is why this never fails the
+      # build.
+      - name: Exclude the build from Defender (Windows)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE, "$env:USERPROFILE\.cargo", $env:TEMP
+
+      # MSVC's `link.exe` is the slow half of a Windows build, and LLVM's drop-in replacement ships
+      # on the image. Resolved rather than assumed: if an image ever drops it the default linker is
+      # still there and this step is a no-op. Set before the cache step, because the cache key
+      # includes `RUSTFLAGS` and artifacts built by one linker must not be restored for the other.
+      - name: Link with lld (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (Get-Command lld-link.exe -ErrorAction SilentlyContinue) {
+            "RUSTFLAGS=-Clinker=lld-link.exe" >> $env:GITHUB_ENV
+          } else {
+            Write-Host "lld-link.exe is not on PATH; keeping the default MSVC linker"
+          }
+
+      - name: Cache cargo + target
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          key: ${{ matrix.os }}
+
+      - name: Install nextest
+        uses: taiki-e/install-action@26e9283f268b880168bdbd2c545dfcd60ec2c6ab # v2.87.13
+        with:
+          tool: nextest
+
+      - name: Build
+        run: cargo build --workspace --all-targets --locked
+
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      # Unix-only fixtures (an executable shell stub, a re-exec dance) are `#![cfg(unix)]`, so on
+      # Windows this runs a smaller suite by construction rather than by exclusion.
+      - name: Test (nextest, ci profile)
+        run: cargo nextest run --workspace --profile ci --locked
+
+  # Does the workspace build on the `rust-version` it claims? `cargo install` on an older toolchain
+  # trusts that number, and it said 1.85 for months while the dependencies needed 1.88.
+  msrv:
+    name: msrv
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust (the declared rust-version)
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: "1.89"
+
+      - name: Cache cargo + target
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+
+      - name: Check
+        run: cargo +1.89 check --workspace --all-targets --locked
+
+  supply-chain:
+    name: cargo-deny
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+
+      - name: Install cargo-deny
+        uses: taiki-e/install-action@26e9283f268b880168bdbd2c545dfcd60ec2c6ab # v2.87.13
+        with:
+          tool: cargo-deny
+
+      # Single supply-chain gate: RustSec advisories, license allow-list, banned/
+      # duplicate crates, source registries — with deny.toml's documented ignores.
+      # (cargo-audit is omitted: it can't read those ignores, so it would
+      # false-fail on advisories we've already triaged.)
+      - name: cargo deny
+        run: cargo deny check
+
+  # The website. Its own job because it needs Node and nothing else does — and because a broken site
+  # build should not read as a broken harness.
+  website:
+    name: web build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Types and templates
+        run: npm run check
+        working-directory: web
+
+      - name: Build
+        run: npm run build
+        working-directory: web
+
+      # `check` type-checks and `Build` emits files; neither one opens a page. This serves the built
+      # site the way Cloudflare does — `_headers`, so the real CSP — and asserts every page renders
+      # with no uncaught exceptions and no CSP violations. It exists because the demo players
+      # shipped blank: the player's WebAssembly was blocked and nothing was looking.
+      - name: Render check
+        run: ./scripts/site-check.sh --no-build
+
+      # One engine is not coverage. The render check above drives Chrome, and the site has since
+      # shipped two defects that Chrome could not see — a demo player whose dynamic import Firefox
+      # refused outright, and a layout that only Chrome's box metrics agreed with. WebKit is here
+      # for Safari, which nothing else in this pipeline speaks for.
+      #
+      # `--with-deps` because the WebKit build wants Ubuntu's ICU and libxml2 sonames; a rolling
+      # distro cannot supply them, which is why a contributor's local run skips it and CI does not.
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+        working-directory: web
+
+      # The built site first — that is what a reader gets — then the dev server, which is where the
+      # Firefox failure actually lived and which no other job opens at all.
+      - name: Cross-browser (built)
+        run: node ../scripts/site-cross.mjs --built --require webkit
+        working-directory: web
+
+      - name: Cross-browser (dev server)
+        run: node ../scripts/site-cross.mjs --require webkit
+        working-directory: web

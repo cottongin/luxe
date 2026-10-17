@@ -1,0 +1,695 @@
+---
+import Base from "../layouts/Base.astro";
+import bench from "../data/tool-bench.json";
+import agentCost from "../data/agent-cost.json";
+
+/**
+ * Each tool against the shell command it replaces.
+ *
+ * The bars are measured, not typed: `scripts/tool-bench.sh` runs both sides in a checkout and
+ * writes `tool-bench.json`, which names the repository and the commit. Each shell command is also
+ * put through the other agents' own output limits, because no agent sends its model a raw 8 MB
+ * `git log`: the honest comparison is with what they forward. A tool whose win is behavior rather
+ * than size gets the two behaviors side by side instead.
+ */
+
+type Contrast = { shell: string; luxe: string };
+type Tool = { name: string; instead: string; text: string; bench?: string; contrast?: Contrast };
+type Group = { id: string; name: string; tools: Tool[] };
+
+const groups: Group[] = [
+  {
+    id: "files",
+    name: "Files",
+    tools: [
+      {
+        name: "read",
+        instead: "`cat`, `head`, `sed -n`",
+        text: "Several files in one call, with numbered lines. An image comes back as a picture.",
+        contrast: {
+          shell: "Sends the whole file, however long, and the model can't see an image.",
+          luxe: "A page at a time, stopping at a line boundary and saying where to pick up.",
+        },
+      },
+      {
+        name: "edit",
+        instead: "`sed -i`",
+        text: "Changes exact text, several edits in one call, all or none. It won't touch a file the agent hasn't read, or one that changed since.",
+        contrast: {
+          shell: "Exits 0 when the pattern matches nothing, so a missed edit looks like a done one.",
+          luxe: "Refuses a miss and points at the closest line, refuses an ambiguous match, and shows the diff after formatting.",
+        },
+      },
+      {
+        name: "write",
+        instead: "`cat > file`",
+        text: "Creates or replaces a whole file, and shows what it wrote.",
+        contrast: {
+          shell: "Replaces whatever was there, unseen.",
+          luxe: "Won't overwrite a file the agent hasn't read, keeps its line endings, and formats it.",
+        },
+      },
+    ],
+  },
+  {
+    id: "search",
+    name: "Search",
+    tools: [
+      {
+        name: "glob",
+        instead: "`find`",
+        bench: "glob",
+        text: "Skips whatever `.gitignore` skips, so build output and dependencies stay out. Sorted by path, capped at 200, with a count of the rest.",
+      },
+      {
+        name: "grep",
+        instead: "`grep -rn`, `rg`",
+        bench: "grep",
+        text: "Capped per file and overall, with long lines trimmed. It can return just the files that match or just the counts, and says so when there's more.",
+      },
+      {
+        name: "ast_grep",
+        instead: "`grep` on code",
+        text: "Search and replace by code structure. A rewrite shows a preview before it writes.",
+        contrast: {
+          shell: "Matches text, so comments and strings count too.",
+          luxe: "Matches syntax: `$X.unwrap()` finds the calls and nothing else.",
+        },
+      },
+    ],
+  },
+  {
+    id: "shell",
+    name: "Shell and tests",
+    tools: [
+      {
+        name: "bash",
+        instead: "`sh`",
+        bench: "bash",
+        text: "Long output comes back as the lines that matter, with every gap marked and the untouched text saved to a file, each stream whole up to 8 MB. A command that runs out of time returns what it printed so far.",
+      },
+      {
+        name: "test",
+        instead: "`cargo test`, `npm test`, `pytest`",
+        bench: "test",
+        text: "One line when everything passes. When something fails, each failure with its `file:line`, and which ones your change broke. Tests run the project's way, through its own `.venv` or package manager.",
+      },
+    ],
+  },
+  {
+    id: "git",
+    name: "Git",
+    tools: [
+      {
+        name: "git",
+        instead: "`git`, `gh`",
+        bench: "git",
+        text: "The last ten commits, with a note when there are more. Diffs are capped and say how to narrow them. Pull requests, issues and CI checks come through `gh`.",
+      },
+    ],
+  },
+  {
+    id: "code",
+    name: "Code intelligence",
+    tools: [
+      {
+        name: "read_symbol",
+        instead: "`cat`",
+        bench: "read_symbol",
+        text: "One function, struct or method by name, instead of the file it lives in.",
+      },
+      {
+        name: "module_report",
+        instead: "`cat`",
+        bench: "module_report",
+        text: "A file's outline: each symbol and the lines it spans, so the agent reads only what it needs.",
+      },
+      {
+        name: "symbol_search",
+        instead: "`rg 'fn name'`",
+        text: "Where something is defined, from its name or part of it.",
+        contrast: {
+          shell: "Matches text, and the pattern changes with every language.",
+          luxe: "Finds definitions by name in any language, ranked, with what kind of thing each one is.",
+        },
+      },
+      {
+        name: "impact",
+        instead: "nothing",
+        text: "What else a change touches, before the agent makes it.",
+        contrast: {
+          shell: "Callers of callers is a search per hop, and tests don't say what they cover.",
+          luxe: "Lists what calls a symbol, what depends on a file, and which tests cover it, a few hops out.",
+        },
+      },
+      {
+        name: "lsp_diagnostics",
+        instead: "`cargo check`, `tsc`",
+        text: "Errors and warnings for the files you name. They also come back on their own after every edit.",
+        contrast: {
+          shell: "Builds the whole project, one language at a time.",
+          luxe: "Asks the language server about one file, in any language that has a server.",
+        },
+      },
+      {
+        name: "lsp_navigation",
+        instead: "`grep` for a name",
+        text: "Definitions, references, types and renames, from the language server.",
+        contrast: {
+          shell: "Every line that spells the same name.",
+          luxe: "The definition and the real references, by meaning rather than spelling.",
+        },
+      },
+    ],
+  },
+  {
+    id: "debug",
+    name: "Debugging",
+    tools: [
+      {
+        name: "debug",
+        instead: "print statements",
+        text: "Drives a real debugger, with breakpoints, stepping and variables, for Rust, C, C++, Python and Go.",
+        contrast: {
+          shell: "Add a print, rebuild, rerun, repeat.",
+          luxe: "Stops at a breakpoint and shows the frame and its locals, with library frames folded away.",
+        },
+      },
+    ],
+  },
+  {
+    id: "web",
+    name: "The web",
+    tools: [
+      {
+        name: "web_fetch",
+        instead: "`curl`",
+        bench: "web_fetch",
+        text: "Pages come back as markdown, not HTML. A GitHub repository is cloned into the project, with its links flattened and no language server started in it, so the agent can search the real files.",
+      },
+      {
+        name: "web_search",
+        instead: "`curl` a search page",
+        text: "Searches the web through the provider you have a key for, or a free one.",
+        contrast: {
+          shell: "A page of HTML built for a browser.",
+          luxe: "Titles, links and the passage that matched.",
+        },
+      },
+      {
+        name: "screenshot",
+        instead: "`chrome --headless --screenshot`",
+        text: "Captures a page, so the agent can check the UI it just built.",
+        contrast: {
+          shell: "Writes a file the model never sees.",
+          luxe: "Returns the picture to the model, from your dev server or any page.",
+        },
+      },
+    ],
+  },
+];
+
+const beyond = [
+  { name: "todo", text: "A checklist that survives compaction, shown in the dock's PLAN." },
+  { name: "question", text: "Stops to ask you, with choices, instead of guessing." },
+  { name: "skill", text: "Loads a skill's instructions when the task calls for them." },
+  { name: "mcp", text: "Your MCP servers behind one tool, every call checked against your permissions." },
+];
+
+// The primary repository draws the bars; a tool it has no case for (`web_fetch` is not about a
+// repository) falls back to the next one that does
+const [primary] = bench.repositories;
+const rows = new Map(
+  [...bench.repositories].reverse().flatMap((repo) => repo.rows.map((row) => [row.id, row])),
+);
+for (const row of primary.rows) rows.set(row.id, row);
+/** The tightest of the four other agents' limits on the same output: Codex's. */
+const tightest = (row: { forwarded: Record<string, number> }) =>
+  Math.min(...Object.values(row.forwarded));
+
+/** `code` spans in copy, with everything else escaped. */
+const inline = (text: string) =>
+  text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+
+/** About four bytes a token, which is close enough to show the scale. */
+const tokens = (bytes: number) => {
+  const count = bytes / 4;
+  if (count < 1000) return `${Math.max(1, Math.round(count / 10) * 10)} tokens`;
+  if (count < 10_000) return `${(count / 1000).toFixed(1)}k tokens`;
+  return `${Math.round(count / 1000)}k tokens`;
+};
+
+const times = (shell: number, tool: number) => {
+  const ratio = shell / tool;
+  if (ratio < 1.1) return "the same";
+  return ratio < 10 ? `${ratio.toFixed(1)}× less` : `${Math.round(ratio).toLocaleString("en-US")}× less`;
+};
+/** Luxe against the tightest cut another agent makes, said both ways round. */
+const versus = (cut: number, tool: number) => {
+  if (tool <= cut * 1.05 && tool >= cut * 0.95) return "about what the tightest cut sends";
+  if (tool < cut) return `${times(cut, tool)} than the tightest cut`;
+  const ratio = tool / cut;
+  return `${ratio.toFixed(1)}× more than the tightest cut, with nothing cut out`;
+};
+
+/**
+ * Whole tasks against the other agents: each agent's cost on the same task as a multiple of
+ * Luxe's, charged as a cold start.
+ */
+type Other = { warm: number; cold: number; passed: number; runs: number };
+type CostRow = { model: string; luxe: { passed: number; runs: number } } & Partial<
+  Record<"claude" | "codex" | "opencode" | "pi", Other>
+>;
+const costRows = agentCost.rows as CostRow[];
+const vendorAgent = (row: CostRow) => row.claude ?? row.codex;
+const multiple = (other?: Other) => (other ? `${other.cold.toFixed(2)}×` : "–");
+
+/** A bar's share of its row, never so thin it disappears. */
+const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100, 0.6)}%`;
+---
+
+<Base
+  title="Tools — Luxe"
+  description="Every tool in Luxe has to beat the shell command it replaces. Here's how each one does, measured."
+>
+  <div class="page">
+    <section class="section section--head">
+      <p class="eyebrow">Tools</p>
+      <h1>Better than the shell.</h1>
+      <div class="prose">
+        <p>
+          An agent can do almost anything with a shell, and that's the trouble. A <code>find</code> in
+          a real project returns half a megabyte, a <code>sed</code> that matches nothing reports
+          success, and the model pays for all of it in tokens and turns.
+        </p>
+        <p>
+          So every tool in Luxe has to beat the command it replaces: by sending less, by getting it
+          right the first time, or by doing something the shell can't.
+        </p>
+        <p class="muted note">
+          Measured in a checkout of {primary.name} at <code>{primary.commit}</code>, the codebase
+          the harness eval runs in, with its virtualenv in place. The shell row is the command's
+          raw output; <em>tightest cut</em> is the least any other agent sends its model of it,
+          which is Codex's 10 KB, head and tail kept. Pi and OpenCode keep up to 50 KB and Claude
+          Code 30,000 characters. A token is about four bytes.
+        </p>
+        <p class="muted note">
+          Those are single calls, and across a whole task the bars shrink, because most calls are
+          small to begin with. What a whole task costs is <a href="#tasks">below</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="section group" id="tasks">
+      <h2 class="group__name">Whole tasks</h2>
+      <div class="prose">
+        <p>
+          Luxe, Claude Code, Codex, OpenCode and Pi each ran the first twelve Django tasks of
+          SWE-bench Verified Mini, with the same model, the same prompt and the same keys, every
+          call metered at the network and priced from one list. Each figure is what the other agent
+          spent on the same task, as a multiple of what Luxe spent: above 1× costs more than Luxe.
+        </p>
+      </div>
+      <table class="costs">
+        <thead>
+          <tr>
+            <th scope="col">Model</th>
+            <th scope="col">Claude Code or Codex</th>
+            <th scope="col">OpenCode</th>
+            <th scope="col">Pi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            costRows.map((row) => (
+              <tr>
+                <th scope="row">
+                  <code>{row.model}</code>
+                </th>
+                <td>{multiple(vendorAgent(row))}</td>
+                <td>{multiple(row.opencode)}</td>
+                <td>{multiple(row.pi)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <div class="prose">
+        <p class="muted note">
+          Every run is charged as a cold start, the way a session begins after a break. Run side
+          by side on a warm cache, Claude Code and OpenCode cost up to 2.6× what Luxe does on
+          Claude models. Pass rates overlapped on every model. Pi is the cheapest by design: four
+          tools and a short prompt, with web search, MCP and the rest left to extensions. Graded
+          on one machine rather than in SWE-bench's own containers, so these are not leaderboard
+          scores. Measured at <code>{agentCost.commit}</code>.
+        </p>
+      </div>
+    </section>
+
+    {
+      groups.map((group) => (
+        <section class="section group" id={group.id}>
+          <h2 class="group__name">{group.name}</h2>
+          {group.tools.map((tool) => {
+            const row = tool.bench ? rows.get(tool.bench) : undefined;
+            return (
+              <article class="tool" id={tool.name}>
+                <div class="tool__text">
+                  <h3 class="tool__name">{tool.name}</h3>
+                  <p class="tool__instead">
+                    instead of <span set:html={inline(tool.instead)} />
+                  </p>
+                  <p set:html={inline(tool.text)} />
+                </div>
+                {row && (
+                  <figure class="bench">
+                    <div class="bench__row">
+                      <code class="bench__label">$ {row.shell}</code>
+                      <span class="bench__track">
+                        <span class="bench__bar" style="width: 100%" />
+                      </span>
+                      <span class="bench__value">{tokens(row.shellBytes)}</span>
+                    </div>
+                    <div class="bench__row bench__row--cut">
+                      <span class="bench__label">tightest cut</span>
+                      <span class="bench__track">
+                        <span
+                          class="bench__bar"
+                          style={`width: ${share(row.shellBytes, tightest(row))}`}
+                        />
+                      </span>
+                      <span class="bench__value">{tokens(tightest(row))}</span>
+                    </div>
+                    <div class="bench__row bench__row--tool">
+                      <code class="bench__label">{row.tool}</code>
+                      <span class="bench__track">
+                        <span
+                          class="bench__bar"
+                          style={`width: ${share(row.shellBytes, row.toolBytes)}`}
+                        />
+                      </span>
+                      <span class="bench__value">{tokens(row.toolBytes)}</span>
+                    </div>
+                    <figcaption class="bench__ratio">
+                      {times(row.shellBytes, row.toolBytes)}
+                      <span class="bench__versus">
+                        {times(row.shellBytes, row.toolBytes) === "the same" ? "as" : "than"} the
+                        shell · {versus(tightest(row), row.toolBytes)}
+                      </span>
+                    </figcaption>
+                  </figure>
+                )}
+                {tool.contrast && (
+                  <dl class="contrast">
+                    <div class="contrast__row">
+                      <dt>Shell</dt>
+                      <dd set:html={inline(tool.contrast.shell)} />
+                    </div>
+                    <div class="contrast__row contrast__row--luxe">
+                      <dt>Luxe</dt>
+                      <dd set:html={inline(tool.contrast.luxe)} />
+                    </div>
+                  </dl>
+                )}
+              </article>
+            );
+          })}
+        </section>
+      ))
+    }
+
+    <section class="section group" id="beyond">
+      <h2 class="group__name">Beyond the shell</h2>
+      <ul class="beyond">
+        {
+          beyond.map(({ name, text }) => (
+            <li class="beyond__item">
+              <h3 class="tool__name">{name}</h3>
+              <p>{text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section section--last group" id="every">
+      <h2 class="group__name">Every tool</h2>
+      <ul class="beyond">
+        <li class="beyond__item">
+          <h3>Time limits</h3>
+          <p>Every call has one, and <code>ctrl+esc</code> stops the whole batch.</p>
+        </li>
+        <li class="beyond__item">
+          <h3>Forgiving</h3>
+          <p>A call with an argument the tool doesn't know still runs, and says which it ignored.</p>
+        </li>
+        <li class="beyond__item">
+          <h3>Yours to change</h3>
+          <p>
+            <code>/tools</code> shows what the agent can use, and any tool but the core four can be
+            turned off. See <a href="/docs/tools">the guide</a>.
+          </p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .section--head {
+    border-top: 0;
+    padding-top: var(--space-6);
+  }
+
+  .section--last {
+    border-bottom: 0;
+  }
+
+  .prose {
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+  }
+
+  .note {
+    font-size: var(--step--1);
+  }
+
+  .costs {
+    margin-top: var(--space-5);
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .costs th,
+  .costs td {
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--luxe-border-muted);
+    text-align: right;
+  }
+
+  .costs th[scope="row"],
+  .costs thead th:first-child {
+    text-align: left;
+  }
+
+  .costs thead th {
+    font-weight: 500;
+  }
+
+  .group__name {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-5);
+  }
+
+  /* The words on the left, the evidence on the right, one tool to a row */
+  .tool {
+    display: grid;
+    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+    gap: var(--space-3) var(--space-6);
+    align-items: center;
+  }
+
+  .tool + .tool {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--luxe-border-muted);
+  }
+
+  .tool__text p {
+    margin: 0;
+  }
+
+  .tool__name {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    letter-spacing: 0;
+    color: var(--luxe-accent);
+    margin: 0 0 var(--space-1);
+  }
+
+  .tool__instead {
+    color: var(--luxe-muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-2) !important;
+  }
+
+  /* === Measured === */
+
+  .bench {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .bench__row {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 7.5rem;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--step--1);
+  }
+
+  .bench__label {
+    color: var(--luxe-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bench__row--tool .bench__label {
+    color: var(--luxe-accent);
+  }
+
+  .bench__track {
+    display: block;
+    height: 0.9rem;
+    background: var(--luxe-user-msg-bg);
+  }
+
+  .bench__bar {
+    display: block;
+    height: 100%;
+    background: var(--luxe-dim);
+  }
+
+  .bench__row--tool .bench__bar {
+    background: var(--luxe-accent);
+  }
+
+  .bench__row--cut .bench__bar {
+    background: var(--luxe-muted);
+  }
+
+  .bench__versus {
+    display: block;
+    margin-top: var(--space-1);
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    color: var(--luxe-muted);
+    text-align: right;
+  }
+
+  .bench__value {
+    color: var(--luxe-muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bench__row--tool .bench__value {
+    color: var(--luxe-text);
+  }
+
+  .bench__ratio {
+    justify-self: end;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1;
+    color: var(--luxe-accent);
+  }
+
+  /* === Behavior === */
+
+  .contrast {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .contrast__row {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--luxe-user-msg-bg);
+    border-left: 2px solid var(--luxe-dim);
+  }
+
+  .contrast__row--luxe {
+    border-left-color: var(--luxe-accent);
+  }
+
+  .contrast dt {
+    font-size: var(--step--1);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--luxe-muted);
+    padding-top: 0.15em;
+  }
+
+  .contrast__row--luxe dt {
+    color: var(--luxe-accent);
+  }
+
+  .contrast dd {
+    margin: 0;
+  }
+
+  /* === The rest === */
+
+  .beyond {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-4);
+  }
+
+  .beyond__item {
+    padding: var(--space-4);
+    background: var(--luxe-user-msg-bg);
+    border: var(--border);
+  }
+
+  .beyond__item h3:not(.tool__name) {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--step-2);
+    line-height: 1.1;
+    margin: 0 0 var(--space-2);
+  }
+
+  .beyond__item p {
+    margin: 0;
+  }
+
+  @media (max-width: 68rem) {
+    .tool {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .bench__row {
+      grid-template-columns: minmax(0, 1fr) 6.5rem;
+    }
+
+    .bench__label {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

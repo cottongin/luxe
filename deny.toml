@@ -1,0 +1,44 @@
+# cargo-deny configuration.
+
+[advisories]
+yanked = "deny"
+ignore = [
+  # `bincode` 1.x is unmaintained. syntect uses it to load its bundled syntax and theme sets,
+  # which ship inside the binary, so nothing an attacker controls reaches it. Revisit when syntect
+  # moves off bincode 1.x.
+  "RUSTSEC-2025-0141",
+]
+
+[licenses]
+# Allow common permissive licenses.
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "Unicode-3.0",
+  "MPL-2.0",
+  "Zlib",
+  "BSL-1.0",             # Boost Software License 1.0 (OSI/FSF-recognized; compatible with MIT OR Apache-2.0)
+  "ISC",                 # OSI-approved, MIT-equivalent permissive. rustls TLS stack: ring, rustls-webpki, untrusted.
+  "CDLA-Permissive-2.0", # Permissive (no copyleft) data license. webpki-roots ships Mozilla's CA set.
+]
+# Anything not in `allow` (or `exceptions`) is denied — the license model is
+# allow-list only (the old `deny` key was removed in cargo-deny 0.16).
+# Exceptions (permissive overrides for specific crates).
+exceptions = []
+
+[licenses.private]
+ignore = true
+
+[bans]
+# Block duplicate versions of the same crate.
+multiple-versions = "warn"
+# Block specific crates if needed.
+allow = []
+deny = []
+
+[sources]
+# Allow crates from crates.io and GitHub.
+unknown-registry = "warn"
+unknown-git = "warn"

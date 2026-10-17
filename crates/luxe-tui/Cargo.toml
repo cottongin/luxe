@@ -1,0 +1,93 @@
+[package]
+name = "luxe-tui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Terminal UI for Luxe, built on ratatui: conversation, guided review, dashboard, and themes"
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+luxe-core = { path = "../luxe-core", version = "0.1.0" }
+# `unstable-rendered-line-info` enables Paragraph::line_count, used for precise wrapping-aware
+# mouse hit-testing over word-wrapped surfaces (guide/dock/conversation clicks). It adds no crate;
+# the API is marked unstable upstream but is stable within our pinned minor (re-check on upgrade).
+ratatui = { version = "0.30", features = ["unstable-rendered-line-info"] }
+crossterm = { version = "0.29", features = ["event-stream"] }
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+tracing = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4"] }
+async-trait = "0.1"
+# The login wizard's prompt answers are secrets more often than not; one redacted type for all of
+# them keeps a stray `{:?}` from printing an API key.
+secrecy = { workspace = true }
+anyhow = "1"
+thiserror = "2"
+base64 = { workspace = true }
+pulldown-cmark = { workspace = true }
+# Pure-Rust regex engine (`fancy-regex`) instead of the default Oniguruma binding: `onig_sys`
+# compiles C, which puts a C toolchain in the way of every `cargo install` and every cross-build.
+# Only the grammars: the colors are the active theme's (`highlight.rs`), so syntect's bundled themes
+# are not linked.
+syntect = { version = "5", default-features = false, features = [
+  "default-syntaxes",
+  "regex-fancy",
+] }
+nucleo-matcher = "0.3"
+unicode-width = { workspace = true }
+arboard = { version = "3", optional = true }
+# Not optional: `luxe-tools` already links the same crate for `screenshot` and `read`, so the codecs
+# are in the shipped binary either way — and an inline-image path behind an off-by-default feature is
+# exactly how the previous attempt shipped as dead code that did not compile.
+image = { workspace = true }
+
+[features]
+default = []
+fixture = []
+clipboard = ["dep:arboard"]
+clipboard-images = ["clipboard"]
+
+[dev-dependencies]
+# Integration tests link the library without `cfg(test)`; normal dependents keep fixtures off.
+luxe-tui = { path = ".", features = ["fixture"] }
+tempfile = "3"
+
+[lints]
+workspace = true
+
+# An example's `#[cfg(test)]` module does not run unless its target opts in, so the guards inside
+# these two were compiling and never executing. Both describe an interface something else depends on
+# — the fixture's scenario names are what the capture scripts pass, and the SVG generator has to
+# agree with the art it reads — which is exactly the kind of thing that should fail the suite.
+[[example]]
+name = "ui_fixture"
+required-features = ["fixture"]
+test = true
+
+[[example]]
+name = "wordmark_svg"
+test = true
+
+[[example]]
+name = "theme_css"
+test = true
+
+[[example]]
+name = "fixture_svg"
+required-features = ["fixture"]
+test = true
+
+[[example]]
+name = "shiki_theme"
+test = true
+
+[[example]]
+name = "render_perf"
+required-features = ["fixture"]
+
+[[example]]
+name = "stream_perf"
+required-features = ["fixture"]

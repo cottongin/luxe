@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 286" width="1090" height="286" font-family="'JetBrainsMono Nerd Font Mono', 'AdwaitaMono Nerd Font Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16.67">
+  <rect width="1090" height="286" fill="#12100e"/>
+  <g shape-rendering="crispEdges">
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 11.00L15.00 0.00M15.00 11.00L15.00 22.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 33.00L15.00 22.00M15.00 33.00L15.00 44.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 55.00L15.00 44.00M15.00 55.00L15.00 66.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 77.00L15.00 66.00M15.00 77.00L15.00 88.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 99.00L15.00 88.00M15.00 99.00L15.00 110.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 121.00L15.00 110.00M15.00 121.00L15.00 132.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 143.00L15.00 132.00M15.00 143.00L15.00 154.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 165.00L15.00 154.00M15.00 165.00L15.00 176.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 187.00L15.00 176.00M15.00 187.00L15.00 198.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 209.00L15.00 198.00M15.00 209.00L15.00 220.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 231.00L15.00 220.00M15.00 231.00L15.00 242.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 253.00L15.00 242.00M15.00 253.00L15.00 264.00"/>
+    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 275.00L15.00 264.00M15.00 275.00L15.00 286.00"/>
+  </g>
+  <text x="0" y="17.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="39.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c"> Tools · what the agent can reach right now</tspan><tspan>                                                             </tspan></text>
+  <text x="0" y="61.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="83.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">  In every request (12)</tspan><tspan>                                                                                  </tspan></text>
+  <text x="0" y="105.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">    activate_tools  bash  edit  git  glob  grep  question  read  skill  test  todo  write</tspan><tspan>                </tspan></text>
+  <text x="0" y="127.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="149.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">  Available on demand (11) — loaded when the agent calls activate_tools</tspan><tspan>                                  </tspan></text>
+  <text x="0" y="171.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">    ast_grep  debug  impact  lsp_diagnostics  lsp_navigation  module_report  read_symbol  screenshot</tspan><tspan>     </tspan></text>
+  <text x="0" y="193.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">    symbol_search  web_fetch  web_search</tspan><tspan>                                                                 </tspan></text>
+  <text x="0" y="215.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+  <text x="0" y="237.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">Turn the agent's tools on or off in </tspan><tspan fill="#faaa51">/settings</tspan><tspan fill="#97938c">, on the Tools page.</tspan><tspan>                                        </tspan></text>
+  <text x="0" y="259.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#97938c">Use </tspan><tspan fill="#faaa51">luxe --with-tool &lt;name&gt;</tspan><tspan fill="#97938c"> or </tspan><tspan fill="#faaa51">luxe --no-tool &lt;name&gt;</tspan><tspan fill="#97938c"> to turn one on or off for a single session.</tspan><tspan>         </tspan></text>
+  <text x="0" y="281.0" textLength="1090" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
+</svg>

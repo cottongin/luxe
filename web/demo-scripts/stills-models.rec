@@ -1,0 +1,31 @@
+# stills-models — the model picker, standing still.
+#
+# Its own take, at a terminal small enough for the whole frame to fit the picture: the picker is as
+# wide as the longest model id it could list, so on a wide terminal it runs to both edges and a crop
+# cut it off. Two takes, one for each width the site shows it at, each cropped to the frame.
+#
+#   scripts/site-record.sh --raw web/demo-scripts/stills-models.rec
+#   scripts/site-record.sh --raw --name stills-models.narrow --cols 76 web/demo-scripts/stills-models.rec
+#   S=web/src/assets/captures
+#   scripts/cast-still.py $S/stills-models.cast --at <still: models + 0.5> --crop 2,5,104,14 --out $S/models.svg
+#   scripts/cast-still.py $S/stills-models.narrow.cast --at <same> --crop 2,5,72,14 --out $S/models.narrow.svg
+
+#: cols 108
+#: rows 24
+#: model anthropic/claude-sonnet-5-5
+#: thinking low
+#: glyphs nerd
+
+sleep 3
+mark start
+
+log model picker
+enter /model
+sleep 2
+type sonnet 5
+sleep 2.5
+log still: models
+sleep 1.5
+key Escape
+sleep 1
+mark end

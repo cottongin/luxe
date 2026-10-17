@@ -1,0 +1,27 @@
+# stills-tools — what `/tools` lists, standing still.
+#
+# Recorded `--raw` and cut with `scripts/cast-still.py` at the driver log's times, like `stills`.
+#
+#   S=web/src/assets/captures
+#   scripts/cast-still.py $S/stills-tools.cast --at <still: tools + 0.5> --crop 41,19,109,13 --out $S/tools.svg
+#
+# No turn: an earlier take ran a rename to show the tools at work, and the model did it with `sed`,
+# which is a fine answer and the wrong picture for a section about what the toolset adds.
+
+#: cols 150
+#: rows 36
+#: model anthropic/claude-sonnet-5-5
+#: thinking low
+#: glyphs nerd
+
+sleep 3
+mark start
+
+log tools
+enter /tools
+sleep 3
+log still: tools
+sleep 1
+key Escape
+sleep 1
+mark end

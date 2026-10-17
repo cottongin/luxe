@@ -1,0 +1,38 @@
+# Version — a pull request that changes what ships bumps the version by one semver step.
+#
+# Its own workflow, with no path filter, so it can be a required check: CI skips prose-only pull
+# requests, and a required check that never starts blocks the merge forever. Whether a bump is owed
+# is the script's call, from the diff. See scripts/version-check.py for the rules.
+name: Version
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: version-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  version:
+    name: version bump
+    # The development repository batches its work into the public one, where each merge is a release
+    if: github.repository == 'evanwhittaker/luxe'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Full history: the diff is taken from the merge base with the target branch
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: The check's own tests
+        run: python3 scripts/version_check_test.py
+
+      - name: Version against the target branch
+        run: python3 scripts/version-check.py "origin/$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}

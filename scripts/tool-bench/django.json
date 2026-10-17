@@ -1,0 +1,67 @@
+[
+ {
+  "id": "glob",
+  "shell": "find . -name '*.py'",
+  "tool": "glob",
+  "args": {
+   "pattern": "**/*.py"
+  }
+ },
+ {
+  "id": "grep",
+  "shell": "rg -n 'def delete'",
+  "tool": "grep",
+  "args": {
+   "pattern": "def delete"
+  }
+ },
+ {
+  "id": "bash",
+  "shell": "git log --stat -n 30",
+  "tool": "bash",
+  "args": {
+   "command": "git log --stat -n 30"
+  }
+ },
+ {
+  "id": "test",
+  "shell": "cd tests && ../.venv/bin/python runtests.py --settings=test_sqlite --parallel 1 delete",
+  "tool": "test",
+  "args": {
+   "command": "cd tests && ../.venv/bin/python runtests.py --settings=test_sqlite --parallel 1 delete"
+  }
+ },
+ {
+  "id": "git",
+  "shell": "git log",
+  "tool": "git",
+  "args": {
+   "action": "log"
+  }
+ },
+ {
+  "id": "read_symbol",
+  "shell": "cat django/db/models/deletion.py",
+  "tool": "read_symbol",
+  "args": {
+   "path": "django/db/models/deletion.py",
+   "symbol": "can_fast_delete"
+  }
+ },
+ {
+  "id": "module_report",
+  "shell": "cat django/db/models/query.py",
+  "tool": "module_report",
+  "args": {
+   "path": "django/db/models/query.py"
+  }
+ },
+ {
+  "id": "read",
+  "shell": "cat django/db/models/query.py",
+  "tool": "read",
+  "args": {
+   "path": "django/db/models/query.py"
+  }
+ }
+]

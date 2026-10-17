@@ -1,0 +1,60 @@
+# Dependabot — keeps the SHA-pinned GitHub Actions, the Cargo tree, and the website's npm deps current.
+#
+# For github-actions it bumps the pinned commit SHA (and the trailing `# vX` tag comment) as new
+# releases land, so pinning to a SHA stays secure without going stale. Cargo updates keep the
+# dependency tree fresh; the CI `--locked` + cargo-deny gates vet every bump.
+#
+# UPDATES ARE GROUPED, and that is a cost decision with numbers behind it. Ungrouped, one weekly run
+# opened thirteen pull requests — and each one is a full CI run across three platforms, of which the
+# Windows job alone takes ~17 minutes and bills at 2x. Worse, they all rebase and re-run every time
+# master moves, so a single push cost hours of runner time re-testing bumps nobody had looked at yet.
+# Grouped, the same week is two pull requests. Nothing is skipped and nothing auto-merges: the same
+# gate runs over the same set of bumps, once instead of thirteen times.
+#
+# Major versions stay separate on purpose. A `thiserror 1 -> 2` is a code change to read, not a line
+# in a batch, and burying it among patch bumps is how it gets waved through.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    groups:
+      cargo:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # The website is a deployed surface with its own dependency tree (Astro, Svelte, the asciinema
+  # player, wrangler). Same deal as cargo: batch the minor/patch churn, leave the majors to read.
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps
+    groups:
+      web:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # TypeScript 7 is the native compiler, and it does not ship the programmatic API that
+      # `astro check` drives — `npm run check` fails on load, before it type-checks anything. This is
+      # upstream's to fix (withastro/roadmap#1321) and not something a bump here can carry, so the
+      # major is muted rather than reopened weekly. Minor and patch on 5.x still come through.
+      # Drop this entry when `@astrojs/check` announces TypeScript 7 support.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]

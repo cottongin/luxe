@@ -1,0 +1,7 @@
+/* Fine film grain over the canvas. Metal is not a flat color, and a large field of one reads as a
+   screen rather than a surface — so there is a little noise, kept well below the point where it
+   becomes texture. */
+:root {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+

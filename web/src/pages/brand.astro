@@ -1,0 +1,175 @@
+---
+import Base from "../layouts/Base.astro";
+import Wordmark from "../components/Wordmark.astro";
+import wordmarkSvg from "../assets/generated/wordmark.svg?url";
+import markSvg from "../assets/generated/mark.svg?url";
+import tileSvg from "../assets/generated/tile.svg?url";
+
+const files = [
+  { href: wordmarkSvg, name: "wordmark.svg", note: "the logotype, one path per letter" },
+  { href: markSvg, name: "mark.svg", note: "the L alone, cropped to its ink" },
+  { href: tileSvg, name: "tile.svg", note: "the tile — favicons, avatars" },
+];
+---
+
+<Base title="Brand — Luxe" description="The Luxe logotype, where it came from, and how to use it.">
+  <div class="page">
+    <section class="section section--head">
+      <p class="eyebrow">Brand</p>
+      <h1>One drawing.</h1>
+      <div class="prose">
+        <p>
+          The logotype is not a font and not a traced image. It's a grid of terminal cells — three
+          glyphs, the two half blocks and the full block — and those cells are the only copy that
+          exists. The vector on this page is generated from them.
+        </p>
+        <p>
+          Those three were chosen, not settled for. Every terminal with built-in box drawing
+          synthesizes that range against the cell box rather than scaling a font outline into it, so
+          the mark lands identically whether you have a patched font or the plainest monospace your
+          distribution shipped. An earlier version cut its corners with the Powerline triangles and
+          looked better on the terminals that draw those correctly — which is not all of them, and a
+          mark that needs a fallback is the wrong mark to open with. There is no setting for it:
+          one mark, everywhere, is the point.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="stage plate">
+        <div class="stage__inner">
+          <Wordmark shine class="stage__mark" />
+        </div>
+      </div>
+      <p class="muted stage__note">
+        The light crossing it is the same one the terminal draws: 1.6 seconds to cross, then five
+        seconds of rest. A shine that repeats promptly stops reading as light and starts reading as
+        a strobe.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Files.</h2>
+      <ul class="files">
+        {
+          files.map(({ href, name, note }) => (
+            <li class="file">
+              <a class="file__link" href={href} download>
+                <code>{name}</code>
+              </a>
+              <span class="muted">{note}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="muted">
+        Each letter takes its color from <code>--luxe-wordmark-1</code> through
+        <code>-4</code>, falling back to <code>currentColor</code>. Set them, or set nothing and let
+        it inherit.
+      </p>
+    </section>
+
+    <section class="section section--last">
+      <h2>Please, and please don't.</h2>
+      <div class="rules">
+        <div class="rule">
+          <p class="rule__head">Please</p>
+          <ul>
+            <li>Use the brass ramp, or one flat color, or <code>currentColor</code>.</li>
+            <li>Give it room — at least the height of the <code>l</code> on every side.</li>
+            <li>Use the tile where the wordmark would fall below about 100px wide.</li>
+            <li>Keep the full stop. It is part of the drawing, and it sets the tone.</li>
+            <li>Call it <b>Luxe</b> in prose and <code>luxe</code> in a command.</li>
+          </ul>
+        </div>
+        <div class="rule">
+          <p class="rule__head">Please don't</p>
+          <ul>
+            <li>Set it in a typeface. It is drawn on a cell grid; no font has these letterforms.</li>
+            <li>Add an outline, a shadow, or a gradient sweep of your own.</li>
+            <li>Stretch it. The 1:2.2 cell aspect is the proportion it is recognized at.</li>
+            <li>Capitalize it. The mark is <b>luxe.</b> and the product is <b>Luxe</b> — never LUXE.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .section--head {
+    border-top: 0;
+    padding-top: var(--space-6);
+  }
+  .section--last {
+    border-bottom: 0;
+  }
+
+  .prose {
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+  }
+
+  .stage__inner {
+    display: grid;
+    place-items: center;
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .stage :global(.stage__mark) {
+    width: min(100%, 34rem);
+  }
+
+  .stage__note {
+    font-size: var(--step--1);
+    margin-top: var(--space-3);
+    max-width: var(--measure);
+  }
+
+  .files {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .file {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    font-size: var(--step--1);
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--luxe-border-muted);
+  }
+
+  .file__link {
+    text-decoration: none;
+  }
+
+  .rules {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    margin-top: var(--space-4);
+  }
+
+  .rule__head {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--luxe-accent);
+    margin-bottom: var(--space-2);
+  }
+
+  .rule ul {
+    margin: 0;
+    padding-left: 1.1em;
+    font-size: var(--step--1);
+    color: var(--luxe-muted);
+  }
+
+  .rule li {
+    margin-bottom: var(--space-2);
+  }
+</style>

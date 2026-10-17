@@ -1,0 +1,209 @@
+{
+  "rust": {
+    "command": "rust-analyzer",
+    "root_markers": [
+      "Cargo.toml"
+    ],
+    "extensions": [
+      "rs"
+    ],
+    "install_hint": "rustup component add rust-analyzer"
+  },
+  "typescript": {
+    "command": "typescript-language-server",
+    "args": [
+      "--stdio"
+    ],
+    "root_markers": [
+      "package.json",
+      "tsconfig.json",
+      "jsconfig.json"
+    ],
+    "extensions": [
+      "ts",
+      "tsx",
+      "mts",
+      "cts",
+      "js",
+      "jsx",
+      "mjs",
+      "cjs"
+    ],
+    "install_hint": "npm i -g typescript-language-server typescript  (TypeScript 7 projects: npm i -g @typescript/native-preview, which provides `tsgo --lsp`)",
+    "alternatives": [
+      {
+        "command": "tsgo",
+        "args": [
+          "--lsp",
+          "--stdio"
+        ]
+      },
+      {
+        "command": "tsc",
+        "args": [
+          "--lsp",
+          "--stdio"
+        ]
+      }
+    ]
+  },
+  "python": {
+    "command": "pyright-langserver",
+    "args": [
+      "--stdio"
+    ],
+    "root_markers": [
+      "pyproject.toml",
+      "setup.py",
+      "requirements.txt",
+      "setup.cfg"
+    ],
+    "extensions": [
+      "py",
+      "pyi"
+    ],
+    "install_hint": "npm i -g pyright  (or: pip install pyright)",
+    "alternatives": [
+      {
+        "command": "basedpyright-langserver",
+        "args": [
+          "--stdio"
+        ]
+      }
+    ]
+  },
+  "go": {
+    "command": "gopls",
+    "root_markers": [
+      "go.mod"
+    ],
+    "extensions": [
+      "go"
+    ],
+    "install_hint": "go install golang.org/x/tools/gopls@latest"
+  },
+  "cpp": {
+    "command": "clangd",
+    "root_markers": [
+      "compile_commands.json",
+      "compile_flags.txt",
+      ".clangd",
+      "CMakeLists.txt",
+      "Makefile"
+    ],
+    "extensions": [
+      "c",
+      "cc",
+      "cpp",
+      "cxx",
+      "c++",
+      "h",
+      "hh",
+      "hpp",
+      "hxx"
+    ],
+    "install_hint": "install clangd (LLVM; e.g. `apt install clangd` / `brew install llvm`)"
+  },
+  "bash": {
+    "command": "bash-language-server",
+    "args": [
+      "start"
+    ],
+    "root_markers": [
+      ".git"
+    ],
+    "extensions": [
+      "sh",
+      "bash"
+    ],
+    "install_hint": "npm i -g bash-language-server"
+  },
+  "json": {
+    "command": "vscode-json-language-server",
+    "args": [
+      "--stdio"
+    ],
+    "root_markers": [
+      "package.json",
+      ".git"
+    ],
+    "extensions": [
+      "json",
+      "jsonc"
+    ],
+    "install_hint": "npm i -g vscode-langservers-extracted"
+  },
+  "yaml": {
+    "command": "yaml-language-server",
+    "args": [
+      "--stdio"
+    ],
+    "root_markers": [
+      ".git"
+    ],
+    "extensions": [
+      "yaml",
+      "yml"
+    ],
+    "install_hint": "npm i -g yaml-language-server"
+  },
+  "ruby": {
+    "command": "ruby-lsp",
+    "alternatives": [
+      {
+        "command": "solargraph",
+        "args": [
+          "stdio"
+        ]
+      }
+    ],
+    "root_markers": [
+      "Gemfile",
+      ".ruby-version",
+      "Rakefile",
+      ".git"
+    ],
+    "extensions": [
+      "rb",
+      "rake",
+      "gemspec"
+    ],
+    "install_hint": "gem install ruby-lsp  (it needs a bundled project; `gem install solargraph` works without one and is tried next)"
+  },
+  "lua": {
+    "command": "lua-language-server",
+    "root_markers": [
+      ".luarc.json",
+      ".luarc.jsonc",
+      "stylua.toml",
+      ".git"
+    ],
+    "extensions": [
+      "lua"
+    ],
+    "install_hint": "install lua-language-server (LuaLS; e.g. `mise use -g lua-language-server`)"
+  },
+  "svelte": {
+    "command": "svelteserver",
+    "args": [
+      "--stdio"
+    ],
+    "root_markers": [
+      "svelte.config.js",
+      "svelte.config.ts",
+      "package.json"
+    ],
+    "extensions": [
+      "svelte"
+    ],
+    "install_hint": "npm i -g svelte-language-server",
+    "alternatives": [
+      {
+        "command": "svelte-language-server",
+        "args": [
+          "--stdio"
+        ]
+      }
+    ]
+  }
+}

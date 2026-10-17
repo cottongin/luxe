@@ -1,0 +1,11 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A task list small enough to read in one sitting.",
+  "bin": { "todo": "src/cli.js" },
+  "scripts": {
+    "test": "node --test"
+  }
+}

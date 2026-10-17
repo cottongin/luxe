@@ -1,0 +1,579 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 792" width="1500" height="792" font-family="'JetBrainsMono Nerd Font Mono', 'AdwaitaMono Nerd Font Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16.67">
+  <rect width="1500" height="792" fill="var(--p1, #12100e)"/>
+  <g shape-rendering="crispEdges">
+    <rect x="290" y="352" width="920" height="22" fill="var(--p8, #2e2b27)"/>
+    <rect x="290" y="506" width="90" height="22" fill="var(--p12, #4f4531)"/>
+    <rect x="380" y="506" width="10" height="22" fill="var(--p13, #403828)"/>
+    <rect x="390" y="506" width="10" height="22" fill="var(--p14, #312b20)"/>
+    <rect x="400" y="506" width="10" height="22" fill="var(--p15, #211d17)"/>
+    <rect x="0" y="770" width="80" height="22" fill="var(--p2, #ddc084)"/>
+    <rect x="80" y="770" width="10" height="22" fill="var(--p17, #c9af78)"/>
+    <rect x="90" y="770" width="10" height="22" fill="var(--p18, #b59d6d)"/>
+    <rect x="100" y="770" width="10" height="22" fill="var(--p19, #a08c61)"/>
+    <rect x="110" y="770" width="250" height="22" fill="var(--p20, #8c7a55)"/>
+    <rect x="360" y="770" width="10" height="22" fill="var(--p21, #6e6043)"/>
+    <rect x="370" y="770" width="10" height="22" fill="var(--p22, #4f4532)"/>
+    <rect x="380" y="770" width="10" height="22" fill="var(--p23, #312b20)"/>
+    <rect x="1210" y="770" width="10" height="22" fill="var(--p23, #312b20)"/>
+    <rect x="1220" y="770" width="10" height="22" fill="var(--p22, #4f4532)"/>
+    <rect x="1230" y="770" width="10" height="22" fill="var(--p21, #6e6043)"/>
+    <rect x="1240" y="770" width="80" height="22" fill="var(--p20, #8c7a55)"/>
+    <rect x="1320" y="770" width="10" height="22" fill="var(--p19, #a08c61)"/>
+    <rect x="1330" y="770" width="10" height="22" fill="var(--p18, #b59d6d)"/>
+    <rect x="1340" y="770" width="10" height="22" fill="var(--p17, #c9af78)"/>
+    <rect x="1350" y="770" width="150" height="22" fill="var(--p2, #ddc084)"/>
+    <path fill="var(--p2, #ddc084)" d="M540.00 99.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M550.00 99.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 99.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 99.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M540.00 110.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M550.00 110.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 110.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 110.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M640.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M650.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M700.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M710.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M740.00 132.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M750.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M760.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M790.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M800.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M810.00 132.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M850.00 143.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M860.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M870.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M880.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M890.00 132.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M900.00 143.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M640.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M650.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M700.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M710.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M760.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M770.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M780.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M790.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M840.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M850.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M860.00 165.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M870.00 165.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M880.00 165.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M890.00 165.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M900.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M910.00 154.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M640.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M650.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M700.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M710.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M760.00 187.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M770.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M780.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M790.00 187.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M840.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M850.00 176.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M860.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M870.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M880.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M890.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M900.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M910.00 176.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M560.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M580.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M590.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M600.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M640.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M650.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M660.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M670.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M680.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M690.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M700.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M710.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M750.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M760.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M770.00 198.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M780.00 198.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M790.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M800.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M840.00 198.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M850.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M860.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M870.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M880.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M890.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M900.00 209.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M910.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p6, #6d5f43)" d="M950.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p6, #6d5f43)" d="M960.00 198.00h10.00v22.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M570.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M580.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M590.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p2, #ddc084)" d="M600.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M650.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M660.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M670.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M680.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M700.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p3, #cdb27a)" d="M710.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M740.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M750.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M760.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M790.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M800.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p4, #a59064)" d="M810.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M860.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M870.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M880.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M890.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p5, #7e6d4d)" d="M900.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p6, #6d5f43)" d="M950.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="var(--p6, #6d5f43)" d="M960.00 220.00h10.00v11.00h-10.00z"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 308.00Q275.00 297.00 280.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M375.00 297.00L380.00 297.00M375.00 297.00L370.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M385.00 297.00L390.00 297.00M385.00 297.00L380.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M395.00 297.00L400.00 297.00M395.00 297.00L390.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M405.00 297.00L410.00 297.00M405.00 297.00L400.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M415.00 297.00L420.00 297.00M415.00 297.00L410.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M425.00 297.00L430.00 297.00M425.00 297.00L420.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M435.00 297.00L440.00 297.00M435.00 297.00L430.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M445.00 297.00L450.00 297.00M445.00 297.00L440.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M455.00 297.00L460.00 297.00M455.00 297.00L450.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M465.00 297.00L470.00 297.00M465.00 297.00L460.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M475.00 297.00L480.00 297.00M475.00 297.00L470.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M485.00 297.00L490.00 297.00M485.00 297.00L480.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M495.00 297.00L500.00 297.00M495.00 297.00L490.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M505.00 297.00L510.00 297.00M505.00 297.00L500.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M515.00 297.00L520.00 297.00M515.00 297.00L510.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M525.00 297.00L530.00 297.00M525.00 297.00L520.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M535.00 297.00L540.00 297.00M535.00 297.00L530.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M545.00 297.00L550.00 297.00M545.00 297.00L540.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M555.00 297.00L560.00 297.00M555.00 297.00L550.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M565.00 297.00L570.00 297.00M565.00 297.00L560.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M575.00 297.00L580.00 297.00M575.00 297.00L570.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M585.00 297.00L590.00 297.00M585.00 297.00L580.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M595.00 297.00L600.00 297.00M595.00 297.00L590.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M605.00 297.00L610.00 297.00M605.00 297.00L600.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M615.00 297.00L620.00 297.00M615.00 297.00L610.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M625.00 297.00L630.00 297.00M625.00 297.00L620.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M635.00 297.00L640.00 297.00M635.00 297.00L630.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M645.00 297.00L650.00 297.00M645.00 297.00L640.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M655.00 297.00L660.00 297.00M655.00 297.00L650.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M665.00 297.00L670.00 297.00M665.00 297.00L660.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M675.00 297.00L680.00 297.00M675.00 297.00L670.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M685.00 297.00L690.00 297.00M685.00 297.00L680.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M695.00 297.00L700.00 297.00M695.00 297.00L690.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M705.00 297.00L710.00 297.00M705.00 297.00L700.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M715.00 297.00L720.00 297.00M715.00 297.00L710.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M725.00 297.00L730.00 297.00M725.00 297.00L720.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M735.00 297.00L740.00 297.00M735.00 297.00L730.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M745.00 297.00L750.00 297.00M745.00 297.00L740.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M755.00 297.00L760.00 297.00M755.00 297.00L750.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M765.00 297.00L770.00 297.00M765.00 297.00L760.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M775.00 297.00L780.00 297.00M775.00 297.00L770.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M785.00 297.00L790.00 297.00M785.00 297.00L780.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M795.00 297.00L800.00 297.00M795.00 297.00L790.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M805.00 297.00L810.00 297.00M805.00 297.00L800.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M815.00 297.00L820.00 297.00M815.00 297.00L810.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M825.00 297.00L830.00 297.00M825.00 297.00L820.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M835.00 297.00L840.00 297.00M835.00 297.00L830.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M845.00 297.00L850.00 297.00M845.00 297.00L840.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M855.00 297.00L860.00 297.00M855.00 297.00L850.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M865.00 297.00L870.00 297.00M865.00 297.00L860.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M875.00 297.00L880.00 297.00M875.00 297.00L870.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M885.00 297.00L890.00 297.00M885.00 297.00L880.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M895.00 297.00L900.00 297.00M895.00 297.00L890.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M905.00 297.00L910.00 297.00M905.00 297.00L900.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M915.00 297.00L920.00 297.00M915.00 297.00L910.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M925.00 297.00L930.00 297.00M925.00 297.00L920.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M935.00 297.00L940.00 297.00M935.00 297.00L930.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M945.00 297.00L950.00 297.00M945.00 297.00L940.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M955.00 297.00L960.00 297.00M955.00 297.00L950.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M965.00 297.00L970.00 297.00M965.00 297.00L960.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M975.00 297.00L980.00 297.00M975.00 297.00L970.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M985.00 297.00L990.00 297.00M985.00 297.00L980.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M995.00 297.00L1000.00 297.00M995.00 297.00L990.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1005.00 297.00L1010.00 297.00M1005.00 297.00L1000.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1015.00 297.00L1020.00 297.00M1015.00 297.00L1010.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1025.00 297.00L1030.00 297.00M1025.00 297.00L1020.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1035.00 297.00L1040.00 297.00M1035.00 297.00L1030.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1045.00 297.00L1050.00 297.00M1045.00 297.00L1040.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1055.00 297.00L1060.00 297.00M1055.00 297.00L1050.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1065.00 297.00L1070.00 297.00M1065.00 297.00L1060.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1075.00 297.00L1080.00 297.00M1075.00 297.00L1070.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1085.00 297.00L1090.00 297.00M1085.00 297.00L1080.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1095.00 297.00L1100.00 297.00M1095.00 297.00L1090.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1105.00 297.00L1110.00 297.00M1105.00 297.00L1100.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1115.00 297.00L1120.00 297.00M1115.00 297.00L1110.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1125.00 297.00L1130.00 297.00M1125.00 297.00L1120.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1135.00 297.00L1140.00 297.00M1135.00 297.00L1130.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1145.00 297.00L1150.00 297.00M1145.00 297.00L1140.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1155.00 297.00L1160.00 297.00M1155.00 297.00L1150.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1165.00 297.00L1170.00 297.00M1165.00 297.00L1160.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1175.00 297.00L1180.00 297.00M1175.00 297.00L1170.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1185.00 297.00L1190.00 297.00M1185.00 297.00L1180.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1195.00 297.00L1200.00 297.00M1195.00 297.00L1190.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1205.00 297.00L1210.00 297.00M1205.00 297.00L1200.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1215.00 297.00L1220.00 297.00M1215.00 297.00L1210.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 308.00Q1225.00 297.00 1220.00 297.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 319.00L275.00 308.00M275.00 319.00L275.00 330.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 319.00L1225.00 308.00M1225.00 319.00L1225.00 330.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 341.00L275.00 330.00M275.00 341.00L280.00 341.00M275.00 341.00L275.00 352.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M285.00 341.00L290.00 341.00M285.00 341.00L280.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M295.00 341.00L300.00 341.00M295.00 341.00L290.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M305.00 341.00L310.00 341.00M305.00 341.00L300.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M315.00 341.00L320.00 341.00M315.00 341.00L310.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M325.00 341.00L330.00 341.00M325.00 341.00L320.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M335.00 341.00L340.00 341.00M335.00 341.00L330.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M345.00 341.00L350.00 341.00M345.00 341.00L340.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M355.00 341.00L360.00 341.00M355.00 341.00L350.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M365.00 341.00L370.00 341.00M365.00 341.00L360.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M375.00 341.00L380.00 341.00M375.00 341.00L370.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M385.00 341.00L390.00 341.00M385.00 341.00L380.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M395.00 341.00L400.00 341.00M395.00 341.00L390.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M405.00 341.00L410.00 341.00M405.00 341.00L400.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M415.00 341.00L420.00 341.00M415.00 341.00L410.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M425.00 341.00L430.00 341.00M425.00 341.00L420.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M435.00 341.00L440.00 341.00M435.00 341.00L430.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M445.00 341.00L450.00 341.00M445.00 341.00L440.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M455.00 341.00L460.00 341.00M455.00 341.00L450.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M465.00 341.00L470.00 341.00M465.00 341.00L460.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M475.00 341.00L480.00 341.00M475.00 341.00L470.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M485.00 341.00L490.00 341.00M485.00 341.00L480.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M495.00 341.00L500.00 341.00M495.00 341.00L490.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M505.00 341.00L510.00 341.00M505.00 341.00L500.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M515.00 341.00L520.00 341.00M515.00 341.00L510.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M525.00 341.00L530.00 341.00M525.00 341.00L520.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M535.00 341.00L540.00 341.00M535.00 341.00L530.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M545.00 341.00L550.00 341.00M545.00 341.00L540.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M555.00 341.00L560.00 341.00M555.00 341.00L550.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M565.00 341.00L570.00 341.00M565.00 341.00L560.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M575.00 341.00L580.00 341.00M575.00 341.00L570.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M585.00 341.00L590.00 341.00M585.00 341.00L580.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M595.00 341.00L600.00 341.00M595.00 341.00L590.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M605.00 341.00L610.00 341.00M605.00 341.00L600.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M615.00 341.00L620.00 341.00M615.00 341.00L610.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M625.00 341.00L630.00 341.00M625.00 341.00L620.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M635.00 341.00L640.00 341.00M635.00 341.00L630.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M645.00 341.00L650.00 341.00M645.00 341.00L640.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M655.00 341.00L660.00 341.00M655.00 341.00L650.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M665.00 341.00L670.00 341.00M665.00 341.00L660.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M675.00 341.00L680.00 341.00M675.00 341.00L670.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M685.00 341.00L690.00 341.00M685.00 341.00L680.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M695.00 341.00L700.00 341.00M695.00 341.00L690.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M705.00 341.00L710.00 341.00M705.00 341.00L700.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M715.00 341.00L720.00 341.00M715.00 341.00L710.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M725.00 341.00L730.00 341.00M725.00 341.00L720.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M735.00 341.00L740.00 341.00M735.00 341.00L730.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M745.00 341.00L750.00 341.00M745.00 341.00L740.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M755.00 341.00L760.00 341.00M755.00 341.00L750.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M765.00 341.00L770.00 341.00M765.00 341.00L760.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M775.00 341.00L780.00 341.00M775.00 341.00L770.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M785.00 341.00L790.00 341.00M785.00 341.00L780.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M795.00 341.00L800.00 341.00M795.00 341.00L790.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M805.00 341.00L810.00 341.00M805.00 341.00L800.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M815.00 341.00L820.00 341.00M815.00 341.00L810.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M825.00 341.00L830.00 341.00M825.00 341.00L820.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M835.00 341.00L840.00 341.00M835.00 341.00L830.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M845.00 341.00L850.00 341.00M845.00 341.00L840.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M855.00 341.00L860.00 341.00M855.00 341.00L850.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M865.00 341.00L870.00 341.00M865.00 341.00L860.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M875.00 341.00L880.00 341.00M875.00 341.00L870.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M885.00 341.00L890.00 341.00M885.00 341.00L880.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M895.00 341.00L900.00 341.00M895.00 341.00L890.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M905.00 341.00L910.00 341.00M905.00 341.00L900.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M915.00 341.00L920.00 341.00M915.00 341.00L910.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M925.00 341.00L930.00 341.00M925.00 341.00L920.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M935.00 341.00L940.00 341.00M935.00 341.00L930.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M945.00 341.00L950.00 341.00M945.00 341.00L940.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M955.00 341.00L960.00 341.00M955.00 341.00L950.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M965.00 341.00L970.00 341.00M965.00 341.00L960.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M975.00 341.00L980.00 341.00M975.00 341.00L970.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M985.00 341.00L990.00 341.00M985.00 341.00L980.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M995.00 341.00L1000.00 341.00M995.00 341.00L990.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1005.00 341.00L1010.00 341.00M1005.00 341.00L1000.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1015.00 341.00L1020.00 341.00M1015.00 341.00L1010.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1025.00 341.00L1030.00 341.00M1025.00 341.00L1020.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1035.00 341.00L1040.00 341.00M1035.00 341.00L1030.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1045.00 341.00L1050.00 341.00M1045.00 341.00L1040.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1055.00 341.00L1060.00 341.00M1055.00 341.00L1050.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1065.00 341.00L1070.00 341.00M1065.00 341.00L1060.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1075.00 341.00L1080.00 341.00M1075.00 341.00L1070.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1085.00 341.00L1090.00 341.00M1085.00 341.00L1080.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1095.00 341.00L1100.00 341.00M1095.00 341.00L1090.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1105.00 341.00L1110.00 341.00M1105.00 341.00L1100.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1115.00 341.00L1120.00 341.00M1115.00 341.00L1110.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1125.00 341.00L1130.00 341.00M1125.00 341.00L1120.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1135.00 341.00L1140.00 341.00M1135.00 341.00L1130.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1145.00 341.00L1150.00 341.00M1145.00 341.00L1140.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1155.00 341.00L1160.00 341.00M1155.00 341.00L1150.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1165.00 341.00L1170.00 341.00M1165.00 341.00L1160.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1175.00 341.00L1180.00 341.00M1175.00 341.00L1170.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1185.00 341.00L1190.00 341.00M1185.00 341.00L1180.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1195.00 341.00L1200.00 341.00M1195.00 341.00L1190.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1205.00 341.00L1210.00 341.00M1205.00 341.00L1200.00 341.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1215.00 341.00L1220.00 341.00M1215.00 341.00L1210.00 341.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 341.00L1225.00 330.00M1225.00 341.00L1225.00 352.00M1225.00 341.00L1220.00 341.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 363.00L275.00 352.00M275.00 363.00L275.00 374.00"/>
+    <path fill="var(--p8, #2e2b27)" d="M285.00 352.00h5.00v22.00h-5.00z"/>
+    <path fill="var(--p8, #2e2b27)" d="M1210.00 352.00h5.00v22.00h-5.00z"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 363.00L1225.00 352.00M1225.00 363.00L1225.00 374.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 385.00L275.00 374.00M275.00 385.00L275.00 396.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 385.00L1225.00 374.00M1225.00 385.00L1225.00 396.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 407.00L275.00 396.00M275.00 407.00L275.00 418.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 407.00L1225.00 396.00M1225.00 407.00L1225.00 418.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 429.00L275.00 418.00M275.00 429.00L275.00 440.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 429.00L1225.00 418.00M1225.00 429.00L1225.00 440.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 451.00L275.00 440.00M275.00 451.00L275.00 462.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 451.00L1225.00 440.00M1225.00 451.00L1225.00 462.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 473.00L275.00 462.00M275.00 473.00L275.00 484.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 473.00L1225.00 462.00M1225.00 473.00L1225.00 484.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 495.00L275.00 484.00M275.00 495.00L275.00 506.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 495.00L1225.00 484.00M1225.00 495.00L1225.00 506.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 517.00L275.00 506.00M275.00 517.00L275.00 528.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 517.00L1225.00 506.00M1225.00 517.00L1225.00 528.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 539.00L275.00 528.00M275.00 539.00L275.00 550.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 539.00L1225.00 528.00M1225.00 539.00L1225.00 550.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 561.00L275.00 550.00M275.00 561.00L275.00 572.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 561.00L1225.00 550.00M1225.00 561.00L1225.00 572.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 583.00L275.00 572.00M275.00 583.00L275.00 594.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 583.00L1225.00 572.00M1225.00 583.00L1225.00 594.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 605.00L275.00 594.00M275.00 605.00L275.00 616.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M285.00 605.00L290.00 605.00M285.00 605.00L280.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M295.00 605.00L300.00 605.00M295.00 605.00L290.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M305.00 605.00L310.00 605.00M305.00 605.00L300.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M315.00 605.00L320.00 605.00M315.00 605.00L310.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M325.00 605.00L330.00 605.00M325.00 605.00L320.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M335.00 605.00L340.00 605.00M335.00 605.00L330.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M345.00 605.00L350.00 605.00M345.00 605.00L340.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M355.00 605.00L360.00 605.00M355.00 605.00L350.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M365.00 605.00L370.00 605.00M365.00 605.00L360.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M375.00 605.00L380.00 605.00M375.00 605.00L370.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M385.00 605.00L390.00 605.00M385.00 605.00L380.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M395.00 605.00L400.00 605.00M395.00 605.00L390.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M405.00 605.00L410.00 605.00M405.00 605.00L400.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M415.00 605.00L420.00 605.00M415.00 605.00L410.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M425.00 605.00L430.00 605.00M425.00 605.00L420.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M435.00 605.00L440.00 605.00M435.00 605.00L430.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M445.00 605.00L450.00 605.00M445.00 605.00L440.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M455.00 605.00L460.00 605.00M455.00 605.00L450.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M465.00 605.00L470.00 605.00M465.00 605.00L460.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M475.00 605.00L480.00 605.00M475.00 605.00L470.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M485.00 605.00L490.00 605.00M485.00 605.00L480.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M495.00 605.00L500.00 605.00M495.00 605.00L490.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M505.00 605.00L510.00 605.00M505.00 605.00L500.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M515.00 605.00L520.00 605.00M515.00 605.00L510.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M525.00 605.00L530.00 605.00M525.00 605.00L520.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M535.00 605.00L540.00 605.00M535.00 605.00L530.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M545.00 605.00L550.00 605.00M545.00 605.00L540.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M555.00 605.00L560.00 605.00M555.00 605.00L550.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M565.00 605.00L570.00 605.00M565.00 605.00L560.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M575.00 605.00L580.00 605.00M575.00 605.00L570.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M585.00 605.00L590.00 605.00M585.00 605.00L580.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M595.00 605.00L600.00 605.00M595.00 605.00L590.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M605.00 605.00L610.00 605.00M605.00 605.00L600.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M615.00 605.00L620.00 605.00M615.00 605.00L610.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M625.00 605.00L630.00 605.00M625.00 605.00L620.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M635.00 605.00L640.00 605.00M635.00 605.00L630.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M645.00 605.00L650.00 605.00M645.00 605.00L640.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M655.00 605.00L660.00 605.00M655.00 605.00L650.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M665.00 605.00L670.00 605.00M665.00 605.00L660.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M675.00 605.00L680.00 605.00M675.00 605.00L670.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M685.00 605.00L690.00 605.00M685.00 605.00L680.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M695.00 605.00L700.00 605.00M695.00 605.00L690.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M705.00 605.00L710.00 605.00M705.00 605.00L700.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M715.00 605.00L720.00 605.00M715.00 605.00L710.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M725.00 605.00L730.00 605.00M725.00 605.00L720.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M735.00 605.00L740.00 605.00M735.00 605.00L730.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M745.00 605.00L750.00 605.00M745.00 605.00L740.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M755.00 605.00L760.00 605.00M755.00 605.00L750.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M765.00 605.00L770.00 605.00M765.00 605.00L760.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M775.00 605.00L780.00 605.00M775.00 605.00L770.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M785.00 605.00L790.00 605.00M785.00 605.00L780.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M795.00 605.00L800.00 605.00M795.00 605.00L790.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M805.00 605.00L810.00 605.00M805.00 605.00L800.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M815.00 605.00L820.00 605.00M815.00 605.00L810.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M825.00 605.00L830.00 605.00M825.00 605.00L820.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M835.00 605.00L840.00 605.00M835.00 605.00L830.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M845.00 605.00L850.00 605.00M845.00 605.00L840.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M855.00 605.00L860.00 605.00M855.00 605.00L850.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M865.00 605.00L870.00 605.00M865.00 605.00L860.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M875.00 605.00L880.00 605.00M875.00 605.00L870.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M885.00 605.00L890.00 605.00M885.00 605.00L880.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M895.00 605.00L900.00 605.00M895.00 605.00L890.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M905.00 605.00L910.00 605.00M905.00 605.00L900.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M915.00 605.00L920.00 605.00M915.00 605.00L910.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M925.00 605.00L930.00 605.00M925.00 605.00L920.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M935.00 605.00L940.00 605.00M935.00 605.00L930.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M945.00 605.00L950.00 605.00M945.00 605.00L940.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M955.00 605.00L960.00 605.00M955.00 605.00L950.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M965.00 605.00L970.00 605.00M965.00 605.00L960.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M975.00 605.00L980.00 605.00M975.00 605.00L970.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M985.00 605.00L990.00 605.00M985.00 605.00L980.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M995.00 605.00L1000.00 605.00M995.00 605.00L990.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1005.00 605.00L1010.00 605.00M1005.00 605.00L1000.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1015.00 605.00L1020.00 605.00M1015.00 605.00L1010.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1025.00 605.00L1030.00 605.00M1025.00 605.00L1020.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1035.00 605.00L1040.00 605.00M1035.00 605.00L1030.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1045.00 605.00L1050.00 605.00M1045.00 605.00L1040.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1055.00 605.00L1060.00 605.00M1055.00 605.00L1050.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1065.00 605.00L1070.00 605.00M1065.00 605.00L1060.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1075.00 605.00L1080.00 605.00M1075.00 605.00L1070.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1085.00 605.00L1090.00 605.00M1085.00 605.00L1080.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1095.00 605.00L1100.00 605.00M1095.00 605.00L1090.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1105.00 605.00L1110.00 605.00M1105.00 605.00L1100.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1115.00 605.00L1120.00 605.00M1115.00 605.00L1110.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1125.00 605.00L1130.00 605.00M1125.00 605.00L1120.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1135.00 605.00L1140.00 605.00M1135.00 605.00L1130.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1145.00 605.00L1150.00 605.00M1145.00 605.00L1140.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1155.00 605.00L1160.00 605.00M1155.00 605.00L1150.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1165.00 605.00L1170.00 605.00M1165.00 605.00L1160.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1175.00 605.00L1180.00 605.00M1175.00 605.00L1170.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1185.00 605.00L1190.00 605.00M1185.00 605.00L1180.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1195.00 605.00L1200.00 605.00M1195.00 605.00L1190.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1205.00 605.00L1210.00 605.00M1205.00 605.00L1200.00 605.00"/>
+    <path fill="none" stroke="var(--p8, #2e2b27)" stroke-width="1.25" d="M1215.00 605.00L1220.00 605.00M1215.00 605.00L1210.00 605.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 605.00L1225.00 594.00M1225.00 605.00L1225.00 616.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 627.00L275.00 616.00M275.00 627.00L275.00 638.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 627.00L1225.00 616.00M1225.00 627.00L1225.00 638.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M275.00 638.00Q275.00 649.00 280.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M285.00 649.00L290.00 649.00M285.00 649.00L280.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M295.00 649.00L300.00 649.00M295.00 649.00L290.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M305.00 649.00L310.00 649.00M305.00 649.00L300.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M315.00 649.00L320.00 649.00M315.00 649.00L310.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M325.00 649.00L330.00 649.00M325.00 649.00L320.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M335.00 649.00L340.00 649.00M335.00 649.00L330.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M345.00 649.00L350.00 649.00M345.00 649.00L340.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M355.00 649.00L360.00 649.00M355.00 649.00L350.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M365.00 649.00L370.00 649.00M365.00 649.00L360.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M375.00 649.00L380.00 649.00M375.00 649.00L370.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M385.00 649.00L390.00 649.00M385.00 649.00L380.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M395.00 649.00L400.00 649.00M395.00 649.00L390.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M405.00 649.00L410.00 649.00M405.00 649.00L400.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M415.00 649.00L420.00 649.00M415.00 649.00L410.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M425.00 649.00L430.00 649.00M425.00 649.00L420.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M435.00 649.00L440.00 649.00M435.00 649.00L430.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M445.00 649.00L450.00 649.00M445.00 649.00L440.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M455.00 649.00L460.00 649.00M455.00 649.00L450.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M465.00 649.00L470.00 649.00M465.00 649.00L460.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M475.00 649.00L480.00 649.00M475.00 649.00L470.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M485.00 649.00L490.00 649.00M485.00 649.00L480.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M495.00 649.00L500.00 649.00M495.00 649.00L490.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M505.00 649.00L510.00 649.00M505.00 649.00L500.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M515.00 649.00L520.00 649.00M515.00 649.00L510.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M525.00 649.00L530.00 649.00M525.00 649.00L520.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M535.00 649.00L540.00 649.00M535.00 649.00L530.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M545.00 649.00L550.00 649.00M545.00 649.00L540.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M555.00 649.00L560.00 649.00M555.00 649.00L550.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M565.00 649.00L570.00 649.00M565.00 649.00L560.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M575.00 649.00L580.00 649.00M575.00 649.00L570.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M585.00 649.00L590.00 649.00M585.00 649.00L580.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M595.00 649.00L600.00 649.00M595.00 649.00L590.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M605.00 649.00L610.00 649.00M605.00 649.00L600.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M615.00 649.00L620.00 649.00M615.00 649.00L610.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M625.00 649.00L630.00 649.00M625.00 649.00L620.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M635.00 649.00L640.00 649.00M635.00 649.00L630.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M645.00 649.00L650.00 649.00M645.00 649.00L640.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M655.00 649.00L660.00 649.00M655.00 649.00L650.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M665.00 649.00L670.00 649.00M665.00 649.00L660.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M675.00 649.00L680.00 649.00M675.00 649.00L670.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M685.00 649.00L690.00 649.00M685.00 649.00L680.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M695.00 649.00L700.00 649.00M695.00 649.00L690.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M705.00 649.00L710.00 649.00M705.00 649.00L700.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M715.00 649.00L720.00 649.00M715.00 649.00L710.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M725.00 649.00L730.00 649.00M725.00 649.00L720.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M735.00 649.00L740.00 649.00M735.00 649.00L730.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M745.00 649.00L750.00 649.00M745.00 649.00L740.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M755.00 649.00L760.00 649.00M755.00 649.00L750.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M765.00 649.00L770.00 649.00M765.00 649.00L760.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M775.00 649.00L780.00 649.00M775.00 649.00L770.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M785.00 649.00L790.00 649.00M785.00 649.00L780.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M795.00 649.00L800.00 649.00M795.00 649.00L790.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M805.00 649.00L810.00 649.00M805.00 649.00L800.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M815.00 649.00L820.00 649.00M815.00 649.00L810.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M825.00 649.00L830.00 649.00M825.00 649.00L820.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M835.00 649.00L840.00 649.00M835.00 649.00L830.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M845.00 649.00L850.00 649.00M845.00 649.00L840.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M855.00 649.00L860.00 649.00M855.00 649.00L850.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M865.00 649.00L870.00 649.00M865.00 649.00L860.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M875.00 649.00L880.00 649.00M875.00 649.00L870.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M885.00 649.00L890.00 649.00M885.00 649.00L880.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M895.00 649.00L900.00 649.00M895.00 649.00L890.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M905.00 649.00L910.00 649.00M905.00 649.00L900.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M915.00 649.00L920.00 649.00M915.00 649.00L910.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M925.00 649.00L930.00 649.00M925.00 649.00L920.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M935.00 649.00L940.00 649.00M935.00 649.00L930.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M945.00 649.00L950.00 649.00M945.00 649.00L940.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M955.00 649.00L960.00 649.00M955.00 649.00L950.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M965.00 649.00L970.00 649.00M965.00 649.00L960.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M975.00 649.00L980.00 649.00M975.00 649.00L970.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M985.00 649.00L990.00 649.00M985.00 649.00L980.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M995.00 649.00L1000.00 649.00M995.00 649.00L990.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1005.00 649.00L1010.00 649.00M1005.00 649.00L1000.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1015.00 649.00L1020.00 649.00M1015.00 649.00L1010.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1025.00 649.00L1030.00 649.00M1025.00 649.00L1020.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1035.00 649.00L1040.00 649.00M1035.00 649.00L1030.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1045.00 649.00L1050.00 649.00M1045.00 649.00L1040.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1055.00 649.00L1060.00 649.00M1055.00 649.00L1050.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1065.00 649.00L1070.00 649.00M1065.00 649.00L1060.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1075.00 649.00L1080.00 649.00M1075.00 649.00L1070.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1085.00 649.00L1090.00 649.00M1085.00 649.00L1080.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1095.00 649.00L1100.00 649.00M1095.00 649.00L1090.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1105.00 649.00L1110.00 649.00M1105.00 649.00L1100.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1115.00 649.00L1120.00 649.00M1115.00 649.00L1110.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1125.00 649.00L1130.00 649.00M1125.00 649.00L1120.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1135.00 649.00L1140.00 649.00M1135.00 649.00L1130.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1145.00 649.00L1150.00 649.00M1145.00 649.00L1140.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1155.00 649.00L1160.00 649.00M1155.00 649.00L1150.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1165.00 649.00L1170.00 649.00M1165.00 649.00L1160.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1175.00 649.00L1180.00 649.00M1175.00 649.00L1170.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1185.00 649.00L1190.00 649.00M1185.00 649.00L1180.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1195.00 649.00L1200.00 649.00M1195.00 649.00L1190.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1205.00 649.00L1210.00 649.00M1205.00 649.00L1200.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1215.00 649.00L1220.00 649.00M1215.00 649.00L1210.00 649.00"/>
+    <path fill="none" stroke="var(--p2, #ddc084)" stroke-width="1.25" d="M1225.00 638.00Q1225.00 649.00 1220.00 649.00"/>
+  </g>
+  <text x="0" y="17.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="39.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="61.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="83.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="105.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                      </tspan><tspan>    </tspan><tspan>                                                                                            </tspan></text>
+  <text x="0" y="127.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                      </tspan><tspan>    </tspan><tspan>                                                                                            </tspan></text>
+  <text x="0" y="149.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan>  </tspan><tspan>      </tspan><tspan>  </tspan><tspan>    </tspan><tspan>  </tspan><tspan>  </tspan><tspan>   </tspan><tspan>  </tspan><tspan>   </tspan><tspan>   </tspan><tspan>      </tspan><tspan>                                                           </tspan></text>
+  <text x="0" y="171.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan>  </tspan><tspan>      </tspan><tspan>  </tspan><tspan>    </tspan><tspan>  </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan>        </tspan><tspan>                                                          </tspan></text>
+  <text x="0" y="193.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan>  </tspan><tspan>      </tspan><tspan>  </tspan><tspan>    </tspan><tspan>  </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan>        </tspan><tspan>                                                          </tspan></text>
+  <text x="0" y="215.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan>     </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>      </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>  </tspan><tspan>                                                     </tspan></text>
+  <text x="0" y="237.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                         </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan>   </tspan><tspan>  </tspan><tspan>   </tspan><tspan>    </tspan><tspan>     </tspan><tspan>    </tspan><tspan>  </tspan><tspan>                                                     </tspan></text>
+  <text x="0" y="259.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="281.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="303.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan fill="var(--p2, #ddc084)">  󱌣 </tspan><tspan fill="var(--p2, #ddc084)" font-weight="700">build</tspan><tspan>                                                                                       </tspan><tspan>                           </tspan></text>
+  <text x="0" y="325.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p7, #4d4a45)">Ask anything, or type to find a session or a command</tspan><tspan>                                         </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="347.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>                                                                                              </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="369.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p2, #ddc084)" font-weight="700">❯</tspan><tspan> </tspan><tspan fill="var(--p2, #ddc084)">󰋚</tspan><tspan> </tspan><tspan fill="var(--p2, #ddc084)" font-weight="700">Resume</tspan><tspan fill="var(--p0, #e4dfd6)">  Refine the workspace overview                                          </tspan><tspan fill="var(--p9, #97938c)">12m ago</tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="391.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)">󰈔</tspan><tspan fill="var(--p0, #e4dfd6)"> New session                                                                       </tspan><tspan fill="var(--p9, #97938c)">/new</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="413.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)">󰈞</tspan><tspan fill="var(--p0, #e4dfd6)"> Sessions…                                                                    </tspan><tspan fill="var(--p9, #97938c)">/sessions</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="435.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)"></tspan><tspan fill="var(--p0, #e4dfd6)"> Review changes</tspan><tspan fill="var(--p9, #97938c)">  12 files  </tspan><tspan fill="var(--p10, #81caa0)">+640</tspan><tspan fill="var(--p11, #e68485)"> −118</tspan><tspan>                                              </tspan><tspan fill="var(--p9, #97938c)">/diff</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="457.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)">󰒓</tspan><tspan fill="var(--p0, #e4dfd6)"> Configuration                                                                  </tspan><tspan fill="var(--p9, #97938c)">/config</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="479.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)">󰗼</tspan><tspan fill="var(--p0, #e4dfd6)"> Quit                                                                            </tspan><tspan fill="var(--p9, #97938c)">ctrl+c</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="501.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>                                                                                              </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="523.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>   </tspan><tspan fill="var(--p0, #e4dfd6)" font-weight="700">RECENT</tspan><tspan>                                                                                     </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="545.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p16, #d2a5cd)">󰊌</tspan><tspan fill="var(--p0, #e4dfd6)"> Audit the current project structure                                             </tspan><tspan fill="var(--p9, #97938c)">1d ago</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="567.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p16, #d2a5cd)">󰊌</tspan><tspan fill="var(--p0, #e4dfd6)"> Please explain why this provider stalls                                         </tspan><tspan fill="var(--p9, #97938c)">2d ago</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="589.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p16, #d2a5cd)">󰊌</tspan><tspan fill="var(--p0, #e4dfd6)"> Trace the stalled provider handshake                                            </tspan><tspan fill="var(--p9, #97938c)">2d ago</tspan><tspan>  </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="611.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>                                                                                              </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="633.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan> </tspan><tspan fill="var(--p2, #ddc084)">enter</tspan><tspan fill="var(--p0, #e4dfd6)"> resume</tspan><tspan fill="var(--p9, #97938c)"> · </tspan><tspan fill="var(--p2, #ddc084)">↑/↓</tspan><tspan fill="var(--p0, #e4dfd6)"> choose</tspan><tspan fill="var(--p9, #97938c)"> · </tspan><tspan fill="var(--p2, #ddc084)">shift+tab</tspan><tspan fill="var(--p0, #e4dfd6)"> plan mode</tspan><tspan fill="var(--p9, #97938c)"> · </tspan><tspan fill="var(--p2, #ddc084)">ctrl+c</tspan><tspan fill="var(--p0, #e4dfd6)"> quit                                </tspan><tspan> </tspan><tspan>                           </tspan></text>
+  <text x="0" y="655.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan>                                                                                                </tspan><tspan>                           </tspan></text>
+  <text x="0" y="677.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="699.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="721.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="743.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="765.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
+  <text x="0" y="787.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="var(--p1, #12100e)" font-weight="700">󰉋 luxe</tspan><tspan fill="var(--p0, #e4dfd6)">     󰘬 feature/context-dock*     </tspan><tspan fill="var(--p9, #97938c)">󰢨 4/12 · Render the Context Plan</tspan><tspan> </tspan><tspan fill="var(--p9, #97938c)"> 12 files · ctrl+p</tspan><tspan fill="var(--p0, #e4dfd6)">                  0.0%/200k     󰌵 high     </tspan><tspan fill="var(--p1, #12100e)" font-weight="700">󰚩 qwen3.8-27b</tspan><tspan> </tspan></text>
+</svg>

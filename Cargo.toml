@@ -1,0 +1,123 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+# Every crate here releases together from one workspace, so the versions move in lockstep and each
+# crate inherits this one. The internal `path` dependencies carry the same number explicitly — cargo
+# uses the path locally and the version on crates.io, and refuses to publish a path dep without one.
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/evanwhittaker/luxe"
+homepage = "https://luxe.dev"
+# Bound by the dependencies: uuid needs 1.89, and ratatui, image and darling 1.88. Luxe's own floor
+# is lower (`user_dirs` relies on `std::env::home_dir`, which returned `$HOME` on Windows before
+# 1.85). The `msrv` CI job builds the workspace on exactly this version, so the number cannot drift.
+rust-version = "1.89"
+
+[workspace.dependencies]
+# Runtime
+tokio = { version = "1", features = [
+  "rt-multi-thread",
+  "macros",
+  "sync",
+  "process",
+  "fs",
+  "time",
+  "io-util",
+  # OAuth loopback listeners and the MCP HTTP transport bind real sockets. reqwest already pulls
+  # this in, but leaning on feature unification for a direct use is how a refactor breaks a build.
+  "net",
+] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+
+# Errors
+thiserror = "1"
+anyhow = "1"
+
+# Logging
+tracing = "0.1"
+
+# HTTP
+# rustls (not the platform's OpenSSL) so `luxe` is a self-contained binary: no dynamic link to a
+# system libssl, portable/reproducible builds, and TLS trust from bundled webpki roots.
+# `gzip` takes the models.dev catalog refresh from 3.2 MB to ~300 KB on the wire.
+reqwest = { version = "0.12", default-features = false, features = [
+  "stream",
+  "json",
+  "charset",
+  "http2",
+  "gzip",
+  "rustls-tls",
+  "macos-system-configuration",
+] }
+
+# Streams
+futures = "0.3"
+
+# Async traits
+async-trait = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+shlex = "2"
+
+# UUID
+uuid = { version = "1", features = ["v4"] }
+# Version comparison for the update notice: the orderings a string compare gets wrong (0.10 vs 0.9,
+# a pre-release vs its release) are exactly the ones that decide whether the notice is right.
+semver = "1"
+
+# Markdown: the TUI renders it, and core reads instruction files the way a renderer does
+pulldown-cmark = { version = "0.13", default-features = false }
+
+# Terminal text layout
+unicode-width = "0.2"
+
+# Syntax (tree-sitter offline outlines)
+tree-sitter = "0.26"
+tree-sitter-rust = "0.24"
+tree-sitter-python = "0.23"
+tree-sitter-typescript = "0.23"
+tree-sitter-javascript = "0.23"
+tree-sitter-go = "0.23"
+streaming-iterator = "0.1"
+
+# Secrets
+secrecy = { version = "0.10", features = ["serde"] }
+
+# Inline image decoding, downscaling and encoding: `screenshot` and `read` hand PNG to vision
+# models, and the TUI rasterizes the same bytes for the terminal. These four codecs are what a
+# repository actually holds; the default feature set is declined so the AVIF/EXR stack (and its
+# NCSA license) stays out of the tree.
+base64 = "0.22"
+image = { version = "0.25", default-features = false, features = [
+  "png",
+  "jpeg",
+  "webp",
+  "gif",
+] }
+
+[workspace.lints.rust]
+# `deny`, not `forbid`, so an audited exception can carry its own `#[allow]`, which is the line a
+# reviewer has to look at. The shipped program has one: `program::detach_from_terminal`, whose
+# `pre_exec(setsid)` is how a spawned command leaves Luxe's terminal (std's `Command::setsid` is not
+# stable). The others are the counting allocators in luxe-tui's frame-budget test and render-perf
+# example, which never ship.
+unsafe_code = "deny"
+# `pub` means another crate uses it; anything narrower says so, which keeps docs and dead-code
+# warnings honest.
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+unwrap_used = "allow"
+field_reassign_with_default = "allow"
+nonminimal_bool = "allow"
+match_same_arms = "allow"
+unnecessary_filter_map = "allow"
