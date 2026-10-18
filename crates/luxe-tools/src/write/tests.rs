@@ -30,6 +30,22 @@ async fn a_reformatted_write_shows_the_file_as_it_is_now() {
     assert!(text.contains("+1 fn sub(a: i32) {}") && !text.contains("a:i32"), "{text}");
 }
 
+/// Overwriting a script keeps it executable, as an editor's save does.
+#[cfg(unix)]
+#[tokio::test]
+async fn an_overwritten_script_stays_executable() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tempfile::tempdir().unwrap();
+    let script = dir.path().join("run.sh");
+    std::fs::write(&script, "#!/bin/sh\n").unwrap();
+    std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+    let args = serde_json::json!({"path": "run.sh", "content": "#!/bin/sh\necho hi\n"});
+    let result = WriteTool::new().run(args, &test_context(dir.path())).await;
+    assert!(!result.is_error, "{:?}", result.content);
+    let mode = std::fs::metadata(&script).unwrap().permissions().mode() & 0o777;
+    assert_eq!(mode, 0o755, "still executable after the write");
+}
+
 #[tokio::test]
 async fn write_tool_basic() {
     let tmp_dir_guard = tempfile::tempdir().expect("temp dir");

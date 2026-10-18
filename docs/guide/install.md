@@ -11,14 +11,12 @@ On macOS and Linux, the install script puts `luxe` in `~/.local/bin`, or in `$LU
 when it is set, and adds that to your `PATH`:
 
 ```bash
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh | sh
+curl -fsSL https://luxe.dev/install.sh | sh
 ```
 
-On Windows, in PowerShell:
-
-```powershell
-powershell -ExecutionPolicy Bypass -c "irm https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.ps1 | iex"
-```
+That address redirects to the script on the [latest
+release](https://github.com/evanwhittaker/luxe/releases/latest), the one it built and attested. To
+read it before running it, drop the `| sh`.
 
 With Homebrew, on macOS or Linux:
 
@@ -32,6 +30,16 @@ one):
 ```bash
 cargo install --locked luxe-cli
 ```
+
+On Windows, in PowerShell:
+
+```powershell
+powershell -c "irm https://luxe.dev/install.ps1 | iex"
+```
+
+[That script](https://luxe.dev/install.ps1) is two lines: it lets this PowerShell window run the
+release's installer, which Windows' default execution policy would stop, then runs it. Nothing
+about your policy is saved.
 
 Any of them installs the `luxe` command; `luxe --version` checks it worked.
 

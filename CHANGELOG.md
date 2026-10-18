@@ -9,6 +9,19 @@ The version on `main` is always the next release. The first change to what ships
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
+## [0.1.1]
+
+### Fixed
+
+- Editing a file with the edit or write tool, or format-on-save rewriting it, keeps the file's
+  permissions, so an edited script stays executable. A kept mode is now exact rather than trimmed
+  by the umask.
+
+### Changed
+
+- The install guide leads with `curl -fsSL https://luxe.dev/install.sh | sh` and
+  `powershell -c "irm https://luxe.dev/install.ps1 | iex"`.
+
 ## [0.1.0]
 
 The first public release.

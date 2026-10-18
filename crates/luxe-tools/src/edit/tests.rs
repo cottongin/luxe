@@ -78,6 +78,23 @@ async fn a_reformatted_edit_shows_the_file_as_it_is_now() {
     assert!(text.contains("+1 fn b() {}"), "{text}");
 }
 
+/// An edited script stays executable. Saving by rename replaced the file with a new one at the
+/// default mode, so every edit of a script left it unrunnable.
+#[cfg(unix)]
+#[tokio::test]
+async fn an_edited_script_stays_executable() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tempfile::tempdir().unwrap();
+    let script = dir.path().join("run.sh");
+    std::fs::write(&script, "#!/bin/sh\necho one\n").unwrap();
+    std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+    let args = json!({"path": "run.sh", "edits": [{"oldText": "one", "newText": "two"}]});
+    let result = EditTool::new().run(args, &test_context(dir.path())).await;
+    assert!(!result.is_error, "{:?}", result.content);
+    let mode = std::fs::metadata(&script).unwrap().permissions().mode() & 0o777;
+    assert_eq!(mode, 0o755, "still executable after the edit");
+}
+
 #[tokio::test]
 async fn edit_tool_basic() {
     let tmp_dir_guard = tempfile::tempdir().expect("temp dir");

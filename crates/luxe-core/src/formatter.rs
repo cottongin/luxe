@@ -391,7 +391,7 @@ async fn run_via_stdin(spec: &FormatterSpec, path: &Path) -> Result<(), Formatte
         if std::fs::read(&path)? != input {
             return Ok(false);
         }
-        crate::fs_atomic::replace(&path, &formatted).map(|()| true)
+        crate::fs_atomic::replace_keeping_mode(&path, &formatted).map(|()| true)
     })
     .await
     .map_err(|error| io(spec, "write the file")(std::io::Error::other(error)))?

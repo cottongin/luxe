@@ -50,16 +50,16 @@ and [the guide lists them](https://luxe.dev/docs/security/#what-luxe-sends-over-
 
 ```bash
 # macOS and Linux
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh | sh
+curl -fsSL https://luxe.dev/install.sh | sh
 
 # Homebrew
 brew install evanwhittaker/tap/luxe
 
-# Windows (PowerShell)
-powershell -ExecutionPolicy Bypass -c "irm https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.ps1 | iex"
-
 # Cargo (Rust 1.89 or newer)
 cargo install --locked luxe-cli
+
+# Windows (PowerShell)
+powershell -c "irm https://luxe.dev/install.ps1 | iex"
 ```
 
 To update, run `luxe update`. To build from source:
