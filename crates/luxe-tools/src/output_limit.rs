@@ -37,22 +37,52 @@ pub(crate) fn cap_lines_within(
     hint: &str,
 ) -> String {
     let total = text.lines().count();
-    let mut kept_lines = 0usize;
-    let mut spent = 0usize;
-    for line in text.lines().take(max_lines) {
-        let cost = line.chars().count().saturating_add(1);
-        if kept_lines > 0 && spent.saturating_add(cost) > max_chars {
-            break;
-        }
-        spent = spent.saturating_add(cost);
-        kept_lines += 1;
-    }
+    let kept_lines =
+        lines_within(text.lines().map(|line| line.chars().count()), max_lines, max_chars);
     if kept_lines >= total {
         return clamp_bytes(text);
     }
     let kept = text.lines().take(kept_lines).collect::<Vec<_>>().join("\n");
-    let remaining = total - kept_lines;
+    with_note(&kept, total - kept_lines, total, unit, hint)
+}
+
+/// How many lines, given each one's length in characters, fit under both `max_lines` and
+/// `max_chars`; at least one when there is any, however long it is.
+///
+/// The cut [`cap_lines_within`] makes, for a tool that lays its lines out after choosing them.
+pub(crate) fn lines_within(
+    lengths: impl IntoIterator<Item = usize>,
+    max_lines: usize,
+    max_chars: usize,
+) -> usize {
+    let mut kept = 0usize;
+    let mut spent = 0usize;
+    for length in lengths.into_iter().take(max_lines) {
+        let cost = length.saturating_add(1);
+        if kept > 0 && spent.saturating_add(cost) > max_chars {
+            break;
+        }
+        spent = spent.saturating_add(cost);
+        kept += 1;
+    }
+    kept
+}
+
+/// `kept`, then the note that `remaining` more of `total` were cut and how to see them, clamped to
+/// the byte backstop.
+pub(crate) fn with_note(
+    kept: &str,
+    remaining: usize,
+    total: usize,
+    unit: &str,
+    hint: &str,
+) -> String {
     clamp_bytes(&format!("{kept}\n\n… {remaining} more {unit} not shown ({total} total). {hint}"))
+}
+
+/// [`clamp_bytes`] for a tool that caps its own lines first.
+pub(crate) fn clamp(text: &str) -> String {
+    clamp_bytes(text)
 }
 
 /// Head+tail byte clamp for the rare single-huge-line case the line cap can't shrink.

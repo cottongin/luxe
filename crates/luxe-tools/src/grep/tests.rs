@@ -17,6 +17,13 @@ fn test_context(tmp_dir: &std::path::Path) -> ToolContext {
     }
 }
 
+/// The matching-line rows of a content answer, `12:text`, not the paths or scope rows around them.
+fn match_rows(text: &str) -> usize {
+    text.lines()
+        .filter(|line| line.split_once(':').is_some_and(|(n, _)| n.parse::<usize>().is_ok()))
+        .count()
+}
+
 /// A plain content search of `.`, for a test to vary one field of.
 fn search<'a>(pattern: &'a str) -> Search<'a> {
     Search {
@@ -27,6 +34,7 @@ fn search<'a>(pattern: &'a str) -> Search<'a> {
         after: 0,
         all: false,
         invert: false,
+        scopes: false,
         mode: OutputMode::Content,
         limit: GREP_MAX_LINES,
     }
@@ -246,7 +254,7 @@ async fn a_zero_limit_is_an_absent_limit() {
         .run(json!({"pattern": "needle", "limit": 0}), &test_context(dir.path()))
         .await;
     let ContentBlock::Text(text) = &result.content[0] else { panic!("expected text") };
-    assert_eq!(text.lines().count(), 20, "every match, not none: {text}");
+    assert_eq!(match_rows(text), 20, "every match, not none: {text}");
     assert!(!text.contains("not shown"), "and nothing was cut: {text}");
 }
 
@@ -282,16 +290,12 @@ async fn a_limit_can_only_tighten_the_cap() {
 
     let sampled = GrepTool::new().run(json!({"pattern": "needle", "limit": 5}), &cx).await;
     let ContentBlock::Text(text) = &sampled.content[0] else { panic!("expected text") };
-    assert_eq!(text.lines().filter(|line| line.contains("many.txt")).count(), 5, "{text}");
+    assert_eq!(match_rows(text), 5, "{text}");
     assert!(text.contains("295 more matching lines not shown (300 total)"), "{text}");
 
     let greedy = GrepTool::new().run(json!({"pattern": "needle", "limit": 5000}), &cx).await;
     let ContentBlock::Text(text) = &greedy.content[0] else { panic!("expected text") };
-    assert_eq!(
-        text.lines().filter(|line| line.contains("many.txt")).count(),
-        GREP_MAX_LINES,
-        "a limit past the ceiling is the ceiling: {text}"
-    );
+    assert_eq!(match_rows(text), GREP_MAX_LINES, "a limit past the ceiling is the ceiling: {text}");
 }
 
 /// The count a capped result reports is the count that exists, not the count that was kept.

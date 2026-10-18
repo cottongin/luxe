@@ -48,6 +48,7 @@ pub(super) fn parse_search(args: &serde_json::Value) -> Result<Search<'_>, Strin
         after: side("after"),
         all: args.get("all").and_then(|value| value.as_bool()).unwrap_or(false),
         invert: args.get("invert").and_then(|value| value.as_bool()).unwrap_or(false),
+        scopes: args.get("scopes").and_then(|value| value.as_bool()).unwrap_or(false),
         // camelCase is advertised; snake_case is what models reach for, and a silently ignored
         // mode returns the expensive answer
         mode: OutputMode::parse(
@@ -106,16 +107,15 @@ async fn scan(
     args: serde_json::Value,
     cx: &ToolContext,
     paths: Vec<PathBuf>,
-    stopped: Arc<AtomicBool>,
-) -> Result<String, String> {
+    (outline, stopped): (Option<Arc<dyn OutlineSource>>, Arc<AtomicBool>),
+) -> Result<Vec<Hit>, String> {
     let cwd = cx.cwd.clone();
     let cancelled = cx.cancelled.clone();
     tokio::task::spawn_blocking(move || {
         let search = parse_search(&args)?;
-        super::native_search_files(&cwd, &search, paths, || {
+        super::native_search_files(&cwd, &search, paths, outline.as_deref(), || {
             stopped.load(Ordering::Relaxed) || *cancelled.borrow()
         })
-        .map(|rows| rows.join("\n"))
     })
     .await
     .map_err(|error| format!("grep scan worker failed: {error}"))?
@@ -141,7 +141,7 @@ pub(super) async fn run(
         Ok(plan) => plan,
         Err(error) => return ToolResultData::error(error),
     };
-    let found = scan(args.clone(), cx, plan.allowed, stopped).await;
+    let found = scan(args.clone(), cx, plan.allowed, (tool.outline.clone(), stopped)).await;
     let mut result = finish(tool, cx, &search, found);
     if plan.denied + plan.asks > 0 {
         result.content.push(ContentBlock::Text(format!(
@@ -159,20 +159,24 @@ pub(super) fn finish(
     tool: &GrepTool,
     cx: &ToolContext,
     search: &Search<'_>,
-    found: Result<String, String>,
+    found: Result<Vec<Hit>, String>,
 ) -> ToolResultData {
     match found {
-        Ok(matches) if matches.trim().is_empty() => ToolResultData::text("No matches found"),
-        Ok(matches) => {
-            let bounded = crate::output_limit::cap_lines_within(
-                &matches,
+        Ok(hits) if hits.is_empty() => ToolResultData::text("No matches found"),
+        Ok(hits) if search.mode == OutputMode::Content => {
+            let (text, shown) = super::present::content(&hits, search);
+            record_matches(tool, cx, search, &hits[..shown]);
+            ToolResultData::text(text)
+        }
+        Ok(hits) => {
+            let rows: Vec<String> = hits.iter().map(Hit::flat).collect();
+            ToolResultData::text(crate::output_limit::cap_lines_within(
+                &rows.join("\n"),
                 search.limit,
                 GREP_MAX_CHARS,
                 search.mode.unit(),
                 search.mode.hint(),
-            );
-            record_matches(tool, cx, search, &bounded);
-            ToolResultData::text(bounded)
+            ))
         }
         Err(problem) => {
             warn!(pattern = search.pattern, error = %problem, "grep failed");
@@ -181,15 +185,18 @@ pub(super) fn finish(
     }
 }
 
-fn record_matches(tool: &GrepTool, cx: &ToolContext, search: &Search<'_>, bounded: &str) {
-    let (Some(tracker), OutputMode::Content) = (&tool.tracker, search.mode) else { return };
+/// Records as read every file a line of which the answer showed, the way a `read` of it would be.
+fn record_matches(tool: &GrepTool, cx: &ToolContext, search: &Search<'_>, shown: &[Hit]) {
+    let Some(tracker) = &tool.tracker else { return };
     let searched = cx.cwd.join(search.path);
-    let shown = if searched.is_file() {
-        vec![searched]
-    } else {
-        crate::bash::seen::files_in_rows(bounded, &cx.cwd)
+    let files: Vec<PathBuf> = match searched.is_file() {
+        true => vec![searched],
+        false => shown.iter().map(|hit| cx.cwd.join(&*hit.file)).collect(),
     };
-    for path in shown {
-        tracker.record(&cx.session_id, &path);
+    let mut recorded = std::collections::HashSet::new();
+    for path in files {
+        if recorded.insert(path.clone()) {
+            tracker.record(&cx.session_id, &path);
+        }
     }
 }

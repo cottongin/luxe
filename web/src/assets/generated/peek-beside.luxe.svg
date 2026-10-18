@@ -5,14 +5,14 @@
     <rect x="100" y="0" width="10" height="22" fill="#aa9467"/>
     <rect x="110" y="0" width="10" height="22" fill="#786849"/>
     <rect x="120" y="0" width="10" height="22" fill="#453c2c"/>
-    <rect x="860" y="0" width="70" height="22" fill="#2f2d2a"/>
-    <rect x="930" y="0" width="10" height="22" fill="#282623"/>
-    <rect x="940" y="0" width="10" height="22" fill="#211f1c"/>
-    <rect x="950" y="0" width="10" height="22" fill="#191715"/>
-    <rect x="970" y="0" width="70" height="22" fill="#8c7a55"/>
-    <rect x="1040" y="0" width="10" height="22" fill="#6e6043"/>
-    <rect x="1050" y="0" width="10" height="22" fill="#4f4532"/>
-    <rect x="1060" y="0" width="10" height="22" fill="#312b20"/>
+    <rect x="840" y="0" width="70" height="22" fill="#2f2d2a"/>
+    <rect x="910" y="0" width="10" height="22" fill="#282623"/>
+    <rect x="920" y="0" width="10" height="22" fill="#211f1c"/>
+    <rect x="930" y="0" width="10" height="22" fill="#191715"/>
+    <rect x="950" y="0" width="70" height="22" fill="#8c7a55"/>
+    <rect x="1020" y="0" width="10" height="22" fill="#6e6043"/>
+    <rect x="1030" y="0" width="10" height="22" fill="#4f4532"/>
+    <rect x="1040" y="0" width="10" height="22" fill="#312b20"/>
     <rect x="0" y="88" width="70" height="22" fill="#8c7a55"/>
     <rect x="70" y="88" width="10" height="22" fill="#6e6043"/>
     <rect x="80" y="88" width="10" height="22" fill="#4f4532"/>
@@ -552,7 +552,7 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1705.00 1089.00L1710.00 1089.00M1705.00 1089.00L1700.00 1089.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1715.00 1078.00Q1715.00 1089.00 1710.00 1089.00"/>
   </g>
-  <text x="0" y="17.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">PROJECT</tspan><tspan>                                </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#faaa51">M </tspan><tspan fill="#e4dfd6" font-weight="700">crates/luxe-tui/src/view/dock.rs</tspan><tspan fill="#81caa0">  +48</tspan><tspan fill="#e68485"> −9</tspan><tspan>  </tspan><tspan fill="#97938c">FILE</tspan><tspan>       </tspan><tspan fill="#e4dfd6" font-weight="700">DIFF</tspan><tspan>      </tspan><tspan fill="#97938c">8 of </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
+  <text x="0" y="17.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">PROJECT</tspan><tspan>                                </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#faaa51">M </tspan><tspan fill="#e4dfd6" font-weight="700">…s/luxe-tui/src/view/dock.rs</tspan><tspan fill="#81caa0">  +48</tspan><tspan fill="#e68485"> −9</tspan><tspan>    </tspan><tspan fill="#97938c">FILE</tspan><tspan>       </tspan><tspan fill="#e4dfd6" font-weight="700">DIFF</tspan><tspan>      </tspan><tspan fill="#97938c">8 of 14</tspan><tspan> </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="39.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#e4dfd6">󰉋 luxe                                   </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                      </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="61.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">󰘬 feature/context-dock *</tspan><tspan>                 </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">@@ -140,6 +140,8 @@  fn change_lines</tspan><tspan>                                   </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="83.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">140 140 </tspan><tspan>     </tspan><tspan fill="#d2a5cd">let</tspan><tspan fill="#e4dfd6"> seen </tspan><tspan fill="#97938c">=</tspan><tspan fill="#e4dfd6"> app.review.seen.</tspan><tspan fill="#ddc084">as_ref</tspan><tspan fill="#97938c">();</tspan><tspan>                      </tspan><tspan> </tspan><tspan>                                                        </tspan></text>

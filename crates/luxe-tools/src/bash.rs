@@ -442,10 +442,18 @@ mod tree_teardown {
         format!("(for _ in $(seq 1 40); do touch {}; sleep 0.25; done) & wait", marker.display())
     }
 
-    /// Whether anything is still touching `marker` after it is removed.
+    /// Whether anything is still touching `marker`, the loop, once a touch that was already under
+    /// way has had its moment.
+    ///
+    /// The kill reaches the whole group at once, but a `touch` forked as it lands can finish one
+    /// write after it, and on macOS's slower teardown that write can follow the first clear. One
+    /// straggling write is not a survivor; a loop still running touches again within a quarter
+    /// second of the second clear.
     async fn survivor_still_running(marker: &std::path::Path) -> bool {
         let _ = std::fs::remove_file(marker);
-        tokio::time::sleep(Duration::from_millis(1_200)).await;
+        tokio::time::sleep(Duration::from_millis(300)).await;
+        let _ = std::fs::remove_file(marker);
+        tokio::time::sleep(Duration::from_millis(1_000)).await;
         marker.exists()
     }
 

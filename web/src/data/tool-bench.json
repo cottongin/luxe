@@ -31,8 +31,8 @@
           },
           "shellBytes": 4384,
           "shellLines": 56,
-          "toolBytes": 4383,
-          "toolLines": 56,
+          "toolBytes": 3989,
+          "toolLines": 100,
           "forwarded": {
             "pi": 4383,
             "opencode": 4383,

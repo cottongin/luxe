@@ -65,7 +65,7 @@ const groups: Group[] = [
         name: "grep",
         instead: "`grep -rn`, `rg`",
         bench: "grep",
-        text: "Capped per file and overall, with long lines trimmed. It can return just the files that match or just the counts, and says so when there's more.",
+        text: "Names each file once with its lines under it, where `rg` repeats the path on every line. Asked to, it says which function or type each match sits in. Skips what read policy denies, caps per file and overall, and says when there's more.",
       },
       {
         name: "ast_grep",
@@ -249,7 +249,8 @@ const terminal = ["git", "module_report", "glob"].flatMap((id) => rows.get(id) ?
 
 const times = (shell: number, tool: number) => {
   const ratio = shell / tool;
-  if (ratio < 1.1) return "the same";
+  // Under a tenth less, a multiple reads as "1.0×", so a real saving is given as a share
+  if (ratio < 1.1) return tool <= shell * 0.95 ? `${Math.round((1 - tool / shell) * 100)}% less` : "the same";
   return ratio < 10 ? `${ratio.toFixed(1)}× less` : `${Math.round(ratio).toLocaleString("en-US")}× less`;
 };
 /** Luxe against the tightest cut another agent makes, said both ways round. */

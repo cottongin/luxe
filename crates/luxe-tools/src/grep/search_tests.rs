@@ -17,6 +17,7 @@ fn base(pattern: &str) -> Search<'_> {
         after: 0,
         all: false,
         invert: false,
+        scopes: false,
         mode: OutputMode::Content,
         limit: 500,
     }
@@ -147,10 +148,20 @@ fn the_prefilter_never_hides_a_matching_line() {
 /// A worker that crashed is a failure the caller hears about; one that was stopped is a cancel.
 #[test]
 fn a_crashed_worker_is_a_failure_not_a_cancel() {
-    let rows = |row: &str| Ok(Some(vec![row.to_string()]));
-    let crashed: std::thread::Result<Option<Vec<String>>> = Err(Box::new("boom"));
+    let rows = |file: &str| {
+        let hit = Hit {
+            file: file.into(),
+            kind: HitKind::File,
+            line: 0,
+            text: String::new(),
+            scope: None,
+        };
+        Ok(Some(vec![hit]))
+    };
+    let crashed: std::thread::Result<Option<Vec<Hit>>> = Err(Box::new("boom"));
     let failed = combine(vec![rows("a"), crashed], false).unwrap_err();
     assert!(failed.contains("worker failed"), "{failed}");
     assert_eq!(combine(vec![rows("a"), Ok(None)], false).unwrap_err(), "grep cancelled");
-    assert_eq!(combine(vec![rows("a"), rows("b")], false).unwrap(), ["a", "b"]);
+    let joined = combine(vec![rows("a"), rows("b")], false).unwrap();
+    assert_eq!(joined.iter().map(Hit::flat).collect::<Vec<_>>(), ["a", "b"]);
 }

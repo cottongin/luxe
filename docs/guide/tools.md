@@ -13,7 +13,7 @@ group: "Using Luxe"
 | `write`, `edit` | Write or change a file. A file must be read before it is edited, and the card shows the diff, after [formatting](#format-on-save). |
 | `bash` | Run a shell command. Long output is trimmed, and the untouched output saved under `.luxe/artifacts/`: each stream whole up to 8 MB, or its first and last 4 MB past that. |
 | `test` | Run the project's tests and report each failure with its `file:line`, and which tests your change broke. Output is saved as `bash`'s is. |
-| `grep`, `glob` | Search file contents and names, with capped output |
+| `grep`, `glob` | Search file contents and names, with capped output. `grep` names each file once with its matching lines under it, and can say which function or type each match sits in. |
 | `ast_grep` | Search and replace by code structure. Needs [ast-grep](https://ast-grep.github.io). |
 | `git` | Status, diffs, history, commits, branches, and GitHub pull requests, issues and CI checks through `gh` |
 | `todo` | The agent's checklist, shown in the dock's **PLAN** |

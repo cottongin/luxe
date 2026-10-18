@@ -171,13 +171,13 @@ ChangesWide@100x30: frame=7f799b893667c928 hits=5ebcfa50c83c624f
 ChangesWide@64x20: frame=3531cf4c1d3f2402 hits=a39e334a4bdaa029
 ChangesNarrow@140x44: frame=4d45021ad9fb0fa7 hits=de2158bdae6d8dfb
 ChangesNarrow@100x30: frame=2ee7cc81d7896506 hits=6dca1cfbcba4056a
-ChangesNarrow@64x20: frame=903e59bd8b8a62f8 hits=98deec46c37135b8
+ChangesNarrow@64x20: frame=b82352043f680144 hits=65afb8e6ea7f4981
 ChangesFailed@140x44: frame=b8c525886e754d21 hits=88e878b841c4ee77
 ChangesFailed@100x30: frame=aba8595c8158cca4 hits=d3e7f3e0ab644214
-ChangesFailed@64x20: frame=69cdcefbe785c866 hits=27476cdcd9937bea
+ChangesFailed@64x20: frame=8d0caaba450a4f3a hits=e16f1ab1fbfea007
 ChangesExternal@140x44: frame=fc75aaae10ddb262 hits=d5c3115642e748ad
 ChangesExternal@100x30: frame=522c8250b0f50ac4 hits=3dd17e6200cfb4b5
-ChangesExternal@64x20: frame=a6d2706231364207 hits=6f0e8da295aaa965
+ChangesExternal@64x20: frame=d257ba5dbedfc85f hits=a8e0be5b4625e2bc
 ChatTools+palette: frame=85cc5ae977de2fa6 hits=ca2a2a735278a5bd
 ChatTools+slash: frame=a3ce4c3a7d03f8d0 hits=8adf06de80ecdcb2
 ChatTools+mention: frame=33c4a73f189a3dcc hits=c1b8d78b51a767b7
@@ -219,7 +219,7 @@ ChatWideProse searching: frame=1878156c08a54641 hits=00e988aa75182c51
 ChatWideProse selecting: frame=8c1edde42c1f3700 hits=bddfef30519a2a3a
 ChatWideProse copied: frame=7757bb42f647c93e hits=bddfef30519a2a3a
 ChangesWide@180x44: frame=2f39ea02da654a31 hits=e9b01340cccc666e
-ChangesNarrow unwrapped: frame=d83dfbbe3d21abf8 hits=29eecb5dbf51e195
+ChangesNarrow unwrapped: frame=13da9745cf50215c hits=c84985bf30e3251e
 ChangesWide file: frame=4292536a789062da hits=da530d7bf2c94fdf
 ChangesWide file cursor: frame=aacfd7dfe8f072f0 hits=6293b97445fe71a6
 ChangesWide file unwrapped: frame=cbf79ee6830376c5 hits=316acbdf05625e0b

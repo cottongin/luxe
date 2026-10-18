@@ -517,3 +517,43 @@ fn the_pane_wraps_long_lines_without_being_asked() {
     assert!(!clipped.contains(tail), "clipped now: {clipped}");
     assert!(clipped.contains('…'), "and marked as clipped: {clipped}");
 }
+
+/// The header's position is whole or absent, never `8 of`: the path is what gives way, and a gap
+/// always parts the line counts from the FILE / DIFF switch. The path used to be measured against
+/// everything but the switch, so the line ran long and lost its last part, the position.
+#[test]
+fn the_changes_header_keeps_its_position_whole_and_its_switch_apart() {
+    use luxe_tui::fixture::FixtureScenario::{ChangesNarrow, ChangesWide};
+    // Below about 128 columns the dock lies over the pane, so narrower widths drop the dock
+    let wide = [(ChangesWide, 172u16), (ChangesWide, 140)];
+    for (scenario, width) in wide.into_iter().chain((44..=110).map(|width| (ChangesNarrow, width)))
+    {
+        let (buffer, row, text) = changes_header(scenario, width);
+        let end = text.trim_end();
+        let cut = [" 8", " 8 o", " 8 of", " 8 of 1"].iter().any(|cut| end.ends_with(cut));
+        assert!(!cut, "{width}: the position was cut: {text}");
+        // Plain background in the two cells after the counts, before the FILE slab begins
+        let counts = column_of(&text, "−9");
+        let plain = buffer[(counts - 1, row)].bg;
+        for x in counts + 2..counts + 4 {
+            assert_eq!(buffer[(x, row)].bg, plain, "{width}: no gap before the switch: {text}");
+        }
+    }
+    // As wide as the guide's shot, the position shows
+    let wide = changes_header(ChangesWide, 172).2;
+    assert!(wide.contains("8 of 14"), "{wide}");
+}
+
+/// A guide diff scene at `width` columns: the frame, its header row, and that row's text.
+fn changes_header(
+    scenario: luxe_tui::fixture::FixtureScenario,
+    width: u16,
+) -> (ratatui::buffer::Buffer, u16, String) {
+    let backend = test_backend(width, 50);
+    let mut app = luxe_tui::fixture::seeded_app("luxe", scenario).expect("the fixture");
+    app.update(Msg::TerminalResized { width, height: 50 });
+    let buffer = render_app(&mut app, &backend);
+    let row = row_containing(&buffer, "DIFF", width, 50);
+    let text = row_text(&buffer, row, width);
+    (buffer, row, text)
+}
