@@ -112,8 +112,11 @@ fn is_path_tool(tool: &str) -> bool {
 }
 
 /// Lexically normalize a path (resolve `.`/`..` without touching the filesystem, so it works for
-/// not-yet-created write targets). Relative paths are joined onto `root`.
+/// not-yet-created write targets). Relative paths are joined onto `root`. Translated by
+/// [`crate::paths::native`] first, as the file tools translate it, so the guard judges the file the
+/// tool will open.
 fn normalize(input: &str, root: &Path) -> PathBuf {
+    let input = &*crate::paths::native(input);
     let joined =
         if Path::new(input).is_absolute() { PathBuf::from(input) } else { root.join(input) };
     let mut out = PathBuf::new();

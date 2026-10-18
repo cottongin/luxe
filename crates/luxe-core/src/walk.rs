@@ -221,6 +221,8 @@ fn walk_threads() -> usize {
 /// (`src/**/*.ts`) and is anchored so it matches at any depth. `**` crosses directory boundaries and
 /// `*` does not, which is the dialect every tool description in this repo promises.
 pub fn matcher(pattern: &str) -> Result<PathMatcher, globset::Error> {
+    // On Windows `src\*.py` means a folder, not an escaped `*`; elsewhere a backslash stays an escape
+    let pattern = &crate::paths::slashify(pattern);
     let spans_directories = pattern.contains('/');
     let compiled =
         if spans_directories { Glob::new(&anchor(pattern))? } else { Glob::new(pattern)? };
@@ -266,6 +268,16 @@ fn anchor(pattern: &str) -> String {
 #[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
+
+    /// A model on Windows writes `src\*.py`, and globset read the backslash as an escape, so the
+    /// pattern matched nothing.
+    #[cfg(windows)]
+    #[test]
+    fn a_backslash_in_a_windows_glob_is_a_folder() {
+        let matcher = matcher(r"src\*.py").unwrap();
+        assert!(matcher.is_match(Path::new("src/a.py")));
+        assert!(!matcher.is_match(Path::new("lib/a.py")));
+    }
 
     /// A walk that stops at its ceiling must say so, or a search over a huge tree reads as complete.
     #[test]

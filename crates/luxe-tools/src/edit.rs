@@ -374,7 +374,7 @@ impl Tool for EditTool {
             Err(problem) => return ToolResultData::error(problem.message()),
         };
 
-        let full_path = cx.cwd.join(&request.path);
+        let full_path = cx.cwd.join(&*luxe_core::paths::native(&request.path));
 
         if let Err(refusal) = self.check_read_guard(cx, &full_path, &request.path) {
             return refusal;

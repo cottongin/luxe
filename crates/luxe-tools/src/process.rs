@@ -76,8 +76,20 @@ fn shell_command(command: &str, cwd: &Path) -> Command {
         .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
+    if let Some(value) = python_utf8(std::env::var_os("PYTHONUTF8").as_deref(), cfg!(windows)) {
+        child.env("PYTHONUTF8", value);
+    }
     luxe_core::program::detach_from_terminal(&mut child);
     child
+}
+
+/// The `PYTHONUTF8` a command gets, when Luxe sets one: on Windows, unless the user chose.
+///
+/// Python there writes to a pipe in the console's code page, cp1252, so a script printing `✓`
+/// fails with `UnicodeEncodeError` under Luxe and works in the user's terminal. UTF-8 mode is what
+/// Python does everywhere else.
+fn python_utf8(inherited: Option<&std::ffi::OsStr>, windows: bool) -> Option<&'static str> {
+    (windows && inherited.is_none()).then_some("1")
 }
 
 /// Whether commands here run through a POSIX shell, which decides how an argument is quoted.
@@ -106,7 +118,7 @@ pub(crate) fn quote_argument(value: &str, posix: bool) -> String {
 /// Runs `command` in `cwd` until it exits or `timeout` passes.
 ///
 /// Every ending but a clean exit takes the whole tree with it, including the ones nobody writes
-/// code for: a cancel drops this future, and [`KillTreeOnDrop`] is what answers that.
+/// code for: a cancel drops this future, and a [`luxe_core::program::TreeGuard`] answers that.
 pub(crate) async fn run_captured(
     command: &str,
     cwd: &Path,
@@ -115,8 +127,10 @@ pub(crate) async fn run_captured(
     let mut child = shell_command(command, cwd).spawn()?;
     let pid = child.id().unwrap_or(0);
     // Armed from here to the first normal exit: every early return, and every drop this function
-    // never sees, takes the whole tree with it.
-    let mut reaper = KillTreeOnDrop::arm(pid);
+    // never sees, takes the whole tree with it. A cancel ends the call by dropping this future, so
+    // there is no code path to hang an explicit kill on: pressing Cancel on a `cargo build` left
+    // the build running, holding its locks and its CPU, with nothing left watching it.
+    let mut reaper = luxe_core::program::TreeGuard::arm(&child);
     let pipes = Pipes::attach(&mut child);
     let (stdout, stderr) = pipes.sinks();
     // Not `tokio::time::timeout`: that drops the wait on expiry, and with it the shell
@@ -137,35 +151,6 @@ pub(crate) async fn run_captured(
             // state, is the difference between "slow" and "stuck"
             let survivors = luxe_core::program::group_members(pid).await;
             Ok(Outcome::TimedOut(TimedOut { printed, survivors }))
-        }
-    }
-}
-
-/// Kills the command's whole process group unless the command finished on its own.
-///
-/// `kill_on_drop` reaps the direct child — the shell — and orphans everything the shell started.
-/// A **cancel** ends the call by *dropping* its future, so there is no code path to hang an
-/// explicit kill on: pressing Cancel on a `cargo build` left the build running, holding its locks
-/// and its CPU, with nothing left watching it.
-///
-/// Disarmed once the child has been reaped, because a reaped pid can be reused and killing a
-/// *group* by a recycled id is the one mistake worse than leaking one.
-struct KillTreeOnDrop(Option<u32>);
-
-impl KillTreeOnDrop {
-    fn arm(pid: u32) -> Self {
-        Self((pid != 0).then_some(pid))
-    }
-
-    fn disarm(&mut self) {
-        self.0 = None;
-    }
-}
-
-impl Drop for KillTreeOnDrop {
-    fn drop(&mut self) {
-        if let Some(pid) = self.0 {
-            luxe_core::program::kill_tree(pid);
         }
     }
 }

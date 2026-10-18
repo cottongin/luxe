@@ -99,7 +99,7 @@ fn ask_in_a_new_session(app: &mut App) {
         return;
     }
     start_new_session(app);
-    app.send_draft_on_load = true;
+    app.arrival.send_draft = true;
 }
 
 /// Runs a command typed or found on the start screen.
@@ -167,8 +167,22 @@ impl App {
             NextSession::Load(session_id) => (Action::LoadSession(session_id), "load a session"),
             NextSession::ResumeLatest => (Action::ResumeLatest, "resume the latest session"),
         };
-        self.send_action(action, doing)
+        let sent = self.send_action(action, doing);
+        self.arrival.owes_snapshot = sent;
+        sent
     }
+}
+
+/// What waits on a session the TUI asked the engine for, settled as it arrives.
+#[derive(Debug, Default)]
+pub(crate) struct SessionArrival {
+    /// The plan's build prompt, built from scratch in the new session
+    pub(crate) build: Option<String>,
+    /// Whether the composer's draft goes out once it loads: a prompt typed on the start screen
+    pub(crate) send_draft: bool,
+    /// Whether its closing state snapshot is still to come. It trails `SessionLoaded`, which may
+    /// already have sent a turn, so its "idle" is stale
+    pub(crate) owes_snapshot: bool,
 }
 
 /// Where `/sessions` reads the project's sessions from, and how many reads it has asked for.

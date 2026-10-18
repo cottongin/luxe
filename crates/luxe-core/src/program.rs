@@ -29,7 +29,7 @@ pub use opener::{
 };
 pub use process::{
     captured_command, detach_from_terminal, group_members, hostname, kill_tree, process_is_alive,
-    take_stdin, GroupMember,
+    take_stdin, GroupMember, TreeGuard,
 };
 
 /// Directories a package manager drops executables into, checked after `PATH`.
@@ -111,26 +111,105 @@ pub fn resolve(program: &str) -> Option<PathBuf> {
 }
 
 /// The runnable file at `base`, trying the platform's executable suffixes.
+fn runnable(base: &Path) -> Option<PathBuf> {
+    runnable_as(base, cfg!(windows), &executable_suffixes(), is_executable)
+}
+
+/// The runnable file at `base` when `windows` decides by extension, and `runs` says whether a
+/// file exists to be run.
 ///
 /// On unix a program is its own filename. On Windows the name on disk carries an extension from
-/// `PATHEXT` — `rg` is `rg.exe`, a shim may be `rg.cmd` — so a bare-name lookup finds nothing at all,
-/// which reads as "ripgrep is not installed" on a machine where it plainly is.
-fn runnable(base: &Path) -> Option<PathBuf> {
-    if is_executable(base) {
+/// `PATHEXT` — `rg` is `rg.exe`, a shim may be `rg.cmd` — and only those run. A bare name is taken
+/// as given only when it already carries one: npm installs an extensionless shell script beside
+/// every `.cmd` shim, and taking that file fails with "not a valid Win32 application".
+fn runnable_as(
+    base: &Path,
+    windows: bool,
+    suffixes: &[String],
+    runs: impl Fn(&Path) -> bool,
+) -> Option<PathBuf> {
+    if !windows {
+        return runs(base).then(|| base.to_path_buf());
+    }
+    if has_suffix(base, suffixes) && runs(base) {
         return Some(base.to_path_buf());
     }
-    if !cfg!(windows) {
-        return None;
-    }
-    for extension in executable_suffixes() {
+    suffixes.iter().find_map(|suffix| {
         let mut name = base.as_os_str().to_os_string();
-        name.push(&extension);
+        name.push(suffix);
         let candidate = PathBuf::from(name);
-        if is_executable(&candidate) {
-            return Some(candidate);
-        }
+        runs(&candidate).then_some(candidate)
+    })
+}
+
+/// Whether `path` already ends in one of `suffixes`, `.CMD` matching `.cmd`.
+fn has_suffix(path: &Path, suffixes: &[String]) -> bool {
+    let extension = path.extension().and_then(|extension| extension.to_str());
+    extension.is_some_and(|extension| {
+        suffixes.iter().any(|suffix| suffix.trim_start_matches('.').eq_ignore_ascii_case(extension))
+    })
+}
+
+/// The Python 3 that runs here, as the words that start it: `["py", "-3"]`, `["python3"]`.
+///
+/// On Windows `python3` and `python` can be the Microsoft Store's stand-in, a file that only prints
+/// "Python was not found", so there each candidate is asked for its version before it counts, the
+/// `py` launcher first; elsewhere finding the program is enough. Cached, since the answer holds for
+/// the life of the process and asking costs a process start.
+pub fn python() -> Option<Vec<String>> {
+    static FOUND: std::sync::OnceLock<Option<Vec<String>>> = std::sync::OnceLock::new();
+    FOUND
+        .get_or_init(|| {
+            python_candidates(cfg!(windows)).into_iter().find(|argv| match cfg!(windows) {
+                true => answers_as_python3(argv),
+                false => resolve(&argv[0]).is_some(),
+            })
+        })
+        .clone()
+}
+
+/// The ways to start Python 3, best first: Windows' `py` launcher is installed with Python itself,
+/// never as a stand-in, while elsewhere `python` can still be Python 2.
+fn python_candidates(windows: bool) -> Vec<Vec<String>> {
+    let argv = |words: &[&str]| words.iter().map(|word| word.to_string()).collect::<Vec<_>>();
+    match windows {
+        true => vec![argv(&["py", "-3"]), argv(&["python"]), argv(&["python3"])],
+        false => vec![argv(&["python3"]), argv(&["python"])],
     }
-    None
+}
+
+/// Whether `argv` starts a working Python 3, by asking it, for at most two seconds.
+fn answers_as_python3(argv: &[String]) -> bool {
+    use std::process::{Command, Stdio};
+    let Some(program) = resolve(&argv[0]) else { return false };
+    let child = Command::new(program)
+        .args(&argv[1..])
+        .args(["-c", "import sys; print(sys.version_info[0])"])
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn();
+    let Ok(child) = child else { return false };
+    wait_briefly(child, std::time::Duration::from_secs(2)).is_some_and(|out| {
+        out.status.success() && String::from_utf8_lossy(&out.stdout).trim() == "3"
+    })
+}
+
+/// `child`'s output once it exits, or `None` when it has not within `limit`, killed then.
+fn wait_briefly(
+    mut child: std::process::Child,
+    limit: std::time::Duration,
+) -> Option<std::process::Output> {
+    let deadline = std::time::Instant::now() + limit;
+    while child.try_wait().ok()?.is_none() {
+        if std::time::Instant::now() >= deadline {
+            let _ = child.kill();
+            let _ = child.wait();
+            return None;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    child.wait_with_output().ok()
 }
 
 /// Windows executable suffixes, from `PATHEXT` when it is set.

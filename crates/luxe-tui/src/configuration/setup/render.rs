@@ -127,7 +127,6 @@ impl SetupState {
                     None => {
                         format!("Follow the desktop ({})", self.desktop.clone().unwrap_or_default())
                     }
-                    Some(name) if name == "luxe" => "luxe  (Luxe's own)".to_string(),
                     Some(name) => name.clone(),
                 };
                 let spans = vec![

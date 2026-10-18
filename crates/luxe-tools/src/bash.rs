@@ -437,9 +437,11 @@ mod tree_teardown {
     }
 
     /// A shell that backgrounds a grandchild and waits on it. Killing the shell alone leaves the
-    /// grandchild touching `marker` — which is how a survivor makes itself known.
+    /// grandchild touching `marker` — which is how a survivor makes itself known. Forward slashes,
+    /// which Git Bash takes on Windows, where a backslash would be an escape.
     fn script(marker: &std::path::Path) -> String {
-        format!("(for _ in $(seq 1 40); do touch {}; sleep 0.25; done) & wait", marker.display())
+        let marker = marker.display().to_string().replace('\\', "/");
+        format!("(for _ in $(seq 1 40); do touch '{marker}'; sleep 0.25; done) & wait")
     }
 
     /// Whether anything is still touching `marker`, the loop, once a touch that was already under
@@ -459,8 +461,9 @@ mod tree_teardown {
 
     #[tokio::test]
     async fn a_dropped_call_takes_the_whole_tree_with_it() {
-        if !cfg!(unix) {
-            return; // the script is a POSIX one
+        // The script is a POSIX one: Git Bash runs it on Windows, where the tree is a job's
+        if !luxe_core::program::has_posix_shell() {
+            return;
         }
         let dir = tempfile::tempdir().expect("tempdir");
         let marker = dir.path().join("alive");
@@ -480,7 +483,7 @@ mod tree_teardown {
 
     #[tokio::test]
     async fn a_timed_out_call_takes_the_whole_tree_with_it() {
-        if !cfg!(unix) {
+        if !luxe_core::program::has_posix_shell() {
             return;
         }
         let dir = tempfile::tempdir().expect("tempdir");

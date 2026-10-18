@@ -43,6 +43,27 @@ fn the_output_cap_never_claims_room_the_prompt_is_using() {
     assert_eq!(clamp(8_192, 999_999, 32_000), Some(MIN_MAX_TOKENS));
 }
 
+/// A summary gets room to think and then write, within the model's limit and the window.
+#[test]
+fn a_summary_gets_room_beyond_what_reasoning_spends() {
+    let model = |context_window, max_tokens| crate::provider::ModelInfo {
+        context_window,
+        max_tokens,
+        ..Default::default()
+    };
+
+    // Fails if the allowance drops back to where thinking alone could exhaust it
+    let roomy = summary_max_tokens(&model(1_000_000, 128_000), 880_000).expect("a cap");
+    assert!(roomy >= 16_000, "{roomy}");
+    // Fails if the model's own output limit is ignored
+    assert_eq!(summary_max_tokens(&model(1_000_000, 8_000), 10_000), Some(8_000));
+    // An unknown limit is no limit of its own
+    assert_eq!(summary_max_tokens(&model(1_000_000, 0), 10_000), Some(SUMMARY_MAX_TOKENS));
+    // Fails if the window clamp is skipped
+    let tight = 200_000 - 190_000 - CONTEXT_SAFETY_TOKENS;
+    assert_eq!(summary_max_tokens(&model(200_000, 128_000), 190_000), Some(tight));
+}
+
 /// The prompt figure the clamp runs on: measured where the provider told us, estimated only
 /// for the tail it never saw.
 #[test]

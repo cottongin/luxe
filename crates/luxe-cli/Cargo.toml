@@ -18,13 +18,13 @@ name = "luxe"
 path = "src/main.rs"
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.1" }
-luxe-providers = { path = "../luxe-providers", version = "0.1.1" }
-luxe-tools = { path = "../luxe-tools", version = "0.1.1" }
-luxe-lsp = { path = "../luxe-lsp", version = "0.1.1" }
-luxe-dap = { path = "../luxe-dap", version = "0.1.1" }
-luxe-mcp = { path = "../luxe-mcp", version = "0.1.1" }
-luxe-tui = { path = "../luxe-tui", version = "0.1.1" }
+luxe-core = { path = "../luxe-core", version = "0.1.2" }
+luxe-providers = { path = "../luxe-providers", version = "0.1.2" }
+luxe-tools = { path = "../luxe-tools", version = "0.1.2" }
+luxe-lsp = { path = "../luxe-lsp", version = "0.1.2" }
+luxe-dap = { path = "../luxe-dap", version = "0.1.2" }
+luxe-mcp = { path = "../luxe-mcp", version = "0.1.2" }
+luxe-tui = { path = "../luxe-tui", version = "0.1.2" }
 anyhow = { workspace = true }
 clap = { workspace = true }
 shlex = { workspace = true }

@@ -23,6 +23,9 @@ pub struct StatusModel {
     pub active_tool: Option<String>,
     /// Current state (streaming, idle, compacting).
     pub state: AppState,
+    /// Whether the compaction under way started inside a turn, which carries on once it ends; one
+    /// asked for with `/compact` returns to idle
+    pub(crate) compacting_mid_turn: bool,
     /// Animation frame counter, advanced on every tick while streaming/compacting.
     ///
     /// Monotonic within a turn: every consumer takes it modulo its own frame count, and the
@@ -101,6 +104,7 @@ impl Default for StatusModel {
             cwd: None,
             active_tool: None,
             state: AppState::Idle,
+            compacting_mid_turn: false,
             spinner_frame: 0,
             animating: false,
             turn_started: None,

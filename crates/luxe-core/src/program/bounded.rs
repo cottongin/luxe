@@ -47,7 +47,7 @@ pub async fn run_bounded_with_input(
         command.stdin(std::process::Stdio::piped());
     }
     let mut child = command.spawn().map_err(BoundedRunError::Spawn)?;
-    let mut reaper = TreeReaper(child.id());
+    let mut reaper = super::TreeGuard::arm(&child);
     let stdin = child.stdin.take().filter(|_| !input.is_empty());
     let feed = async {
         if let Some(mut stdin) = stdin {
@@ -60,23 +60,10 @@ pub async fn run_bounded_with_input(
     let run = async { tokio::join!(feed, child.wait_with_output()).1 };
     match tokio::time::timeout(deadline, run).await {
         Ok(result) => {
-            reaper.0 = None;
+            reaper.disarm();
             result.map_err(BoundedRunError::Wait)
         }
         // the reaper takes the tree on the way out
         Err(_) => Err(BoundedRunError::Timeout { after: deadline }),
-    }
-}
-
-/// Kills a process tree when dropped armed: on a timeout, or when the future waiting on the run is
-/// dropped, as a cancelled turn or an abandoned capture drops it. `kill_on_drop` alone reaches the
-/// child and nothing it started.
-struct TreeReaper(Option<u32>);
-
-impl Drop for TreeReaper {
-    fn drop(&mut self) {
-        if let Some(pid) = self.0.take() {
-            super::kill_tree(pid);
-        }
     }
 }

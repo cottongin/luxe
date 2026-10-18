@@ -156,6 +156,14 @@ on `PATH`, and the agent needs a POSIX shell for most commands. Without one, com
 If WSL is installed, Luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
 against a different filesystem.
 
+Python on Windows is `py` or `python`. `python3` is usually the Microsoft Store's placeholder, so
+Luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
+commands run Python in UTF-8 mode (`PYTHONUTF8=1`) unless you have set it yourself, so output with
+characters outside your code page doesn't crash them.
+
+Windows Terminal keeps a column at the right edge for its scrollbar. To give it to Luxe, set
+**Scrollbar visibility** to **Hidden** in your profile's **Appearance** settings.
+
 ## Where Luxe keeps files
 
 | | Linux and macOS | Windows |

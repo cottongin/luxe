@@ -96,7 +96,7 @@ what you do not recognize.
 | `refresh_sessions` | | Answered by `sessions_refreshed` |
 | `refresh_workspace` | | Answered by `workspace_updated` |
 | `request_context_composition` | | What fills the context window; answered by `context_composition` |
-| `compact_now` | `{"focus": "the API decisions"}`, or nothing | Summarize now; answered by `compaction_done` |
+| `compact_now` | `{"focus": "the API decisions"}`, or nothing | Summarize now; answered by `compaction_started`, then `compaction_done` or `compaction_stopped` |
 | `load_guided_review` | `{"request_id": "…", "target": {"kind": "working_tree"}}` | Capture a Guided Review; see [below](#guided-review) |
 | `load_file_diff` | `{"request_id": "…", "path": "src/main.rs"}` | One file's change, outside any review; answered by `file_diff_loaded` |
 | `list_directory` | `{"request_id": "…", "path": "src"}` | One project folder's entries, without what `.gitignore` ignores unless `"include_ignored": true`, which marks each such entry `"ignored": true`; answered by `directory_listed` |
@@ -227,6 +227,7 @@ There are around sixty. These are the ones a front end is built on:
 | `review_started`, `review_finished` | A requested review began on `model`, and came back with a `verdict` (`continue`, `fix` or `unavailable`) and `findings`. On `fix` the findings also become the agent's next turn. |
 | `turn_usage`, `session_usage`, `plan_usage` | Cost per call, for the session, and what a subscription has left |
 | `context_usage`, `context_composition` | How full the context window is, and with what |
+| `compaction_started`, `compaction_done`, `compaction_stopped` | A summary of the conversation is being written, on request or mid-turn. It can take a minute. It always ends in `compaction_done` (with `tokens_after`) or `compaction_stopped` (failed or cancelled). |
 | `workspace_updated` | The project, Git changes, todos and tools: what the dock shows |
 | `session_loaded`, `sessions_refreshed` | A transcript was restored; the session list changed |
 | `notice`, `error` | Something to show. `error` ends the turn. |

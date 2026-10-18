@@ -262,6 +262,42 @@ fn a_prompt_typed_on_the_start_screen_is_sent_in_the_new_session() {
     assert!(app.editor.current_input().is_empty(), "and it left the composer");
 }
 
+/// The turn a start-screen prompt starts shows as running from the moment it is sent.
+///
+/// The engine finishes a session load with an idle snapshot *after* `SessionLoaded`, which is what
+/// sends the draft, so that snapshot lands on a turn it never saw. The break this catches: taking it
+/// at its word hid the activity bar and the clock until the model's first token, a second or two
+/// of a screen that looked like nothing had happened.
+#[test]
+fn the_snapshot_finishing_a_load_does_not_stop_the_turn_the_load_started() {
+    let (tx, _rx) = mpsc::channel(100);
+    let mut app = App::new(tx, KeyMap::defaults(), Default::default());
+    app.status.model = "qwen3.8-27b".into();
+    app.enter_dashboard(crate::dashboard::DashboardState::new(Vec::new()));
+    app.editor.insert_text("summarize the parser");
+    app.handle_dashboard_outcome(crate::dashboard::DashOutcome::Ask);
+
+    app.update(Msg::Engine(Event::SessionLoaded { session_id: "s1".into(), messages: vec![] }));
+    app.update(Msg::Engine(idle_snapshot("new session: s1")));
+    assert!(crate::statusline::activity_parts(&app).is_some(), "the activity bar stays up");
+    assert!(app.status.turn_started.is_some(), "and so does the clock");
+
+    // Only the one snapshot is stale: a later idle report is believed
+    app.update(Msg::Engine(idle_snapshot("cancelled")));
+    assert!(crate::statusline::activity_parts(&app).is_none(), "a later report still counts");
+}
+
+/// The engine's at-rest state report, as it closes a session load or a cancel.
+fn idle_snapshot(status: &str) -> Event {
+    Event::StateChanged(luxe_core::event::EngineState {
+        model: luxe_core::event::ModelRef::new("lmstudio", "qwen3.8-27b"),
+        streaming: false,
+        status: status.into(),
+        mode: luxe_core::mode::BUILD.into(),
+        thinking: luxe_core::provider::ThinkingLevel::Off,
+    })
+}
+
 /// With no model chosen, asking opens the picker over the start screen and keeps the draft — the
 /// same courtesy the composer extends in a session.
 #[test]

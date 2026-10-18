@@ -160,21 +160,28 @@ fn debug_adapters() -> String {
         Vec::new()
     });
     for (adapter, from_config) in crate::engine_setup::merged_debug_adapters(&user) {
-        let program = adapter.spec.command.first().cloned().unwrap_or_default();
-        let state = match luxe_core::program::resolve(&program).is_some() {
-            true => "ok   ",
-            false => "none ",
-        };
+        let (state, advice) = adapter_state(&adapter.spec.command);
         let origin = if from_config { "  (debug-adapters.json)" } else { "" };
         let _ = writeln!(
             out,
-            "  {state} {:<12} {}{origin}",
+            "  {state} {:<12} {}{origin}{advice}",
             adapter.spec.id,
             adapter.spec.command.join(" ")
         );
     }
     let _ = writeln!(out, "  (`debug` is offered to the model only where an adapter resolves)");
     out
+}
+
+/// Whether an adapter's `command` will start, and, when it is there but will not, what to do: the
+/// same judgment that decides whether `debug` is offered.
+fn adapter_state(command: &[String]) -> (&'static str, String) {
+    use luxe_dap::adapter::Unready;
+    match luxe_dap::adapter::unready(command) {
+        None => ("ok   ", String::new()),
+        Some(why @ Unready::NoModule(..)) => ("none ", format!("  ({why})")),
+        Some(Unready::Missing(_)) => ("none ", String::new()),
+    }
 }
 
 /// The external programs the tools prefer, and what happens without each.

@@ -176,8 +176,9 @@ your own terminal is how you give both. So when a step needs one, the agent puts
 in a code block, you copy it into another terminal and run it, then tell the agent it is done.
 
 The same goes for a command that waits on you at a terminal, such as a password, a confirmation or
-an interactive installer. Commands the agent runs have no terminal at all, so one of those fails at
-once and says what it wanted, rather than waiting where nobody can answer.
+an interactive installer. Commands the agent runs have no terminal and nothing to read from, so one
+of those fails or carries on with empty input, rather than waiting where nobody can answer. Most,
+such as `sudo`, say what they wanted; a shell's `read` just gets an empty answer.
 
 To allow it anyway, decide ahead of time in your global file. It only helps where no password is
 needed, such as a passwordless `sudo` rule for one program:

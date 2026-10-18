@@ -161,8 +161,7 @@ impl Tool for WriteTool {
             }
         };
 
-        // Resolve path relative to cwd.
-        let full_path = cx.cwd.join(path_str);
+        let full_path = cx.cwd.join(&*luxe_core::paths::native(path_str));
 
         if let Err(refusal) = self.check_blind_overwrite(cx, &full_path, path_str) {
             return refusal;

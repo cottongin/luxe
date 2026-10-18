@@ -3,7 +3,8 @@
 use super::*;
 
 impl AuthWizardState {
-    /// Rows the pending question needs, or zero when nothing is being asked.
+    /// Rows the pending question needs, the copy-code button's while a code waits to be entered,
+    /// or zero.
     pub(super) fn prompt_height(&self) -> u16 {
         match self.pending_prompt() {
             // A blank line, the question, and what each choice takes.
@@ -12,6 +13,8 @@ impl AuthWizardState {
                 // A blank line, the question, and the input row.
                 _ => 3,
             },
+            // A blank line and the button
+            None if self.device_code().is_some() => 2,
             None => 0,
         }
     }
@@ -20,9 +23,9 @@ impl AuthWizardState {
         &self,
         frame: &mut Frame,
         inner: Rect,
-        provider: &str,
-        lines: &[WizardLine],
+        (provider, lines): (&str, &[WizardLine]),
         theme: &ThemeStyles,
+        hit: &std::cell::RefCell<HitRegions>,
     ) {
         let prompt = self.pending_prompt();
         let prompt_height = self.prompt_height();
@@ -47,6 +50,9 @@ impl AuthWizardState {
 
         let Some((prompt, input)) = prompt else {
             park_cursor(frame, inner);
+            if let Some(code) = self.device_code() {
+                render_copy_code(frame, chunks[2], code, theme, hit);
+            }
             return;
         };
         let mut rows: Vec<Line> = vec![
@@ -59,6 +65,7 @@ impl AuthWizardState {
         match &prompt.kind {
             AuthPromptKind::Select(choices) => {
                 rows.extend(self.prompt_choice_lines(choices, chunks[2], theme));
+                publish_choice_rows(choices, chunks[2], hit);
             }
             kind => rows.push(prompt_input_line(prompt, kind, input, theme)),
         }
@@ -122,6 +129,43 @@ impl AuthWizardState {
         ];
         frame.render_widget(Paragraph::new(lines).wrap(Wrap { trim: true }), inner);
     }
+}
+
+/// Makes each choice clickable over every row it draws, its detail line included, under the blank
+/// line and the question. A click highlights the row and then answers, as Enter would.
+fn publish_choice_rows(
+    choices: &[luxe_core::auth::AuthChoice],
+    area: Rect,
+    hit: &std::cell::RefCell<HitRegions>,
+) {
+    let mut regions = hit.borrow_mut();
+    let mut y = area.y.saturating_add(2);
+    for (index, choice) in choices.iter().enumerate() {
+        let rows = choice_rows(choice).min(area.bottom().saturating_sub(y));
+        if rows == 0 {
+            break;
+        }
+        regions.push(Rect::new(area.x, y, area.width, rows), MouseTarget::AuthMethodRow(index));
+        y = y.saturating_add(rows);
+    }
+}
+
+/// The button that copies a device code, under the transcript that shows it: typing the code by
+/// hand into a browser is the step most likely to go wrong.
+fn render_copy_code(
+    frame: &mut Frame,
+    area: Rect,
+    code: &str,
+    theme: &ThemeStyles,
+    hit: &std::cell::RefCell<HitRegions>,
+) {
+    let label = format!(" Copy code {code} ");
+    let button = Span::styled(label.clone(), theme.accent.patch(theme.selected_bg));
+    let line = Line::from(vec![button, Span::styled("  or press c", theme.muted)]);
+    let row = Rect { y: area.y.saturating_add(1), height: 1, ..area };
+    frame.render_widget(Paragraph::new(line), row);
+    let width = u16::try_from(UnicodeWidthStr::width(label.as_str())).unwrap_or(row.width);
+    hit.borrow_mut().push(Rect { width: width.min(row.width), ..row }, MouseTarget::AuthCopyCode);
 }
 
 /// The sign-in's transcript so far, its last [`MAX_LINES`] lines.

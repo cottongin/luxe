@@ -141,6 +141,80 @@ impl Provider for CutOffSummaryProvider {
     }
 }
 
+/// A session on a summarizer that always stops short, `turns` turns in.
+async fn cut_off_session(
+    turns: usize,
+    tmp: &tempfile::TempDir,
+) -> (tokio::sync::mpsc::Sender<Action>, tokio::sync::mpsc::Receiver<Event>, Vec<Event>) {
+    let mut store = JsonlSessionStore::new(tmp.path().join("sessions"));
+    let session_id = store.create("/tmp/test").unwrap();
+    let calls = Arc::new(Mutex::new(Vec::new()));
+    let provider = Arc::new(CutOffSummaryProvider { calls, cut_off: CutOff::Length });
+    let (action_tx, mut event_rx) = Engine::spawn(config(store, session_id, provider, tmp.path()));
+    let mut seen = Vec::new();
+    for turn in 0..turns {
+        let prompt = bulky(&format!("TURN-{turn}"));
+        let submit =
+            Action::SubmitUserMessage { content: prompt, images: vec![], remediation: None };
+        action_tx.send(submit).await.unwrap();
+        seen.extend(crate::fixtures::events_until_turn_end(&mut event_rx).await);
+    }
+    (action_tx, event_rx, seen)
+}
+
+/// `/compact` says why the summary it ran was refused.
+///
+/// The break this catches: a summarizer that ran out of output room failed every time, and
+/// `/compact` reported it as "Nothing to compact — the conversation already fits", at 100% of a
+/// million-token window, so the reader had no way to tell what was wrong.
+#[tokio::test]
+async fn compacting_on_request_reports_why_the_summary_was_refused() {
+    let tmp = tempfile::tempdir().unwrap();
+    let (action_tx, mut event_rx, _) = cut_off_session(6, &tmp).await;
+
+    action_tx.send(Action::CompactNow { focus: None }).await.unwrap();
+    let seen = crate::fixtures::events_until(&mut event_rx, "the compaction's outcome", |e| {
+        matches!(e, Event::Error(_) | Event::CompactionDone { .. })
+    })
+    .await;
+
+    let Some(Event::Error(message)) = seen.last() else { panic!("no error: {seen:?}") };
+    assert!(message.contains("stopped short"), "the real reason is given: {message}");
+    assert!(!message.contains("Nothing to compact"), "not a no-op: {message}");
+    // A client showing the compaction as under way needs its end, failure included
+    let position = |wanted: fn(&Event) -> bool| seen.iter().position(wanted);
+    let started = position(|e| matches!(e, Event::CompactionStarted { .. }));
+    let stopped = position(|e| matches!(e, Event::CompactionStopped));
+    assert!(started.is_some() && started < stopped, "started, then stopped: {seen:?}");
+    action_tx.send(Action::Close).await.unwrap();
+}
+
+/// A failed automatic compaction is announced, and so is the breaker turning it off.
+///
+/// The break this catches: every summary failed for a whole session and only the log said so;
+/// the reader found out when the window was full and the model could no longer answer at all.
+#[tokio::test]
+async fn a_failing_automatic_compaction_tells_the_reader_and_says_when_it_stops() {
+    let tmp = tempfile::tempdir().unwrap();
+    let (action_tx, _event_rx, seen) = cut_off_session(TURNS + 5, &tmp).await;
+
+    let notices: Vec<&String> = seen
+        .iter()
+        .filter_map(|event| match event {
+            Event::Notice(message) => Some(message),
+            _ => None,
+        })
+        .collect();
+    let breaker = luxe_core::compaction::MAX_COMPACTION_FAILURES as usize;
+    let failures = notices.iter().filter(|notice| notice.contains("stopped short")).count();
+    assert_eq!(failures, breaker, "one notice per failure, until it stops: {notices:?}");
+    assert!(
+        notices.iter().any(|notice| notice.contains("/compact")),
+        "the last one says it is off and how to retry: {notices:?}"
+    );
+    action_tx.send(Action::Close).await.unwrap();
+}
+
 /// A summary the summarizer did not finish must not replace the conversation it summarizes.
 ///
 /// The break this catches: the reply loop took an error, a length stop or a dropped stream as

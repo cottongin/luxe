@@ -2281,6 +2281,14 @@ on `PATH`, and the agent needs a POSIX shell for most commands. Without one, com
 If WSL is installed, Luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
 against a different filesystem.
 
+Python on Windows is `py` or `python`. `python3` is usually the Microsoft Store's placeholder, so
+Luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
+commands run Python in UTF-8 mode (`PYTHONUTF8=1`) unless you have set it yourself, so output with
+characters outside your code page doesn't crash them.
+
+Windows Terminal keeps a column at the right edge for its scrollbar. To give it to Luxe, set
+**Scrollbar visibility** to **Hidden** in your profile's **Appearance** settings.
+
 ## Where Luxe keeps files
 
 | | Linux and macOS | Windows |
@@ -3831,7 +3839,7 @@ what you do not recognize.
 | `refresh_sessions` | | Answered by `sessions_refreshed` |
 | `refresh_workspace` | | Answered by `workspace_updated` |
 | `request_context_composition` | | What fills the context window; answered by `context_composition` |
-| `compact_now` | `{"focus": "the API decisions"}`, or nothing | Summarize now; answered by `compaction_done` |
+| `compact_now` | `{"focus": "the API decisions"}`, or nothing | Summarize now; answered by `compaction_started`, then `compaction_done` or `compaction_stopped` |
 | `load_guided_review` | `{"request_id": "…", "target": {"kind": "working_tree"}}` | Capture a Guided Review; see [below](#guided-review) |
 | `load_file_diff` | `{"request_id": "…", "path": "src/main.rs"}` | One file's change, outside any review; answered by `file_diff_loaded` |
 | `list_directory` | `{"request_id": "…", "path": "src"}` | One project folder's entries, without what `.gitignore` ignores unless `"include_ignored": true`, which marks each such entry `"ignored": true`; answered by `directory_listed` |
@@ -3962,6 +3970,7 @@ There are around sixty. These are the ones a front end is built on:
 | `review_started`, `review_finished` | A requested review began on `model`, and came back with a `verdict` (`continue`, `fix` or `unavailable`) and `findings`. On `fix` the findings also become the agent's next turn. |
 | `turn_usage`, `session_usage`, `plan_usage` | Cost per call, for the session, and what a subscription has left |
 | `context_usage`, `context_composition` | How full the context window is, and with what |
+| `compaction_started`, `compaction_done`, `compaction_stopped` | A summary of the conversation is being written, on request or mid-turn. It can take a minute. It always ends in `compaction_done` (with `tokens_after`) or `compaction_stopped` (failed or cancelled). |
 | `workspace_updated` | The project, Git changes, todos and tools: what the dock shows |
 | `session_loaded`, `sessions_refreshed` | A transcript was restored; the session list changed |
 | `notice`, `error` | Something to show. `error` ends the turn. |
@@ -4213,8 +4222,9 @@ your own terminal is how you give both. So when a step needs one, the agent puts
 in a code block, you copy it into another terminal and run it, then tell the agent it is done.
 
 The same goes for a command that waits on you at a terminal, such as a password, a confirmation or
-an interactive installer. Commands the agent runs have no terminal at all, so one of those fails at
-once and says what it wanted, rather than waiting where nobody can answer.
+an interactive installer. Commands the agent runs have no terminal and nothing to read from, so one
+of those fails or carries on with empty input, rather than waiting where nobody can answer. Most,
+such as `sudo`, say what they wanted; a shell's `read` just gets an empty answer.
 
 To allow it anyway, decide ahead of time in your global file. It only helps where no password is
 needed, such as a passwordless `sudo` rule for one program:
@@ -4878,5 +4888,8 @@ raw output, which shows what Luxe actually wrote:
 script -f /tmp/luxe.tty -c luxe       # replay with `cat` or `scriptreplay`
 asciinema rec /tmp/luxe.cast -c luxe
 ```
+
+Windows has neither. Take a screenshot instead, and in Windows Terminal right-click the tab and
+choose **Export Text** to save what the screen shows.
 
 Attach the recording and the log from the same time.
