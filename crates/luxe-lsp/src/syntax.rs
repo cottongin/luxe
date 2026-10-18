@@ -247,6 +247,17 @@ fn symbol_kind(def_kind: &str, container_kind: Option<&str>) -> u32 {
     }
 }
 
+/// The kinds that can hold code, and so name where a line sits: not fields, variants or constants.
+const SCOPE_KINDS: [u32; 7] = [
+    kinds::FUNCTION,
+    kinds::METHOD,
+    kinds::CLASS,
+    kinds::STRUCT,
+    kinds::ENUM,
+    kinds::INTERFACE,
+    kinds::MODULE,
+];
+
 /// Function lengths for the size standards the edit hook holds, from the same outline
 /// `module_report` draws.
 pub struct SyntaxOutline;
@@ -268,6 +279,25 @@ impl luxe_core::hooks::file_changed::OutlineSource for SyntaxOutline {
                         None => symbol.name.clone(),
                     },
                     lines: (symbol.end_line - symbol.start_line + 1) as usize,
+                })
+                .collect(),
+        )
+    }
+
+    fn scopes(
+        &self,
+        path: &Path,
+        source: &str,
+    ) -> Option<Vec<luxe_core::hooks::file_changed::Scope>> {
+        let symbols = outline(path, source)?;
+        Some(
+            symbols
+                .into_iter()
+                .filter(|symbol| SCOPE_KINDS.contains(&symbol.kind))
+                .map(|symbol| luxe_core::hooks::file_changed::Scope {
+                    name: symbol.name,
+                    start_line: symbol.start_line as usize,
+                    end_line: symbol.end_line as usize,
                 })
                 .collect(),
         )
@@ -335,6 +365,19 @@ mod tests {
         assert!(names(&out).contains(&"Point"));
         let method = out.iter().find(|s| s.name == "Norm").unwrap();
         assert_eq!(method.kind, kinds::METHOD);
+    }
+
+    /// The scopes a search labels with are the ones that hold code, with the lines they span: a
+    /// class and its method, not the attribute beside them.
+    #[test]
+    fn scopes_are_the_code_holding_symbols_and_their_spans() {
+        use luxe_core::hooks::file_changed::{OutlineSource, Scope};
+        let src = "class QuerySet:\n    model = None\n\n    def delete(self):\n        return 1\n";
+        let scopes = SyntaxOutline.scopes(Path::new("query.py"), src).expect("python parses");
+        let scope =
+            |name: &str, start_line, end_line| Scope { name: name.into(), start_line, end_line };
+        assert_eq!(scopes, vec![scope("QuerySet", 0, 4), scope("delete", 3, 4)]);
+        assert_eq!(SyntaxOutline.scopes(Path::new("notes.md"), "# hi"), None);
     }
 
     #[test]

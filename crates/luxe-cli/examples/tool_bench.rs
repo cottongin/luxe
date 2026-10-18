@@ -164,8 +164,9 @@ async fn main() -> anyhow::Result<()> {
 /// The tools a session registers, minus the ones that wait on a person or a debugger.
 fn registry(cwd: &std::path::Path) -> luxe_core::ToolRegistry {
     let mut registry = luxe_core::ToolRegistry::new();
-    let tracker =
-        luxe_tools::register_builtins(&mut registry, None, luxe_tools::web::WebConfig::from_env());
+    let web = luxe_tools::web::WebConfig::from_env();
+    let outline = Arc::new(luxe_lsp::syntax::SyntaxOutline);
+    let tracker = luxe_tools::register_builtins(&mut registry, None, web, Some(outline));
     let lsp = Arc::new(luxe_lsp::WorkspaceLspClient::with_servers(Default::default()));
     let graph = Arc::new(luxe_lsp::graph::GraphService::new(cwd));
     registry.register(Arc::new(

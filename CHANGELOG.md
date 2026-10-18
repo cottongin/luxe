@@ -16,9 +16,14 @@ changes add to that section until it ships; `scripts/version-check.py` holds the
 - Editing a file with the edit or write tool, or format-on-save rewriting it, keeps the file's
   permissions, so an edited script stays executable. A kept mode is now exact rather than trimmed
   by the umask.
+- The changes pane's header keeps its position (`8 of 14`) whole, shortening the path instead, and
+  keeps a gap between the line counts and the FILE / DIFF switch.
 
 ### Changed
 
+- `grep` names each file once with its matching lines under it, rather than repeating the path on
+  every line: 9–28% fewer bytes than `rg -n` on the searches measured. `scopes: true` also labels
+  each run of matches with the function or type around it.
 - The install guide leads with `curl -fsSL https://luxe.dev/install.sh | sh` and
   `powershell -c "irm https://luxe.dev/install.ps1 | iex"`.
 

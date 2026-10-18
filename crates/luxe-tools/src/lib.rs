@@ -49,6 +49,9 @@ pub mod write;
 /// The `todo` tool requires a store root (e.g. `.luxe/todos`). Pass `None` to skip registering it.
 /// `web` configures `web_search` and `web_fetch`; [`web::WebConfig::from_env`] is the usual start.
 ///
+/// `outline` labels each `grep` match with the function or type around it; it is a parser this
+/// crate cannot depend on (tree-sitter lives in `luxe-lsp`), and `None` leaves matches unlabeled.
+///
 /// Returns the shared [`luxe_core::read_tracker::ReadTracker`] backing the read-before-edit /
 /// staleness / blind-write guards, so the caller can also wire it into the LSP funnel reads
 /// (`read_symbol`, `module_report`) that see file content but live in a crate that can't depend
@@ -57,6 +60,7 @@ pub fn register_builtins(
     registry: &mut luxe_core::ToolRegistry,
     todo_store_root: Option<std::path::PathBuf>,
     web: web::WebConfig,
+    outline: Option<std::sync::Arc<dyn luxe_core::hooks::file_changed::OutlineSource>>,
 ) -> std::sync::Arc<luxe_core::read_tracker::ReadTracker> {
     use std::sync::Arc;
     // One shared read tracker backs the read-before-edit + staleness + blind-write guards across
@@ -76,7 +80,11 @@ pub fn register_builtins(
     registry.register(Arc::new(write::WriteTool::new().with_tracker(read_tracker.clone())));
     registry.register(Arc::new(edit::EditTool::new().with_tracker(read_tracker.clone())));
     registry.register(Arc::new(bash::BashTool::new().with_tracker(read_tracker.clone())));
-    registry.register(Arc::new(grep::GrepTool::new().with_tracker(read_tracker.clone())));
+    let grep = grep::GrepTool::new().with_tracker(read_tracker.clone());
+    registry.register(Arc::new(match outline {
+        Some(outline) => grep.with_outline(outline),
+        None => grep,
+    }));
     registry.register(Arc::new(glob::GlobTool::new()));
     registry.register(Arc::new(question::QuestionTool::new(question::QuestionConfig::default())));
     registry.register(Arc::new(skill::SkillTool::new(skill::SkillConfig)));

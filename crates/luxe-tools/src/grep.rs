@@ -4,16 +4,21 @@
 //! it is opened, and the approved files are scanned in parallel with `regex`. An external `rg`
 //! could not do the middle step, which is the one that keeps denied content out of the answer.
 //!
-//! The result is bounded `file:line:text`, with optional context lines and a glob filter — or,
-//! where the question is coarser than the lines, the files that match or a count per file.
+//! The rows are bounded `file:line:text`, with optional context lines and a glob filter — or,
+//! where the question is coarser than the lines, the files that match or a count per file. Lines
+//! reach the model grouped under their file: the path once rather than on every line. Asked to
+//! (`scopes`), each run of matches is labeled with the function or type around it, where an
+//! outline can say, so where a match sits needs no read to find out.
 
 use async_trait::async_trait;
+use luxe_core::hooks::file_changed::{OutlineSource, Scope};
 use luxe_core::{ContentBlock, Tool, ToolContext, ToolResultData, ToolSchema};
 use serde_json::json;
 use std::path::{Path, PathBuf};
 use tracing::warn;
 
 mod guarded;
+mod present;
 #[cfg(test)]
 mod read_policy_tests;
 
@@ -21,7 +26,9 @@ mod read_policy_tests;
 fn grep_schema() -> ToolSchema {
     ToolSchema {
         name: "grep".to_string(),
-        description: "Search file *contents* by regex. Returns `file:line:text`, bounded \
+        description: "Search file *contents* by regex. Returns each matching file's path once \
+                      with its `line:text` rows under it; `scopes: true` also names the function \
+                      or type around each match, as `[QuerySet › delete]`. Bounded \
                       — a broad pattern says it was capped instead of flooding your context. Case \
                       is sensitive unless the pattern says otherwise: prefix `(?i)`. Skips ignored \
                       paths (`.gitignore`, `.git/`, build output); set `all: true` to include \
@@ -50,7 +57,7 @@ fn grep_schema() -> ToolSchema {
                 "outputMode": {
                     "type": "string",
                     "enum": ["content", "files", "count"],
-                    "description": "What to return: 'content' (file:line:text, the default), \
+                    "description": "What to return: 'content' (matching lines under each file, the default), \
                                     'files' (one path per matching file), or 'count' (file:count \
                                     of matching lines). Prefer 'files' when you only need to know \
                                     where to look."
@@ -75,6 +82,13 @@ fn grep_schema() -> ToolSchema {
                 "invert": {
                     "type": "boolean",
                     "description": "Return the lines that do NOT match the pattern. Default false."
+                },
+                "scopes": {
+                    "type": "boolean",
+                    "description": "Name the function or type each match sits in, for code a \
+                                    parser reads. Costs a row per change of scope; worth it \
+                                    when *where* a match is matters, as for call sites. \
+                                    Default false."
                 },
                 "all": {
                     "type": "boolean",
@@ -148,6 +162,44 @@ impl OutputMode {
     }
 }
 
+/// One row a search found, kept whole until the answer is laid out.
+#[derive(Debug, Clone)]
+struct Hit {
+    /// The file, relative to where the search ran
+    file: std::sync::Arc<str>,
+    kind: HitKind,
+    /// 1-based line, for a match or a context row
+    line: usize,
+    /// The line itself, or the number of matching lines for [`HitKind::Count`]
+    text: String,
+    /// The scopes around a match, outermost first, `QuerySet › delete`, where an outline can say
+    scope: Option<String>,
+}
+
+/// What a [`Hit`] is.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum HitKind {
+    Match,
+    Context,
+    /// A file with a match, in the files mode
+    File,
+    /// A file's number of matching lines, in the count mode
+    Count,
+}
+
+impl Hit {
+    /// The row as ripgrep prints it, which the caps measure: `file:line:text`, `file-line-text`
+    /// for context, a bare path, or `file:count`.
+    fn flat(&self) -> String {
+        match self.kind {
+            HitKind::Match => format!("{}:{}:{}", self.file, self.line, self.text),
+            HitKind::Context => format!("{}-{}-{}", self.file, self.line, self.text),
+            HitKind::File => self.file.to_string(),
+            HitKind::Count => format!("{}:{}", self.file, self.text),
+        }
+    }
+}
+
 /// One parsed search.
 ///
 /// `limit` is deliberately *not* consulted while searching. Stopping early would make the total the
@@ -162,17 +214,22 @@ struct Search<'a> {
     after: usize,
     all: bool,
     invert: bool,
+    /// Label each match with the scopes around it, where an outline can read the file
+    scopes: bool,
     mode: OutputMode,
     limit: usize,
 }
 
-/// What `search` finds under `cwd`, unguarded, as the tests ask it.
+/// What `search` finds under `cwd`, unguarded and as ripgrep would print it, as the tests ask it.
 #[cfg(test)]
 fn native_search(cwd: &Path, search: &Search<'_>) -> Result<Vec<String>, String> {
-    native_search_files(cwd, search, crate::walk::files(cwd, search.path, search.all), || false)
+    let paths = crate::walk::files(cwd, search.path, search.all);
+    let hits = native_search_files(cwd, search, paths, None, || false)?;
+    Ok(hits.iter().map(Hit::flat).collect())
 }
 
-/// Scans `paths` (relative to `cwd`) for `search`, in parallel, rows in path order.
+/// Scans `paths` (relative to `cwd`) for `search`, in parallel, rows in path order, each match
+/// labeled with its scopes where `outline` can parse the file.
 ///
 /// Each worker takes a contiguous run of the sorted paths and the runs are joined in order, so the
 /// answer reads the same however many threads produced it. `stopped` is checked between files.
@@ -180,8 +237,9 @@ fn native_search_files(
     cwd: &Path,
     search: &Search<'_>,
     paths: Vec<PathBuf>,
+    outline: Option<&dyn OutlineSource>,
     stopped: impl Fn() -> bool + Sync,
-) -> Result<Vec<String>, String> {
+) -> Result<Vec<Hit>, String> {
     let regex = regex::Regex::new(search.pattern)
         .map_err(|error| format!("'{}' is not a valid regex: {error}", search.pattern))?;
     let prefilter = prefilter(search);
@@ -199,7 +257,7 @@ fn native_search_files(
     let workers = std::thread::available_parallelism().map_or(1, usize::from).min(16);
     let run = paths.len().div_ceil(workers).max(1);
     // a worker is `Err` when it panicked, `Ok(None)` when it was stopped
-    let scanned: Vec<std::thread::Result<Option<Vec<String>>>> = std::thread::scope(|scope| {
+    let scanned: Vec<std::thread::Result<Option<Vec<Hit>>>> = std::thread::scope(|scope| {
         let handles: Vec<_> = paths
             .chunks(run)
             .map(|chunk| {
@@ -210,7 +268,8 @@ fn native_search_files(
                         if stopped() {
                             return None;
                         }
-                        rows.extend(search_file(cwd, relative, (regex, prefilter), search));
+                        let matcher = (regex, prefilter);
+                        rows.extend(search_file(cwd, relative, matcher, search, outline));
                     }
                     Some(rows)
                 })
@@ -223,9 +282,9 @@ fn native_search_files(
 
 /// The workers' rows joined in order; a crashed worker is a failure, a stopped one a cancel.
 fn combine(
-    scanned: Vec<std::thread::Result<Option<Vec<String>>>>,
+    scanned: Vec<std::thread::Result<Option<Vec<Hit>>>>,
     stopped: bool,
-) -> Result<Vec<String>, String> {
+) -> Result<Vec<Hit>, String> {
     if scanned.iter().any(Result::is_err) {
         return Err("a search worker failed; nothing it scanned is reported".into());
     }
@@ -269,14 +328,15 @@ fn has_lone_carriage_return(text: &str) -> bool {
     bytes.iter().enumerate().any(|(at, byte)| *byte == b'\r' && bytes.get(at + 1) != Some(&b'\n'))
 }
 
-/// The rows one file contributes, in the shape ripgrep prints them: `file:line:text` for a match,
-/// `file-line-text` for context, or the file's name or count for the coarser modes.
+/// The rows one file contributes: its matching and context lines, or its name or count for the
+/// coarser modes. A match is labeled with the scopes around it where `outline` parses the file.
 fn search_file(
     cwd: &Path,
     relative: &Path,
     (regex, prefilter): (&regex::Regex, Option<&regex::Regex>),
     search: &Search<'_>,
-) -> Vec<String> {
+    outline: Option<&dyn OutlineSource>,
+) -> Vec<Hit> {
     let Ok(bytes) = std::fs::read(cwd.join(relative)) else { return Vec::new() };
     if bytes.iter().take(BINARY_SNIFF_BYTES).any(|byte| *byte == 0) {
         return Vec::new();
@@ -287,7 +347,7 @@ fn search_file(
     if filtered.is_some_and(|prefilter| !prefilter.is_match(&text)) {
         return Vec::new();
     }
-    let name = luxe_core::paths::display(relative);
+    let file: std::sync::Arc<str> = luxe_core::paths::display(relative).into();
     let lines: Vec<&str> = text.lines().collect();
     let matched: Vec<usize> = lines
         .iter()
@@ -298,45 +358,78 @@ fn search_file(
     if matched.is_empty() {
         return Vec::new();
     }
+    let row = |kind, line, text: String| Hit { file: file.clone(), kind, line, text, scope: None };
     match search.mode {
-        OutputMode::Files => vec![name],
-        OutputMode::Count => vec![format!("{name}:{}", matched.len())],
+        OutputMode::Files => vec![row(HitKind::File, 0, String::new())],
+        OutputMode::Count => vec![row(HitKind::Count, 0, matched.len().to_string())],
         OutputMode::Content => {
-            // Decide *which* lines to print and *what each one is* separately, then print each
-            // once. Doing it per match instead conflates the two: a match inside an earlier
-            // match's trailing context gets emitted as context and never as the answer.
-            let mut shown = vec![false; lines.len()];
-            for index in &matched {
-                let first = index.saturating_sub(search.before);
-                let last = (index + search.after + 1).min(lines.len());
-                shown[first..last].iter_mut().for_each(|slot| *slot = true);
-            }
-            let is_match = |index: usize| matched.binary_search(&index).is_ok();
-            lines
-                .iter()
-                .enumerate()
-                .filter(|(index, _)| shown[*index])
-                .map(|(index, line)| {
-                    // `-` marks a context line; the caller's parsers and the model both read the
-                    // `:` rows as the answer
-                    let separator = if is_match(index) { ':' } else { '-' };
-                    format!("{name}{separator}{}{separator}{line}", index + 1)
+            let outline = outline.filter(|_| search.scopes);
+            let scopes = outline.and_then(|outline| outline.scopes(relative, &text));
+            line_hits(&lines, &matched, search)
+                .map(|(index, is_match)| {
+                    let kind = if is_match { HitKind::Match } else { HitKind::Context };
+                    let mut hit = row(kind, index + 1, lines[index].to_string());
+                    hit.scope =
+                        scopes.as_deref().filter(|_| is_match).and_then(|s| scope_label(s, index));
+                    hit
                 })
                 .collect()
         }
     }
 }
 
+/// The lines to show and whether each is a match, in order.
+///
+/// Decides *which* lines to print and *what each one is* separately, then yields each once. Doing
+/// it per match instead conflates the two: a match inside an earlier match's trailing context gets
+/// emitted as context and never as the answer.
+fn line_hits<'a>(
+    lines: &'a [&str],
+    matched: &'a [usize],
+    search: &Search<'_>,
+) -> impl Iterator<Item = (usize, bool)> + 'a {
+    let mut shown = vec![false; lines.len()];
+    for index in matched {
+        let first = index.saturating_sub(search.before);
+        let last = (index + search.after + 1).min(lines.len());
+        shown[first..last].iter_mut().for_each(|slot| *slot = true);
+    }
+    (0..lines.len())
+        .filter(move |index| shown[*index])
+        .map(move |index| (index, matched.binary_search(&index).is_ok()))
+}
+
+/// The scopes around 0-based line `line`, outermost first, as `QuerySet › delete`.
+///
+/// A scope whose declaration starts on the line is left out: the line itself names it, so
+/// `def delete(self):` is labeled `QuerySet`, not `QuerySet › delete`.
+fn scope_label(scopes: &[Scope], line: usize) -> Option<String> {
+    let mut around: Vec<&Scope> =
+        scopes.iter().filter(|scope| scope.start_line < line && line <= scope.end_line).collect();
+    around.sort_by_key(|scope| (scope.start_line, std::cmp::Reverse(scope.end_line)));
+    let names: Vec<&str> = around.iter().map(|scope| scope.name.as_str()).collect();
+    (!names.is_empty()).then(|| names.join(" › "))
+}
+
 /// The `grep` tool implementation.
 pub struct GrepTool {
     /// Shared read tracker; a file whose lines a search printed is recorded as read
     tracker: Option<std::sync::Arc<luxe_core::read_tracker::ReadTracker>>,
+    /// What names the scopes a match sits in; without it lines come unlabeled
+    outline: Option<std::sync::Arc<dyn OutlineSource>>,
 }
 
 impl GrepTool {
     /// Create a new grep tool instance.
     pub fn new() -> Self {
-        Self { tracker: None }
+        Self { tracker: None, outline: None }
+    }
+
+    /// Attach the outline that labels each match with the function or type around it, a parser
+    /// that lives outside this crate.
+    pub fn with_outline(mut self, outline: std::sync::Arc<dyn OutlineSource>) -> Self {
+        self.outline = Some(outline);
+        self
     }
 
     /// Attach the shared read tracker, so the lines a search showed satisfy the edit guards the
@@ -380,6 +473,8 @@ impl Tool for GrepTool {
     }
 }
 
+#[cfg(test)]
+mod scope_tests;
 #[cfg(test)]
 mod search_tests;
 #[cfg(test)]

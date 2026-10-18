@@ -252,7 +252,10 @@ pub(super) fn build_tool_registry(
         clone_repositories: luxe_core::config::Config::load(state_root).tools.clone_repositories(),
         ..luxe_tools::web::WebConfig::from_env()
     };
-    let read_tracker = luxe_tools::register_builtins(&mut registry, Some(todo_root), web);
+    // tree-sitter, so `grep` can say which function or type each match sits in
+    let outline = Arc::new(luxe_lsp::syntax::SyntaxOutline);
+    let read_tracker =
+        luxe_tools::register_builtins(&mut registry, Some(todo_root), web, Some(outline));
     if loop_driven {
         registry.register(Arc::new(luxe_tools::loop_control::LoopControlTool::new()));
     }

@@ -20,6 +20,24 @@ const MAX_NAMED: usize = 5;
 pub trait OutlineSource: Send + Sync {
     /// The functions and methods in `source`, or `None` for a language it cannot parse.
     fn functions(&self, path: &Path, source: &str) -> Option<Vec<FunctionSize>>;
+
+    /// The named scopes in `source` that can hold code: functions, methods, types and modules,
+    /// not fields or constants. `None` for a language it cannot parse, which is also the default.
+    /// A search labels what it found with the scopes around it.
+    fn scopes(&self, _path: &Path, _source: &str) -> Option<Vec<Scope>> {
+        None
+    }
+}
+
+/// One named scope and the lines it spans, 0-based and inclusive.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Scope {
+    /// The bare name, `delete` or `QuerySet`
+    pub name: String,
+    /// Its first line, where its declaration starts
+    pub start_line: usize,
+    /// Its last line
+    pub end_line: usize,
 }
 
 /// One function's name, qualified by its container where it has one, and its length.
