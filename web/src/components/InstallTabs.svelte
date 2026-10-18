@@ -3,20 +3,13 @@
 
   type Channel = { id: string; label: string; command: string; note?: string };
 
-  const releases = "https://github.com/evanwhittaker/luxe/releases/latest/download";
+  // Most likely reader first. install.sh redirects to the latest release's script and install.ps1
+  // runs it (web/public/_redirects, web/public/install.ps1)
   const channels: Channel[] = [
-    {
-      id: "shell",
-      label: "shell",
-      command: `curl --proto '=https' --tlsv1.2 -LsSf ${releases}/luxe-cli-installer.sh | sh`,
-    },
+    { id: "shell", label: "shell", command: "curl -fsSL https://luxe.dev/install.sh | sh" },
     { id: "brew", label: "brew", command: "brew install evanwhittaker/tap/luxe" },
-    {
-      id: "windows",
-      label: "windows",
-      command: `powershell -ExecutionPolicy Bypass -c "irm ${releases}/luxe-cli-installer.ps1 | iex"`,
-    },
     { id: "cargo", label: "cargo", command: "cargo install --locked luxe-cli" },
+    { id: "windows", label: "windows", command: 'powershell -c "irm https://luxe.dev/install.ps1 | iex"' },
   ];
 
   let active = $state(channels[0]);

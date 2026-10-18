@@ -182,7 +182,7 @@ impl Tool for WriteTool {
             Err(_) => std::borrow::Cow::Borrowed(content),
         };
 
-        match luxe_core::fs_atomic::replace(&full_path, content.as_bytes()) {
+        match luxe_core::fs_atomic::replace_keeping_mode(&full_path, content.as_bytes()) {
             Ok(()) => {
                 debug!(path = %full_path.display(), "file written successfully");
                 self.after_write(cx, &full_path, &content, existed).await

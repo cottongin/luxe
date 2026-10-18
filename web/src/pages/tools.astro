@@ -269,20 +269,20 @@ type CostRow = { model: string; luxe: { passed: number; runs: number } } & Parti
   Record<"claude" | "codex" | "opencode", Other>
 >;
 const costRows = agentCost.rows as CostRow[];
-const vendorAgent = (row: CostRow) => row.claude ?? row.codex;
 const multiple = (other?: Other) => (other ? `${other.cold.toFixed(2)}×` : "–");
 
-/** The chart's scale: the costliest multiple, rounded up to a half, so 1× (Luxe) sits at a fixed mark. */
-const chartScale =
-  Math.ceil(
-    Math.max(...costRows.flatMap((row) => [vendorAgent(row)?.cold ?? 0, row.opencode?.cold ?? 0])) * 2,
-  ) / 2;
-const chartWidth = (multiple: number) => `${(multiple / chartScale) * 100}%`;
+/** Each model's bars: Luxe at 1×, then every agent that ran it. A vendor's agent runs only its own
+ *  vendor's models, so a model has Claude Code's bar or Codex's, never both. */
 const chartBars = (row: CostRow) =>
   [
-    { kind: "vendor", other: vendorAgent(row) },
-    { kind: "opencode", other: row.opencode },
-  ].flatMap(({ kind, other }) => (other ? [{ kind, cold: other.cold }] : []));
+    { kind: "luxe", label: "Luxe", cold: 1 },
+    { kind: "claude", label: "Claude Code", cold: row.claude?.cold },
+    { kind: "codex", label: "Codex", cold: row.codex?.cold },
+    { kind: "opencode", label: "OpenCode", cold: row.opencode?.cold },
+  ].flatMap((bar) => (bar.cold === undefined ? [] : [{ ...bar, cold: bar.cold }]));
+/** The chart's scale: the costliest multiple, rounded up to a half. */
+const chartScale = Math.ceil(Math.max(...costRows.flatMap(chartBars).map((bar) => bar.cold)) * 2) / 2;
+const chartWidth = (multiple: number) => `${(multiple / chartScale) * 100}%`;
 
 /** A bar's share of its row, never so thin it disappears. */
 const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100, 0.6)}%`;
@@ -361,11 +361,15 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
         </p>
       </div>
       <div class="split split--tasks">
+      {/* The table and its note are one column, so the note sits under what it qualifies rather
+          than below whichever of table and chart runs longer */}
+      <div class="tasks__data">
       <table class="costs">
         <thead>
           <tr>
             <th scope="col">Model</th>
-            <th scope="col">Claude Code or Codex</th>
+            <th scope="col">Claude Code</th>
+            <th scope="col">Codex</th>
             <th scope="col">OpenCode</th>
           </tr>
         </thead>
@@ -376,26 +380,33 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
                 <th scope="row">
                   <code>{row.model}</code>
                 </th>
-                <td>{multiple(vendorAgent(row))}</td>
+                <td>{multiple(row.claude)}</td>
+                <td>{multiple(row.codex)}</td>
                 <td>{multiple(row.opencode)}</td>
               </tr>
             ))
           }
         </tbody>
       </table>
+      <p class="muted note tasks__note">
+        Every run is charged as a cold start, the way a session begins after a break. Run side by
+        side on a warm cache, Claude Code and OpenCode cost up to 2.6× what Luxe does on Claude
+        models. Claude Code runs only Claude models and Codex only OpenAI's, hence the dashes.
+        Pass rates overlapped on every model. Graded on one machine rather than in
+        SWE-bench's own containers, so these are not leaderboard scores. Measured at
+        <code>{agentCost.commit}</code>.
+      </p>
+      </div>
       {/* The table's numbers drawn; hidden from screen readers, which have the table */}
-      <figure class="chart" aria-hidden="true" style={`--one: ${chartWidth(1)}`}>
-        <figcaption class="chart__legend">
-          <span class="chart__key chart__key--vendor">Claude Code or Codex</span>
-          <span class="chart__key chart__key--opencode">OpenCode</span>
-          <span class="chart__key chart__key--luxe">Luxe, 1×</span>
-        </figcaption>
+      <figure class="chart" aria-hidden="true">
+        <figcaption class="chart__caption">Cost of a whole task · lower is better</figcaption>
         {
           costRows.map((row) => (
             <div class="chart__group">
               <code class="chart__model">{row.model}</code>
-              {chartBars(row).map(({ kind, cold }) => (
+              {chartBars(row).map(({ kind, label, cold }) => (
                 <div class={`chart__row chart__row--${kind}`}>
+                  <span class="chart__agent">{label}</span>
                   <span class="chart__track">
                     <span class="chart__bar" style={`width: ${chartWidth(cold)}`} />
                   </span>
@@ -406,14 +417,6 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
           ))
         }
       </figure>
-      </div>
-      <div class="prose">
-        <p class="muted note">
-          Every run is charged as a cold start, the way a session begins after a break. Run side
-          by side on a warm cache, Claude Code and OpenCode cost up to 2.6× what Luxe does on
-          Claude models. Pass rates overlapped on every model. Graded on one machine rather than in SWE-bench's own containers, so these are not leaderboard
-          scores. Measured at <code>{agentCost.commit}</code>.
-        </p>
       </div>
     </section>
 
@@ -567,6 +570,18 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     font-weight: 500;
   }
 
+  /* Four columns fit a phone only with less air between them */
+  @media (max-width: 40rem) {
+    .costs {
+      font-size: var(--step--1);
+    }
+
+    .costs th,
+    .costs td {
+      padding: var(--space-2);
+    }
+  }
+
   .group__name {
     font-size: var(--step-2);
     margin-bottom: var(--space-5);
@@ -622,6 +637,13 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
 
   .split--tasks .costs {
     margin-top: 0;
+    width: 100%;
+  }
+
+  /* As wide as the table it qualifies, and no wider than a line should be */
+  .tasks__note {
+    max-width: var(--measure);
+    margin: var(--space-4) 0 0;
   }
 
   /* === The head's terminal === */
@@ -647,12 +669,22 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     gap: 0.4em;
   }
 
+  /* macOS's window controls, in its own colors: close, minimize, zoom. Literal rather than theme
+     tokens, since they draw a Mac window rather than Luxe */
   .terminal__dots i {
     display: inline-block;
-    width: 0.6em;
-    height: 0.6em;
+    width: 0.7em;
+    height: 0.7em;
     border-radius: 50%;
-    background: var(--luxe-dim);
+    background: #ff5f57;
+  }
+
+  .terminal__dots i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .terminal__dots i:nth-child(3) {
+    background: #28c840;
   }
 
   .terminal__body {
@@ -706,34 +738,8 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     font-size: var(--step--1);
   }
 
-  .chart__legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
+  .chart__caption {
     color: var(--luxe-muted);
-  }
-
-  .chart__key::before {
-    content: "";
-    display: inline-block;
-    width: 0.8em;
-    height: 0.8em;
-    margin-right: 0.5em;
-    vertical-align: -0.05em;
-  }
-
-  .chart__key--vendor::before {
-    background: var(--luxe-dim);
-  }
-
-  .chart__key--opencode::before {
-    background: var(--luxe-muted);
-  }
-
-  .chart__key--luxe::before {
-    width: 2px;
-    height: 1em;
-    background: var(--luxe-accent);
   }
 
   .chart__group {
@@ -745,11 +751,22 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     color: var(--luxe-accent);
   }
 
+  /* Each bar says whose it is, so no legend is needed to read it */
   .chart__row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 4rem;
+    grid-template-columns: 7.5rem minmax(0, 1fr) 4rem;
     align-items: center;
     gap: var(--space-3);
+  }
+
+  .chart__agent {
+    color: var(--luxe-muted);
+    white-space: nowrap;
+  }
+
+  .chart__row--luxe .chart__agent,
+  .chart__row--luxe .chart__value {
+    color: var(--luxe-accent);
   }
 
   .chart__track {
@@ -758,23 +775,18 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     background: var(--luxe-user-msg-bg);
   }
 
-  /* Luxe's 1×, drawn through every row: each bar is read against it */
-  .chart__track::after {
-    content: "";
-    position: absolute;
-    top: -0.2rem;
-    bottom: -0.2rem;
-    left: var(--one);
-    width: 2px;
-    background: var(--luxe-accent);
-  }
-
   .chart__bar {
     display: block;
     height: 100%;
   }
 
-  .chart__row--vendor .chart__bar {
+  .chart__row--luxe .chart__bar {
+    background: var(--luxe-accent);
+  }
+
+  /* A vendor's own agent; Claude Code and Codex never share a model, so they share a shade */
+  .chart__row--claude .chart__bar,
+  .chart__row--codex .chart__bar {
     background: var(--luxe-dim);
   }
 

@@ -428,7 +428,9 @@ impl Tool for EditTool {
         let diff = crate::diff_preview::ranges_diff(&content, &preview);
         let result = apply(&content, &planned);
 
-        if let Err(problem) = luxe_core::fs_atomic::replace(&full_path, result.as_bytes()) {
+        if let Err(problem) =
+            luxe_core::fs_atomic::replace_keeping_mode(&full_path, result.as_bytes())
+        {
             warn!(path = %full_path.display(), error = %problem, "failed to write edited file");
             return ToolResultData::error(format!(
                 "Error writing file '{}': {problem}",

@@ -62,6 +62,15 @@ pub fn replace_preserving_mode(path: &Path, bytes: &[u8]) -> io::Result<()> {
     replace_with_mode(path, bytes, existing_mode(path))
 }
 
+/// Replace `path` with `bytes` as an editor saves a file: one that exists keeps its mode, an
+/// executable script included, and a new one gets the platform's default.
+///
+/// For the user's own files, which the edit and write tools and the formatter rewrite. A rename
+/// puts a new file in the old one's place, so a mode not carried over is the new file's default.
+pub fn replace_keeping_mode(path: &Path, bytes: &[u8]) -> io::Result<()> {
+    write_then_rename(path, bytes, existing_mode(path))
+}
+
 /// Replace `path` with `bytes` atomically but without syncing: a reader never sees half of it, and
 /// a power cut may lose it.
 ///
@@ -214,10 +223,18 @@ fn open_staging(path: &Path, mode: Option<u32>) -> io::Result<File> {
 
     let mut options = OpenOptions::new();
     options.write(true).create(true).truncate(true);
+    // At creation too, so an owner-only file is never readable even for an instant
     if let Some(mode) = mode {
         options.mode(mode);
     }
-    options.open(path)
+    let file = options.open(path)?;
+    // A mode given at creation is filtered through the umask; set it again so the file ends up
+    // with exactly the mode asked for, a kept group-writable one included
+    if let Some(mode) = mode {
+        use std::os::unix::fs::PermissionsExt;
+        file.set_permissions(fs::Permissions::from_mode(mode))?;
+    }
+    Ok(file)
 }
 
 #[cfg(not(unix))]
@@ -252,125 +269,4 @@ fn restrict_dir(_path: &Path) -> io::Result<()> {
 
 #[cfg(test)]
 #[allow(clippy::unwrap_used)]
-mod tests {
-    use super::*;
-
-    /// An unsynced replace still lands whole and leaves no staging file behind.
-    #[test]
-    fn an_unsynced_replace_lands_whole_and_leaves_nothing_behind() {
-        let dir = tempfile::tempdir().unwrap();
-        let target = dir.path().join("cache").join("shard.json");
-        replace_unsynced(&target, b"first").unwrap();
-        replace_unsynced(&target, b"second").unwrap();
-        assert_eq!(fs::read(&target).unwrap(), b"second");
-        let left: Vec<_> = fs::read_dir(target.parent().unwrap()).unwrap().flatten().collect();
-        assert_eq!(left.len(), 1, "only the shard: {left:?}");
-    }
-
-    /// Every directory `create_private_dir` makes is owner-only, not just the last one; one that was
-    /// already there keeps its mode.
-    #[cfg(unix)]
-    #[test]
-    fn every_directory_created_is_private() {
-        use std::os::unix::fs::PermissionsExt;
-        let mode = |path: &Path| fs::metadata(path).unwrap().permissions().mode() & 0o777;
-        let dir = tempfile::tempdir().unwrap();
-        fs::set_permissions(dir.path(), fs::Permissions::from_mode(0o755)).unwrap();
-        let leaf = dir.path().join("a").join("b").join("c");
-        create_private_dir(&leaf).unwrap();
-        for created in [dir.path().join("a"), dir.path().join("a/b"), leaf] {
-            assert_eq!(mode(&created), 0o700, "{}", created.display());
-        }
-        assert_eq!(mode(dir.path()), 0o755, "an existing parent is left alone");
-    }
-
-    /// A fresh private directory refuses to adopt one that exists.
-    #[test]
-    fn a_new_private_directory_is_never_an_existing_one() {
-        let dir = tempfile::tempdir().unwrap();
-        let fresh = dir.path().join("fresh");
-        create_private_dir_new(&fresh).unwrap();
-        let error = create_private_dir_new(&fresh).unwrap_err();
-        assert_eq!(error.kind(), io::ErrorKind::AlreadyExists);
-    }
-
-    #[test]
-    fn a_replacement_lands_and_leaves_no_staging_file_behind() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("state.json");
-        replace(&path, b"first").unwrap();
-        replace(&path, b"second").unwrap();
-
-        assert_eq!(fs::read(&path).unwrap(), b"second");
-        let strays: Vec<_> = fs::read_dir(dir.path())
-            .unwrap()
-            .filter_map(Result::ok)
-            .map(|entry| entry.file_name().to_string_lossy().into_owned())
-            .filter(|name| name != "state.json")
-            .collect();
-        assert!(strays.is_empty(), "left behind: {strays:?}");
-    }
-
-    #[test]
-    fn missing_parents_are_created() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("a").join("b").join("c.json");
-        replace(&path, b"{}").unwrap();
-        assert_eq!(fs::read(&path).unwrap(), b"{}");
-    }
-
-    /// The staging name has to survive a real extension, or `main.rs` and `main.md` stage to the
-    /// same file and the last writer wins a race nobody knew they were in.
-    #[test]
-    fn two_files_sharing_a_stem_do_not_share_a_staging_name() {
-        let dir = tempfile::tempdir().unwrap();
-        let rust = staging_path(&dir.path().join("main.rs"));
-        let markdown = staging_path(&dir.path().join("main.md"));
-        assert_ne!(rust, markdown);
-        assert_eq!(rust.parent(), Some(dir.path()), "staging stays on the target's filesystem");
-    }
-
-    /// Two writers of the *same* file must not collide on the staging name either — one would
-    /// truncate the other's half-written bytes and then rename them into place.
-    #[test]
-    fn concurrent_writers_of_one_file_get_distinct_staging_names() {
-        let path = Path::new("/tmp/luxe/thing.json");
-        assert_ne!(staging_path(path), staging_path(path));
-    }
-
-    #[cfg(unix)]
-    #[test]
-    fn a_private_replacement_is_owner_only_from_the_moment_it_exists() {
-        use std::os::unix::fs::PermissionsExt;
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("auth.json");
-        replace_private(&path, b"secret").unwrap();
-        assert_eq!(fs::metadata(&path).unwrap().permissions().mode() & 0o777, 0o600);
-
-        let nested = dir.path().join("private");
-        create_private_dir(&nested).unwrap();
-        assert_eq!(fs::metadata(&nested).unwrap().permissions().mode() & 0o777, 0o700);
-    }
-
-    /// A failed write must not leave a stray staging file, and must not damage what was there.
-    #[test]
-    fn a_failure_leaves_the_previous_contents_alone() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("kept.json");
-        replace(&path, b"original").unwrap();
-
-        // A directory in the target's place: the rename cannot succeed.
-        let blocked = dir.path().join("blocked.json");
-        fs::create_dir(&blocked).unwrap();
-        assert!(replace(&blocked, b"nope").is_err());
-
-        assert_eq!(fs::read(&path).unwrap(), b"original");
-        let strays: Vec<_> = fs::read_dir(dir.path())
-            .unwrap()
-            .filter_map(Result::ok)
-            .map(|entry| entry.file_name().to_string_lossy().into_owned())
-            .filter(|name| name.ends_with(".tmp"))
-            .collect();
-        assert!(strays.is_empty(), "left behind: {strays:?}");
-    }
-}
+mod tests;

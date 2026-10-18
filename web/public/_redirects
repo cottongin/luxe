@@ -3,3 +3,9 @@
 # The themes page folded into the homepage's gallery; a link to it lands on the gallery.
 /themes   /#craft  301
 /themes/  /#craft  301
+
+# The install script, at an address short enough to read: `curl -fsSL https://luxe.dev/install.sh | sh`.
+# It redirects to the latest release's own script, so luxe.dev never holds a copy that could drift
+# from what the release built and attested. 302, not 301: "latest" moves, so nothing may cache it.
+# /install.ps1 is a file instead (public/install.ps1): Windows needs a line run before the installer.
+/install.sh   https://github.com/evanwhittaker/luxe/releases/latest/download/luxe-cli-installer.sh   302
