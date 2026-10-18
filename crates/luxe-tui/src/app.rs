@@ -167,11 +167,8 @@ pub struct App {
     pub plan_written: Option<String>,
     /// The id of the question modal when it is the plan's handoff, which the TUI answers itself
     pub plan_handoff: Option<luxe_core::question::QuestionRequestId>,
-    /// What to send once a fresh session has loaded: the plan, built from scratch
-    pub pending_build: Option<String>,
-    /// Whether the composer's draft goes out once a fresh session has loaded — a prompt typed on
-    /// the start screen, waiting for the session it asked for
-    pub send_draft_on_load: bool,
+    /// What waits on the session this TUI last asked the engine for
+    pub(crate) arrival: navigation::SessionArrival,
     pub file_provider: crate::ref_provider::FileRefProvider,
     /// The `@` picker's file list being read again, off the render thread
     pub file_listing: FileListing,

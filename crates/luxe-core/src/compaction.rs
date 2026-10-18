@@ -15,13 +15,13 @@ mod planner;
 mod prune;
 mod summary;
 
-pub(crate) use budget::IMAGE_TOKEN_ESTIMATE;
 pub use budget::{
     clamp_max_tokens_to_context, compaction_threshold, context_fullness_percent, context_tokens,
     estimate_calibration, estimate_message_tokens, estimate_prefix_tokens, estimate_tokens,
     last_observed_context_tokens, prompt_tokens, usable_context_window, ContextBudget,
     CONTEXT_SAFETY_TOKENS,
 };
+pub(crate) use budget::{summary_max_tokens, IMAGE_TOKEN_ESTIMATE};
 pub use context::{context_entries, context_messages};
 pub use planner::find_compaction_point;
 pub use prune::{prune_tool_outputs, ContextPressure};

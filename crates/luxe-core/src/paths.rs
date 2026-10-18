@@ -72,6 +72,30 @@ pub fn dir_name(path: &Path) -> String {
         .unwrap_or_else(|| display(path))
 }
 
+/// A path as a model wrote it, made one this platform opens: on Windows, Git Bash's `/c/Users/me`
+/// is `C:/Users/me`.
+///
+/// The `bash` tool runs Git Bash there, and its `pwd` prints that form, so a model copies it into
+/// a `read` that then looked for `C:\c\Users\…` under the project. Elsewhere, and for every other
+/// path, the input comes back untouched: `/c` is a legal directory on unix.
+pub fn native(path: &str) -> std::borrow::Cow<'_, str> {
+    native_on(path, cfg!(windows))
+}
+
+fn native_on(path: &str, windows: bool) -> std::borrow::Cow<'_, str> {
+    let bytes = path.as_bytes();
+    let drive = windows
+        && bytes.len() >= 2
+        && bytes[0] == b'/'
+        && bytes[1].is_ascii_alphabetic()
+        && bytes.get(2).is_none_or(|&byte| byte == b'/');
+    if !drive {
+        return std::borrow::Cow::Borrowed(path);
+    }
+    let letter = char::from(bytes[1]).to_ascii_uppercase();
+    std::borrow::Cow::Owned(format!("{letter}:/{}", path.get(3..).unwrap_or("")))
+}
+
 /// Rewrite an already-rendered path string to forward slashes.
 ///
 /// For the cases where the string arrived as a string. On unix this is the identity function on
@@ -147,6 +171,29 @@ mod tests {
     #[test]
     fn a_backslash_in_a_unix_filename_survives() {
         assert_eq!(slashify_on(r"weird\name.txt", false), r"weird\name.txt");
+    }
+
+    /// Git Bash's `pwd` form reaches the file tools on Windows; without this `read` looked for
+    /// `C:\c\Users\…` under the project.
+    #[test]
+    fn a_git_bash_drive_path_opens_on_windows() {
+        assert_eq!(native_on("/c/Users/dev/a.py", true), "C:/Users/dev/a.py");
+        assert_eq!(native_on("/D/work", true), "D:/work", "either case of drive letter");
+        assert_eq!(native_on("/c", true), "C:/", "the drive itself");
+    }
+
+    #[test]
+    fn only_a_single_letter_drive_is_rewritten() {
+        assert_eq!(native_on("/cd/a.py", true), "/cd/a.py", "a longer first part is a folder");
+        assert_eq!(native_on("/tmp/a.py", true), "/tmp/a.py");
+        assert_eq!(native_on("src/a.py", true), "src/a.py", "relative paths are left alone");
+        assert_eq!(native_on("/1/a.py", true), "/1/a.py", "a digit is no drive");
+    }
+
+    /// `/c` is an ordinary directory on unix.
+    #[test]
+    fn a_unix_path_is_never_rewritten() {
+        assert_eq!(native_on("/c/Users/dev", false), "/c/Users/dev");
     }
 
     #[test]

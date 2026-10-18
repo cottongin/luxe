@@ -9,6 +9,35 @@ The version on `main` is always the next release. The first change to what ships
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
+## [0.1.2]
+
+### Fixed
+
+- Compaction works with thinking models. Summaries were cut off at 4,096 output tokens and thrown
+  away, so after three failures automatic compaction switched itself off and the window filled
+  until the model could not answer. `/compact` now gives the real reason when it fails.
+- On Windows, a timed-out or cancelled command ends everything it started, not just its shell, and
+  the agent's commands no longer rename your terminal tab.
+- On Windows, the file tools accept Git Bash paths (`/c/Users/...`), `glob` reads `src\*.py` as a
+  folder, and the agent's Python commands run in UTF-8 mode, so printing characters outside your
+  code page no longer crashes them.
+- On Windows, an npm tool installed as a `.cmd` shim (such as `pyright`) is found, and Python is
+  looked up as `py -3`, then `python`.
+- The debugger checks that `debugpy` is installed before offering Python debugging, and
+  `luxe doctor` says how to install it.
+- A new session started from the start screen keeps its working indicator and timer from the first
+  moment.
+
+### Changed
+
+- The dock shows "compacting" while a summary is written, and its context reading drops as soon as
+  it finishes. `--rpc` clients get the new `compaction_started` and `compaction_stopped` events.
+- An empty reply from the model at a nearly full context window suggests `/compact` instead of a
+  retry.
+- Signing in with GitHub: the choices are clickable, and the device code has a Copy button (or
+  press `c`).
+- The installer's closing message says how to start Luxe.
+
 ## [0.1.1]
 
 ### Fixed

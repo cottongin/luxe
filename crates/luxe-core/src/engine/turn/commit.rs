@@ -151,14 +151,10 @@ impl Engine {
             debug!("the provider stream was dropped by a cancel before it produced anything");
             return StopReason::Other("cancelled".to_string());
         }
-        warn!("the provider returned an empty response; nothing was committed");
-        let _ = event_tx
-            .send(Event::Error(
-                "the model returned an empty response — no text, no tool call. Nothing was added \
-                 to the conversation; send your message again to retry."
-                    .to_string(),
-            ))
-            .await;
+        let used = self.last_context_tokens.load(std::sync::atomic::Ordering::Relaxed);
+        let window = self.effective_model().await.context_window;
+        warn!(used, window, "the provider returned an empty response; nothing was committed");
+        let _ = event_tx.send(Event::Error(empty_reply_message(used, window))).await;
         StopReason::Other("empty response".to_string())
     }
 
@@ -268,5 +264,49 @@ impl Engine {
             let _ = event_tx.send(Event::ToolEnded { call_id, is_error }).await;
         }
         Ok(entry_id)
+    }
+}
+
+/// What an empty reply tells the reader. Near a full window the silence is most likely the model
+/// having no room left to answer in, and retrying the same message fails the same way until
+/// `/compact` makes room.
+fn empty_reply_message(used: u32, window: u32) -> String {
+    let nearly_full = window > 0 && u64::from(used) * 10 >= u64::from(window) * 9;
+    if !nearly_full {
+        return "the model returned an empty response — no text, no tool call. Nothing was added \
+                to the conversation; send your message again to retry."
+            .to_string();
+    }
+    let percent = (u64::from(used) * 100 / u64::from(window)).min(100);
+    format!(
+        "the model returned an empty response, most likely because the context window is full \
+         ({percent}% used). Run /compact to summarize the conversation, then send your message \
+         again."
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::empty_reply_message;
+
+    /// The silence at a full window looked like a retryable blip, and every retry failed alike.
+    #[test]
+    fn an_empty_reply_at_a_full_window_points_at_compact() {
+        let message = empty_reply_message(195_000, 200_000);
+        assert!(message.contains("/compact") && message.contains("97% used"), "{message}");
+    }
+
+    #[test]
+    fn an_empty_reply_with_room_left_says_retry() {
+        let message = empty_reply_message(100_000, 200_000);
+        assert!(!message.contains("/compact") && message.contains("again to retry"), "{message}");
+    }
+
+    /// Before a first measurement, or for a model whose window is unknown, there is nothing to
+    /// blame the silence on.
+    #[test]
+    fn an_unmeasured_window_is_not_called_full() {
+        assert!(!empty_reply_message(0, 0).contains("/compact"));
+        assert!(!empty_reply_message(5_000, 0).contains("/compact"));
     }
 }

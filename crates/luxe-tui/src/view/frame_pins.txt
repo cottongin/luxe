@@ -13,9 +13,9 @@ DashboardMinimal@64x20: frame=939001adda3bcbb4 hits=0f39b6e30d251353
 Configuration@140x44: frame=73fbef3e76d36c7c hits=03493dafb9356d07
 Configuration@100x30: frame=644345f8e6340004 hits=04d865ae91d0aa35
 Configuration@64x20: frame=28ea511ad251f8c2 hits=77b9c8af75245265
-Setup@140x44: frame=1ec7d489bf6353bb hits=36aaf8db347382c4
-Setup@100x30: frame=4124eb2f29256470 hits=2d10b9f0a226a5e0
-Setup@64x20: frame=1c978a2a7cabba3b hits=1b0ef6d44f0cf1bd
+Setup@140x44: frame=d61d62a149232446 hits=36aaf8db347382c4
+Setup@100x30: frame=1a7c35ff007f3aef hits=2d10b9f0a226a5e0
+Setup@64x20: frame=2df799477067503a hits=1b0ef6d44f0cf1bd
 SetupTools@140x44: frame=7f80f916b3e06e49 hits=2c443d3127ccc230
 SetupTools@100x30: frame=1985e10dacdabc20 hits=ee965f337121049c
 SetupTools@64x20: frame=8b216818fd028690 hits=a19d86f6dbe23c71
@@ -251,7 +251,7 @@ login-subscription@100x30: frame=d0d2a22124d02530 hits=57ef1e7d5ac5daaf
 login-local@100x30: frame=2e2797e9080feb20 hits=9d3e38903152bd40
 login-method@100x30: frame=25f0337c7e66d84b hits=d7190c558c1be1a3
 login-secret@100x30: frame=8e5caa0414d23337 hits=b05996f46f500728
-login-device@100x30: frame=f57f8bc46fc07b6e hits=b05996f46f500728
+login-device@100x30: frame=9678dcaabe255bf8 hits=4f495f0ab9ddfec4
 login-failed@100x30: frame=7a68823bb655e435 hits=b05996f46f500728
 github@100x30: frame=29b83b4de4d5e45a hits=6ce218f729777fd8
 github-detail@100x30: frame=8bff1a38ff99681f hits=6ce218f729777fd8
@@ -273,7 +273,7 @@ login-subscription@64x20: frame=36f5e865860fbdc2 hits=2d2883380c90c475
 login-local@64x20: frame=1e111e16e697b7d2 hits=7aff247fdf8c800d
 login-method@64x20: frame=c0818a1d2ffab01b hits=d068b54bba55b395
 login-secret@64x20: frame=f7cb80562502782e hits=a16a29ea4502d9fb
-login-device@64x20: frame=5d3e94107818674f hits=a16a29ea4502d9fb
+login-device@64x20: frame=d61ec0dc1534f2a5 hits=44ef8648f0a8302d
 login-failed@64x20: frame=8580d73e67e35808 hits=a16a29ea4502d9fb
 github@64x20: frame=59c575f5a335deb0 hits=7c38e58fb5f36453
 github-detail@64x20: frame=15178bfb7c3e702e hits=7c38e58fb5f36453

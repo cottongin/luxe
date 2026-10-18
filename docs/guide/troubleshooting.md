@@ -77,4 +77,7 @@ script -f /tmp/luxe.tty -c luxe       # replay with `cat` or `scriptreplay`
 asciinema rec /tmp/luxe.cast -c luxe
 ```
 
+Windows has neither. Take a screenshot instead, and in Windows Terminal right-click the tab and
+choose **Export Text** to save what the screen shows.
+
 Attach the recording and the log from the same time.

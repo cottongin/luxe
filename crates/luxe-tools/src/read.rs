@@ -186,8 +186,7 @@ impl ReadTool {
         limit: Option<usize>,
         cx: &ToolContext,
     ) -> ToolResultData {
-        // Resolve path relative to cwd.
-        let full_path = cx.cwd.join(path_str);
+        let full_path = cx.cwd.join(&*luxe_core::paths::native(path_str));
 
         debug!(path = %full_path.display(), offset, limit = limit.unwrap_or(usize::MAX), "reading file");
 

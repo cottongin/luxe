@@ -300,17 +300,23 @@ async fn compacting_on_request_ignores_the_threshold_and_says_what_it_freed() {
     );
 
     action_tx.send(Action::CompactNow { focus: Some("the API decisions".into()) }).await.unwrap();
-    let mut freed = None;
+    let (mut started, mut freed) = (None, None);
     while let Ok(Some(event)) =
         tokio::time::timeout(std::time::Duration::from_secs(10), event_rx.recv()).await
     {
-        if let Event::CompactionDone { tokens_before, tokens_after } = event {
-            freed = Some((tokens_before, tokens_after));
-            break;
+        match event {
+            Event::CompactionStarted { tokens_before } => started = Some(tokens_before),
+            Event::CompactionDone { tokens_before, tokens_after } => {
+                freed = Some((tokens_before, tokens_after));
+                break;
+            }
+            _ => {}
         }
     }
     let (before, after) = freed.expect("a compaction_done event");
     assert!(before > after, "it reports what it freed: {before} -> {after}");
+    // The summary call can take a minute, and without the start a client shows nothing meanwhile
+    assert_eq!(started, Some(before), "a compaction_started came first, naming what it replaces");
 
     let calls = calls.lock().await;
     let summarization =

@@ -215,6 +215,27 @@ pub fn clamp_max_tokens_to_context(
     Some(capped)
 }
 
+/// Output allowance for one summary, before the model's limit and the window cut it down.
+///
+/// Room for the seven sections over a whole window's worth of transcript *and* for the reasoning a
+/// model that always thinks spends first: that comes out of the same allowance, and a summary that
+/// hits the ceiling is refused whole, so a tight one fails every time on exactly the long sessions
+/// that need it.
+pub(crate) const SUMMARY_MAX_TOKENS: u32 = 16_384;
+
+/// What one summary request may ask for: [`SUMMARY_MAX_TOKENS`], within `model`'s own output limit
+/// (0 for unknown) and what `prompt_tokens` leaves of its window.
+pub(crate) fn summary_max_tokens(
+    model: &crate::provider::ModelInfo,
+    prompt_tokens: u64,
+) -> Option<u32> {
+    let ceiling = match model.max_tokens {
+        0 => SUMMARY_MAX_TOKENS,
+        limit => limit.min(SUMMARY_MAX_TOKENS),
+    };
+    clamp_max_tokens_to_context(model.context_window, prompt_tokens, ceiling)
+}
+
 /// Percent of the usable window currently occupied. Returns 0.0 when either input is 0 (e.g. no
 /// usage observed yet), so callers read "unknown" as empty rather than full.
 pub fn context_fullness_percent(used_tokens: u64, usable: u64) -> f64 {

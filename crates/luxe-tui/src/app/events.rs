@@ -8,6 +8,7 @@ use super::{App, ConvoBlock};
 use luxe_core::config::NotificationEvent;
 use luxe_core::event::Event;
 
+mod compaction;
 mod github;
 mod review;
 mod transcript;
@@ -116,16 +117,11 @@ pub(super) fn reduce(app: &mut App, event: Event) {
         Event::ContextComposition(report) => app.push_convo(ConvoBlock::Context(report)),
         // Compaction rewrites what the model can see and spends a provider call doing it. Saying
         // so is the difference between "the agent forgot" and "the conversation was summarized".
+        Event::CompactionStarted { .. } => compaction::started(app),
         Event::CompactionDone { tokens_before, tokens_after } => {
-            use luxe_core::usage::format_tokens;
-            // The summary may not have kept a server's tool names, so the next reference sends them
-            app.mcp_listed.clear();
-            app.push_convo(ConvoBlock::System(format!(
-                "Compacted the conversation — {} → {} of context.",
-                format_tokens(tokens_before),
-                format_tokens(tokens_after)
-            )));
+            compaction::done(app, tokens_before, tokens_after);
         }
+        Event::CompactionStopped => compaction::ended(app),
         Event::WorkspaceUpdated(snapshot) => workspace_updated(app, *snapshot),
         Event::ToolActivityUpdated(activity) => app.apply_tool_activity(*activity),
         Event::PermissionRequested { id, tool, summary, always_patterns, .. } => {

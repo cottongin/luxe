@@ -114,6 +114,11 @@ fn the_frames_a_client_cannot_work_without_are_pinned() {
             r#"{"kind":"action_rejected","content":{"reason":"line is not JSON"}}"#,
         ),
         (
+            Event::CompactionStarted { tokens_before: 180_000 },
+            r#"{"kind":"compaction_started","content":{"tokens_before":180000}}"#,
+        ),
+        (Event::CompactionStopped, r#"{"kind":"compaction_stopped"}"#),
+        (
             Event::PermissionRequested {
                 id: request_id("perm:1"),
                 session_id: "session-1".into(),
@@ -558,7 +563,9 @@ fn every_known_event_roundtrips() {
         Event::StateChanged(EngineState::default()),
         Event::TurnEnded { reason: StopReason::EndTurn },
         Event::LastTurnAvailable { session_id: "session-1".into(), turn_id: "turn-1".into() },
+        Event::CompactionStarted { tokens_before: 2_000 },
         Event::CompactionDone { tokens_before: 2_000, tokens_after: 1_000 },
+        Event::CompactionStopped,
         Event::ContextUsage { used_tokens: 1_000, context_window: 8_000 },
         Event::TurnUsage {
             prompt_tokens: 800,

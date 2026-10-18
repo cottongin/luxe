@@ -510,14 +510,17 @@ async fn under_a_terminal() {
 /// A suspended command could never finish, and the old advice was to give it longer. A terminal
 /// can no longer suspend one (see `a_command_that_touches_the_terminal_still_finishes`), so this
 /// stops one by hand.
+///
+/// The stop is sent a few times over the first quarter second: on macOS a `SIGSTOP` sent the instant
+/// a child is spawned can miss it, and the report then rightly lists a sleeper, not a stopped one.
 #[cfg(unix)]
 #[tokio::test]
 async fn a_suspended_command_is_called_stuck_not_slow() {
     let tmp_dir = tempfile::tempdir().unwrap();
     let ctx = test_context(tmp_dir.path());
-    let result = BashTool::new()
-        .run(serde_json::json!({"command": "sleep 9 & kill -STOP $!; sleep 8", "timeout": 1}), &ctx)
-        .await;
+    let command = "sleep 9 & for _ in 1 2 3 4 5; do kill -STOP $!; sleep 0.05; done; sleep 8";
+    let result =
+        BashTool::new().run(serde_json::json!({"command": command, "timeout": 1}), &ctx).await;
     let ContentBlock::Text(text) = &result.content[0] else { panic!("expected text") };
     assert!(text.contains("State T means suspended, not slow"), "{text}");
     assert!(!text.contains("pass `timeout`"), "more time cannot help a suspended command: {text}");

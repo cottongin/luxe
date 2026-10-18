@@ -68,15 +68,13 @@ pub(super) fn clicked_target(app: &mut App, target: MouseTarget) -> RouteAction 
             synthetic_enter()
         }
         MouseTarget::ThemeRow(index) => theme_row(app, index),
+        MouseTarget::AuthCopyCode => copy_device_code(app),
         // Session/project pickers are route_key-owned (dashboard flow), so a click resolves
         // straight to the selection RouteAction rather than a synthetic key.
         MouseTarget::SessionRow(index)
             if app.current_view == crate::app::ViewMode::SessionPicker =>
         {
-            match app.overlays.session_picker.as_ref().and_then(|p| p.session_id_at(index)) {
-                Some(id) => RouteAction::SessionSelected(id),
-                None => RouteAction::None,
-            }
+            session_row(app, index)
         }
         MouseTarget::ReviewDiffRow(row)
             if app.current_view == crate::app::ViewMode::GuidedReview =>
@@ -216,6 +214,23 @@ fn configuration_page(app: &mut App, index: usize) -> RouteAction {
 }
 
 /// Previews the clicked theme, then accepts it the way Enter would.
+/// Copies the sign-in wizard's device code, when it is showing one.
+fn copy_device_code(app: &mut App) -> RouteAction {
+    let code = app.overlays.auth_wizard.as_ref().and_then(|w| w.device_code().map(String::from));
+    if let Some(code) = code {
+        app.record_copy(code);
+    }
+    RouteAction::None
+}
+
+/// Opens the session on the clicked picker row.
+fn session_row(app: &App, index: usize) -> RouteAction {
+    match app.overlays.session_picker.as_ref().and_then(|p| p.session_id_at(index)) {
+        Some(id) => RouteAction::SessionSelected(id),
+        None => RouteAction::None,
+    }
+}
+
 fn theme_row(app: &mut App, index: usize) -> RouteAction {
     if let Some(name) = app.overlays.theme_picker.as_mut().and_then(|p| p.select(index)) {
         app.preview_theme(&name);

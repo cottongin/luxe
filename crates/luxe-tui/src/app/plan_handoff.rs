@@ -64,7 +64,8 @@ pub(super) fn answered(app: &mut App, answers: Option<Vec<String>>) {
             // Sent once the new session has loaded, or it would land in the one being left; parked
             // only once there is a new session coming to send it to
             if app.send_action(Action::NewSession, "start a new session") {
-                app.pending_build = Some(build);
+                app.arrival.build = Some(build);
+                app.arrival.owes_snapshot = true;
             }
         }
         RUN_AS_LOOP => {
@@ -87,11 +88,11 @@ pub(super) fn answered(app: &mut App, answers: Option<Vec<String>>) {
 pub(super) fn session_loaded(app: &mut App) {
     // a plan another session wrote is not this session's to offer
     app.plan_written = None;
-    if let Some(build) = app.pending_build.take() {
+    if let Some(build) = app.arrival.build.take() {
         submit(app, &build);
     }
     // A prompt typed on the start screen, which asked for this session to answer it
-    if std::mem::take(&mut app.send_draft_on_load) {
+    if std::mem::take(&mut app.arrival.send_draft) {
         super::input::submit_prompt(app);
     }
 }
@@ -137,7 +138,7 @@ mod tests {
     fn building_fresh_parks_nothing_when_no_session_is_coming() {
         let mut app = seeded_app("nord", FixtureScenario::ChatIdle).unwrap();
         answered(&mut app, Some(vec![BUILD_FRESH.to_string()]));
-        assert_eq!(app.pending_build, None);
+        assert_eq!(app.arrival.build, None);
     }
 
     /// Building fresh asks for a new session and sends the build prompt once that session loads.
@@ -147,11 +148,12 @@ mod tests {
         answered(&mut app, Some(vec![BUILD_FRESH.to_string()]));
         let asked: Vec<Action> = std::iter::from_fn(|| engine.try_recv().ok()).collect();
         assert!(asked.iter().any(|action| matches!(action, Action::NewSession)), "{asked:?}");
-        assert!(app.pending_build.is_some());
+        assert!(app.arrival.build.is_some());
 
         let loaded = Event::SessionLoaded { session_id: "fresh".into(), messages: Vec::new() };
         app.update(crate::app::Msg::Engine(loaded));
-        assert!(app.pending_build.is_none(), "sent into the session that loaded");
+        assert!(app.arrival.build.is_none(), "sent into the session that loaded");
+        assert!(app.arrival.owes_snapshot, "and the load's closing snapshot is known to be stale");
         let sent: Vec<Action> = std::iter::from_fn(|| engine.try_recv().ok()).collect();
         let submitted = sent.iter().any(|action| {
             matches!(action, Action::SubmitUserMessage { content, .. } if content.contains("Build the plan"))

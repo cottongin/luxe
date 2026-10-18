@@ -346,6 +346,56 @@ fn test_status_model_format_cost() {
     assert_eq!(StatusModel::format_cost(Some(0.004)), "<$0.01");
 }
 
+fn idle_app() -> App {
+    let (tx, _rx) = mpsc::channel(8);
+    App::new(tx, luxe_core::keymap::KeyMap::defaults(), luxe_core::config::Config::default())
+}
+
+fn engine_reports_streaming(app: &mut App, streaming: bool) {
+    app.update(Msg::Engine(Event::StateChanged(luxe_core::event::EngineState {
+        streaming,
+        ..Default::default()
+    })));
+}
+
+/// `/compact` shows as under way, and its end leaves the dock idle reading what the summary left.
+///
+/// The break this catches: nothing set the compacting state, so `/compact` showed no sign of life
+/// for the minute a summary takes, and the context figure stayed full until the next turn.
+#[tokio::test]
+async fn compact_on_request_shows_while_it_runs_and_refreshes_the_context_reading() {
+    let mut app = idle_app();
+    app.update(Msg::Engine(Event::ContextUsage { used_tokens: 190_000, context_window: 200_000 }));
+    app.update(Msg::Engine(Event::CompactionStarted { tokens_before: 190_000 }));
+    assert!(matches!(app.status.state, AppState::Compacting), "{:?}", app.status.state);
+
+    app.update(Msg::Engine(Event::CompactionDone { tokens_before: 190_000, tokens_after: 20_000 }));
+    assert!(matches!(app.status.state, AppState::Idle), "{:?}", app.status.state);
+    assert!((app.status.context_pct - 10.0).abs() < 0.01, "got {}", app.status.context_pct);
+}
+
+/// A compaction inside a turn hands the dock back to the turn, whether or not it succeeded.
+#[tokio::test]
+async fn a_stopped_compaction_mid_turn_returns_to_the_turn() {
+    let mut app = idle_app();
+    engine_reports_streaming(&mut app, true);
+    app.update(Msg::Engine(Event::CompactionStarted { tokens_before: 190_000 }));
+    app.update(Msg::Engine(Event::CompactionStopped));
+    assert!(matches!(app.status.state, AppState::Streaming), "{:?}", app.status.state);
+}
+
+/// The engine's turn reports leave a compaction on show while the turn runs, and end it with the turn.
+#[tokio::test]
+async fn turn_reports_keep_a_compaction_on_show_until_the_turn_ends() {
+    let mut app = idle_app();
+    engine_reports_streaming(&mut app, true);
+    app.update(Msg::Engine(Event::CompactionStarted { tokens_before: 190_000 }));
+    engine_reports_streaming(&mut app, true);
+    assert!(matches!(app.status.state, AppState::Compacting), "{:?}", app.status.state);
+    engine_reports_streaming(&mut app, false);
+    assert!(matches!(app.status.state, AppState::Idle), "{:?}", app.status.state);
+}
+
 pub(super) fn type_into(app: &mut App, text: &str) {
     for character in text.chars() {
         app.update(Msg::Key(KeyEvent::new(KeyCode::Char(character), KeyModifiers::NONE)));

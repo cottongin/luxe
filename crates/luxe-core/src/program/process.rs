@@ -2,6 +2,9 @@
 
 use std::path::Path;
 
+#[cfg(windows)]
+mod job;
+
 /// Kill the process `pid` started *and everything it started*.
 ///
 /// Every timeout path in Luxe needs this, and none of them can use the child handle alone:
@@ -136,20 +139,68 @@ pub fn hostname() -> String {
 /// probes for one takes its non-interactive path. Codex starts its commands the same way, and
 /// opencode, Pi and Claude Code get it from Node's `detached`.
 ///
-/// A no-op on Windows, where there is no controlling terminal to leave and `taskkill /T` walks the
-/// parent-child links instead.
+/// On Windows, where there is no controlling terminal to leave, the child gets a console of its own
+/// that no window shows: one it shared with Luxe was Luxe's terminal tab, and a program that names
+/// its console, as npm does, renamed the tab. Its tree is reached through [`TreeGuard`]'s job.
 pub fn detach_from_terminal(command: &mut tokio::process::Command) {
     // SAFETY: the hook runs in the forked child before `exec`, where only async-signal-safe work is
     // allowed. `new_session` makes one or two raw syscalls through rustix and touches nothing else:
-    // no allocation, no lock, no state shared with the parent. One of the workspace's two `unsafe`
-    // blocks, beside `take_stdin`'s on Windows; `std`'s own `setsid` for `Command` is not stable.
+    // no allocation, no lock, no state shared with the parent. `std`'s own `setsid` for `Command`
+    // is not stable.
     #[cfg(unix)]
     #[allow(unsafe_code)]
     unsafe {
         command.pre_exec(new_session);
     }
-    #[cfg(not(unix))]
+    #[cfg(windows)]
+    {
+        // `CREATE_NO_WINDOW`: a console for the child, shown in no window
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        command.creation_flags(CREATE_NO_WINDOW);
+    }
+    #[cfg(not(any(unix, windows)))]
     let _ = command;
+}
+
+/// A started program's whole tree, killed when dropped armed: on a timeout, and on a cancel, which
+/// ends a call by dropping it. Disarm it once the program has exited on its own; nothing is killed
+/// then, and a background process it left keeps running, as one does from a terminal.
+///
+/// On unix the tree is the process group [`detach_from_terminal`] made it lead. On Windows it is a
+/// Job Object the child joins as it starts: `taskkill /T` walks parent links, and a shell killed
+/// first, as `kill_on_drop` kills it, left its children unlinked and running.
+pub struct TreeGuard {
+    pid: Option<u32>,
+    #[cfg(windows)]
+    job: Option<job::Job>,
+}
+
+impl TreeGuard {
+    /// Arms a guard over `child` and everything it starts from here on.
+    pub fn arm(child: &tokio::process::Child) -> Self {
+        Self {
+            pid: child.id().filter(|pid| *pid != 0),
+            #[cfg(windows)]
+            job: child.raw_handle().and_then(job::Job::holding),
+        }
+    }
+
+    /// The program exited on its own: leave what it started alone. A reaped id can be reused, and
+    /// killing a tree by a recycled id is the one mistake worse than leaking one.
+    pub fn disarm(&mut self) {
+        self.pid = None;
+    }
+}
+
+impl Drop for TreeGuard {
+    fn drop(&mut self) {
+        let Some(pid) = self.pid.take() else { return };
+        #[cfg(windows)]
+        if let Some(job) = &self.job {
+            job.terminate();
+        }
+        kill_tree(pid);
+    }
 }
 
 /// Takes stdin for the caller alone, and gives every process Luxe starts the null device instead.

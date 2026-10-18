@@ -1,5 +1,22 @@
 use super::*;
 
+/// Windows Python writes cp1252 into a pipe, so a `✓` in a test's output crashed it under Luxe.
+#[test]
+fn windows_commands_get_python_utf8_mode() {
+    assert_eq!(python_utf8(None, true), Some("1"));
+}
+
+#[test]
+fn a_python_utf8_the_user_set_is_kept() {
+    assert_eq!(python_utf8(Some(std::ffi::OsStr::new("0")), true), None);
+}
+
+/// Elsewhere Python is UTF-8 already, and the environment is left as the user has it.
+#[test]
+fn unix_commands_get_no_python_setting() {
+    assert_eq!(python_utf8(None, false), None);
+}
+
 /// However much a stream prints, a capture holds its head and its tail and counts the rest.
 #[test]
 fn a_capture_holds_its_bound_and_counts_what_fell_between() {

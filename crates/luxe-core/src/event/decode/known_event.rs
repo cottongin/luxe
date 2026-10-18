@@ -86,10 +86,14 @@ pub(super) enum KnownEvent {
         session_id: String,
         turn_id: String,
     },
+    CompactionStarted {
+        tokens_before: u64,
+    },
     CompactionDone {
         tokens_before: u64,
         tokens_after: u64,
     },
+    CompactionStopped,
     ContextUsage {
         used_tokens: u32,
         context_window: u32,

@@ -220,7 +220,19 @@ pub fn builtin_adapters() -> Vec<ConfiguredAdapter> {
 fn default_adapters() -> Vec<ConfiguredAdapter> {
     let customs: Vec<CustomAdapter> = serde_json::from_str(DEFAULT_ADAPTERS_JSON)
         .expect("bundled default-debug-adapters.json must be valid");
-    customs.iter().map(ConfiguredAdapter::from_custom).collect()
+    customs.iter().map(ConfiguredAdapter::from_custom).map(with_local_python).collect()
+}
+
+/// The bundle's `python3` replaced by the Python that runs here, `py -3` on most Windows machines,
+/// where `python3` is often the Store's stand-in and debugging would fail at every launch. Kept as
+/// written when no Python answers, so the adapter reads as missing rather than as something else.
+fn with_local_python(mut adapter: ConfiguredAdapter) -> ConfiguredAdapter {
+    if adapter.spec.command.first().map(String::as_str) == Some("python3") {
+        if let Some(python) = luxe_core::program::python() {
+            adapter.spec.command.splice(..1, python);
+        }
+    }
+    adapter
 }
 
 /// Whether any debug adapter — user-configured or built-in — is actually installed.
@@ -230,10 +242,62 @@ fn default_adapters() -> Vec<ConfiguredAdapter> {
 /// this so that cost is paid only where the capability exists. Nothing is hidden by doing so —
 /// unlike deferring a working tool, an absent adapter means there is no debugging to offer.
 pub fn any_adapter_available(custom: &[ConfiguredAdapter]) -> bool {
-    custom
-        .iter()
-        .chain(default_adapters().iter())
-        .any(|c| c.spec.command.first().is_some_and(|program| on_path(program)))
+    custom.iter().chain(default_adapters().iter()).any(|c| unready(&c.spec.command).is_none())
+}
+
+/// Why an adapter cannot start.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Unready {
+    /// Its program does not resolve. Args: `(program)`.
+    Missing(String),
+    /// Its Python cannot import the module it runs. Args: `(program, module)`.
+    NoModule(String, String),
+}
+
+impl std::fmt::Display for Unready {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Missing(program) => {
+                write!(formatter, "debug adapter '{program}' not found on PATH")
+            }
+            Self::NoModule(program, module) => write!(
+                formatter,
+                "the {module} module is not installed for {program}: pip install {module}"
+            ),
+        }
+    }
+}
+
+/// Why an adapter's `command` cannot start, or `None` when it can.
+///
+/// Its program has to resolve, and a Python module adapter (`python -m debugpy.adapter`) has to be
+/// able to import its module: an interpreter without it starts, then fails every launch with an
+/// error that never says to install anything.
+pub fn unready(command: &[String]) -> Option<Unready> {
+    let program = command.first()?;
+    if !on_path(program) {
+        return Some(Unready::Missing(program.clone()));
+    }
+    let at = command.iter().position(|word| word == "-m")?;
+    let module = command.get(at + 1)?.split('.').next()?;
+    (!imports(&command[..at], module))
+        .then(|| Unready::NoModule(program.clone(), module.to_string()))
+}
+
+/// Whether `python` (its argv) can import `module`.
+fn imports(python: &[String], module: &str) -> bool {
+    let Some(program) = python.first().and_then(|program| luxe_core::program::resolve(program))
+    else {
+        return false;
+    };
+    std::process::Command::new(program)
+        .args(&python[1..])
+        .args(["-c", &format!("import {module}")])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .is_ok_and(|status| status.success())
 }
 
 /// Resolves the adapter for a target program.
@@ -279,13 +343,9 @@ pub fn resolve(
 }
 
 fn ensure_installed(spec: AdapterSpec) -> Result<AdapterSpec, DapError> {
-    if on_path(&spec.command[0]) {
-        Ok(spec)
-    } else {
-        Err(DapError::AdapterUnavailable(format!(
-            "debug adapter '{}' not found on PATH",
-            spec.command[0]
-        )))
+    match unready(&spec.command) {
+        None => Ok(spec),
+        Some(why) => Err(DapError::AdapterUnavailable(why.to_string())),
     }
 }
 
@@ -404,5 +464,25 @@ mod tests {
             addr_placeholder: None,
         });
         assert!(any_adapter_available(&[real]), "an installed command counts as available");
+    }
+
+    /// An adapter is ready when its program resolves and, for a Python module adapter, its module
+    /// imports; a missing module is named with the command that installs it.
+    #[test]
+    fn readiness_names_a_missing_program_or_module() {
+        let command =
+            |words: &[&str]| words.iter().map(|word| word.to_string()).collect::<Vec<_>>();
+        let missing = unready(&command(&["luxe-no-such-adapter"]));
+        assert_eq!(missing, Some(Unready::Missing("luxe-no-such-adapter".into())));
+        assert_eq!(unready(&[installed_program()]), None, "no module to check");
+        let Some(python) = luxe_core::program::python() else { return };
+        let mut absent = python.clone();
+        absent.extend(command(&["-m", "luxe_no_such_module.adapter"]));
+        let Some(Unready::NoModule(_, module)) = unready(&absent) else { panic!("{absent:?}") };
+        assert_eq!(module, "luxe_no_such_module");
+        assert!(unready(&absent).unwrap().to_string().contains("pip install luxe_no_such_module"));
+        let mut present = python;
+        present.extend(command(&["-m", "json.tool"]));
+        assert_eq!(unready(&present), None, "a module the standard library has imports");
     }
 }

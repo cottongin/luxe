@@ -79,7 +79,7 @@ impl AuthWizardState {
             Stage::Provider { query, .. } => self.render_providers(frame, inner, query, theme, hit),
             Stage::Method { .. } => self.render_methods(frame, inner, theme, hit),
             Stage::Running { provider, lines } => {
-                self.render_running(frame, inner, provider, lines, theme)
+                self.render_running(frame, inner, (provider, lines), theme, hit)
             }
             Stage::Failed(message) => self.render_failed(frame, inner, message, theme),
         }
@@ -93,6 +93,7 @@ impl AuthWizardState {
             Stage::Running { .. } => match self.pending_prompt().map(|(prompt, _)| &prompt.kind) {
                 Some(AuthPromptKind::Select(_)) => "enter confirm · ↑/↓ choose · esc cancel",
                 Some(_) => "enter confirm · esc cancel",
+                None if self.device_code().is_some() => "c copy code · esc cancel",
                 None => "Working… · esc cancel",
             },
             Stage::Failed(_) => "r try again · esc close",

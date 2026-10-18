@@ -8,7 +8,7 @@ repository.workspace = true
 homepage.workspace = true
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.1" }
+luxe-core = { path = "../luxe-core", version = "0.1.2" }
 # `unstable-rendered-line-info` enables Paragraph::line_count, used for precise wrapping-aware
 # mouse hit-testing over word-wrapped surfaces (guide/dock/conversation clicks). It adds no crate;
 # the API is marked unstable upstream but is stable within our pinned minor (re-check on upgrade).

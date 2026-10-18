@@ -123,6 +123,8 @@ pub enum WizardOutcome {
     Close,
     /// A credential landed. Args: `(outcome)`. The app closes the wizard and picks a model.
     Finished(Box<LoginOutcome>),
+    /// Put the device code on the clipboard, which the app owns. Args: `(code)`.
+    CopyCode(String),
     /// Key consumed; the wizard stays as it is.
     Consumed,
 }
@@ -224,6 +226,17 @@ impl AuthWizardState {
         self.pending_prompt().is_some()
     }
 
+    /// The device code the flow is waiting to be entered, while nothing else is being asked.
+    pub fn device_code(&self) -> Option<&str> {
+        if self.pending.is_some() {
+            return None;
+        }
+        self.lines().iter().rev().find_map(|line| match line {
+            WizardLine::DeviceCode { code, .. } => Some(code.as_str()),
+            _ => None,
+        })
+    }
+
     /// Transcript lines of a running (or finished) flow.
     pub fn lines(&self) -> &[WizardLine] {
         match &self.stage {
@@ -305,10 +318,12 @@ impl AuthWizardState {
     }
 
     fn running_key(&mut self, key: &KeyEvent) -> WizardOutcome {
+        let code = self.device_code().map(str::to_string);
         let Some(current) = self.pending.as_mut() else {
-            // Nothing to answer: Esc aborts the flow, everything else waits.
-            return match key.code {
-                KeyCode::Esc => WizardOutcome::Close,
+            // Nothing to answer: Esc aborts the flow, `c` copies a code to enter, the rest waits
+            return match (key.code, code) {
+                (KeyCode::Esc, _) => WizardOutcome::Close,
+                (KeyCode::Char('c'), Some(code)) => WizardOutcome::CopyCode(code),
                 _ => WizardOutcome::Consumed,
             };
         };
@@ -455,6 +470,8 @@ mod tests_support {
     }
 }
 
+#[cfg(test)]
+mod click_tests;
 #[cfg(test)]
 mod tests;
 

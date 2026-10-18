@@ -3,13 +3,11 @@
 use super::*;
 use crate::compaction::CompactionTrigger;
 
-/// Output allowance for one summary. Structured prose over a whole window's worth of transcript;
-/// the clamp below trims it further when the slice being summarized leaves less than this.
-const SUMMARY_MAX_TOKENS: u32 = 4_096;
+mod summarizer;
 
 impl Engine {
     /// Run the compaction check over the active path ending at `leaf`, executing it if the
-    /// threshold is crossed. Failures are logged and non-fatal.
+    /// threshold is crossed. Failures are announced and non-fatal.
     ///
     /// Returns the leaf the turn should continue from. A compaction that runs appends its summary
     /// after `leaf` and becomes the new leaf itself — the caller has to adopt it, or the summary
@@ -86,7 +84,8 @@ impl Engine {
     ///
     /// `focus` is the user's optional steer for the summary ("keep the API decisions"), passed
     /// through to the summarizer. Announces the outcome either way: a compaction the user asked
-    /// for and cannot see happened is indistinguishable from one that failed.
+    /// for and cannot see happened is indistinguishable from one that failed, and a failure
+    /// reported as "nothing to do" leaves no way to tell what went wrong.
     pub(crate) async fn compact_on_request(
         &self,
         focus: Option<String>,
@@ -104,9 +103,8 @@ impl Engine {
                 .await;
             return Ok(());
         };
-        let compacted =
-            self.compact_now(leaf.clone(), CompactionTrigger::Manual, focus, event_tx).await;
-        if compacted == leaf && !self.is_cancelled() {
+        let compacted = self.try_compact(leaf, CompactionTrigger::Manual, focus, event_tx).await?;
+        if compacted.is_none() && !self.is_cancelled() {
             let _ = event_tx
                 .send(Event::Error(
                     "Nothing to compact — the conversation already fits within the recent-context \
@@ -119,7 +117,7 @@ impl Engine {
     }
 
     /// Plan and run one compaction over the path ending at `leaf`, returning the leaf to continue
-    /// from. Failures are logged, announced, and non-fatal — a turn is still worth taking.
+    /// from. A failure is announced and non-fatal: a turn is still worth taking.
     pub(super) async fn compact_now(
         &self,
         leaf: EntryId,
@@ -127,32 +125,63 @@ impl Engine {
         focus: Option<String>,
         event_tx: &mpsc::Sender<Event>,
     ) -> EntryId {
+        match self.try_compact(leaf.clone(), trigger, focus, event_tx).await {
+            Ok(Some(compacted)) => compacted,
+            Ok(None) => leaf,
+            Err(error) => {
+                self.announce_compaction_failure(&error, event_tx).await;
+                leaf
+            }
+        }
+    }
+
+    /// One compaction attempt: the new leaf when a summary was committed, `None` when there was
+    /// nothing to do or a cancel stopped it, and the reason when it failed.
+    async fn try_compact(
+        &self,
+        leaf: EntryId,
+        trigger: CompactionTrigger,
+        focus: Option<String>,
+        event_tx: &mpsc::Sender<Event>,
+    ) -> Result<Option<EntryId>, EngineError> {
         let sid = self.current_session_id().await;
-        let entries = match self.sessions().active_path(&sid, &leaf) {
-            Ok(e) => e,
+        let entries = self.sessions().active_path(&sid, &leaf)?;
+        let Some(plan) = self.plan_compaction(&entries, trigger).await? else { return Ok(None) };
+        let before = crate::compaction::context_tokens(&entries);
+        let _ = event_tx.send(Event::CompactionStarted { tokens_before: plan.tokens_before }).await;
+        let outcome = self.execute_compaction(leaf, &plan, focus, event_tx).await;
+        // Paired with the start on every ending, cancel included: a cancel unwinds the summary
+        // call to an error rather than dropping this future, so this line always runs
+        if outcome.is_err() {
+            let _ = event_tx.send(Event::CompactionStopped).await;
+        }
+        let compacted = match outcome {
+            Ok(compacted) => compacted,
+            // The reader stopped it; nothing failed, so the breaker does not hear of it
+            Err(_) if self.is_cancelled() => return Ok(None),
             Err(e) => {
-                warn!(error = %e, "compaction: failed to load active path");
-                return leaf;
+                self.compaction_failures.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                return Err(e);
             }
         };
-        let observed = self.last_context_tokens.load(std::sync::atomic::Ordering::Relaxed);
-        // The budget belongs to the model the next turn will use: switching to a million-token
-        // model mid-session has to raise the threshold, not keep compacting at the old one.
-        let model = self.effective_model().await;
-        let budget = crate::compaction::ContextBudget {
-            context_window: model.context_window as u64,
-            max_tokens: model.max_tokens,
-            observed_tokens: (observed > 0).then_some(observed as u64),
-            prefix_tokens: u64::from(
-                self.last_prefix_tokens.load(std::sync::atomic::Ordering::Relaxed),
-            ),
-        };
-        match crate::compaction::find_compaction_point(
-            &entries,
-            &self.config.compaction_settings,
-            budget,
-            trigger,
-        ) {
+        self.weigh_compaction(before, &compacted).await;
+        // The summary now stands for everything it replaced, so the occupancy the next threshold
+        // check reads has to be re-measured rather than carried over: a stale figure compacts
+        // again immediately, every turn.
+        self.last_context_tokens.store(0, std::sync::atomic::Ordering::Relaxed);
+        self.set_leaf(compacted.clone()).await;
+        Ok(Some(compacted))
+    }
+
+    /// Where to cut `entries`, or `None` when there is nothing worth summarizing.
+    async fn plan_compaction(
+        &self,
+        entries: &[crate::session::Entry],
+        trigger: CompactionTrigger,
+    ) -> Result<Option<crate::compaction::CompactionPlan>, EngineError> {
+        let settings = &self.config.compaction_settings;
+        let budget = self.context_budget().await;
+        match crate::compaction::find_compaction_point(entries, settings, budget, trigger) {
             Ok(plan) => {
                 debug!(
                     ?trigger,
@@ -160,131 +189,78 @@ impl Engine {
                     messages_to_summarize = plan.messages_to_summarize.len(),
                     "compaction triggered"
                 );
-                let before = crate::compaction::context_tokens(&entries);
-                match self.execute_compaction(leaf.clone(), &plan, focus, event_tx).await {
-                    Ok(compacted) => {
-                        // A summary that freed almost nothing leaves occupancy over the line, so
-                        // the next iteration asks again — a provider call per tool call for the
-                        // rest of the turn. Counting it against the breaker keeps the transcript
-                        // (the summary is not *wrong*, only insufficient) while bounding how many
-                        // times a session may pay to learn the same thing.
-                        let after = self.estimated_context_tokens(&compacted).await;
-                        if crate::compaction::compaction_was_effective(before, after) {
-                            self.compaction_failures.store(0, std::sync::atomic::Ordering::Relaxed);
-                        } else {
-                            let failures = self
-                                .compaction_failures
-                                .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
-                                + 1;
-                            warn!(
-                                before,
-                                after,
-                                failures,
-                                "compaction freed too little to be worth repeating; \
-                                 raise the window or lower compaction.keep_recent"
-                            );
-                        }
-                        // The summary now stands for everything it replaced, so the occupancy the
-                        // next threshold check reads has to be re-measured rather than carried
-                        // over — a stale figure compacts again immediately, every turn.
-                        self.last_context_tokens.store(0, std::sync::atomic::Ordering::Relaxed);
-                        self.set_leaf(compacted.clone()).await;
-                        return compacted;
-                    }
-                    // The reader stopped it; nothing failed, so the breaker does not hear of it
-                    Err(_) if self.is_cancelled() => debug!("compaction cancelled"),
-                    Err(e) => {
-                        let failures = self
-                            .compaction_failures
-                            .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
-                            + 1;
-                        warn!(error = %e, failures, "compaction execution failed");
-                        if crate::compaction::compaction_circuit_open(failures) {
-                            warn!(
-                                failures,
-                                "auto-compaction disabled for this session after repeated failures"
-                            );
-                        }
-                    }
-                }
+                Ok(Some(plan))
             }
             Err(crate::compaction::CompactionError::Cancelled) => {
                 debug!("compaction cancelled or below threshold");
+                Ok(None)
             }
-            Err(e) => warn!(error = %e, "compaction check failed"),
+            Err(e) => Err(EngineError::Compaction(format!("could not plan the cut: {e}"))),
         }
-        leaf
     }
 
-    /// The one-off request that asks the summarizer for `input`, the provider to send it to, and
-    /// the model its cost is priced against.
-    async fn summary_request(
-        &self,
-        input: &str,
-        focus: Option<&str>,
-    ) -> (
-        Arc<dyn crate::provider::Provider>,
-        crate::provider::ModelInfo,
-        crate::provider::CompletionRequest,
-    ) {
-        // The `## Heading` shape is named because it is what the reply is parsed by: a model told
-        // only to be "structured" may answer in JSON, and every section of it is then dropped as
-        // preamble — which a 27B local model did, three times, for a summary that then replaced the
-        // transcript with nothing. The last sentence is there because a smaller model will otherwise
-        // file *these rules* under `Constraints & Preferences` as though they were the session's.
-        let system_prompt =
-            "You are a session compactor. Summarize the conversation segment below \
-                             so the work can continue from the summary alone. Write about the \
-                             session's own goal, constraints, progress (done, in progress, \
-                             blocked), decisions, next steps, and anything that would be expensive \
-                             to rediscover. Answer in Markdown using exactly these headings, one \
-                             `## ` heading per section with prose under it and nothing before the \
-                             first: `## Goal`, `## Constraints & Preferences`, `## Progress`, \
-                             `## Key Decisions`, `## Next Steps`, `## Critical Context`, \
-                             `## Files` (every file read or modified). These formatting rules are \
-                             not part of the session: never describe them in the summary.";
-
-        // The user's steer goes *before* the transcript, where an instruction still reads as one:
-        // after fifty thousand characters of conversation it reads as more conversation.
-        let user_message = match focus.map(str::trim).filter(|focus| !focus.is_empty()) {
-            Some(focus) => format!(
-                "Summarize the following conversation, paying particular attention to: {focus}\n\n{input}"
+    /// The window the next turn's model gives the planner, and what of it is already measured.
+    ///
+    /// The model the next turn will use, not the one that filled the window: switching to a
+    /// million-token model mid-session has to raise the threshold, not keep compacting at the old
+    /// one.
+    async fn context_budget(&self) -> crate::compaction::ContextBudget {
+        let observed = self.last_context_tokens.load(std::sync::atomic::Ordering::Relaxed);
+        let model = self.effective_model().await;
+        crate::compaction::ContextBudget {
+            context_window: model.context_window as u64,
+            max_tokens: model.max_tokens,
+            observed_tokens: (observed > 0).then_some(observed as u64),
+            prefix_tokens: u64::from(
+                self.last_prefix_tokens.load(std::sync::atomic::Ordering::Relaxed),
             ),
-            None => format!("Summarize the following conversation:\n\n{input}"),
-        };
+        }
+    }
 
-        // Resolve the summarizer: the configured `summarizer` override when set, else the active
-        // model. Route through the provider registry so a cross-provider summarizer works, falling
-        // back to the default provider when the registry has no entry (tests/single-provider).
-        let summarizer_model = crate::compaction::summarizer_model(
-            self.config.compaction_settings.summarizer.as_ref(),
-            &self.effective_model().await,
+    /// Reset the failure breaker after a compaction that freed real room, or count one that did not.
+    ///
+    /// A summary that freed almost nothing leaves occupancy over the line, so the next iteration
+    /// asks again: a provider call per tool call for the rest of the turn. Counting it keeps the
+    /// transcript (the summary is not *wrong*, only insufficient) while bounding how many times a
+    /// session may pay to learn the same thing.
+    async fn weigh_compaction(&self, before: u64, compacted: &EntryId) {
+        let after = self.estimated_context_tokens(compacted).await;
+        if crate::compaction::compaction_was_effective(before, after) {
+            self.compaction_failures.store(0, std::sync::atomic::Ordering::Relaxed);
+            return;
+        }
+        let failures =
+            self.compaction_failures.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
+        warn!(
+            before,
+            after,
+            failures,
+            "compaction freed too little to be worth repeating; \
+             raise the window or lower compaction.keep_recent"
         );
-        let provider = self.provider_for(&summarizer_model);
+    }
 
-        let priced_model = summarizer_model.clone();
-        let messages = vec![crate::message::Message::user(user_message)];
-        // The one call whose prompt is a whole window by construction, so the summary's own
-        // allowance has to come out of what is left rather than on top of it.
-        let max_tokens = crate::compaction::clamp_max_tokens_to_context(
-            summarizer_model.context_window,
-            crate::compaction::estimate_message_tokens(&messages)
-                + crate::compaction::estimate_prefix_tokens(Some(system_prompt), &[]),
-            SUMMARY_MAX_TOKENS,
-        );
-        let request = crate::provider::CompletionRequest {
-            shared_system_len: 0,
-            model: summarizer_model,
-            messages,
-            system: Some(system_prompt.to_string()),
-            tools: vec![],
-            deferred_tools: Vec::new(),
-            thinking: crate::provider::ThinkingLevel::Off,
-            max_tokens,
-            reuse: crate::provider::PromptReuse::OneOff,
+    /// Tell the reader a compaction failed, and that automatic compaction has stopped when this one
+    /// tripped the breaker: otherwise the first they hear of it is a window too full to answer in.
+    async fn announce_compaction_failure(
+        &self,
+        error: &EngineError,
+        event_tx: &mpsc::Sender<Event>,
+    ) {
+        let failures = self.compaction_failures.load(std::sync::atomic::Ordering::Relaxed);
+        warn!(%error, failures, "compaction failed");
+        let reason = match error {
+            EngineError::Compaction(reason) => reason.clone(),
+            other => other.to_string(),
         };
-
-        (provider, priced_model, request)
+        let mut notice = format!("Couldn't compact the conversation: {reason}.");
+        if crate::compaction::compaction_circuit_open(failures) {
+            warn!(failures, "auto-compaction disabled for this session after repeated failures");
+            notice.push_str(
+                " Automatic compaction is off for this session; run /compact to try again.",
+            );
+        }
+        let _ = event_tx.send(Event::Notice(notice)).await;
     }
 
     /// Execute compaction: call the summarizer, format the summary, append it after `leaf`.
@@ -383,87 +359,4 @@ impl Engine {
         debug!(%compacted, tokens_before = plan.tokens_before, tokens_after, "compaction executed");
         Ok(compacted)
     }
-
-    /// Sends the summarizer its request, unless a cancel lands first.
-    async fn open_summary(
-        &self,
-        provider: Arc<dyn Provider + Send + Sync>,
-        request: crate::provider::CompletionRequest,
-    ) -> Result<futures::stream::BoxStream<'static, crate::provider::ProviderEvent>, EngineError>
-    {
-        let mut cancel = self.cancel_tx.subscribe();
-        tokio::select! {
-            biased;
-            _ = cancel.wait_for(|cancelled| *cancelled) => Err(cancelled()),
-            opened = provider.stream(request, self.cancel_tx.subscribe()) => {
-                opened.map_err(EngineError::Provider)
-            }
-        }
-    }
-
-    /// Read the summarizer's reply, billing its usage. Only a reply that finished counts: an
-    /// error, a length stop or a stream that just ends leave a fragment, however complete it looks.
-    async fn collect_summary(
-        &self,
-        mut stream: futures::stream::BoxStream<'static, crate::provider::ProviderEvent>,
-        priced_model: &crate::provider::ModelInfo,
-        event_tx: &mpsc::Sender<Event>,
-    ) -> Result<String, EngineError> {
-        use futures::StreamExt;
-        let mut summary_output = String::new();
-        let mut finished = None;
-        // Raced rather than left to the provider, since one mid-request may not look at its own
-        // cancel receiver until the next byte arrives
-        let mut cancel = self.cancel_tx.subscribe();
-        loop {
-            let event = tokio::select! {
-                biased;
-                _ = cancel.wait_for(|cancelled| *cancelled) => return Err(cancelled()),
-                event = stream.next() => event,
-            };
-            let Some(event) = event else { break };
-            match event {
-                crate::provider::ProviderEvent::TextDelta { delta, .. } => {
-                    summary_output.push_str(&delta);
-                }
-                // the call nobody asked for, and often the most expensive one in a session
-                crate::provider::ProviderEvent::Usage(usage) => {
-                    self.account_call(
-                        crate::usage::UsageSource::Compaction,
-                        priced_model,
-                        &usage,
-                        event_tx,
-                    )
-                    .await;
-                }
-                crate::provider::ProviderEvent::Done { reason } => {
-                    finished = Some(reason);
-                    break;
-                }
-                crate::provider::ProviderEvent::Error { message, .. } => {
-                    return Err(EngineError::Compaction(format!(
-                        "the summarizer failed partway ({message}); the transcript stands"
-                    )));
-                }
-                _ => {}
-            }
-        }
-        match finished {
-            None => Err(EngineError::Compaction(
-                "the summarizer's reply ended before it finished; the transcript stands".into(),
-            )),
-            Some(
-                reason @ (crate::provider::StopReason::Length
-                | crate::provider::StopReason::ContentFilter),
-            ) => Err(EngineError::Compaction(format!(
-                "the summary stopped short ({reason:?}); the transcript stands"
-            ))),
-            Some(_) => Ok(summary_output),
-        }
-    }
-}
-
-/// The error a cancelled summary unwinds with; callers tell it apart by the cancel flag.
-fn cancelled() -> EngineError {
-    EngineError::Compaction("cancelled; the transcript stands".into())
 }

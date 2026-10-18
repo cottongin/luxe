@@ -329,3 +329,60 @@ fn an_activated_environment_answers_only_inside_its_own_tree() {
         None => std::env::remove_var("VIRTUAL_ENV"),
     }
 }
+
+/// On Windows the `py` launcher comes first, since it is installed with Python itself and never as
+/// the Store's stand-in; elsewhere `python3` does, since `python` can still be Python 2.
+#[test]
+fn python_is_looked_for_in_the_platform_s_order() {
+    let first = |windows| python_candidates(windows).remove(0).join(" ");
+    assert_eq!(first(true), "py -3");
+    assert_eq!(first(false), "python3");
+    assert!(python_candidates(true).iter().any(|argv| argv == &["python"]), "then plain python");
+}
+
+/// A program that is not Python does not pass for one, however it exits.
+#[cfg(unix)]
+#[test]
+fn something_that_is_not_python_is_not_taken_for_it() {
+    assert!(!answers_as_python3(&["true".to_string()]), "exits 0 but prints no version");
+    assert!(!answers_as_python3(&["luxe-no-such-program".to_string()]));
+    // And a real one does, where one is installed
+    if resolve("python3").is_some() {
+        assert!(answers_as_python3(&["python3".to_string()]), "python3 says it is 3");
+    }
+}
+
+fn suffixes() -> Vec<String> {
+    [".COM", ".EXE", ".BAT", ".CMD"].iter().map(|suffix| suffix.to_string()).collect()
+}
+
+/// npm installs a language server three ways, an extensionless shell script, a `.cmd` and a `.ps1`.
+/// Windows runs only the `.cmd`, so it is the one found, though the script shares the bare name.
+#[test]
+fn on_windows_the_extensionless_npm_script_is_passed_over_for_its_cmd() {
+    let on_disk =
+        ["npm/pyright-langserver", "npm/pyright-langserver.cmd", "npm/pyright-langserver.ps1"];
+    // Windows names files without regard to case, and `PATHEXT` lists `.CMD`
+    let runs =
+        |path: &Path| on_disk.iter().any(|file| file.eq_ignore_ascii_case(path.to_str().unwrap()));
+    let found = runnable_as(Path::new("npm/pyright-langserver"), true, &suffixes(), runs);
+    let found = found.map(|path| path.to_string_lossy().to_lowercase());
+    assert_eq!(found.as_deref(), Some("npm/pyright-langserver.cmd"));
+}
+
+/// A name that already carries a runnable extension is taken as given, whatever its case.
+#[test]
+fn on_windows_a_name_with_its_extension_is_taken_as_given() {
+    let runs = |path: &Path| path == Path::new("bin/rg.EXE");
+    let found = runnable_as(Path::new("bin/rg.EXE"), true, &suffixes(), runs);
+    assert_eq!(found, Some(PathBuf::from("bin/rg.EXE")));
+}
+
+/// Elsewhere a program is its own filename, extension or none.
+#[test]
+fn off_windows_a_program_is_its_own_filename() {
+    let runs = |path: &Path| path == Path::new("bin/pyright-langserver");
+    let found = runnable_as(Path::new("bin/pyright-langserver"), false, &suffixes(), runs);
+    assert_eq!(found, Some(PathBuf::from("bin/pyright-langserver")));
+    assert_eq!(runnable_as(Path::new("bin/missing"), false, &suffixes(), runs), None);
+}

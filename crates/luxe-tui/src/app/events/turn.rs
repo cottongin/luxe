@@ -109,6 +109,8 @@ pub(super) fn failed(app: &mut App, msg: String) {
 /// A prompt can't outlive its turn (the engine already resolved or dropped it), and a card still
 /// spinning is settled as cancelled with `reason`.
 fn end_turn(app: &mut App, reason: &str) {
+    // A load that failed sends no snapshot, and one that never comes must not mute the next real one
+    app.arrival.owes_snapshot = false;
     app.interrupt_sent_at = None;
     app.streaming = false;
     app.streamed_thinking = false;
@@ -132,7 +134,12 @@ pub(super) fn tool_started(app: &mut App, name: String) {
 }
 
 pub(super) fn state_changed(app: &mut App, state: EngineState) {
-    app.status.state = if state.streaming { AppState::Streaming } else { AppState::Idle };
+    // The load's own snapshot was taken before the turn its `SessionLoaded` sent, so its idle is
+    // about a moment that has passed; believed, it hides the running turn until the first token
+    let stale = std::mem::take(&mut app.arrival.owes_snapshot) && app.turn_in_flight();
+    if !stale {
+        follow_reported_activity(app, state.streaming);
+    }
     if !state.model.model.is_empty() {
         app.status.model = state.model.display().to_string();
         app.status.provider = state.model.provider.clone();
@@ -142,7 +149,16 @@ pub(super) fn state_changed(app: &mut App, state: EngineState) {
     // Not marked in the transcript: the composer's title, the bar and the dock say which
     // mode is on, and a line per switch would fill the scrollback with every toggle
     app.status.mode = state.mode.clone();
-    if !state.streaming {
+}
+
+/// Takes the engine's word on whether a turn is running. A turn that is still running leaves a
+/// compaction inside it on show: the summary is the turn's work until its own end event lands.
+fn follow_reported_activity(app: &mut App, streaming: bool) {
+    if streaming && matches!(app.status.state, AppState::Compacting) {
+        return;
+    }
+    app.status.state = if streaming { AppState::Streaming } else { AppState::Idle };
+    if !streaming {
         app.status.active_tool = None;
         app.status.tool_started = None;
     }

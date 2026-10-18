@@ -120,8 +120,10 @@ pub enum MouseTarget {
     ModelRow(usize),
     /// A login-wizard provider row, by its index into the filtered list.
     AuthProviderRow(usize),
-    /// A login-wizard method row, by its index.
+    /// A login-wizard method row, by its index; also a choice of the question a sign-in is asking.
     AuthMethodRow(usize),
+    /// The login wizard's button that copies the device code a sign-in is waiting on.
+    AuthCopyCode,
     /// A Configuration row — a way in, or a file to open — by its index in whichever is showing.
     ConfigRow(usize),
     /// A settings page in the list down the left, by its index.

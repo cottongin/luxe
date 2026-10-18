@@ -25,6 +25,10 @@ installers = ["shell", "powershell", "homebrew"]
 install-path = ["$LUXE_INSTALL_DIR/", "~/.local/bin"]
 # The installer's own updater, beside the binary; `luxe update` runs it for an installer copy
 install-updater = true
+# The installers' last word. A new terminal, because one already open has the old PATH, which the
+# installer's own note then explains. Pasted into a double-quoted string in both scripts, so no
+# backticks (sh would run what they hold), no `$` and no double quotes
+install-success-msg = "Luxe is installed. To start, open a new terminal in your project's folder and run: luxe"
 tap = "evanwhittaker/homebrew-tap"
 # `brew install evanwhittaker/tap/luxe`, not `luxe-cli`: the command is `luxe`
 formula = "luxe"

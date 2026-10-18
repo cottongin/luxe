@@ -157,6 +157,7 @@ impl App {
                 self.refresh_configuration();
             }
             WizardOutcome::Finished(outcome) => self.finish_login(*outcome),
+            WizardOutcome::CopyCode(code) => self.record_copy(code),
         }
     }
 

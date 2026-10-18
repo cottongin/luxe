@@ -147,6 +147,17 @@ fn the_external_target_matches_the_guard_that_fires_on_it() {
     assert_eq!(external_target("grep", &json!({"pattern": "/etc/hosts"}), &root()), None);
 }
 
+/// The guard judges the file the tool opens. The file tools read Git Bash's `/c/…` as a drive
+/// path on Windows, so a guard that joined it onto the project judged a different file.
+#[cfg(windows)]
+#[test]
+fn a_git_bash_path_is_judged_where_the_tool_opens_it() {
+    let root = PathBuf::from(r"C:\Users\dev\project");
+    let target = |path: &str| external_target("edit", &json!({ "path": path }), &root);
+    assert_eq!(target("/c/Users/dev/project/src/x.rs"), None, "inside the project");
+    assert_eq!(target("/c/Windows/x.ini"), Some(PathBuf::from(r"C:\Windows\x.ini")));
+}
+
 /// Reading a file outside the project is worth a prompt but is not a change, so only the
 /// mutating tools reach the ledger.
 #[test]

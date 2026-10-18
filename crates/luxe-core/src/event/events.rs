@@ -12,8 +12,7 @@ use crate::session::EntryId;
 use crate::workspace::WorkspaceSnapshot;
 use serde::Serialize;
 
-/// core→UI stream. `#[non_exhaustive]` so later phases can add variants.
-/// Unknown variants deserialize into [`Event::Other`] and are preserved verbatim.
+/// core→UI stream. Unknown variants deserialize into [`Event::Other`] and are preserved verbatim.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(tag = "kind", content = "content", rename_all = "snake_case")]
 #[non_exhaustive]
@@ -65,7 +64,6 @@ pub enum Event {
         session_id: String,
         /// Persisted entry which owns this message.
         entry_id: EntryId,
-        /// Committed message content.
         message: Message,
     },
     /// A validated remediation report was extracted after its assistant transcript entry committed.
@@ -102,7 +100,6 @@ pub enum Event {
     },
     /// A resumed session was loaded with its active-path transcript.
     SessionLoaded {
-        /// Active session identity.
         session_id: String,
         /// Active-path messages paired with their persisted entry IDs.
         messages: Vec<SessionMessage>,
@@ -118,8 +115,12 @@ pub enum Event {
         /// Opaque turn key accepted by `ReviewTarget::LastTurn`.
         turn_id: String,
     },
+    /// A summary began, which can take a minute; `CompactionDone` or `CompactionStopped` ends it.
+    CompactionStarted { tokens_before: u64 },
     /// Compaction completed.
     CompactionDone { tokens_before: u64, tokens_after: u64 },
+    /// A started compaction failed or was cancelled; a failure's reason comes as a `Notice` or `Error`.
+    CompactionStopped,
     /// Token usage after a provider call — lets UIs show context-window fullness.
     ContextUsage { used_tokens: u32, context_window: u32 },
     /// Token counts + cost for **one provider call**, as it completes.
@@ -546,10 +547,7 @@ pub enum Event {
     ///
     /// The workspace runtime paces its background GitHub refreshes on it: a terminal nobody has
     /// looked at for a while is checked less often, and one coming back is checked at once.
-    TerminalFocusChanged {
-        /// Whether it now has focus
-        focused: bool,
-    },
+    TerminalFocusChanged { focused: bool },
     /// Project-local workspace summary changed.
     WorkspaceUpdated(Box<WorkspaceSnapshot>),
     /// Structured display state for a tool call changed.
