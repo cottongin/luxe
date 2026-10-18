@@ -11,7 +11,7 @@ homepage.workspace = true
 # Provides tool implementations (read, write, edit, bash, grep, glob, etc.).
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.0" }
+luxe-core = { path = "../luxe-core", version = "0.1.1" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }
