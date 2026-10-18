@@ -16,6 +16,20 @@ option. Unless you explicitly state otherwise, any contribution intentionally su
 the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 additional terms or conditions.
 
+## AI assistance
+
+AI help is welcome. Luxe is built with plenty of it, much of it Luxe working on itself. Three things
+to hold to:
+
+- **Say so.** Name the tool and how much of the change it wrote in the pull request: "written with
+  Luxe on Claude Sonnet 5.5, then reviewed and edited by me", or "asked ChatGPT how the cache works,
+  wrote the fix myself". Tab completion doesn't count. A commit can carry the Linux kernel's
+  `Assisted-by: AGENT:MODEL` trailer.
+- **Understand it.** You should be able to explain what your change does and how it fits without
+  asking the tool. That's the bar for any change, and the one an agent makes easiest to skip.
+- **Write to people in your own words.** An issue or a pull request description is read by a person,
+  so keep it short, and label anything a model wrote.
+
 ## The gate
 
 ```bash

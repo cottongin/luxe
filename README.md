@@ -1,4 +1,9 @@
-<h1 align="center"><img src="web/src/assets/generated/wordmark-banner.svg" alt="Luxe" width="420"></h1>
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="web/src/assets/generated/wordmark-dark.gif">
+    <img src="web/src/assets/generated/wordmark-light.gif" alt="Luxe" width="440">
+  </picture>
+</h1>
 
 Luxe is a coding agent for your terminal, written in Rust. It works in your project with the model
 you choose, then reads back what it changed as a Guided Review, so you can comment, ask for fixes,
@@ -155,6 +160,10 @@ Every page is also plain markdown in [`docs/guide/`](docs/guide/), and
 [`CONTRIBUTING.md`](CONTRIBUTING.md) has the gate, the architecture, the Windows checks and how
 the site and the demos are made; [`AGENTS.md`](AGENTS.md) has the rules an agent working here holds
 to. Problems and questions go to [GitHub issues](https://github.com/evanwhittaker/luxe/issues).
+
+Luxe is built with AI assistance, much of it Luxe working on itself. Every change still passes the
+full test suite and CI before it merges, and its maintainer decides what does. If AI helped with
+yours, [say so](CONTRIBUTING.md#ai-assistance).
 
 Luxe draws on Pi, by earendil-works, and on OpenCode, and on the unidirectional data flow of Elm
 and Ratatui.

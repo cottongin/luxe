@@ -15,6 +15,21 @@ fn project_server(project: &Path) {
     std::fs::write(project.join(".mcp.json"), config.to_string()).unwrap();
 }
 
+/// Whether Luxe launched the project's server. The marker is the proof when the child gets that far,
+/// but the child is this test binary starting up again, and on a slow runner Luxe can give up on the
+/// closed connection before that startup reaches the write; its report of the attempt is the proof
+/// then. A refused server is never launched, so neither can appear.
+fn started(project: &Path, stdout: &str) -> bool {
+    project.join("mcp-ran").exists() || stdout.contains("project-marker: failed to connect")
+}
+
+/// Whether Luxe refused to start the project's server: it says so, naming it. Checked alongside the
+/// absent marker, which alone would also pass for a server launched too slowly to have written it.
+fn refused(project: &Path, stdout: &str) -> bool {
+    stdout.contains("Not starting project MCP servers: project-marker")
+        && !project.join("mcp-ran").exists()
+}
+
 fn tools(project: &Path, home: &Path, trust: bool) -> String {
     run_mcp(project, home, trust, "tools")
 }
@@ -56,8 +71,8 @@ fn tools_does_not_start_an_untrusted_project_server() {
     let home = tempfile::tempdir().unwrap();
     project_server(project.path());
     let stdout = tools(project.path(), home.path(), false);
-    assert!(!project.path().join("mcp-ran").exists(), "the project command ran: {stdout}");
-    assert!(stdout.contains("project-marker") && stdout.contains("--trust-project"), "{stdout}");
+    assert!(refused(project.path(), &stdout), "the project command ran: {stdout}");
+    assert!(stdout.contains("--trust-project"), "{stdout}");
 }
 
 /// Refusing every project server would silently discard the CLI's explicit trust grant.
@@ -67,7 +82,7 @@ fn tools_starts_a_project_server_with_explicit_trust() {
     let home = tempfile::tempdir().unwrap();
     project_server(project.path());
     let stdout = tools(project.path(), home.path(), true);
-    assert!(project.path().join("mcp-ran").exists(), "the trusted command never ran: {stdout}");
+    assert!(started(project.path(), &stdout), "the trusted command never ran: {stdout}");
 }
 
 /// CLI tools must honor the same global opt-in the engine uses.
@@ -78,7 +93,7 @@ fn tools_honors_the_user_always_preference() {
     project_server(project.path());
     tooling_preference(&home.path().join("luxe"), "always");
     let stdout = tools(project.path(), home.path(), false);
-    assert!(project.path().join("mcp-ran").exists(), "the user opt-in was ignored: {stdout}");
+    assert!(started(project.path(), &stdout), "the user opt-in was ignored: {stdout}");
 }
 
 /// Explicit trust must not override the user's global refusal to start project tooling.
@@ -89,7 +104,7 @@ fn tools_honors_the_user_never_preference_even_with_trust() {
     project_server(project.path());
     tooling_preference(&home.path().join("luxe"), "never");
     let stdout = tools(project.path(), home.path(), true);
-    assert!(!project.path().join("mcp-ran").exists(), "the user refusal was ignored: {stdout}");
+    assert!(refused(project.path(), &stdout), "the user refusal was ignored: {stdout}");
 }
 
 /// A repository must not grant itself permission by setting the global-only tooling preference.
@@ -100,7 +115,7 @@ fn tools_ignores_a_project_always_preference() {
     project_server(project.path());
     tooling_preference(&project.path().join(".luxe"), "always");
     let stdout = tools(project.path(), home.path(), false);
-    assert!(!project.path().join("mcp-ran").exists(), "the project granted itself trust: {stdout}");
+    assert!(refused(project.path(), &stdout), "the project granted itself trust: {stdout}");
 }
 
 /// The trust filter must not block a server declared by the user, outside the project.
@@ -112,5 +127,5 @@ fn tools_starts_a_user_server_without_project_trust() {
     std::fs::create_dir_all(home.path().join("luxe")).unwrap();
     std::fs::rename(project.path().join(".mcp.json"), home.path().join("luxe/mcp.json")).unwrap();
     let stdout = tools(project.path(), home.path(), false);
-    assert!(project.path().join("mcp-ran").exists(), "the user command never ran: {stdout}");
+    assert!(started(project.path(), &stdout), "the user command never ran: {stdout}");
 }

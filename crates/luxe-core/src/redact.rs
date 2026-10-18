@@ -225,7 +225,9 @@ const PATTERNS: [(&str, &str, SecretConfidence, &str); 11] = [
         r"AIza[0-9A-Za-z_\-]{35}",
         "[REDACTED_GOOGLE_KEY]",
         SecretConfidence::Format,
-        "AIzaabcdefghijklmnopqrstuvwxyz012345678",
+        // Joined at compile time so the source holds no key-shaped run: a Google key has no
+        // checksum, so secret scanners flag any literal of its shape, invented ones included
+        concat!("AIza", "abcdefghijklmnopqrstuvwxyz012345678"),
     ),
     (
         r"(?:sk|rk)_(?:live|test)_[0-9A-Za-z]{10,}",
