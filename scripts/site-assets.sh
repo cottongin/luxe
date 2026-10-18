@@ -140,28 +140,9 @@ wordmark() { cargo run --quiet --release -p luxe-tui --example wordmark_svg -- "
 tokens() { cargo run --quiet --release -p luxe-tui --example theme_css; }
 catalog() { cargo run --quiet --release -p luxe-tui --example theme_css -- --json; }
 shiki() { cargo run --quiet --release -p luxe-tui --example shiki_theme -- "$@"; }
-
-# The README's wordmark. GitHub shows an image on its own, where the CSS variables the site paints
-# the letters with do not exist and every letter would fall back to black, so this copy carries
-# the theme's own colors and its background: the same on GitHub's light pages as on its dark ones.
-banner() {
-	python3 - "$1/wordmark.svg" "$1/tokens.css" <<'PY'
-import re, sys
-svg, css = (open(path).read() for path in sys.argv[1:])
-color = lambda name: re.search(rf"--luxe-{name}:\s*(#[0-9a-f]{{6}})", css).group(1)
-svg = re.sub(r"var\(--luxe-(wordmark-\d), currentColor\)", lambda m: color(m.group(1)), svg)
-width, height = (int(n) for n in re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups())
-pad_x, pad_y = 120, 72
-box = (width + 2 * pad_x, height + 2 * pad_y)
-svg = re.sub(
-    r'viewBox="[^"]*" width="\d+" height="\d+"',
-    f'viewBox="{-pad_x} {-pad_y} {box[0]} {box[1]}" width="{box[0]}" height="{box[1]}"',
-    svg,
-)
-background = f'<rect x="{-pad_x}" y="{-pad_y}" width="{box[0]}" height="{box[1]}" rx="16" fill="{color("background")}"/>'
-print(svg.replace("</title>", "</title>\n  " + background, 1), end="")
-PY
-}
+# The README's wordmark, animated as the terminal lights it, transparent for GitHub's light and dark
+# pages alike. Two variants: a light page washes the shine out sooner, so it gets the gentler one
+wordmark_gif() { cargo run --quiet --release -p luxe-tui --example wordmark_gif -- "$@"; }
 
 generate() {
 	local target="$1" guide_target="$2"
@@ -171,7 +152,8 @@ generate() {
 	wordmark mark >"${target}/mark.svg"
 	wordmark tile >"${target}/tile.svg"
 	tokens >"${target}/tokens.css"
-	banner "${target}" >"${target}/wordmark-banner.svg"
+	wordmark_gif dark >"${target}/wordmark-dark.gif"
+	wordmark_gif light >"${target}/wordmark-light.gif"
 	catalog >"${target}/themes.json"
 	facts "${target}" >"${target}/facts.json"
 	shiki luxe >"${target}/shiki-luxe.json"
@@ -211,7 +193,8 @@ print(','.join(['luxe'] + names))
 # One release build up front. Every generator is a separate `cargo run`, and letting each discover
 # that for itself turns a five-second job into a minute of cargo deciding it has nothing to do.
 cargo build --quiet --release -p luxe-tui --features fixture \
-	--example fixture_svg --example wordmark_svg --example theme_css --example shiki_theme
+	--example fixture_svg --example wordmark_svg --example wordmark_gif --example theme_css \
+	--example shiki_theme
 
 if [[ "${check}" == true ]]; then
 	scratch="$(mktemp -d)"

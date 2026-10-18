@@ -54,6 +54,8 @@ clipboard-images = ["clipboard"]
 # Integration tests link the library without `cfg(test)`; normal dependents keep fixtures off.
 luxe-tui = { path = ".", features = ["fixture"] }
 tempfile = "3"
+# The README's animated wordmark (examples/wordmark_gif). Already in the tree through `image`.
+gif = "0.14"
 
 [lints]
 workspace = true
@@ -69,6 +71,10 @@ test = true
 
 [[example]]
 name = "wordmark_svg"
+test = true
+
+[[example]]
+name = "wordmark_gif"
 test = true
 
 [[example]]

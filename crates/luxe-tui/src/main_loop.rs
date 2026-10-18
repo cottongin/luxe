@@ -42,6 +42,11 @@ use std::time::Duration;
 use tokio::sync::mpsc;
 use tokio::time::interval;
 
+/// The animation tick, about 30 a second: what every timed effect counts in, the wordmark's lights
+/// and the spinner included. Public so a recording of one, the README's wordmark, keeps the same
+/// time.
+pub const ANIMATION_TICK: Duration = Duration::from_millis(33);
+
 /// Why the TUI returned control to the CLI.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TuiExit {
@@ -181,7 +186,7 @@ pub async fn run(
     let mut sources = Sources {
         event_rx,
         terminal_events: Some(EventStream::new()),
-        tick: interval(Duration::from_millis(33)), // ~30fps
+        tick: interval(ANIMATION_TICK),
         // One listener for the run, rather than a fresh registration on every pass of a loop that
         // turns over as fast as the terminal can deliver keys.
         interrupted: Box::pin(tokio::signal::ctrl_c()),

@@ -23,8 +23,11 @@
 //! wordmark in the flat accent and skip both rather than approximate them.
 
 mod art;
+mod light;
 
 use art::{column_groups, FULL_ART, LINE_ART, SMALL_ART};
+pub use light::smoothstep;
+use light::{blend_toward, Pass};
 use ratatui::layout::{Alignment, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
@@ -194,14 +197,23 @@ impl Wordmark {
     /// A still is a frame of the same animation rather than a separate code path, so what a reader
     /// sees with `banner_animation = false` is a moment of what everyone else sees moving.
     pub fn lines(self, ink: WordmarkInk, tick: Option<u64>) -> Vec<Line<'static>> {
-        let (tick, pass) = match tick {
-            Some(tick) => (tick, Pass::at(self, ink, tick)),
-            None => (STILL_TICK, None),
-        };
+        match tick {
+            Some(tick) => self.lines_at(ink, tick, Some(tick)),
+            None => self.lines_at(ink, STILL_TICK, None),
+        }
+    }
+
+    /// The logotype's rows with each light set on its own: the drift at `drift`, and the shine at
+    /// `shine`, or none when that is `None`.
+    ///
+    /// The terminal runs both from one clock and keeps them out of step on purpose, so its pattern
+    /// takes minutes to repeat. A recording has to loop, so it sets the two to meet.
+    pub fn lines_at(self, ink: WordmarkInk, drift: u64, shine: Option<u64>) -> Vec<Line<'static>> {
+        let pass = shine.and_then(|tick| Pass::at(self, ink, tick));
         self.rows()
             .iter()
             .enumerate()
-            .map(|(row, text)| self.row_line(text, row as u16, ink, tick, pass.as_ref()))
+            .map(|(row, text)| self.row_line(text, row as u16, ink, drift, pass.as_ref()))
             .collect()
     }
 
@@ -412,78 +424,13 @@ pub fn render_wordmark(
 pub const SHINE_SWEEP_TICKS: u64 = SWEEP_TICKS;
 /// One pass plus its rest, in ticks.
 pub const SHINE_CYCLE_TICKS: u64 = CYCLE_TICKS;
+/// One whole pass of the drift, in ticks.
+pub const DRIFT_PERIOD_TICKS: u64 = DRIFT_TICKS;
+/// Ticks between drift frames while no shine runs.
+pub const DRIFT_FRAME_TICKS: u64 = DRIFT_FRAME;
 
 fn shine_active(tick: u64) -> bool {
     tick % CYCLE_TICKS < SWEEP_TICKS
 }
-
-/// One tick of one pass: where the highlight band sits, and how hard it pushes.
-struct Pass {
-    center: f32,
-    half: f32,
-    peak: f32,
-    lean: f32,
-}
-
-impl Pass {
-    /// The pass in flight at `tick`, or `None` while the logotype rests.
-    fn at(size: Wordmark, ink: WordmarkInk, tick: u64) -> Option<Self> {
-        let phase = tick % CYCLE_TICKS;
-        if phase >= SWEEP_TICKS {
-            return None;
-        }
-        let span = size.span();
-        let half = (span * BAND).max(1.0);
-        let travel = span + 2.0 * half;
-        let progress = phase as f32 / SWEEP_TICKS as f32;
-
-        Some(Self {
-            // The band starts and ends clear of the letters, so a pass arrives and leaves rather
-            // than appearing half-drawn across them.
-            center: -half + progress * travel,
-            half,
-            peak: if ink.dark { PEAK_DARK } else { PEAK_LIGHT },
-            lean: LEAN,
-        })
-    }
-
-    /// How far this cell is lifted toward the highlight.
-    fn lift(&self, column: u16, row: u16) -> f32 {
-        let axis = f32::from(column) + self.lean * f32::from(row);
-        let distance = ((axis - self.center).abs() / self.half).min(1.0);
-        smoothstep(1.0 - distance) * self.peak
-    }
-}
-
-/// Smooth 0→1 with zero slope at both ends, so a band edge has no seam.
-///
-/// The shape of the highlight, and the whole reason it reads as light rather than as a stripe: a
-/// linear falloff leaves a crease along the ridge and a hard shoulder at each edge. Public so the
-/// website samples this curve rather than approximating it.
-pub fn smoothstep(t: f32) -> f32 {
-    let t = t.clamp(0.0, 1.0);
-    t * t * (3.0 - 2.0 * t)
-}
-
-/// Alpha-blend `base` `amount` of the way toward `target`.
-///
-/// An ANSI/indexed palette has no channels to mix, so an unblendable color comes back untouched
-/// rather than as an invented RGB approximation of the terminal's own.
-fn blend_toward(base: Color, target: Color, amount: f32) -> Color {
-    let (Color::Rgb(red, green, blue), Color::Rgb(tr, tg, tb)) = (base, target) else {
-        return base;
-    };
-    if amount <= 0.0 {
-        return base;
-    }
-    let amount = amount.clamp(0.0, 1.0);
-    let lift = |channel: u8, toward: u8| {
-        (f32::from(channel) + (f32::from(toward) - f32::from(channel)) * amount)
-            .round()
-            .clamp(0.0, 255.0) as u8
-    };
-    Color::Rgb(lift(red, tr), lift(green, tg), lift(blue, tb))
-}
-
 #[cfg(test)]
 mod tests;

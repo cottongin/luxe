@@ -34,7 +34,8 @@ pub use slab::{
 pub use tool_glyph::{tool_glyph, tool_icon, GENERIC_TOOL};
 pub use wordmark::{
     banner_frame_due, render_wordmark, smoothstep, BannerClock, Wordmark, WordmarkInk, BAND,
-    DRIFT_DEPTH, LEAN, PEAK_DARK, PEAK_LIGHT, SHINE_CYCLE_TICKS, SHINE_SWEEP_TICKS, STILL_TICK,
+    DRIFT_DEPTH, DRIFT_FRAME_TICKS, DRIFT_PERIOD_TICKS, LEAN, PEAK_DARK, PEAK_LIGHT,
+    SHINE_CYCLE_TICKS, SHINE_SWEEP_TICKS, STILL_TICK,
 };
 pub use wrap::{wrap_cells, wrap_line, wrap_lines, wrapped_row_starts};
 

@@ -1797,6 +1797,7 @@ dependencies = [
  "base64",
  "crossterm",
  "futures",
+ "gif",
  "image",
  "luxe-core",
  "luxe-tui",
