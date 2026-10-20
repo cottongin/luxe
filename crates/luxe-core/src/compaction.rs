@@ -25,6 +25,7 @@ pub(crate) use budget::{summary_max_tokens, IMAGE_TOKEN_ESTIMATE};
 pub use context::{context_entries, context_messages};
 pub use planner::find_compaction_point;
 pub use prune::{prune_tool_outputs, ContextPressure};
+pub(crate) use summary::SUMMARIZER_PROMPT;
 pub use summary::{format_structured_summary, serialize_for_summary, summary_carries_content};
 
 /// Settings controlling compaction behavior.

@@ -135,3 +135,43 @@ async fn a_guide_upgrade_reaches_the_review_the_desk_holds() {
         edit(&mut desk, ReviewEdit::Comment { draft: on_chapter, send: false }).await;
     assert_eq!(saved_for(&effects, &request_id).findings.len(), 1);
 }
+
+/// What `show_open_review` answers, pulled out of the desk's effects.
+async fn shown(desk: &mut ReviewDesk) -> crate::event::OpenReview {
+    let asked = ReviewLoadRequestId::new();
+    let mut effects = desk.handle(DeskCommand::Show { request_id: asked.clone() }).await;
+    let Some(Effect::Event(Event::OpenReviewShown(open))) = effects.pop() else {
+        panic!("show answers with open_review_shown");
+    };
+    assert_eq!(open.request_id, asked, "the answer carries the request it answers");
+    *open
+}
+
+/// With no review open, the answer says so rather than staying silent.
+///
+/// The break this catches: a desk that answers only when a review is open, which leaves a joining
+/// client waiting forever.
+#[tokio::test]
+async fn showing_with_nothing_open_answers_with_neither() {
+    let mut desk = ReviewDesk::new(None);
+    let open = shown(&mut desk).await;
+    assert!(open.review.is_none() && open.session.is_none());
+}
+
+/// A joining client gets the open review with the reading done so far, so it continues the
+/// review rather than starting over.
+///
+/// The break this catches: answering with the review but a fresh session, which drops the chapters
+/// another client already walked.
+#[tokio::test]
+async fn showing_carries_the_open_review_and_its_walked_chapters() {
+    let review = review_from(TWO_FILES);
+    let (_project, mut desk) = desk_with(&review).await;
+    let walked = vec![review.chapters[0].id.clone()];
+    let progress = ReviewProgress { walked_chapter_ids: walked.clone(), ..Default::default() };
+    desk.handle(DeskCommand::RecordProgress { review_id: review.id.clone(), progress }).await;
+    let open = shown(&mut desk).await;
+    assert_eq!(open.reading, crate::guided_review::chapter_readings(&review));
+    assert_eq!(open.review.map(|it| it.id), Some(review.id));
+    assert_eq!(open.session.map(|it| it.progress.walked_chapter_ids), Some(walked));
+}

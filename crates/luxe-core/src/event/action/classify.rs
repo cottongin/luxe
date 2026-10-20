@@ -35,6 +35,7 @@ impl Action {
             Self::EditReview { .. } => "edit_review",
             Self::RecordReviewProgress { .. } => "record_review_progress",
             Self::RecordReviewSeen { .. } => "record_review_seen",
+            Self::ShowOpenReview { .. } => "show_open_review",
             Self::RefreshGuidedReview { .. } => "refresh_guided_review",
             Self::CommitReviewChapters { .. } => "commit_review_chapters",
             Self::PreparePullRequest { .. } => "prepare_pull_request",
@@ -54,6 +55,7 @@ impl Action {
             Self::PlanRestack { .. } => "plan_restack",
             Self::CheckWorktreeRemoval => "check_worktree_removal",
             Self::LoadFileDiff { .. } => "load_file_diff",
+            Self::ListModels { .. } => "list_models",
             Self::ListDirectory { .. } => "list_directory",
             Self::ReadProjectFile { .. } => "read_project_file",
             Self::SetFocus { .. } => "set_focus",
@@ -61,6 +63,7 @@ impl Action {
             Self::PostGithubComment(_) => "post_github_comment",
             Self::ChangePullRequest { .. } => "change_pull_request",
             Self::Restack { .. } => "restack",
+            Self::Introduce { .. } => "introduce",
             Self::Close => "close",
             // The one variant whose tag is not known until runtime, so it reports the category.
             // A caller that needs the client's actual string reads it off the variant.
@@ -98,6 +101,7 @@ impl Action {
         "edit_review",
         "record_review_progress",
         "record_review_seen",
+        "show_open_review",
         "refresh_guided_review",
         "commit_review_chapters",
         "prepare_pull_request",
@@ -117,6 +121,7 @@ impl Action {
         "plan_restack",
         "check_worktree_removal",
         "load_file_diff",
+        "list_models",
         "list_directory",
         "read_project_file",
         "set_focus",
@@ -124,6 +129,7 @@ impl Action {
         "post_github_comment",
         "change_pull_request",
         "restack",
+        "introduce",
         "close",
     ];
 
@@ -175,6 +181,7 @@ impl Action {
             | Self::EditReview { .. }
             | Self::RecordReviewProgress { .. }
             | Self::RecordReviewSeen { .. }
+            | Self::ShowOpenReview { .. }
             | Self::RefreshGuidedReview { .. }
             | Self::CommitReviewChapters { .. }
             | Self::PreparePullRequest { .. }
@@ -190,10 +197,12 @@ impl Action {
             | Self::PlanRestack { .. }
             | Self::CheckWorktreeRemoval
             | Self::LoadFileDiff { .. }
+            | Self::ListModels { .. }
             | Self::ListDirectory { .. }
             | Self::ReadProjectFile { .. }
             | Self::SetFocus { .. }
             | Self::LinkPullRequest { .. }
+            | Self::Introduce { .. }
             | Self::Close
             | Self::Other { .. } => false,
         }

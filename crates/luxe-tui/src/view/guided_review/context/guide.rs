@@ -407,23 +407,8 @@ fn chapter_accounted_label(
     review: &luxe_core::guided_review::GuidedReview,
     chapter: &luxe_core::guided_review::ReviewChapter,
 ) -> String {
-    use luxe_core::guided_review::{ItemVerdict, ReviewItemRef};
-    let mut reason: Option<luxe_core::guided_review::Accounted> = None;
-    for item in &chapter.items {
-        let verdict = match item {
-            ReviewItemRef::Hunk(hunk_id) => app.review.budget.hunk_verdict(hunk_id),
-            ReviewItemRef::File(_) => app.review.budget.verdict(item),
-        };
-        let ItemVerdict::Accounted(accounted) = verdict else {
-            return "nothing here needs you".into();
-        };
-        match &reason {
-            Some(seen) if *seen != accounted => return "nothing here needs you".into(),
-            _ => reason = Some(accounted),
-        }
-    }
     let _ = review;
-    reason.map_or_else(
+    luxe_core::guided_review::shared_reason(&app.review.budget, chapter).map_or_else(
         || "nothing here needs you".into(),
         |accounted| format!("{} \u{2014} nothing here needs you", accounted.label()),
     )

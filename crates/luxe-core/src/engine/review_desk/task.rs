@@ -28,6 +28,7 @@ impl crate::engine::Engine {
                 DeskCommand::RecordProgress { review_id, progress }
             }
             Action::RecordReviewSeen { review_id } => DeskCommand::RecordSeen { review_id },
+            Action::ShowOpenReview { request_id } => DeskCommand::Show { request_id },
             other => {
                 debug!(?other, "not a review desk action");
                 return;

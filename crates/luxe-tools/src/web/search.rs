@@ -26,9 +26,9 @@ pub trait SearchBackend: Send + Sync {
         Vec::new()
     }
 
-    /// Whether one call covers every phrasing in [`SearchOptions::also`]. A plain search API does
-    /// not, so the caller runs them itself and merges.
-    fn batches_queries(&self) -> bool {
+    /// Whether a search's phrasings must run one after another. A rate-limited endpoint turns a
+    /// burst away, so its phrasings wait their turn instead of failing together.
+    fn one_phrasing_at_a_time(&self) -> bool {
         false
     }
 }
@@ -112,8 +112,6 @@ impl Recency {
 /// exposed all of them would cost more context than the answers it fetches.
 #[derive(Debug, Clone, Default)]
 pub struct SearchOptions {
-    /// Extra query phrasings run alongside the main one, widening coverage in a single call.
-    pub also: Vec<String>,
     /// Only these domains.
     pub include_domains: Vec<String>,
     /// Never these domains.
@@ -170,46 +168,80 @@ pub async fn create_backend(config: &WebConfig) -> Result<Box<dyn SearchBackend>
     }
 }
 
+/// What a search found, and a note for each phrasing that failed.
+#[derive(Debug)]
+pub(super) struct Searched {
+    pub(super) hits: Vec<SearchHit>,
+    pub(super) skipped: Vec<String>,
+}
+
 /// Run every phrasing the caller asked for and merge the results.
 ///
-/// One call per query for a backend that takes one query, first-seen order preserved and duplicate
-/// URLs dropped — the same page found by two phrasings is one result, and the earlier phrasing is
-/// the one that ranked it. A phrasing that errors is skipped rather than sinking the whole search;
-/// the error only surfaces when *nothing* answered.
+/// Each phrasing is its own search, so each gets its own ranking and its own passages; one call
+/// carrying the extras ranks everything against the first. A phrasing that errors is skipped and
+/// named rather than sinking the whole search; the error only fails it when *nothing* answered.
 pub(super) async fn run_search(
     backend: &dyn SearchBackend,
     queries: &[String],
     n: usize,
     options: &SearchOptions,
-) -> Result<Vec<SearchHit>, WebError> {
-    let Some((query, also)) = queries.split_first() else {
-        return Ok(Vec::new());
-    };
-    if backend.batches_queries() || also.is_empty() {
-        return backend.search(query, n, options).await;
-    }
-
-    // The extras are already in `queries`; passing them again would double a backend that reads
-    // both. One phrasing at a time, and the option set minus the fan-out it has already served.
-    let single = SearchOptions { also: Vec::new(), ..options.clone() };
-    let mut merged: Vec<SearchHit> = Vec::new();
+) -> Result<Searched, WebError> {
+    let mut lists = Vec::new();
+    let mut skipped = Vec::new();
     let mut last_error = None;
-    for query in queries {
-        match backend.search(query, n, &single).await {
-            Ok(hits) => {
-                for hit in hits {
-                    if !merged.iter().any(|seen| seen.url == hit.url) {
-                        merged.push(hit);
-                    }
-                }
+    for (query, answer) in queries.iter().zip(search_each(backend, queries, n, options).await) {
+        match answer {
+            Ok(hits) => lists.push(hits),
+            Err(error) => {
+                skipped.push(format!("\"{query}\" wasn't searched: {error}"));
+                last_error = Some(error);
             }
-            Err(error) => last_error = Some(error),
         }
     }
-    match (merged.is_empty(), last_error) {
+    let hits = interleave(lists, n);
+    match (hits.is_empty(), last_error) {
         (true, Some(error)) => Err(error),
-        _ => Ok(merged),
+        _ => Ok(Searched { hits, skipped }),
     }
+}
+
+/// Each phrasing's answer, in order: all at once, or in turn where the backend needs that.
+async fn search_each(
+    backend: &dyn SearchBackend,
+    queries: &[String],
+    n: usize,
+    options: &SearchOptions,
+) -> Vec<Result<Vec<SearchHit>, WebError>> {
+    if !backend.one_phrasing_at_a_time() {
+        let searches = queries.iter().map(|query| backend.search(query, n, options));
+        return futures::future::join_all(searches).await;
+    }
+    let mut answers = Vec::with_capacity(queries.len());
+    for query in queries {
+        answers.push(backend.search(query, n, options).await);
+    }
+    answers
+}
+
+/// Up to `n` hits, rank by rank: the top of each list, then the next of each.
+///
+/// So every phrasing is represented. A page two phrasings found is one result, at its first
+/// position, and its second slot goes to the next page.
+fn interleave(lists: Vec<Vec<SearchHit>>, n: usize) -> Vec<SearchHit> {
+    let mut lists: Vec<_> = lists.into_iter().map(Vec::into_iter).collect();
+    let mut merged: Vec<SearchHit> = Vec::new();
+    while merged.len() < n {
+        let rank: Vec<SearchHit> = lists.iter_mut().filter_map(Iterator::next).collect();
+        if rank.is_empty() {
+            break;
+        }
+        for hit in rank {
+            if merged.len() < n && !merged.iter().any(|seen| seen.url == hit.url) {
+                merged.push(hit);
+            }
+        }
+    }
+    merged
 }
 
 /// web_search tool — pluggable search backend.
@@ -272,14 +304,13 @@ impl Tool for WebSearchTool {
 
     async fn run(&self, args: serde_json::Value, _cx: &ToolContext) -> ToolResultData {
         let queries = search_queries(&args);
-        let Some((_, also)) = queries.split_first() else {
+        if queries.is_empty() {
             return ToolResultData::error("Error: 'query' (or 'queries') is required");
-        };
+        }
 
         let n = (args.get("n").and_then(serde_json::Value::as_u64).unwrap_or(5) as usize)
             .clamp(1, MAX_RESULTS);
         let options = SearchOptions {
-            also: also.to_vec(),
             include_content: args
                 .get("content")
                 .and_then(serde_json::Value::as_bool)
@@ -297,8 +328,10 @@ impl Tool for WebSearchTool {
             Err(e) => return ToolResultData::error(format!("Backend error: {e}")),
         };
         match run_search(backend.as_ref(), &queries, n, &options).await {
-            Ok(hits) => {
-                ToolResultData::text(render_hits(&queries, &hits, &backend.honors(&options)))
+            Ok(searched) => {
+                let mut caveats = backend.honors(&options);
+                caveats.extend(searched.skipped);
+                ToolResultData::text(render_hits(&queries, &searched.hits, &caveats))
             }
             Err(e) => ToolResultData::error(format!("Search failed: {e}")),
         }
@@ -336,3 +369,6 @@ pub(super) fn domain_filters(args: &serde_json::Value) -> SearchOptions {
     }
     options
 }
+
+#[cfg(test)]
+mod tests;

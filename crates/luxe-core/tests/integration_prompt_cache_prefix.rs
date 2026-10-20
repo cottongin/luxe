@@ -22,7 +22,7 @@ use luxe_core::message::{ContentBlock, Message};
 use luxe_core::provider::{
     CompletionRequest, ModelInfo, Provider, ProviderError, ProviderEvent, StopReason, ToolSchema,
 };
-use luxe_core::session::{JsonlSessionStore, SessionStore};
+use luxe_core::session::{JsonlSessionStore, SessionId, SessionStore};
 use luxe_core::todo::{Todo, TodoStatus, TodoStore};
 use luxe_core::tool::{Tool, ToolContext, ToolRegistry, ToolResultData};
 use luxe_core::HookRegistry;
@@ -479,12 +479,25 @@ impl Tool for NamedTool {
     }
 }
 
-/// One provider call, as the tiering decided it: the prompt, and which tools it named.
+/// One provider call, as the tiering decided it: the prompt, which tools it named, and the tool
+/// calls its transcript carried.
 #[derive(Clone, Debug)]
 struct Sent {
     system: String,
     tools: Vec<String>,
     deferred: Vec<String>,
+    calls: Vec<String>,
+}
+
+/// The names of the tool calls in `messages`, in order.
+fn call_names(messages: &[Message]) -> Vec<String> {
+    let blocks = messages.iter().flat_map(|message| &message.content);
+    blocks
+        .filter_map(|block| match block {
+            ContentBlock::ToolCall { name, .. } => Some(name.clone()),
+            _ => None,
+        })
+        .collect()
 }
 
 /// Asks for `activate_tools {"names": ["test"]}` on its first call when `activate` is set, and
@@ -512,6 +525,7 @@ impl Provider for ActivatingProvider {
                 system: request.system.clone().unwrap_or_default(),
                 tools: names(&request.tools),
                 deferred: names(&request.deferred_tools),
+                calls: call_names(&request.messages),
             });
             sent.len() == 1
         };
@@ -607,31 +621,61 @@ async fn a_resumed_session_keeps_what_its_history_activated() {
     let sessions = tmp.path().join("sessions");
     let mut store = JsonlSessionStore::new(sessions.clone());
     let sid = store.create("/tmp/test").unwrap();
-    let first = Arc::new(Mutex::new(Vec::new()));
-    let provider = Arc::new(ActivatingProvider { sent: first.clone(), activate: true });
-    let mut first_run =
-        config(store, sid.clone(), tmp.path().join("todos"), provider, HookRegistry::new());
-    first_run.tool_registry = tiered_tools();
-    let (tx, mut rx) = Engine::spawn(first_run);
-    run_turn(&tx, &mut rx, "activate").await;
-    tx.send(Action::Close).await.ok();
-    assert_eq!(first.lock().await.len(), 2, "the activation and its follow-up");
+    let first = tiered_turn(store, &sid, tmp.path(), true).await;
+    assert_eq!(first.len(), 2, "the activation and its follow-up");
 
-    // A new process on the same store, whose provider never activates anything itself
-    let resumed = Arc::new(Mutex::new(Vec::new()));
-    let provider = Arc::new(ActivatingProvider { sent: resumed.clone(), activate: false });
-    let store = JsonlSessionStore::new(sessions);
-    let mut second_run =
-        config(store, sid.clone(), tmp.path().join("todos"), provider, HookRegistry::new());
-    second_run.tool_registry = tiered_tools();
-    let (tx, mut rx) = Engine::spawn(second_run);
-    tx.send(Action::LoadSession(sid.to_string())).await.unwrap();
-    run_turn(&tx, &mut rx, "resumed").await;
-    tx.send(Action::Close).await.ok();
-
-    let resumed = resumed.lock().await.clone();
+    let resumed = tiered_turn(JsonlSessionStore::new(sessions), &sid, tmp.path(), false).await;
     assert_eq!(resumed.len(), 1, "one call for the resumed turn: {resumed:?}");
     assert_eq!(resumed[0].tools, strings(&["activate_tools", "bash", "read", "test"]));
+}
+
+/// A compacted session still carries the tool its summarized history loaded, restated after the
+/// summary.
+///
+/// The break this catches: the request builder dropping that restatement, which unloads the tool
+/// on an adapter that loads tools in place while the prompt promises it stays loaded.
+#[tokio::test]
+async fn a_compacted_session_restates_what_its_summary_replaced() {
+    let tmp = tempfile::tempdir().unwrap();
+    let sessions = tmp.path().join("sessions");
+    let mut store = JsonlSessionStore::new(sessions.clone());
+    let sid = store.create("/tmp/test").unwrap();
+    tiered_turn(store, &sid, tmp.path(), true).await;
+
+    // A summary standing for everything before the newest entry, the activation included
+    let mut store = JsonlSessionStore::new(sessions);
+    let leaf = luxe_core::session::latest_leaf(&store.load(&sid).unwrap()).unwrap();
+    store.compact(&sid, Some(leaf.clone()), "They loaded test.", &leaf, 0).unwrap();
+    let resumed = tiered_turn(store, &sid, tmp.path(), false).await;
+
+    assert_eq!(resumed.len(), 1, "one call for the resumed turn: {resumed:?}");
+    assert_eq!(resumed[0].calls, strings(&["activate_tools"]), "only the restatement");
+    assert_eq!(resumed[0].tools, strings(&["activate_tools", "bash", "read", "test"]));
+}
+
+/// One turn in a fresh engine on `store` over the tiered tools, as a new process would run it,
+/// returning every provider call.
+///
+/// With `activate`, the provider loads `test` on its first call; without, it never activates
+/// anything itself and the engine resumes `sid` first, so what is loaded came from the history.
+async fn tiered_turn(
+    store: JsonlSessionStore,
+    sid: &SessionId,
+    dir: &std::path::Path,
+    activate: bool,
+) -> Vec<Sent> {
+    let sent = Arc::new(Mutex::new(Vec::new()));
+    let provider = Arc::new(ActivatingProvider { sent: sent.clone(), activate });
+    let mut run = config(store, sid.clone(), dir.join("todos"), provider, HookRegistry::new());
+    run.tool_registry = tiered_tools();
+    let (tx, mut rx) = Engine::spawn(run);
+    if !activate {
+        tx.send(Action::LoadSession(sid.to_string())).await.unwrap();
+    }
+    run_turn(&tx, &mut rx, if activate { "activate" } else { "resumed" }).await;
+    tx.send(Action::Close).await.ok();
+    let calls = sent.lock().await.clone();
+    calls
 }
 
 /// Submit one message and wait for the turn it starts to end.

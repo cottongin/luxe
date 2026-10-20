@@ -1,0 +1,262 @@
+/* The Review tab and its peek, as the TUI's guide pane draws a review: each chapter's place and
+   kind dim over its title in the accent, its rationale as prose, its files leaning in under it, and
+   a chapter that needs nothing receding to a muted title and one dim line */
+
+.rv-target {
+  margin: 0.5lh 1.5ch 0;
+  color: var(--luxe-muted, #97938c);
+}
+
+.rv-view {
+  padding: 0 1.5ch 1lh;
+}
+
+.rv-brief {
+  margin: 0.5lh 0 1lh;
+}
+
+.rv-chapter {
+  margin: 0 0 1lh;
+  cursor: pointer;
+}
+
+.rv-meta {
+  display: flex;
+  gap: 3ch;
+  margin: 0;
+  color: var(--luxe-dim, #4d4a45);
+}
+
+.rv-walked {
+  color: var(--luxe-success, #81caa0);
+}
+
+.rv-title {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--luxe-accent, #ddc084);
+  font: inherit;
+  text-align: start;
+}
+
+.rv-title.quiet {
+  color: var(--luxe-muted, #97938c);
+}
+
+.rv-chapter-view .rv-title {
+  font-weight: bold;
+  cursor: default;
+}
+
+/* the TUI leans prose in 4 cells under its title; a phone has half the columns, so 2 */
+.rv-reason {
+  margin: 0;
+  padding-left: 2ch;
+  color: var(--luxe-dim, #4d4a45);
+}
+
+.rv-prose {
+  padding-left: 2ch;
+}
+
+.rv-prose.md p {
+  margin: 0;
+}
+
+.rv-impact p::before {
+  content: "\2192  ";
+}
+
+.rv-files {
+  margin: 0.5lh 0 0;
+  padding: 0 0 0 2ch;
+  list-style: none;
+}
+
+/* a long path wraps under itself, past the status letter, with its figures following it */
+.rv-files li {
+  padding-left: 2ch;
+  text-indent: -2ch;
+  overflow-wrap: anywhere;
+}
+
+.rv-status {
+  margin-right: 1ch;
+}
+
+.rv-added,
+.rv-deleted,
+.rv-files .rv-dim {
+  margin-left: 1ch;
+}
+
+.rv-added,
+.rv-deleted {
+  white-space: nowrap;
+}
+
+.rv-added {
+  color: var(--luxe-success, #81caa0);
+}
+
+.rv-deleted {
+  color: var(--luxe-error, #e68485);
+}
+
+.rv-dim,
+.rv-more {
+  color: var(--luxe-muted, #97938c);
+}
+
+.rv-status.tone-added {
+  color: var(--luxe-success, #81caa0);
+}
+
+.rv-status.tone-modified {
+  color: var(--luxe-warning, #faaa51);
+}
+
+.rv-status.tone-deleted {
+  color: var(--luxe-error, #e68485);
+}
+
+.rv-status.tone-moved {
+  color: var(--luxe-info, #85c7d7);
+}
+
+.rv-head {
+  margin: 0.5lh 0 1lh;
+}
+
+.rv-file {
+  margin: 1lh 0 0.5lh;
+  color: var(--luxe-info, #85c7d7);
+  overflow-wrap: anywhere;
+}
+
+.rv-symbol {
+  margin: 0.5lh 0 0;
+  font-weight: bold;
+}
+
+.rv-note {
+  margin: 0.25lh 0 0.5lh;
+}
+
+.sheet .bar .mention[aria-pressed="true"] {
+  color: var(--luxe-success, #81caa0);
+}
+
+/* A comment is a card washed in its state's hue, as the TUI tints its cards (9% into the
+   background), under the hunk it's about */
+.rv-finding {
+  --tone: var(--luxe-muted, #97938c);
+  margin: 0.5lh 0 1lh;
+  padding: 0.25lh 1ch;
+  border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+  border-radius: var(--corner);
+  background: color-mix(in srgb, var(--tone) 9%, var(--luxe-background, #12100e));
+}
+
+/* rv- prefixed: the status line's plain tone-* classes color text, and a card only tints */
+.rv-finding.rv-tone-warning { --tone: var(--luxe-warning, #faaa51); }
+.rv-finding.rv-tone-success { --tone: var(--luxe-success, #81caa0); }
+.rv-finding.rv-tone-info { --tone: var(--luxe-info, #85c7d7); }
+.rv-finding.rv-tone-dim { --tone: var(--luxe-dim, #4d4a45); }
+
+.rv-finding-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2ch;
+  margin: 0;
+  color: var(--luxe-muted, #97938c);
+}
+
+.rv-label {
+  color: var(--luxe-text, #e4dfd6);
+  font-weight: bold;
+}
+
+.rv-state {
+  color: var(--tone);
+}
+
+.rv-finding-body,
+.rv-said .md {
+  overflow-wrap: anywhere;
+}
+
+.rv-said {
+  padding-left: 2ch;
+}
+
+.rv-who {
+  margin: 0.5lh 0 0;
+  color: var(--luxe-muted, #97938c);
+}
+
+.rv-finding-acts,
+.rv-compose-acts,
+.rv-kinds {
+  display: flex;
+  gap: 1ch;
+  margin: 0.5lh 0 0;
+}
+
+.rv-compose-acts {
+  justify-content: flex-end;
+}
+
+.rv-unsent {
+  display: flex;
+  align-items: center;
+  gap: 2ch;
+  margin: 0.5lh 1.5ch 0;
+  color: var(--luxe-warning, #faaa51);
+}
+
+/* The composer holds the foot of the chapter while it's open, above the keyboard */
+.rv-compose {
+  padding: 0 1.5ch calc(0.5lh + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--luxe-border-muted, #2e2b27);
+  background: var(--luxe-background, #12100e);
+}
+
+.rv-compose .bar {
+  padding-inline: 0;
+}
+
+/* the composer takes over from the line bar while it's open */
+.peek:has(.rv-compose) .line-ask {
+  display: none;
+}
+
+.rv-compose textarea:focus-visible {
+  outline: 1px solid var(--luxe-accent, #ddc084);
+  outline-offset: 0;
+}
+
+.rv-compose textarea {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 0.5lh;
+  padding: 0.25lh 1ch;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+  background: var(--luxe-surface, #1a1816);
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+  border-radius: var(--corner);
+}
+
+.mention[aria-pressed="true"] {
+  color: var(--luxe-accent, #ddc084);
+  border-color: var(--luxe-accent, #ddc084);
+}
+
+.mention:disabled {
+  opacity: 0.4;
+}

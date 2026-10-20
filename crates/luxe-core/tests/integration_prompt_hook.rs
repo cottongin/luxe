@@ -139,12 +139,16 @@ async fn submit(
 }
 
 /// Every file's contents under `dir`, concatenated.
+///
+/// Session claims are skipped: they hold nothing, and on Windows an open session's claim locks its
+/// `.lock` file against any other read.
 fn everything_under(dir: &std::path::Path) -> String {
     std::fs::read_dir(dir)
         .unwrap()
         .flatten()
         .map(|entry| match entry.path() {
             path if path.is_dir() => everything_under(&path),
+            path if path.extension().is_some_and(|extension| extension == "lock") => String::new(),
             path => std::fs::read_to_string(path).unwrap(),
         })
         .collect()

@@ -68,6 +68,23 @@ impl Handover {
         self.closed.extend(reply.tool_calls.iter().map(|call| call.index));
     }
 
+    /// Notes the calls `event` shows the model has finished writing. Returns whether it closes any.
+    fn note_closing(&mut self, event: &ProviderEvent, reply: &StreamedReply) -> bool {
+        match event {
+            ProviderEvent::ToolCallEnd { index } => {
+                self.closed.insert(*index);
+                true
+            }
+            ProviderEvent::ToolCallStart { .. }
+            | ProviderEvent::TextDelta { .. }
+            | ProviderEvent::ThinkingDelta { .. } => {
+                self.close_all(reply);
+                true
+            }
+            _ => false,
+        }
+    }
+
     /// Hands over every newly runnable call, in order. Returns whether anything moved.
     fn advance(&mut self, reply: &StreamedReply) -> bool {
         let Some(to_run) = self.to_run.as_ref() else { return false };
@@ -109,27 +126,43 @@ fn runs_early(call: &ToolCallInfo) -> bool {
 /// Anything opening after a call means the model has finished writing it, and so does its own
 /// end. Handed over before the next card is announced, and with a yield so the call is running by
 /// the time it is: otherwise the finished card flashes "queued" for a frame on its way from being
-/// written to running.
-async fn close_written_calls(
+/// written to running. Each card hears the whole call first.
+///
+/// Args: `(event, handover, reply, composed, event_tx)`.
+async fn close_written(
     event: &ProviderEvent,
     handover: &mut Handover,
     reply: &StreamedReply,
+    composed: &mut HashMap<usize, Composed>,
+    event_tx: &mpsc::Sender<Event>,
 ) {
-    let closes = match event {
-        ProviderEvent::ToolCallEnd { index } => {
-            handover.closed.insert(*index);
-            true
-        }
-        ProviderEvent::ToolCallStart { .. }
-        | ProviderEvent::TextDelta { .. }
-        | ProviderEvent::ThinkingDelta { .. } => {
-            handover.close_all(reply);
-            true
-        }
-        _ => false,
-    };
-    if closes && handover.advance(reply) {
+    if !handover.note_closing(event, reply) {
+        return;
+    }
+    finish_composing(composed, &handover.closed, reply, event_tx).await;
+    if handover.advance(reply) {
         tokio::task::yield_now().await;
+    }
+}
+
+/// Sends each card the model has stopped writing what the cadence held back, and stops watching it.
+async fn finish_composing(
+    composed: &mut HashMap<usize, Composed>,
+    closed: &std::collections::HashSet<usize>,
+    reply: &StreamedReply,
+    event_tx: &mpsc::Sender<Event>,
+) {
+    for call in reply.tool_calls.iter().filter(|call| closed.contains(&call.index)) {
+        let Some(mut state) = composed.remove(&call.index) else { continue };
+        let Some(frame) = state.last_frame(&call.name, &call.arguments) else { continue };
+        let _ = event_tx
+            .send(Event::ToolCallComposing {
+                call_id: call.id.clone(),
+                name: call.name.clone(),
+                subject: frame.subject,
+                body: frame.body,
+            })
+            .await;
     }
 }
 
@@ -258,7 +291,7 @@ impl Engine {
         let mut composed: HashMap<usize, Composed> = HashMap::new();
 
         while let Some(provider_event) = stream.next().await {
-            close_written_calls(&provider_event, &mut handover, &reply).await;
+            close_written(&provider_event, &mut handover, &reply, &mut composed, event_tx).await;
             match provider_event {
                 ProviderEvent::TextDelta { delta, .. } => {
                     if !text_started {
@@ -368,149 +401,4 @@ impl Engine {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    /// Copied from a real gpt-6.1-sol reply that went on like this for 128k tokens.
-    #[test]
-    fn a_blank_run_with_line_breaks_runs_away_and_indentation_does_not() {
-        let stuck = format!("{{\"subjects\":[\"a\"] \t\n \r\n{}", " \n".repeat(140));
-        assert!(runs_away(&stuck));
-        assert!(!runs_away(&stuck[..stuck.len() - 200]), "not yet that long");
-        let pretty = format!("{{\n{}\"n\": 1\n}}", " ".repeat(40));
-        assert!(!runs_away(&pretty));
-        // Spaces alone can sit inside a string, where they may be the content
-        let padded = format!("{{\"text\":\"{}", " ".repeat(1000));
-        assert!(!runs_away(&padded));
-    }
-
-    fn call(index: usize, name: &str, arguments: &str) -> ToolCallInfo {
-        ToolCallInfo {
-            index,
-            id: format!("call-{index}"),
-            name: name.into(),
-            arguments: arguments.into(),
-        }
-    }
-
-    fn reply(calls: Vec<ToolCallInfo>) -> StreamedReply {
-        StreamedReply {
-            text: String::new(),
-            thinking: HashMap::new(),
-            order: Vec::new(),
-            tool_calls: calls,
-            stop_reason: None,
-        }
-    }
-
-    /// Reasoning that is only an opaque token still commits, because it is replayed: Copilot's
-    /// Gemini sends its state with no readable text at all.
-    #[test]
-    fn opaque_reasoning_commits_without_text() {
-        let mut reply = reply(Vec::new());
-        reply.note_thinking_block(0).opaque = Some("CpcBAb4+9vs".into());
-        let blocks = reply.into_blocks();
-        assert!(matches!(
-            blocks.as_slice(),
-            [ContentBlock::Thinking { text, opaque: Some(opaque), .. }]
-                if text.is_empty() && opaque == "CpcBAb4+9vs"
-        ));
-    }
-
-    /// A call is handed over once it is closed, in order; the first call that has to wait makes
-    /// every later one wait, so nothing runs ahead of a call written before it.
-    #[test]
-    fn calls_are_handed_over_in_order_once_closed() {
-        let (to_run, mut handed) = mpsc::unbounded_channel();
-        let mut handover = Handover::new(Some(to_run));
-        let mut reply = reply(vec![call(0, "edit", r#"{"path":"a"}"#)]);
-        assert!(!handover.advance(&reply), "still being written");
-
-        reply.tool_calls.push(call(1, "bash", r#"{"command":"#));
-        handover.close_all(&reply);
-        reply.tool_calls[1].arguments.push_str(r#""ls"}"#);
-        assert!(handover.advance(&reply), "a later block closed both");
-        assert_eq!(handed.try_recv().map(|call| call.index), Ok(0));
-        assert_eq!(handed.try_recv().map(|call| call.index), Ok(1));
-
-        reply.tool_calls.push(call(2, "read", r#"{"path":"b"}"#));
-        reply.tool_calls.push(call(3, "test", ""));
-        handover.close_all(&reply);
-        assert!(!handover.advance(&reply), "a lookup waits for the message");
-        assert!(handed.try_recv().is_err(), "and so does the call after it");
-    }
-
-    /// Only a call that is whole, named, and not a lookup runs early.
-    #[test]
-    fn what_may_run_early() {
-        assert!(runs_early(&call(0, "edit", r#"{"path":"a"}"#)));
-        assert!(runs_early(&call(0, "test", "")), "closed with no arguments takes none");
-        assert!(!runs_early(&call(0, "edit", r#"{"path":"#)), "cut off mid-argument");
-        assert!(!runs_early(&call(0, "edit", "[1]")), "arguments are an object");
-        assert!(!runs_early(&call(0, "grep", r#"{"pattern":"x"}"#)), "a lookup folds");
-        let mut nameless = call(0, "edit", "{}");
-        nameless.id.clear();
-        assert!(!runs_early(&nameless), "half an identity");
-    }
-
-    /// A wrap-up turn hands nothing over, however finished its calls are.
-    #[test]
-    fn nothing_is_handed_over_without_somewhere_to_run_it() {
-        let mut handover = Handover::new(None);
-        let reply = reply(vec![call(0, "edit", "{}")]);
-        handover.close_all(&reply);
-        assert!(!handover.advance(&reply));
-    }
-
-    /// A lookup never composes: three adjacent ones fold into a single line, declared by the
-    /// committed message, so a card opened early is a row the fold then has to take back.
-    #[test]
-    fn only_a_call_worth_watching_arrive_opens_a_card_early() {
-        for tool in ["write", "edit", "bash", "task", "screenshot"] {
-            assert!(composes("call-1", tool), "{tool} should open its card early");
-        }
-        for tool in ["read", "grep", "glob", "symbol_search", crate::tool::ACTIVATE_TOOLS_NAME] {
-            assert!(!composes("call-1", tool), "{tool} must wait for dispatch");
-        }
-        // Half an identity cannot be correlated with the call that follows it, so it keeps the old
-        // behavior and gets its card at `ToolStarted`.
-        assert!(!composes("", "write"));
-        assert!(!composes("call-1", ""));
-    }
-
-    /// The subject is worth interrupting the cadence for — one small string, sent once, and it is
-    /// what turns a bare spinner into a card. The payload is resent whole each time, so it waits
-    /// its turn rather than spending the channel on frames nobody draws.
-    #[test]
-    fn the_payload_is_rate_limited_and_the_name_is_not() {
-        let start = std::time::Instant::now();
-        let mut state = Composed::default();
-        let frame = |state: &mut Composed, after_ms: u64, arguments: &str| {
-            state.next_frame(start + std::time::Duration::from_millis(after_ms), "write", arguments)
-        };
-
-        assert!(frame(&mut state, 0, "{\"path\":\"a.rs").is_none(), "nothing has closed yet");
-
-        // The path closes: named at once, carrying whatever of the file has landed — there is no
-        // cadence to respect until something has actually gone out.
-        let named =
-            frame(&mut state, 1, "{\"path\":\"a.rs\",\"content\":\"one\\n").expect("a frame");
-        assert_eq!(named.subject.as_deref(), Some("a.rs"));
-        assert_eq!(named.body.map(|body| body.total_lines), Some(1));
-
-        // Inside the window the file keeps arriving and the channel stays quiet.
-        assert!(frame(&mut state, 50, "{\"path\":\"a.rs\",\"content\":\"one\\ntwo\\n").is_none());
-
-        let caught_up = frame(&mut state, 200, "{\"path\":\"a.rs\",\"content\":\"one\\ntwo\\n")
-            .expect("the window has passed");
-        assert!(caught_up.subject.is_none(), "the name cannot improve, so it is not resent");
-        assert_eq!(caught_up.body.map(|body| body.total_lines), Some(2), "and it caught up");
-
-        // A payload that has not grown is not a frame, however long it has been.
-        assert!(frame(&mut state, 900, "{\"path\":\"a.rs\",\"content\":\"one\\ntwo\\n").is_none());
-        let grown =
-            frame(&mut state, 1_000, "{\"path\":\"a.rs\",\"content\":\"one\\ntwo\\nthree\\n")
-                .expect("a third line");
-        assert_eq!(grown.body.map(|body| body.total_lines), Some(3));
-    }
-}
+mod tests;

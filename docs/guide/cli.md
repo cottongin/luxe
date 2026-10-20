@@ -83,6 +83,16 @@ script can tell a failure from an answer without reading the output.
 | `luxe models show <provider/id>` | What Luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
 | `luxe models refresh` | Refresh the model catalog. `--force` even if it is fresh. |
 | `luxe sessions list` | Sessions in this project, newest first |
+| `luxe join [id]` | Join a session another Luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the Luxe's process id; without one, it joins the session running in this folder. |
+| `luxe join --list` | Sessions running on this machine that can be joined |
+| `luxe remote` | Serve this machine's sessions to your own phone or tablet. Listens on this machine only, for Tailscale Serve to carry to your devices, and lets in this machine's tailnet owner from a paired device. |
+| `luxe remote --port <n>` | The port it listens on (default 4519) |
+| `luxe remote --allow <login>` | Also let this tailnet login in, as Tailscale names it (`alex@github`). Repeatable. |
+| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside Luxe asks first. |
+| `luxe remote pair` | Show a QR code and link that pair one phone or tablet. They work once, within ten minutes. |
+| `luxe remote devices` | The paired devices |
+| `luxe remote devices revoke <id>` | Unpair a device. Its open sessions close within a few seconds. |
+| `luxe remote service remove` | Stop the bridge's user service and stop it starting at login |
 | `luxe mcp list` | Configured MCP servers |
 | `luxe mcp add --id <id> --name <name>` | Add a server to the project's `.luxe/mcp.json`, with `--command "<program> <args>"` or `--url <url>`. It counts as a [project's server](mcp.md#servers-a-project-brings). |
 | `luxe mcp remove --id <id>` | Remove a server from the project's `.luxe/mcp.json` |

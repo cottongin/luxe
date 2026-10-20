@@ -16,6 +16,8 @@ pub struct StatusModel {
     pub mode: String,
     pub git_branch: Option<String>,
     pub git_dirty: bool,
+    /// Who's joined this session from elsewhere, by name, for the dock's SESSION block
+    pub guests: Vec<String>,
     /// Project name, for the bar's left anchor.
     pub project: Option<String>,
     /// Compact working-directory path (e.g. `~/projects/luxe`) for the optional cwd module.
@@ -26,6 +28,8 @@ pub struct StatusModel {
     /// Whether the compaction under way started inside a turn, which carries on once it ends; one
     /// asked for with `/compact` returns to idle
     pub(crate) compacting_mid_turn: bool,
+    /// The transcript line saying a summary is being written, rewritten with how it ended
+    pub(crate) compaction_note: Option<crate::app::ConversationItemId>,
     /// Animation frame counter, advanced on every tick while streaming/compacting.
     ///
     /// Monotonic within a turn: every consumer takes it modulo its own frame count, and the
@@ -100,11 +104,13 @@ impl Default for StatusModel {
             mode: luxe_core::mode::BUILD.into(),
             git_branch: None,
             git_dirty: false,
+            guests: Vec::new(),
             project: None,
             cwd: None,
             active_tool: None,
             state: AppState::Idle,
             compacting_mid_turn: false,
+            compaction_note: None,
             spinner_frame: 0,
             animating: false,
             turn_started: None,
@@ -126,6 +132,12 @@ impl Default for StatusModel {
 }
 
 impl StatusModel {
+    /// The tool call in flight is over: no name beside the spinner, no clock on its card.
+    pub(crate) fn tool_finished(&mut self) {
+        self.active_tool = None;
+        self.tool_started = None;
+    }
+
     /// Advance the animation frame.
     ///
     /// Streaming and compacting are the states with something running, plus whatever a surface has
@@ -296,19 +308,6 @@ impl StatusModel {
                 .map_or(std::time::Duration::ZERO, |since| now.saturating_duration_since(since))
     }
 
-    /// Format elapsed time as a string (e.g. "31s", "1m 23s").
-    ///
-    /// Whole seconds: this counts up while a turn runs, and a tenth of a second is not a figure
-    /// anyone reads — it is one they notice moving.
-    pub fn format_elapsed(dur: std::time::Duration) -> String {
-        let secs = dur.as_secs();
-        if secs < 60 {
-            format!("{secs}s")
-        } else {
-            format!("{}m {:02}s", secs / 60, secs % 60)
-        }
-    }
-
     /// Format token counts as a string (e.g. "↑1.2k ↓340").
     pub fn format_tokens(prompt: u64, completion: u64) -> String {
         let fmt = |n: u64| -> String {
@@ -357,7 +356,7 @@ impl StatusModel {
         spans.push(Span::raw(state));
         if let Some(dur) = self.elapsed(now) {
             spans.push(Span::raw(" "));
-            spans.push(Span::raw(Self::format_elapsed(dur)));
+            spans.push(Span::raw(crate::statusline::format_elapsed_compact(dur)));
         }
         if self.prompt_tokens > 0 || self.completion_tokens > 0 {
             spans.push(Span::raw(" "));

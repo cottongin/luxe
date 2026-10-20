@@ -1,5 +1,6 @@
 use super::*;
 use luxe_core::provider::ModelInfo;
+use tokio::io::AsyncWriteExt;
 
 /// A resolver with no dependence on the developer's `models.json`.
 struct FixedModels;
@@ -8,14 +9,42 @@ impl ModelResolver for FixedModels {
     fn resolve(&self, provider: &str, id: &str) -> ModelInfo {
         ModelInfo { r#ref: luxe_core::provider::ModelRef::new(provider, id), ..Default::default() }
     }
+
+    fn choices(&self) -> Vec<luxe_core::event::ModelChoice> {
+        vec![luxe_core::event::ModelChoice {
+            provider: "anthropic".into(),
+            model: "claude-sonnet-5".into(),
+            name: "Claude Sonnet 5".into(),
+            thinking_levels: vec![luxe_core::provider::ThinkingLevel::Off],
+        }]
+    }
 }
 
 fn policy(github_writes: GithubWrites) -> Policy {
-    Policy { github_writes, github_sections: Vec::new() }
+    Policy { github_writes, github_sections: Vec::new(), joined: false }
 }
 
 fn parse(line: &str) -> Result<Action, Rejected> {
-    parse_action(line, &FixedModels, &policy(GithubWrites::NotEnabled))
+    match parse_action(line, &FixedModels, &policy(GithubWrites::NotEnabled))? {
+        Inbound::Engine(action) => Ok(*action),
+        Inbound::Answer(answer) => panic!("answered without the engine: {answer:?}"),
+    }
+}
+
+/// `list_models` is answered to the client that asked, with the catalog's choices, and the
+/// engine never hears of it.
+///
+/// The break this catches: forwarding it to the engine, which has no arm for it; or answering
+/// with nothing, so the phone's picker opens empty.
+#[tokio::test]
+async fn the_protocol_answers_which_models_there_are() {
+    let ask = "{\"kind\":\"list_models\",\"content\":{\"request_id\":\"models:1\"}}\n";
+    let session = run_session(ask, Vec::new()).await;
+    let listed = session.frames.iter().find(|frame| frame["kind"] == "models_listed");
+    let listed = listed.expect("an answer");
+    assert_eq!(listed["content"]["request_id"], "models:1");
+    assert_eq!(listed["content"]["models"][0]["model"], "claude-sonnet-5");
+    assert!(session.actions.iter().all(|action| matches!(action, Action::Close)));
 }
 
 /// A well-formed frame becomes the engine action it names.
@@ -120,12 +149,12 @@ async fn run_session(input: &str, events: Vec<Event>) -> Session {
         github_writes: false,
     };
     let served = serve(
-        ready,
+        ready.into(),
         event_rx,
         engine_tx,
         server_read,
         server_write,
-        &FixedModels,
+        std::sync::Arc::new(FixedModels),
         policy(GithubWrites::NotEnabled),
     );
     tokio::time::timeout(std::time::Duration::from_secs(5), served)
@@ -338,12 +367,12 @@ async fn a_real_write_failure_is_not_mistaken_for_a_hangup() {
         github_writes: false,
     };
     let served = serve(
-        ready,
+        ready.into(),
         event_rx,
         engine_tx,
         server_read,
         FailingWriter,
-        &FixedModels,
+        std::sync::Arc::new(FixedModels),
         policy(GithubWrites::NotEnabled),
     );
     let outcome = tokio::time::timeout(std::time::Duration::from_secs(5), served)
@@ -383,18 +412,73 @@ async fn a_client_that_stops_reading_is_not_an_error() {
         github_writes: false,
     };
     let served = serve(
-        ready,
+        ready.into(),
         event_rx,
         engine_tx,
         server_read,
         server_write,
-        &FixedModels,
+        std::sync::Arc::new(FixedModels),
         policy(GithubWrites::NotEnabled),
     );
     let outcome = tokio::time::timeout(std::time::Duration::from_secs(5), served)
         .await
         .expect("a hangup must end the session promptly");
     assert!(outcome.is_ok(), "a client hangup is a clean end: {outcome:?}");
+}
+
+/// A joiner's transcript is let go once it's sent, while the client stays connected.
+///
+/// The break this catches: `serve` keeping the opening for the whole connection, which pins a stale
+/// copy of every message per client and makes each commit copy the snapshot's whole list.
+#[tokio::test]
+async fn a_sent_transcript_is_released_while_the_client_stays() {
+    let message = luxe_core::event::SessionMessage {
+        entry_id: luxe_core::session::EntryId("entry-1".into()),
+        message: luxe_core::message::Message::user("hello"),
+    };
+    let messages = std::sync::Arc::new(vec![message]);
+    let transcript =
+        SharedTranscript { session_id: "session-1".into(), messages: messages.clone() };
+    let (served, mut lines) = serve_joiner(transcript);
+
+    lines.next_line().await.unwrap().expect("the ready frame");
+    let loaded = lines.next_line().await.unwrap().expect("the transcript frame");
+    assert!(loaded.starts_with(r#"{"kind":"session_loaded""#), "{loaded}");
+    assert_eq!(holders_once_settled(&messages).await, 1, "serve still holds the transcript");
+    assert!(!served.is_finished(), "the client is still connected");
+    served.abort();
+}
+
+/// Serve a joiner opening on `transcript`, connected until aborted, and what its client reads.
+fn serve_joiner(
+    transcript: SharedTranscript,
+) -> (
+    tokio::task::JoinHandle<anyhow::Result<()>>,
+    tokio::io::Lines<BufReader<tokio::io::DuplexStream>>,
+) {
+    let (client_write, server_read) = tokio::io::duplex(1024);
+    let (server_write, client_read) = tokio::io::duplex(64 * 1024);
+    let (engine_tx, engine_rx) = mpsc::channel::<Action>(64);
+    let (event_tx, event_rx) = mpsc::channel::<Event>(64);
+    let opening = Opening { ready: Event::Notice("ready".into()), transcript: Some(transcript) };
+    let (models, policy) = (std::sync::Arc::new(FixedModels), policy(GithubWrites::NotEnabled));
+    let served = tokio::spawn(async move {
+        // Held open, so the session waits on its client instead of ending
+        let _open = (client_write, engine_rx, event_tx);
+        serve(opening, event_rx, engine_tx, server_read, server_write, models, policy).await
+    });
+    (served, BufReader::new(client_read).lines())
+}
+
+/// How many hold `messages` once anything still sending it has had its chance to let go.
+async fn holders_once_settled<T>(messages: &std::sync::Arc<T>) -> usize {
+    for _ in 0..100 {
+        if std::sync::Arc::strong_count(messages) == 1 {
+            break;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+    }
+    std::sync::Arc::strong_count(messages)
 }
 
 /// Every frame written is one line of JSON — the framing rule a client parses by.

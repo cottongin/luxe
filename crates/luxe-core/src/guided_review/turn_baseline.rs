@@ -303,9 +303,10 @@ impl TurnBaselineArtifact {
                 })
             };
         }
+        let earlier = retention::newest_payload_dir(&root);
         let staging = root.join(format!(".staging-{}", Uuid::new_v4()));
         create_private_dir(&staging)?;
-        let result = self.write_staging(&staging).and_then(|()| {
+        let result = self.write_staging(&staging, earlier.as_deref()).and_then(|()| {
             fs::rename(&staging, &target).map_err(|source| TurnBaselineStoreError::Io {
                 operation: "commit",
                 path: target.clone(),
@@ -403,7 +404,11 @@ impl TurnBaselineArtifact {
         Ok(())
     }
 
-    fn write_staging(&self, staging: &Path) -> Result<(), TurnBaselineStoreError> {
+    fn write_staging(
+        &self,
+        staging: &Path,
+        earlier: Option<&Path>,
+    ) -> Result<(), TurnBaselineStoreError> {
         let payload_dir = staging.join(TURN_BASELINE_PAYLOAD_DIR);
         create_private_dir(&payload_dir)?;
         for (path, bytes) in &self.payloads {
@@ -421,9 +426,9 @@ impl TurnBaselineArtifact {
                     reason: "payload metadata differs",
                 });
             }
-            let payload_path = payload_dir.join(digest);
+            let payload_path = payload_dir.join(&digest);
             if !payload_path.exists() {
-                write_private_file(&payload_path, bytes)?;
+                retention::place_payload(&payload_path, earlier, &digest, bytes)?;
             }
         }
         let manifest = serde_json::to_vec(&self.manifest)?;
@@ -485,6 +490,9 @@ fn is_normal_relative_path(path: &Path) -> bool {
 fn is_sha256_hex(value: &str) -> bool {
     value.len() == 64 && value.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
+
+mod retention;
+pub(crate) use retention::{prune_turn_baselines, UNREFERENCED_BASELINE_AGE};
 
 #[cfg(test)]
 mod tests;

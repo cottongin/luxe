@@ -323,10 +323,12 @@ pub enum ToolActivityState {
     /// distinction from `Running` is whose work it is: the model's rather than the tool's, which
     /// is why the card's clock does not start until dispatch.
     Composing,
-    /// The call has been written in full but has not started, because something else is running.
+    /// The call hasn't started because something else comes first: it's written in full and
+    /// waiting its turn, or still being written while an earlier call runs.
     ///
     /// Tools are dispatched strictly one at a time, so **at most one call is ever `Running`** —
-    /// and a model writes the calls of one message in order, so at most one is ever `Composing`.
+    /// and a model writes the calls of one message in order, so at most one is ever `Composing`,
+    /// and never beside a `Running` one, since a call written while another runs waits behind it.
     /// Between them that is the invariant a transcript has to show: exactly one card is working.
     /// Drawing every un-finished call as running broke it in the obvious direction (two `bash`
     /// cards spinning side by side, which reads as two shells at once); drawing them all as

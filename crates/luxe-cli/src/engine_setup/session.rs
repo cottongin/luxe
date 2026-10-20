@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use luxe_core::session::{SessionId, SessionStore};
+use luxe_core::session::{SessionClaim, SessionError, SessionId, SessionStore};
 
 use super::AgentSettings;
 
@@ -135,7 +135,7 @@ pub(crate) struct WorktreeBinding {
 pub(super) fn attach_session(
     settings: &AgentSettings,
     store: &mut luxe_core::session::JsonlSessionStore,
-) -> anyhow::Result<SessionId> {
+) -> anyhow::Result<(SessionId, Option<SessionClaim>)> {
     let session_id = match (&settings.resume, resumed_session(store, &settings.resume)) {
         (ResumeMode::New, _) => store.create(&settings.state_root.to_string_lossy())?,
         (_, Some(id)) => {
@@ -154,6 +154,8 @@ pub(super) fn attach_session(
             anyhow::bail!("session '{id}' not found for this project")
         }
     };
+    // Before the records below, which are writes too
+    let claim = claim_session(store, &session_id)?;
     // A session in a worktree says so in its own log, which is how resuming finds the worktree
     if let Some(binding) = &settings.worktree {
         record_worktree(store, &session_id, binding, &settings.state_root);
@@ -164,7 +166,50 @@ pub(super) fn attach_session(
     if let Some((number, url)) = &settings.pull_request {
         record_pull_request(store, &session_id, *number, url);
     }
-    Ok(session_id)
+    Ok((session_id, claim))
+}
+
+/// Claim `session_id` for this process, or say which Luxe has it open and how to get there.
+fn claim_session(
+    store: &luxe_core::session::JsonlSessionStore,
+    session_id: &SessionId,
+) -> anyhow::Result<Option<SessionClaim>> {
+    match store.claim(session_id) {
+        Ok(claim) => Ok(claim),
+        Err(SessionError::OpenElsewhere(id)) => anyhow::bail!(open_elsewhere(&id)),
+        Err(error) => Err(error.into()),
+    }
+}
+
+/// Why `session` can't be opened here right now, when another Luxe has it open.
+///
+/// Asked before leaving the session that's running, so the reader stays where they are rather
+/// than landing outside the TUI. This process's own claims don't count against it.
+pub(crate) fn open_elsewhere_now(state_root: &std::path::Path, session: &str) -> Option<String> {
+    let store = super::open_session_store(state_root);
+    let id = SessionId(session.to_string());
+    match store.claim(&id) {
+        Err(SessionError::OpenElsewhere(id)) => Some(open_elsewhere(&id)),
+        // Any other failure meets the session's start, which reports it in full
+        Ok(_) | Err(_) => None,
+    }
+}
+
+/// Where the session is open, when the Luxe that has it says so, and what to do about it.
+fn open_elsewhere(id: &SessionId) -> String {
+    let runtime = luxe_core::user_dirs::luxe_runtime_dir();
+    let holder = luxe_core::local_endpoint::live_sessions(&runtime)
+        .into_iter()
+        .find(|live| live.session_id == id.0);
+    let place = match holder {
+        Some(live) => format!(" (process {}, in {})", live.pid, live.cwd),
+        None => String::new(),
+    };
+    // `luxe join` is not offered: it speaks the protocol, so a person running it sees JSON
+    format!(
+        "session {id} is already open in another Luxe{place}. Carry on there, or close it \
+         there first"
+    )
 }
 
 #[cfg(test)]
@@ -228,5 +273,36 @@ mod tests {
         assert_eq!(resumed_session(&store, &ResumeMode::Session(id.0.clone())), Some(id.clone()));
         assert_eq!(resumed_session(&store, &ResumeMode::Session("nope".into())), None);
         assert_eq!(resumed_session(&store, &ResumeMode::PullRequest(9)), None);
+    }
+
+    /// A session another process holds is refused up front, with the way to reach it, and the
+    /// check made before leaving a running session says the same.
+    ///
+    /// The break this catches: attaching without a claim, so a second `luxe --resume` opens a
+    /// second writer on the log, or a resume from inside the TUI that lands the reader outside it.
+    #[test]
+    fn a_session_open_in_another_process_is_refused_and_says_so() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut store = open_session_store(dir.path());
+        let id = store.create("/work").unwrap();
+        let lock = store.session_path(&id).unwrap().with_extension("lock");
+        let other_process = std::fs::File::create(&lock).unwrap();
+        other_process.try_lock().unwrap();
+        let settings = {
+            let _env = super::super::test_env::ENV_LOCK
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            let _home = super::super::test_env::isolated_env();
+            let mut settings = AgentSettings::resolve(dir.path().to_path_buf(), Default::default());
+            settings.resume = ResumeMode::Session(id.0.clone());
+            settings
+        };
+
+        let refused = attach_session(&settings, &mut store).expect_err("held elsewhere");
+        let expected = format!("session {id} is already open in another Luxe");
+        assert!(refused.to_string().contains(&expected), "{refused}");
+        assert!(open_elsewhere_now(dir.path(), &id.0).is_some());
+        drop(other_process);
+        assert!(open_elsewhere_now(dir.path(), &id.0).is_none());
     }
 }

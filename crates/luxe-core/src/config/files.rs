@@ -11,6 +11,12 @@ impl Config {
         luxe_config_dir().join("config.json")
     }
 
+    /// The user-level config alone, for what belongs to no one project, such as the theme
+    /// `luxe remote` draws the phone app in. Missing or malformed reads as the defaults.
+    pub fn load_global() -> Self {
+        load_global_config().unwrap_or_default()
+    }
+
     /// Path to the optional custom debug-adapter registry (`debug-adapters.json`).
     pub fn debug_adapters_path() -> PathBuf {
         luxe_config_dir().join("debug-adapters.json")

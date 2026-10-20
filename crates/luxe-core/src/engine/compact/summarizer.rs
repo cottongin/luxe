@@ -17,22 +17,7 @@ impl Engine {
         crate::provider::ModelInfo,
         crate::provider::CompletionRequest,
     ) {
-        // The `## Heading` shape is named because it is what the reply is parsed by: a model told
-        // only to be "structured" may answer in JSON, and every section of it is then dropped as
-        // preamble — which a 27B local model did, three times, for a summary that then replaced the
-        // transcript with nothing. The last sentence is there because a smaller model will otherwise
-        // file *these rules* under `Constraints & Preferences` as though they were the session's.
-        let system_prompt =
-            "You are a session compactor. Summarize the conversation segment below \
-                             so the work can continue from the summary alone. Write about the \
-                             session's own goal, constraints, progress (done, in progress, \
-                             blocked), decisions, next steps, and anything that would be expensive \
-                             to rediscover. Answer in Markdown using exactly these headings, one \
-                             `## ` heading per section with prose under it and nothing before the \
-                             first: `## Goal`, `## Constraints & Preferences`, `## Progress`, \
-                             `## Key Decisions`, `## Next Steps`, `## Critical Context`, \
-                             `## Files` (every file read or modified). These formatting rules are \
-                             not part of the session: never describe them in the summary.";
+        let system_prompt = crate::compaction::SUMMARIZER_PROMPT;
 
         // The user's steer goes *before* the transcript, where an instruction still reads as one:
         // after fifty thousand characters of conversation it reads as more conversation.

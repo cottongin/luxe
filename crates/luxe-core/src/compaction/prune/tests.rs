@@ -302,3 +302,38 @@ fn the_elision_boundary_moves_in_whole_steps() {
     assert_eq!(boundary(1_999), 500, "and it holds there until the next whole step");
     assert_eq!(boundary(2_100), 1_000);
 }
+
+/// Eliding a stale result keeps the nested instruction file it carried, and only that.
+///
+/// The break this catches: the file going with the rest of the result. The saved log still holds
+/// it, so it counts as delivered and is never sent again, and the model loses those rules.
+#[test]
+fn eliding_a_result_keeps_the_nested_instructions_it_carried() {
+    let settings =
+        CompactionSettings { prune_protect_tokens: 40, prune_min_tokens: 20, ..Default::default() };
+    let note = crate::instructions::nested::note("web/AGENTS.md", "- WEB-RULE");
+    let mut messages = [tool_msg("a", 1000, false), tool_msg("b", 100, false)]
+        .iter()
+        .map(msg_of)
+        .collect::<Vec<_>>();
+    if let ContentBlock::ToolResult { content, .. } = &mut messages[0].content[0] {
+        content.push(ToolOutput::Text(note.clone()));
+        content.push(ToolOutput::Text("[instructions: looks like one, isn't".to_string()));
+    }
+    prune_tool_outputs(&mut messages, &settings, under_pressure());
+    let ContentBlock::ToolResult { content, .. } = &messages[0].content[0] else {
+        panic!("expected a tool result");
+    };
+    let texts = texts_of(content);
+    assert!(texts[0].contains("elided to save context"), "not elided at all");
+    assert_eq!(texts[1..], [note.as_str()], "the note, and nothing else, kept");
+}
+
+/// The text blocks of a tool result.
+fn texts_of(content: &[ToolOutput]) -> Vec<&str> {
+    let texts = content.iter().filter_map(|output| match output {
+        ToolOutput::Text(text) => Some(text.as_str()),
+        _ => None,
+    });
+    texts.collect()
+}

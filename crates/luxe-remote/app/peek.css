@@ -1,0 +1,86 @@
+/* Where the project panel and the peek (a file or a diff) sit. On a phone each covers the page,
+   a peek over the panel. On a wide screen the panel is a rail in the dock's place, since the TUI
+   keeps FILES in its dock, and a peek opens between the rail and the conversation, as the TUI
+   peeks beside the dock: "click a name, see the file". The conversation keeps its column only
+   where the TUI's own minimums fit, so on an iPad the peek takes the main column until it closes */
+
+.peek {
+  z-index: 5;
+}
+
+/* layout.js's WIDE, as in dock.css */
+@media (min-width: 50rem) and (min-height: 30rem) {
+  :root {
+    --rail: 24rem;
+  }
+
+  .panel {
+    inset: 0 auto 0 0;
+    width: calc(var(--rail) + env(safe-area-inset-left));
+    box-sizing: border-box;
+    padding-right: 0;
+    border-right: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+
+  :root[data-dock-side="right"] .panel {
+    inset: 0 0 0 auto;
+    width: calc(var(--rail) + env(safe-area-inset-right));
+    padding-left: 0;
+    border-right: none;
+    border-left: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+
+  /* the panel stands in for the dock's rail while it's open */
+  #app:has(> .panel) > .dock {
+    display: none;
+  }
+
+  #app:has(> .panel) {
+    padding-left: var(--rail);
+  }
+
+  :root[data-dock-side="right"] #app:has(> .panel) {
+    padding-left: 0;
+    padding-right: var(--rail);
+  }
+
+  #app:has(> .panel, > .dock.shown) > .peek {
+    inset: 0 0 0 calc(var(--rail) + env(safe-area-inset-left));
+    padding-left: 0;
+  }
+
+  :root[data-dock-side="right"] #app:has(> .panel, > .dock.shown) > .peek {
+    inset: 0 calc(var(--rail) + env(safe-area-inset-right)) 0 0;
+    padding-right: 0;
+  }
+}
+
+/* Room for the TUI's 56 cells of conversation, a rule and 72 of peek beside the rail: 129 cells
+   of 7.8px, the app's 13px cell, and the rail's 24rem. The peek grows to the TUI's cap for a
+   unified diff, 134 cells, and the conversation takes the rest */
+@media (min-width: 87rem) and (min-height: 30rem) {
+  :root {
+    --peek: min(100vw - var(--rail) - 57ch, 134ch);
+  }
+
+  #app:has(> .panel, > .dock.shown) > .peek {
+    right: auto;
+    width: var(--peek);
+    border-right: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+
+  :root[data-dock-side="right"] #app:has(> .panel, > .dock.shown) > .peek {
+    left: auto;
+    border-right: none;
+    border-left: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+
+  #app:has(> .peek):has(> .panel, > .dock.shown) {
+    padding-left: calc(var(--rail) + var(--peek));
+  }
+
+  :root[data-dock-side="right"] #app:has(> .peek):has(> .panel, > .dock.shown) {
+    padding-left: 0;
+    padding-right: calc(var(--rail) + var(--peek));
+  }
+}

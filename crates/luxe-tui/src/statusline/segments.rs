@@ -9,6 +9,8 @@ use crate::app::App;
 use crate::glyphs::Icon;
 use crate::widgets::truncate_end as truncate_to_width;
 use luxe_core::config::StatuslineModule;
+use luxe_core::provider::PlanUsage;
+use luxe_core::usage::SessionUsage;
 
 /// Builds the left cluster from the configured (or default) module list.
 ///
@@ -282,12 +284,7 @@ pub(super) fn right_segments(app: &App, palette: Palette) -> Vec<Segment> {
 fn right_segment(module: StatuslineModule, app: &App, palette: Palette) -> Option<Segment> {
     match module {
         StatuslineModule::Cost => {
-            // On a subscription the binding constraint is the plan's allowance, not a dollar figure
-            // nobody is being charged — so that takes the slot when the provider reports it.
-            let label = match app.status.plan_compact() {
-                Some(plan) => plan,
-                None => app.status.session_cost_label()?,
-            };
+            let label = cost_text(app.status.plan_usage.as_ref(), &app.status.session)?;
             Some(segment(SegmentKind::Cost, None, label, Ink::Neutral))
         }
         StatuslineModule::Tokens
@@ -325,11 +322,7 @@ fn right_segment(module: StatuslineModule, app: &App, palette: Palette) -> Optio
             Some(segment(
                 SegmentKind::Context,
                 Some((Icon::Context.glyph(), ink)),
-                format!(
-                    "{:.1}%/{}",
-                    app.status.context_pct,
-                    compact_number(u64::from(app.status.context_window))
-                ),
+                context_text(app.status.context_pct, app.status.context_window),
                 ink,
             ))
         }
@@ -362,4 +355,17 @@ fn right_segment(module: StatuslineModule, app: &App, palette: Palette) -> Optio
         }
         _ => None,
     }
+}
+
+/// The cost slot's words. On a subscription the binding constraint is the plan's allowance, not a
+/// dollar figure nobody is being charged, so that takes the slot when the provider reports it.
+pub(super) fn cost_text(plan: Option<&PlanUsage>, session: &SessionUsage) -> Option<String> {
+    plan.and_then(PlanUsage::compact)
+        .or_else(|| session.total.cost_label())
+        .or_else(|| session.total.plan_label())
+}
+
+/// The context reading: `4.8%/200k`.
+pub(super) fn context_text(percent: f32, window: u32) -> String {
+    format!("{percent:.1}%/{}", compact_number(u64::from(window)))
 }

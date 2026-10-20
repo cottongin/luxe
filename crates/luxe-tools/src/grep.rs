@@ -52,7 +52,7 @@ fn grep_schema() -> ToolSchema {
                 },
                 "glob": {
                     "type": "string",
-                    "description": "Glob pattern to filter files (e.g., '*.rs')"
+                    "description": "Glob pattern to filter files (e.g., '*.rs'); a leading '!' excludes (e.g., '!tests/**')"
                 },
                 "outputMode": {
                     "type": "string",

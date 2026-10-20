@@ -37,20 +37,25 @@ fn push_block_gap(lines: &mut Vec<MarkdownLine>) {
     }
 }
 
-/// Renders markdown in `voice`, preserving the structural block kinds conversation layout needs.
-pub(crate) fn layout_markdown_in(
-    src: &str,
-    theme: &ThemeStyles,
-    voice: MarkdownVoice,
-) -> Vec<MarkdownLine> {
+/// The dialect model markdown is read in, here and in the phone app's HTML.
+pub(super) fn parser_options() -> Options {
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_STRIKETHROUGH);
     opts.insert(Options::ENABLE_TABLES);
     // Alerts (`> [!WARNING]`) are the GitHub dialect models were trained on and write unprompted.
     // Without this the tag is body text, and the quote opens with a literal `[!WARNING]`.
     opts.insert(Options::ENABLE_GFM);
+    opts
+}
+
+/// Renders markdown in `voice`, preserving the structural block kinds conversation layout needs.
+pub(crate) fn layout_markdown_in(
+    src: &str,
+    theme: &ThemeStyles,
+    voice: MarkdownVoice,
+) -> Vec<MarkdownLine> {
     let mut renderer = MarkdownRenderer::new(theme, voice);
-    for event in Parser::new_ext(src, opts) {
+    for event in Parser::new_ext(src, parser_options()) {
         renderer.event(event);
     }
     // Flush any remaining spans

@@ -1,6 +1,6 @@
 ---
 title: "Recipes"
-summary: "Extensions put together: Asana, subagents, a classifier guard, Herdr, and a local model."
+summary: "Extensions put together: Asana, subagents, a classifier guard, Herdr, your phone, and a local model."
 order: 8
 group: "Extend"
 ---
@@ -245,6 +245,60 @@ not change.
 The one token worth a second thought is `panel_bg`: Herdr draws the active tab as `panel_bg` text
 on an `accent` fill, so it has to stay dark enough to read there. Lifting it to `#201e1a` gives the
 tab bar a surface of its own if you prefer the chrome delineated.
+
+## Luxe from your phone
+
+Your sessions keep running on your computer, and your phone or tablet reaches them over
+[Tailscale](https://tailscale.com), a private network between your own devices. Nothing is opened to
+the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is Luxe's own way in.
+
+1. Install Tailscale on the computer and on the phone, and sign in to the same account on both.
+2. On the computer, turn on SSH. On Linux and macOS, Tailscale can do it for you:
+
+   ```bash
+   sudo tailscale up --ssh
+   ```
+
+   On Windows, turn on the OpenSSH Server in Settings, under Optional features.
+3. Run Luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
+   them in.
+4. On the phone, connect with an SSH app such as Blink Shell or Termius, using the computer's
+   Tailscale name, and run `herdr`. It attaches to the panes you left, with Luxe where it was.
+
+```bash
+mosh you@desk -- herdr
+```
+
+[Mosh](https://mosh.org) keeps the connection through a locked screen or a switch from Wi-Fi to
+cellular. It needs `mosh` installed on the computer too, which Linux and macOS have and Windows
+does not; plain `ssh` works everywhere.
+
+On an iPad with a keyboard, this is Luxe as you know it. On a phone, Luxe fits a narrow screen,
+and Herdr marks which session is waiting on you.
+
+### A notification when Luxe needs you
+
+[Luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
+[hook](hooks.md) can post to [ntfy](https://ntfy.sh), whose app shows it on your phone:
+
+```json title="~/.config/luxe/hooks.json"
+{
+  "PermissionRequested": [
+    { "command": ["curl", "-s", "-d", "Luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
+  ],
+  "BeforeToolUse": [
+    { "matcher": "question", "command": ["curl", "-s", "-d", "Luxe has a question", "https://ntfy.sh/your-topic"] }
+  ],
+  "AgentEnd": [
+    { "command": ["curl", "-s", "-d", "Luxe finished", "https://ntfy.sh/your-topic"] }
+  ]
+}
+```
+
+- **Anyone who knows an ntfy.sh topic can read it**, so pick a long random name, or run ntfy
+  yourself on your Tailscale network. The messages above say only that something is waiting, never
+  the command.
+- **`AgentEnd` fires after every turn**, at your desk too. Leave it out if that is too many.
 
 ## A local model in LM Studio
 

@@ -93,6 +93,9 @@ pub(crate) struct UnitSignature {
     pub(crate) selected: bool,
     pub(crate) never_sent: bool,
     pub(crate) expanded: bool,
+    /// The image store's [`layout_revision`](crate::graphics::ImageStore::layout_revision) for a
+    /// unit that draws an image, `None` for one that doesn't
+    pub(crate) images: Option<u64>,
 }
 
 /// One unit's rows, and what they were drawn against.

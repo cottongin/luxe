@@ -143,11 +143,9 @@ impl Engine {
                     // A review edit clears the same bar: handing it to the desk is a send that
                     // never waits. Deferred, every comment written while the agent worked on the
                     // last batch sat behind the whole turn, and the review refused the next one.
-                    Some(
-                        action @ (Action::EditReview { .. }
-                        | Action::RecordReviewProgress { .. }
-                        | Action::RecordReviewSeen { .. }),
-                    ) => self.forward_to_review_desk(action),
+                    Some(action) if action.goes_to_review_desk() => {
+                        self.forward_to_review_desk(action);
+                    }
                     // Awaits only locks the turn takes and drops at once, so `Cancel` still gets
                     // through. Deferred, a switch made to stop the agent writing reached it only
                     // after the turn had written, and the label never moved meanwhile

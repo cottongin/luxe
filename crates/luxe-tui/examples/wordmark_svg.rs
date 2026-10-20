@@ -31,9 +31,10 @@ fn main() {
     match target.as_str() {
         "wordmark" => print!("{}", svg(rows, 0..Wordmark::Full.group_count())),
         "mark" => print!("{}", svg(rows, 0..1)),
+        "app" => print!("{}", app_svg(rows)),
         "tile" => print!("{}", tile(rows, tile_colors())),
         other => {
-            eprintln!("usage: wordmark_svg [wordmark|mark|tile]  (got {other:?})");
+            eprintln!("usage: wordmark_svg [wordmark|mark|app|tile]  (got {other:?})");
             std::process::exit(2);
         }
     }
@@ -72,11 +73,14 @@ fn tile(rows: &[&str], (plate_color, ink): (String, String)) -> String {
     let side = TILE;
     let plate = format!("M0 0H{side}V{side}H0z");
 
-    // Fit the L by height, then center it: it is the taller axis, so height sets the scale.
-    let letter_w = ink_right(rows, 0..1) * CELL_W;
+    // Fit the L by height, then center its ink: it is the taller axis, so height sets the scale.
+    // The letter's first column is blank, so the ink, not the column span, is what gets centered.
+    let ink_left = first_inked_column(rows, 0) * CELL_W;
+    let letter_w = ink_right(rows, 0..1) * CELL_W - ink_left;
     let letter_h = rows.len() as u32 * CELL_H;
     let scale = f64::from(side - TILE_PAD * 2) / f64::from(letter_h);
-    let offset_x = (f64::from(side) - f64::from(letter_w) * scale) / 2.0;
+    let offset_x =
+        (f64::from(side) - f64::from(letter_w) * scale) / 2.0 - f64::from(ink_left) * scale;
 
     format!(
         "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {side} {side}\" \
@@ -120,6 +124,15 @@ fn svg(rows: &[&str], letters: std::ops::Range<usize>) -> String {
     out
 }
 
+/// The phone app's copy: the wordmark, plus how deep the drift swings.
+///
+/// The app's colors come from core's theme CSS, and the depth is the terminal's, so the file is
+/// the one way it reaches the app without a second copy of the number.
+fn app_svg(rows: &[&str]) -> String {
+    let depth = format!(" data-drift-depth=\"{}\" role=", luxe_tui::widgets::DRIFT_DEPTH);
+    svg(rows, 0..Wordmark::Full.group_count()).replacen(" role=", &depth, 1)
+}
+
 /// The first column of ink group `group`.
 fn first_column(group: usize) -> u32 {
     let groups = Wordmark::Full.groups();
@@ -132,6 +145,20 @@ fn group_span(group: usize) -> std::ops::Range<usize> {
     let first = groups.iter().position(|owner| *owner == group).unwrap_or(0);
     let last = groups.iter().rposition(|owner| *owner == group).unwrap_or(first);
     first..last + 1
+}
+
+/// The leftmost inked column of ink group `group`.
+fn first_inked_column(rows: &[&str], group: usize) -> u32 {
+    let span = group_span(group);
+    rows.iter()
+        .flat_map(|row| {
+            row.chars()
+                .enumerate()
+                .filter(|(column, glyph)| *glyph != ' ' && span.contains(column))
+                .map(|(column, _)| column as u32)
+        })
+        .min()
+        .unwrap_or(0)
 }
 
 /// One column past the rightmost inked cell in `letters`.
@@ -270,6 +297,21 @@ mod tests {
         assert!(svg.contains("data-cell=\"10 22\""), "the grid the highlight is drawn in");
     }
 
+    /// The app's copy is the wordmark with the drift's depth on its root.
+    ///
+    /// The break this catches: the attribute left off, or put somewhere other than the `<svg>` tag,
+    /// which leaves the app swinging by a guess.
+    #[test]
+    fn the_app_copy_carries_the_drift_depth() {
+        let rows = Wordmark::Full.rows();
+        let app = app_svg(rows);
+        let root = app.lines().next().expect("a root tag");
+        let depth = luxe_tui::widgets::DRIFT_DEPTH;
+        assert!(root.contains(&format!("data-drift-depth=\"{depth}\"")), "{root}");
+        let paths = |doc: &str| doc.lines().skip(1).collect::<Vec<_>>().join("\n");
+        assert_eq!(paths(&app), paths(&svg(rows, 0..Wordmark::Full.group_count())));
+    }
+
     /// The tile is a plain square and keeps the letter inside its own padding, which is what decides
     /// whether it survives a 16px tab strip.
     #[test]
@@ -306,6 +348,24 @@ mod tests {
             (drawn - f64::from(TILE - TILE_PAD * 2)).abs() < 1.0,
             "the letter fills its box exactly: {drawn}"
         );
+    }
+
+    /// The break this catches: the blank column the L's group starts with counted as part of the
+    /// letter, which sets the ink half a column right of center.
+    #[test]
+    fn the_tile_centers_the_ink() {
+        let rows = Wordmark::Full.rows();
+        let svg = tile(rows, tile_colors());
+        let offset: f64 = svg
+            .split("translate(")
+            .nth(1)
+            .and_then(|rest| rest.split(' ').next())
+            .and_then(|raw| raw.parse().ok())
+            .expect("an offset");
+        let scale = f64::from(TILE - TILE_PAD * 2) / f64::from(rows.len() as u32 * CELL_H);
+        let left = offset + f64::from(first_inked_column(rows, 0) * CELL_W) * scale;
+        let right = f64::from(TILE) - (offset + f64::from(ink_right(rows, 0..1) * CELL_W) * scale);
+        assert!((left - right).abs() < 0.1, "margins {left} and {right}");
     }
 
     /// The single-letter mark crops to its own ink instead of carrying three empty letters of

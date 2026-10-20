@@ -32,6 +32,8 @@ impl Engine {
             remediation.as_ref().and_then(|context| context.submission_id.clone());
         let turn_id = AgentTurnId::new();
         debug!(turn_id = %turn_id.as_str(), "starting agent turn");
+        // First, so a hook refusing the turn below still ends one that had started
+        let _ = event_tx.send(Event::TurnStarted).await;
 
         *self.last_turn_baseline.lock().await = None;
         let retained_baseline = match self.capture_pre_turn_baseline(&turn_id).await {

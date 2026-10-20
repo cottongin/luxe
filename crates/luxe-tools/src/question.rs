@@ -174,6 +174,7 @@ impl Tool for QuestionTool {
                     QuestionReply::Cancelled
                 }
             };
+            let _ = cx.event_tx.send(Event::PromptClosed { id: id.as_str().to_string() }).await;
 
             let outcome = match reply {
                 QuestionReply::Answered(answers) => QuestionOutcome::Answered(answers),

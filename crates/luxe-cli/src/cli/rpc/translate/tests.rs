@@ -13,6 +13,10 @@ impl ModelResolver for OneModel {
             ..Default::default()
         }
     }
+
+    fn choices(&self) -> Vec<luxe_core::event::ModelChoice> {
+        Vec::new()
+    }
 }
 
 fn policy(github_writes: GithubWrites) -> Policy {
@@ -22,11 +26,26 @@ fn policy(github_writes: GithubWrites) -> Policy {
             name: "Mine".into(),
             query: "is:open is:pr author:@me repo:{repo}".into(),
         }],
+        joined: false,
     }
 }
 
 fn translate(wire: WireAction) -> Result<Action, Rejected> {
     to_engine_action(wire, &OneModel, &policy(GithubWrites::Allowed))
+}
+
+/// A client that joined a terminal's session can't switch it, and one that started its own can.
+///
+/// The break this catches: dropping the joined check, which lets a phone swap out the
+/// conversation the person at the terminal is reading.
+#[test]
+fn a_joined_client_cannot_switch_the_session() {
+    let joined = Policy { joined: true, ..policy(GithubWrites::Allowed) };
+    for wire in [WireAction::NewSession, WireAction::LoadSession("other".into())] {
+        let refused = to_engine_action(wire.clone(), &OneModel, &joined);
+        assert!(refused.is_err(), "a joined client ran {}", wire.kind());
+        assert!(translate(wire).is_ok());
+    }
 }
 
 /// A steer for the summary has to survive the crossing; without it `/compact keep the API
@@ -102,6 +121,18 @@ fn each_wire_action_arrives_as_the_engine_action_it_names() {
         translate(WireAction::RequestReview { focus: Some("the parser".into()) }),
         Ok(Action::RequestReview { focus: Some(focus) }) if focus == "the parser"
     ));
+}
+
+/// The client that started a session is refused when it introduces itself, by name.
+///
+/// The break this catches: the arm falling to the catch-all, which tells a client that a published
+/// kind is unknown.
+#[test]
+fn the_starting_client_cannot_introduce_itself() {
+    let introduce = WireAction::Introduce { name: "iPhone".into(), watch_only: false, yours: true };
+    let refused = translate(introduce).unwrap_err();
+    assert_eq!(refused.kind.as_deref(), Some("introduce"));
+    assert!(refused.reason.contains("joined a running session"), "{}", refused.reason);
 }
 
 /// Every GitHub action reaches the engine as the action it names, carrying its payload.
@@ -247,6 +278,10 @@ fn each_review_action_arrives_as_the_engine_action_it_names() {
     assert!(matches!(
         translate(WireAction::RecordReviewSeen { review_id: id("review:1") }),
         Ok(Action::RecordReviewSeen { .. })
+    ));
+    assert!(matches!(
+        translate(WireAction::ShowOpenReview { request_id: load.clone() }),
+        Ok(Action::ShowOpenReview { request_id }) if request_id == load
     ));
     assert!(matches!(
         translate(WireAction::RefreshGuidedReview {
@@ -523,7 +558,10 @@ fn an_unknown_frame_is_refused_by_name() {
 /// comes from the built-in defaults rather than from whatever the developer has configured.
 #[test]
 fn the_real_resolver_answers_about_the_model_it_was_asked() {
-    let info = CatalogResolver.resolve("no-such-provider", "no-such-model-9e3f");
+    let dir = tempfile::tempdir().unwrap();
+    let overrides = crate::engine_setup::CliOverrides::default();
+    let settings = crate::engine_setup::AgentSettings::resolve(dir.path().into(), overrides);
+    let info = CatalogResolver { settings }.resolve("no-such-provider", "no-such-model-9e3f");
     assert_eq!(info.r#ref.provider, "no-such-provider");
     assert_eq!(info.r#ref.id, "no-such-model-9e3f");
     assert!(info.context_window > 0, "a zero window makes every context percentage a lie");
@@ -539,7 +577,7 @@ fn the_real_resolver_answers_about_the_model_it_was_asked() {
 fn the_translator_covers_the_whole_published_vocabulary() {
     assert_eq!(
         WireAction::KINDS.len(),
-        51,
+        54,
         "a wire action was published without a translator arm: {:?}",
         WireAction::KINDS
     );

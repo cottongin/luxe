@@ -168,6 +168,61 @@ async fn a_tool_call_announces_itself_while_the_model_is_still_writing_it() {
     action_tx.send(Action::Close).await.unwrap();
 }
 
+/// What the reader sends is announced like any other committed message, before the reply.
+///
+/// The break this catches: announcing only messages Luxe composed, so a client joined to the
+/// session (the phone app, `luxe join`) shows answers to questions it never saw, and its snapshot
+/// for a later joiner leaves them out too.
+#[tokio::test]
+async fn a_sent_message_is_announced_to_every_client() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mut store = JsonlSessionStore::new(tmp.path().to_path_buf());
+    let session_id = store.create(&tmp.path().display().to_string()).unwrap();
+    let config = base_config(store, session_id, Arc::new(MockProvider::new()));
+    let (action_tx, mut event_rx) = Engine::spawn(config);
+    let content = "Read test.txt".to_string();
+    action_tx
+        .send(Action::SubmitUserMessage { content, images: vec![], remediation: None })
+        .await
+        .unwrap();
+    let events = events_until_turn_end(&mut event_rx).await;
+    let first = first_committed(&events).expect("something was committed");
+    assert_eq!(first.role, luxe_core::message::Role::User);
+    assert_eq!(first.content, [luxe_core::message::ContentBlock::Text("Read test.txt".into())]);
+}
+
+/// A turn says it started, once, before anything else of it, the user's message included.
+///
+/// The break this catches: no start signal at all, so a client that didn't send the message (the
+/// phone, the TUI beside it) has to guess from the first token; or one sent after the message
+/// commits, which leaves that client showing a saved message with no turn running.
+#[tokio::test]
+async fn a_turn_says_it_started_before_anything_else_of_it() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mut store = JsonlSessionStore::new(tmp.path().to_path_buf());
+    let session_id = store.create(&tmp.path().display().to_string()).unwrap();
+    let config = base_config(store, session_id, Arc::new(MockProvider::new()));
+    let (action_tx, mut event_rx) = Engine::spawn(config);
+    let content = "Read test.txt".to_string();
+    action_tx
+        .send(Action::SubmitUserMessage { content, images: vec![], remediation: None })
+        .await
+        .unwrap();
+    let events = events_until_turn_end(&mut event_rx).await;
+    let started = |event: &Event| matches!(event, Event::TurnStarted);
+    let committed = |event: &Event| matches!(event, Event::MessageCommitted { .. });
+    assert_eq!(events.iter().filter(|event| started(event)).count(), 1);
+    let start = events.iter().position(started).expect("turn_started");
+    assert!(start < events.iter().position(committed).expect("a commit"), "{events:?}");
+}
+
+fn first_committed(events: &[Event]) -> Option<&luxe_core::message::Message> {
+    events.iter().find_map(|event| match event {
+        Event::MessageCommitted { message, .. } => Some(message),
+        _ => None,
+    })
+}
+
 /// A tool call the model makes runs the tool, and what it returned is in the next request.
 ///
 /// Three claims, asserted apart so a failure says which link broke: dispatch ran the registered

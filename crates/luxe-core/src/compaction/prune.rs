@@ -27,8 +27,8 @@ impl ContextPressure {
     ///
     /// Prefers the provider's own figures: the char/4 estimate reads a prompt of code as about two
     /// thirds of its size, and a threshold hung off it fires late.
-    pub fn measure(
-        entries: &[Entry],
+    pub fn measure<E: std::borrow::Borrow<Entry>>(
+        entries: &[E],
         system: Option<&str>,
         tools: &[ToolSchema],
         usable_window: u64,
@@ -54,10 +54,10 @@ impl ContextPressure {
 /// measurement from before the cut describes a context that no longer exists, and count only
 /// single-call records, because a batched flush's summed prompt tokens are not an occupancy figure
 /// of anything.
-fn observed_context_peak(entries: &[Entry]) -> Option<u64> {
+fn observed_context_peak<E: std::borrow::Borrow<Entry>>(entries: &[E]) -> Option<u64> {
     let mut peak = None;
     for entry in entries.iter().rev() {
-        match &entry.kind {
+        match &entry.borrow().kind {
             crate::session::EntryKind::Compaction { .. } => break,
             crate::session::EntryKind::Usage { source, totals, .. }
                 if *source == crate::usage::UsageSource::Agent && totals.calls == 1 =>
@@ -138,11 +138,21 @@ fn elide_tool_output_before(messages: &mut [Message], boundary: u64) {
         .collect();
     for (mi, bi, tokens) in stale {
         if let ContentBlock::ToolResult { content, .. } = &mut messages[mi].content[bi] {
-            *content = vec![ToolOutput::Text(format!(
-                "[{tokens} tokens of earlier tool output elided to save context]"
-            ))];
+            *content = elided(std::mem::take(content), tokens);
         }
     }
+}
+
+/// A placeholder for `content`, keeping any nested instruction file it carried.
+///
+/// The saved log still holds the file, so it counts as delivered and won't go again; eliding it
+/// here would leave the model without those rules for the rest of the session.
+fn elided(content: Vec<ToolOutput>, tokens: u64) -> Vec<ToolOutput> {
+    let placeholder = format!("[{tokens} tokens of earlier tool output elided to save context]");
+    let notes = content.into_iter().filter(|output| {
+        matches!(output, ToolOutput::Text(text) if crate::instructions::nested::noted(text).is_some())
+    });
+    std::iter::once(ToolOutput::Text(placeholder)).chain(notes).collect()
 }
 
 /// Every non-empty tool result in the list as `(message, block, tokens)`, oldest first.

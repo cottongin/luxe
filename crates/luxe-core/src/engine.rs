@@ -81,6 +81,8 @@ pub struct Engine {
     /// Mutable session id — updated when loading/resuming a session so the next turn chains
     /// from the resumed state, matching the `--resume` path.
     session_id: tokio::sync::Mutex<crate::session::SessionId>,
+    /// This process's claim on `session_id`, which keeps a second Luxe from writing it too
+    session_claim: std::sync::Mutex<Option<crate::session::SessionClaim>>,
     last_turn_baseline: tokio::sync::Mutex<Option<RetainedTurnBaseline>>,
     active_guided_review: Arc<tokio::sync::Mutex<ActiveGuidedReview>>,
     /// The one owner of the open review and its feedback session, running beside the engine
@@ -227,6 +229,7 @@ pub use review_desk::{CommentDraft, ReviewEdit};
 pub use review_feedback::PULL_REQUEST_FIXES_REFUSED;
 mod guided_review;
 mod lifecycle;
+mod nested_instructions;
 mod opening;
 mod posting;
 mod previews;

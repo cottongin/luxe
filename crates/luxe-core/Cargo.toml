@@ -69,13 +69,19 @@ rustix = { version = "1", features = ["process", "stdio", "system"] }
 # Pointing stdin at the null device on Windows, and keeping the pipe Luxe took out of every child:
 # no safe API does either, and without it every child of `luxe --rpc` stalls behind the protocol
 # read. See `program::take_stdin`. Job objects end a command's whole tree on a timeout, where
-# Windows has no process group to signal; see `program::TreeGuard`.
+# Windows has no process group to signal; see `program::TreeGuard`. A session's named pipe needs a
+# descriptor granting this user alone, the connected client's process and every process's parent;
+# see `local_endpoint::windows`.
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61", features = [
     "Win32_Foundation",
     "Win32_Security",
+    "Win32_Security_Authorization",
     "Win32_System_Console",
+    "Win32_System_Diagnostics_ToolHelp",
     "Win32_System_JobObjects",
+    "Win32_System_Pipes",
+    "Win32_System_Threading",
 ] }
 
 [dev-dependencies]

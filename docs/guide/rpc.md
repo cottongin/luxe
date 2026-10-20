@@ -15,8 +15,8 @@ luxe --rpc --github-writes   # also lets your client publish to GitHub
 ```
 
 A client is trusted like the interface it replaces: it answers permission prompts, and it cannot
-loosen any permission rule. There is no network listener; your client is the process that started
-Luxe.
+loosen any permission rule. Nothing listens on the network. Your client either started Luxe, or
+[joined a session](#join-a-running-session) open in the interface on the same machine.
 
 ## A session
 
@@ -24,6 +24,7 @@ Luxe.
 →  {"kind":"ready","content":{"protocol_version":2,"luxe_version":"0.1.0","session_id":"…","cwd":"/work/app","github_writes":false}}
 →  {"kind":"state_changed","content":{"model":{…},"streaming":false,"mode":"build","thinking":"off"}}
 ←  {"kind":"submit_user_message","content":{"text":"what does this repo do?"}}
+→  {"kind":"turn_started"}
 →  {"kind":"tool_started","content":{"call_id":"call_1","name":"read"}}
 →  {"kind":"token_delta","content":{"block":0,"delta":"It is "}}
 →  {"kind":"turn_usage","content":{"prompt_tokens":5018,"completion_tokens":26,"cost_usd":0.0258,…}}
@@ -73,6 +74,43 @@ for line in luxe.stdout:
 Three rules make a working client: read `ready` first, answer both kinds of prompt, and ignore
 what you do not recognize.
 
+## Join a running session
+
+A session open in the interface can be joined while you keep using it, and so can one a `luxe --rpc`
+client started. `luxe join` connects to it and speaks this protocol on stdin and stdout, so the
+client above works with `["luxe", "join"]` in place of `["luxe", "--rpc"]`.
+
+```bash
+luxe join --list    # sessions running on this machine
+luxe join           # the one running in this folder
+luxe join 5898d57b  # one by the start of its id, or by its Luxe's process id
+```
+
+After `ready` comes the session so far: `session_loaded` with the transcript, the latest
+`state_changed`, `session_usage` and `workspace_updated`, a `tool_activity_updated` for each call
+of a turn in flight, and any `permission_requested` or `question_asked` still waiting. Then the
+live events, the same ones the interface gets.
+
+A joined client is a guest in someone else's session:
+
+- **Either side can answer a prompt.** The first answer counts, and `prompt_closed` tells everyone
+  to put the prompt away. The interface says which client answered.
+- **It can't switch or end the session.** `new_session` and `load_session` are refused with
+  `action_rejected`. `close`, or the end of your stdin, disconnects you and leaves Luxe running.
+- **GitHub writes are off**, and `ready` says `"github_writes": false`.
+- **Keep reading.** A client that falls far behind gets a `notice` and is disconnected. Join
+  again for a fresh copy of the session.
+
+The interface lists who's joined in its dock, and says in the conversation when a client joins or
+leaves, by the name it gives in `introduce` if it sends one within a second of connecting, or by
+its process id. A device the bridge introduces as `yours`, paired by you, is listed but not
+announced: you know your own phone joined, and a phone reconnects often.
+
+A running Luxe lists its session in a file in its [runtime folder](environment.md#integrations),
+`<pid>.json`, with the `address` to connect to: a Unix socket, or a named pipe on Windows. Connect
+there yourself to skip `luxe join`.
+To stop sessions being joined, set [`joinable`](configuration.md#joining-a-session) to `false`.
+
 ## Actions
 
 | `kind` | `content` | Does |
@@ -88,6 +126,7 @@ what you do not recognize.
 | `answer_question` | `{"id": "ask:…", "reply": {"answered": ["postgres"]}}` | Answer a question, or `{"reply": "cancelled"}` |
 | `set_permission_auto_approve` | `true` | Approve every prompt for the rest of the session. Deny rules still apply. |
 | `select_model` | `{"provider": "anthropic", "model": "claude-sonnet-5"}` | Switch models |
+| `list_models` | `{"request_id": "…"}` | The models you can switch to, configured ones first, each with the thinking levels it honors; answered by `models_listed`, to you alone |
 | `set_thinking_level` | `"high"` | `off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `ultra` |
 | `set_mode` | `"plan"` | `build` or `plan`; see [Plan, then build](agent.md#plan-then-build). A name that is not a mode is answered by a `notice`. |
 | `request_review` | `{"focus": "error handling"}`, or nothing | A [second opinion](agent.md#a-second-opinion) on the uncommitted changes; answered by `review_started`, then `review_finished` |
@@ -101,6 +140,7 @@ what you do not recognize.
 | `load_file_diff` | `{"request_id": "…", "path": "src/main.rs"}` | One file's change, outside any review; answered by `file_diff_loaded` |
 | `list_directory` | `{"request_id": "…", "path": "src"}` | One project folder's entries, without what `.gitignore` ignores unless `"include_ignored": true`, which marks each such entry `"ignored": true`; answered by `directory_listed` |
 | `read_project_file` | `{"request_id": "…", "path": "src/main.rs"}` | One project file's text, up to 2 MB; answered by `project_file_read` |
+| `introduce` | `{"name": "iPhone"}` | A joined client's name, which the interface uses when it says who joined or answered. Add `"watch_only": true` as your first line to read without being announced; Luxe then drops everything else you send. `"yours": true` says the person at the terminal paired it, so it's listed without a line in the conversation. Refused from the client that started the session. |
 | `close` | | Shut down, stopping a turn in flight the way `cancel` does. The stream ends after it. |
 
 ### Guided Review
@@ -109,6 +149,9 @@ A review is loaded with `load_guided_review`. Luxe answers with `guided_review_l
 carries the whole review (its `id`, `revision_id`, files, hunks and chapters), and then always
 `review_session_restored`, which carries its comments. Everything below names the review by its
 `id`. An action for a review that is no longer the open one is refused.
+
+A session has one open review, and every load makes a new one, so a second client that loads its
+own replaces the review the first is reading. To join it instead, send `show_open_review`.
 
 ```text
 ←  {"kind":"load_guided_review","content":{"request_id":"r1","target":{"kind":"working_tree"}}}
@@ -148,6 +191,7 @@ the comment stays `open`.
 | `edit_review` | `{"request_id", "review_id", "edit", …}` | Change the comments, as above |
 | `record_review_progress` | `{"review_id", "walked_chapter_ids": [...]}` | Which chapters were read. Saved when it changed, never answered. |
 | `record_review_seen` | `{"review_id"}` | Remember what the walked chapters covered, so the next review of the same target leads with what is new |
+| `show_open_review` | `{"request_id"}` | Ask for the review open now, whoever opened it, answered by `open_review_shown` |
 | `refresh_guided_review` | `{"request_id", "review_id", "revision_id"}` | Read the change again, keeping the comments, if the review is still at `revision_id`. Answered like a load. |
 | `commit_review_chapters` | `{"request_id", "review_id", "revision_id", "chapter_ids", "squash"}` | A commit per chapter, or one with `squash`. All chapters when `chapter_ids` is left out. Never pushes. Answered by `review_committed`. |
 | `prepare_pull_request` | `{"request_id", "review_id"}` | Draft the pull request this branch's review would open; answered by `pull_request_prepared` |
@@ -220,6 +264,7 @@ There are around sixty. These are the ones a front end is built on:
 | `message_committed` | A complete message was added to the transcript |
 | `permission_requested` | **Answer it** with `respond_permission`, or the turn waits. If `always_patterns` is empty, offer only `once` and `reject`. |
 | `question_asked` | **Answer it** with `answer_question` |
+| `turn_started` | A turn began, from any client. It comes before the turn's message is saved, and `turn_ended` always follows. A client joining mid-turn gets it as part of catching up. |
 | `turn_ended` | The turn finished; `reason` says why |
 | `provider_retrying` | The provider failed before answering, and Luxe is trying again |
 | `state_changed` | Model, thinking level, mode, and whether a turn is running |
@@ -229,8 +274,10 @@ There are around sixty. These are the ones a front end is built on:
 | `context_usage`, `context_composition` | How full the context window is, and with what |
 | `compaction_started`, `compaction_done`, `compaction_stopped` | A summary of the conversation is being written, on request or mid-turn. It can take a minute. It always ends in `compaction_done` (with `tokens_after`) or `compaction_stopped` (failed or cancelled). |
 | `workspace_updated` | The project, Git changes, todos and tools: what the dock shows |
+| `prompt_closed` | A prompt stopped waiting, answered here or by another client, or cancelled. Take it down by `id`. |
 | `session_loaded`, `sessions_refreshed` | A transcript was restored; the session list changed |
 | `notice`, `error` | Something to show. `error` ends the turn. |
+| `guests_changed` | The names of the clients joined now, sent to the interface as one joins or leaves, for its dock. |
 | `action_rejected` | Your frame was refused and nothing happened |
 
 Guided Review, as the interface sees it:
@@ -240,6 +287,7 @@ Guided Review, as the interface sees it:
 | `guided_review_loading`, `guided_review_loaded`, `guided_review_failed` | A review you asked for, by `request_id`. `loaded` carries the whole review: files, hunks and chapters. |
 | `guided_review_guide_updated` | Better chapters and a summary replaced the first ones, for the same pinned revision |
 | `review_session_restored` | The comments and progress that go with the review just loaded. It always follows `guided_review_loaded`, after a restart too. |
+| `open_review_shown` | The answer to `show_open_review`, under its `request_id`: the open `review` and its `session`, or neither when no review is open. `reading` says what each chapter asks of the reader: `needs_review` items, and the `reason` when one thing accounts for all of them. |
 | `review_session_saved`, `review_session_save_failed` | A change to them was stored, or refused. Luxe reports its own changes this way too: a turn starting, the agent's report, a review posted. |
 | `review_feedback_turn_dispatched`, `review_feedback_turn_completed`, `review_feedback_turn_failed` | Feedback you sent reaching the agent, and how its turn went |
 | `review_questions_answered`, `remediation_reported` | The agent's answer to a question, and its report on a fix |
@@ -247,6 +295,7 @@ Guided Review, as the interface sees it:
 | `last_turn_available` | The agent's last turn can be reviewed on its own |
 | `file_diff_loaded`, `file_diff_failed` | One file's change, for `load_file_diff` |
 | `directory_listed`, `directory_list_failed` | One folder's entries, for `list_directory` |
+| `models_listed` | The models for `list_models`: each has `provider` and `model` for `select_model`, a `name` to show, and its `thinking_levels` |
 | `project_file_read`, `project_file_read_failed` | One file's text, for `read_project_file` |
 
 GitHub:
@@ -278,7 +327,9 @@ list is closed.
 
 ## Security
 
-- Luxe listens on nothing; your client is the process that started it.
+- Nothing listens on the network. A [joined](#join-a-running-session) session takes connections
+  on a local socket or pipe that only your user account can open, and turns away any program the
+  agent itself started, so the agent can't answer its own prompts.
 - Permission rules are enforced inside Luxe. A client cannot weaken a `deny`: reading `.env` is
   refused here as everywhere.
 - Prompts go to your client to answer. To approve everything, send `set_permission_auto_approve` or

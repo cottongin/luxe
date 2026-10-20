@@ -35,6 +35,7 @@ pub use card::{render_card, CardState, PullRequestCard};
 pub(crate) use draft::note_lines as draft_note_lines;
 pub use draft::{DraftCard, DraftKey};
 pub use header::{ago, author_spans, diff_counts, state_word};
+pub use html::readable;
 pub use merge::MergeDialog;
 pub use parts::action_hint;
 pub(crate) use parts::lift_dim;

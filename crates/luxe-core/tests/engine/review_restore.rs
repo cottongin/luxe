@@ -10,7 +10,7 @@ use luxe_core::guided_review::{
     LastTurnRecord, LastTurnRecordStore, LocalGit, ReviewFeedbackMode, ReviewLoadRequestId,
     ReviewTarget, SubmissionId, SubmittedFinding, UntrackedSourcePolicy,
 };
-use luxe_core::session::{JsonlSessionStore, SessionStore};
+use luxe_core::session::SessionStore;
 
 use crate::fixtures::*;
 
@@ -45,7 +45,7 @@ async fn a_last_turn_review_loads_the_turn_that_ran_and_refreshes_in_place() {
     std::fs::write(tmp_dir.join("PLAN.md"), "review plan evidence").unwrap();
 
     // Setup session store.
-    let mut store = JsonlSessionStore::new(tmp_dir.to_path_buf());
+    let mut store = project_store(tmp_dir);
     let session_id = store.create(&tmp_dir.display().to_string()).unwrap();
 
     let config = EngineConfig {
@@ -220,7 +220,7 @@ async fn p32_guided_review_refresh_persists_a_fresh_artifact_after_worktree_muta
     }
     std::fs::write(project_root.join("tracked.rs"), "fn changed() {}\n").unwrap();
 
-    let mut store = JsonlSessionStore::new(project_root.to_path_buf());
+    let mut store = project_store(project_root);
     let session_id = store.create(&project_root.display().to_string()).unwrap();
     let provider = Arc::new(GuideManifestProvider::default());
     let config = EngineConfig {
@@ -410,11 +410,7 @@ async fn p32_guided_review_refresh_persists_a_fresh_artifact_after_worktree_muta
 
     let resumed_config = EngineConfig {
         guided_review_project_root: Some(project_root.to_path_buf()),
-        ..base_config(
-            JsonlSessionStore::new(project_root.to_path_buf()),
-            session_id,
-            Arc::new(MockProvider::new()),
-        )
+        ..base_config(project_store(project_root), session_id, Arc::new(MockProvider::new()))
     };
     let (_resumed_actions, mut resumed_events) = Engine::spawn(resumed_config);
     let restored = tokio::time::timeout(EVENT_WAIT, async {
@@ -462,7 +458,7 @@ async fn guided_review_last_turn_loads_a_retained_baseline_after_restart() {
             .success());
     }
 
-    let mut store = JsonlSessionStore::new(project_root.to_path_buf());
+    let mut store = project_store(project_root);
     let session_id = store.create(&project_root.display().to_string()).unwrap();
     let turn_id = AgentTurnId::new();
     let git = LocalGit::new(project_root);

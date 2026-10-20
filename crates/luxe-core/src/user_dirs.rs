@@ -105,6 +105,30 @@ fn legacy_luxe_config_dir() -> Option<PathBuf> {
     legacy_config(env)
 }
 
+/// Where a running Luxe leaves the way in to its session: `$LUXE_RUNTIME_DIR`, else `luxe` under a
+/// folder only this user can open.
+///
+/// That is `$XDG_RUNTIME_DIR` on Linux and `$TMPDIR` on macOS, both private to the user. Linux's
+/// `$TMPDIR`, when set at all, is usually the shared `/tmp`, so it is never used; without a private
+/// folder, and on Windows, it is `run` under [`luxe_state_dir`].
+pub fn luxe_runtime_dir() -> PathBuf {
+    runtime_in(env, cfg!(target_os = "macos")).unwrap_or_else(|| luxe_state_dir().join("run"))
+}
+
+/// [`luxe_runtime_dir`] under the lookup `var`, or `None` for the state-directory fallback.
+fn runtime_in(var: impl Fn(&str) -> Option<String>, macos: bool) -> Option<PathBuf> {
+    let var = |name: &str| var(name).filter(|value| !value.trim().is_empty());
+    if let Some(explicit) = var("LUXE_RUNTIME_DIR") {
+        return Some(PathBuf::from(explicit));
+    }
+    let private = match macos {
+        true => var("TMPDIR"),
+        false if cfg!(windows) => None,
+        false => var("XDG_RUNTIME_DIR"),
+    };
+    Some(PathBuf::from(private?).join("luxe"))
+}
+
 /// Luxe's own cache directory, `luxe` under [`cache_dir`].
 pub fn luxe_cache_dir() -> PathBuf {
     cache_dir().join("luxe")

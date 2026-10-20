@@ -469,6 +469,16 @@ script can tell a failure from an answer without reading the output.
 | `luxe models show <provider/id>` | What Luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
 | `luxe models refresh` | Refresh the model catalog. `--force` even if it is fresh. |
 | `luxe sessions list` | Sessions in this project, newest first |
+| `luxe join [id]` | Join a session another Luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the Luxe's process id; without one, it joins the session running in this folder. |
+| `luxe join --list` | Sessions running on this machine that can be joined |
+| `luxe remote` | Serve this machine's sessions to your own phone or tablet. Listens on this machine only, for Tailscale Serve to carry to your devices, and lets in this machine's tailnet owner from a paired device. |
+| `luxe remote --port <n>` | The port it listens on (default 4519) |
+| `luxe remote --allow <login>` | Also let this tailnet login in, as Tailscale names it (`alex@github`). Repeatable. |
+| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside Luxe asks first. |
+| `luxe remote pair` | Show a QR code and link that pair one phone or tablet. They work once, within ten minutes. |
+| `luxe remote devices` | The paired devices |
+| `luxe remote devices revoke <id>` | Unpair a device. Its open sessions close within a few seconds. |
+| `luxe remote service remove` | Stop the bridge's user service and stop it starting at login |
 | `luxe mcp list` | Configured MCP servers |
 | `luxe mcp add --id <id> --name <name>` | Add a server to the project's `.luxe/mcp.json`, with `--command "<program> <args>"` or `--url <url>`. It counts as a [project's server](mcp.md#servers-a-project-brings). |
 | `luxe mcp remove --id <id>` | Remove a server from the project's `.luxe/mcp.json` |
@@ -846,6 +856,19 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 { "herdr": false }
 ```
 
+### Joining a session
+
+A running Luxe lets another program on this machine join its session: `luxe join`, a script, or
+whatever you build on [the RPC protocol](rpc.md#join-a-running-session). Only your user account can
+connect, and nothing listens on the network. To turn it off:
+
+```json title="~/.config/luxe/config.json"
+{ "joinable": false }
+```
+
+`LUXE_JOINABLE=0` turns it off for one run. A project's config can turn it off too, but can't turn
+it back on once yours has.
+
 ### Updates
 
 Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
@@ -911,6 +934,7 @@ Every key in `config.json`, with its default.
 | `notification_method` | `auto` | `auto`, `osc9` or `osc777` |
 | `bell` | `false` | Terminal bell when a turn ends or something waits on you |
 | `herdr` | `true` | Report the agent's state to herdr; see [herdr](#herdr) |
+| `joinable` | `true` | Let another program on this machine join a running session; see [Joining a session](#joining-a-session) |
 | `statusline.visibility` | `auto` | `auto`, `shown` or `hidden`; see [Appearance](appearance.md#statusline) |
 | `statusline.style` | `slab` | `slab` or `flat` |
 | `statusline.left` | `["project", "branch", "pr", "todo", "changes"]` | Modules on the left |
@@ -1340,6 +1364,7 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_SIZE_CHECK` | `1` | `0` stops telling the agent when an edit takes a file past 500 lines or a function past 20 |
 | `LUXE_DEBUG_NUDGE` | `1` | `0` stops suggesting the debugger after repeated test failures |
 | `LUXE_PLAN_NUDGE` | `1` | `0` stops reminding the agent to update its checklist |
+| `LUXE_NESTED_INSTRUCTIONS` | `1` | `0` stops reading the [`AGENTS.md` of folders](project-context.md#folders-the-agent-works-in) the agent works in |
 | `LUXE_LAZY_TOOLS` | `1` | `0` sends every tool's description with every request |
 | `LUXE_CORE_TOOLS` | | The tools sent with every request, comma-separated; the rest load when needed |
 | `LUXE_DAP_STOP_TIMEOUT_SECS` | `30` | How long the debugger waits for a program to stop |
@@ -1356,6 +1381,8 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_FILE_MANAGER`, then `FILE_MANAGER` | The file manager `O` in the dock's file tree opens a folder in. Without either, the first of yazi, lf, ranger and nnn that is installed, then your desktop's own. |
 | `LUXE_HERDR` | `0` stops reporting state to [Herdr](recipes.md#run-luxe-in-herdr) |
 | `LUXE_UPDATE_CHECK` | `0` turns off the update check |
+| `LUXE_JOINABLE` | `0` stops other programs [joining](configuration.md#joining-a-session) this run's session |
+| `LUXE_RUNTIME_DIR` | Where a running Luxe keeps the socket and record that let a program join it, instead of `luxe` in `$XDG_RUNTIME_DIR` on Linux or `$TMPDIR` on macOS, or `run` in the state folder |
 
 ## Diagnostics
 
@@ -2090,6 +2117,7 @@ guide is reference, for when you need it.
 | Resume a session, or see what fills the context | [Sessions and context](sessions.md) |
 | See what the agent can use | [Tools](tools.md) |
 | Let the agent work through a plan on its own | [Autonomous runs](loop.md) |
+| Reach your sessions from your phone or tablet | [Luxe on your phone](remote.md) |
 | Change the theme, keys or statusline | [Configuration](configuration.md) |
 | Give the agent your project's conventions | [Project context](project-context.md) |
 | Add tools, skills or your own commands | [Extending Luxe](extending.md), [Recipes](recipes.md) |
@@ -2421,7 +2449,8 @@ While the agent works, you can keep typing:
 | `alt+↑` | Bring waiting messages back into the composer to edit |
 | `ctrl+esc` | Stop the turn. Waiting messages come back into the composer. |
 
-A waiting message sits above the composer, marked `steering` or `queued`, until it is delivered.
+A waiting message sits above the composer, marked `steering` or `queued`, until it is delivered. A
+message with an image is always queued, because steering carries text only.
 
 `ctrl+v` or `shift+insert` pastes. Pasted text of three lines or more, or over 150 bytes, becomes a
 `[Pasted 40 lines]` chip, and a pasted image becomes `[Pasted Image]`. Both are sent in full. A chip, like a mention, is deleted with one `backspace`.
@@ -2452,7 +2481,7 @@ conversation, or in its place below 80 columns.
 | **FILES** | The project as a tree, with what changed marked in it. Click a file to [preview](#preview) it. |
 | **ELSEWHERE** | Files the session changed outside the project, when there are any |
 | **MODEL** | The provider, model, thinking level and [mode](agent.md#plan-then-build). Click the model to change it, or the mode to switch it. |
-| **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. |
+| **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. While a phone or another client has [joined](remote.md), a **joined** row names it. |
 
 `alt+d` shows or hides the dock, and `/dock left` or `/dock right` moves it. To set it for good:
 
@@ -3053,6 +3082,15 @@ session repeats that same text, which is what lets the provider reuse its cache.
 the agent in the next session: `/new`, or resuming one. If you switch Git branches mid-session, the
 agent is told with your next message.
 
+### Folders the agent works in
+
+An `AGENTS.md` in a folder below the repository's top, but not on the way to where you started,
+joins when the agent first opens, writes or searches a path in that folder. It's added to that
+tool result, once, and Luxe shows **Following** and the file's path. The system prompt doesn't
+change, so the cache holds. Ignored folders, such as `node_modules`, are skipped. If a rewind or a
+compaction drops the file, it joins again the next time the agent goes there.
+`LUXE_NESTED_INSTRUCTIONS=0` turns this off.
+
 **Project context** lists every file a turn reads, and says whose rules each one carries:
 **global**, **project** or **folder** context. Type `context` on the start screen and open it.
 `enter` opens a file in your editor, or creates one from a template. The template's guidance is in
@@ -3470,7 +3508,7 @@ luxe --resume <id>         # a specific one
 @@@ page: recipes
 ---
 title: "Recipes"
-summary: "Extensions put together: Asana, subagents, a classifier guard, Herdr, and a local model."
+summary: "Extensions put together: Asana, subagents, a classifier guard, Herdr, your phone, and a local model."
 order: 8
 group: "Extend"
 ---
@@ -3716,6 +3754,60 @@ The one token worth a second thought is `panel_bg`: Herdr draws the active tab a
 on an `accent` fill, so it has to stay dark enough to read there. Lifting it to `#201e1a` gives the
 tab bar a surface of its own if you prefer the chrome delineated.
 
+## Luxe from your phone
+
+Your sessions keep running on your computer, and your phone or tablet reaches them over
+[Tailscale](https://tailscale.com), a private network between your own devices. Nothing is opened to
+the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is Luxe's own way in.
+
+1. Install Tailscale on the computer and on the phone, and sign in to the same account on both.
+2. On the computer, turn on SSH. On Linux and macOS, Tailscale can do it for you:
+
+   ```bash
+   sudo tailscale up --ssh
+   ```
+
+   On Windows, turn on the OpenSSH Server in Settings, under Optional features.
+3. Run Luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
+   them in.
+4. On the phone, connect with an SSH app such as Blink Shell or Termius, using the computer's
+   Tailscale name, and run `herdr`. It attaches to the panes you left, with Luxe where it was.
+
+```bash
+mosh you@desk -- herdr
+```
+
+[Mosh](https://mosh.org) keeps the connection through a locked screen or a switch from Wi-Fi to
+cellular. It needs `mosh` installed on the computer too, which Linux and macOS have and Windows
+does not; plain `ssh` works everywhere.
+
+On an iPad with a keyboard, this is Luxe as you know it. On a phone, Luxe fits a narrow screen,
+and Herdr marks which session is waiting on you.
+
+### A notification when Luxe needs you
+
+[Luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
+[hook](hooks.md) can post to [ntfy](https://ntfy.sh), whose app shows it on your phone:
+
+```json title="~/.config/luxe/hooks.json"
+{
+  "PermissionRequested": [
+    { "command": ["curl", "-s", "-d", "Luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
+  ],
+  "BeforeToolUse": [
+    { "matcher": "question", "command": ["curl", "-s", "-d", "Luxe has a question", "https://ntfy.sh/your-topic"] }
+  ],
+  "AgentEnd": [
+    { "command": ["curl", "-s", "-d", "Luxe finished", "https://ntfy.sh/your-topic"] }
+  ]
+}
+```
+
+- **Anyone who knows an ntfy.sh topic can read it**, so pick a long random name, or run ntfy
+  yourself on your Tailscale network. The messages above say only that something is waiting, never
+  the command.
+- **`AgentEnd` fires after every turn**, at your desk too. Leave it out if that is too many.
+
 ## A local model in LM Studio
 
 1. Load a model in LM Studio and start its server.
@@ -3740,6 +3832,207 @@ to it rather than replacing the file:
 ```
 
 [Custom providers](custom-providers.md) covers samplers and request formats.
+@@@ page: remote
+---
+title: "Luxe on your phone"
+summary: "Reach the sessions running on your computer from your own phone or tablet, over Tailscale."
+order: 13
+group: "Using Luxe"
+---
+
+`luxe remote` lets your phone or tablet see the sessions running on your computer, join one, and
+start new ones. It listens on your computer only. [Tailscale](https://tailscale.com), a private
+network between your own devices, carries it to them over HTTPS, so nothing is opened to the
+internet and there is no Luxe server in between.
+
+On the phone it's an app in the browser, drawn like the interface in your theme. For the whole
+terminal, editor included, [Luxe from your phone](recipes.md#luxe-from-your-phone) works over SSH.
+
+## Set it up
+
+1. Install Tailscale on the computer and on the phone, and sign in to the same account on both.
+2. On the computer, run:
+
+   ```bash
+   luxe remote setup
+   ```
+
+3. Scan the QR code it shows with the phone's camera, and give the device a name.
+4. On an iPhone or iPad, add it to the Home Screen: in Safari, Share, then Add to Home Screen. It
+   opens full screen with the Luxe mark as its icon, and keeps the sign-in Safari had when you
+   added it. An app added before pairing asks for the invitation link instead: copy it from
+   `luxe remote pair` and paste it in.
+
+Setup takes four steps, and asks before each one that changes something outside Luxe:
+
+| Step | Does |
+| --- | --- |
+| Tailscale | Checks it is installed and signed in, and stops here if not |
+| Serve | Publishes the bridge at `https://<computer>.<tailnet>.ts.net/` with Tailscale Serve, for your tailnet only. One that already leads somewhere else is left alone. |
+| Service | Runs the bridge whenever you're signed in to the computer |
+| Pairing | Shows a QR code for one device |
+
+A step that's already done says so and moves on, so running setup again is how to check it. On
+Linux, Serve may say access was denied; let your account manage Tailscale once, then run setup
+again:
+
+```bash
+sudo tailscale set --operator=$USER
+```
+
+The service is your own, and needs no administrator:
+
+| | |
+| --- | --- |
+| Linux | A systemd user unit, `~/.config/systemd/user/luxe-remote.service` |
+| macOS | A launch agent, `~/Library/LaunchAgents/dev.luxe.remote.plist` |
+| Windows | `Luxe remote` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+
+Without it, run `luxe remote` in a terminal, and your devices reach Luxe while it runs.
+
+## Devices
+
+```bash
+luxe remote pair                    # a QR code and link for one more device
+luxe remote devices                 # the paired ones
+luxe remote devices revoke a41c9e02 # unpair one
+```
+
+An invitation pairs one device, within ten minutes. Revoking a device disconnects it within a few
+seconds; the sessions it had open carry on.
+
+Only your own Tailscale login gets in. To let someone else on your tailnet in too, name them when
+you set up, and send them an invitation from `luxe remote pair`:
+
+```bash
+luxe remote service remove
+luxe remote setup --allow sam@github
+```
+
+## Two or more computers
+
+Each computer runs its own bridge at its own address, so one phone can reach several: set each up
+as above, with Tailscale signed in to the same account, and pair the phone with each. Every one is
+its own app on the Home Screen, named for the computer as Tailscale names it (`desk` for
+`desk.tail1234.ts.net`), with the name beside the Luxe mark in its session list and after the
+project in its notifications, "luxe · desk". Luxe finds Tailscale by the `tailscale` command, so
+on a Mac check that `tailscale version` works in Terminal before running setup.
+
+## What your device sees
+
+Every Luxe running on the computer as you: the interface, `luxe --rpc`, and any started from your
+device. A device that joins a session is a guest, as in [joining a
+session](rpc.md#join-a-running-session): it sees the conversation so far and every live event, and
+can answer prompts and send messages. It can't switch or end the session, or publish to GitHub.
+
+In a session, the app can:
+
+- Name the session's folder and branch in the header, starred when the tree has changes.
+- Show the conversation as the interface draws it: markdown, highlighted code, tool cards. A long
+  one opens on its latest 300 items, and **Show earlier** at the top brings 300 more at a time.
+- Send a message, with photos from the camera or library, and steer or stop a running turn. While
+  one runs, a line over the message box says what sending will do: steer it at the next step, or
+  wait for the turn to end when a photo is attached.
+- Run `/compact`, `/cost`, `/dock`, `/mode`, `/model` and `/thinking`, offered as you type a `/`. The
+  interface's other commands work its own screen, so a message that starts with one goes to the
+  agent as written.
+- Mention a project file: type `@` and pick from the project's folders, a level at a time. A picked
+  file goes in as its path, which is what the interface sends the model for one.
+- Answer permission prompts and questions. As in the interface, every answer but Reject waits a
+  moment after a prompt appears, so a stray tap can't grant anything.
+- Switch the mode with a tap on the status line, which also shows the context, thinking level and
+  model. Tap those for the session's details: switch the mode, the thinking level or the model
+  (from the same list as `/model`, with the levels each model honors), and see the cost.
+- Show [the dock](interface.md#the-dock), with the plan and the changed files. On an iPad or an
+  open iPhone Duo it's a rail beside the conversation: the header's dock button or `/dock` shows
+  and hides it, `/dock left` or `/dock right` moves it, and it starts from your `dock.mode` and
+  `dock.position` [settings](configuration.md), as the interface does. On a phone the header has
+  one menu button, and the dock is the first tab of the panel it opens; `/dock` opens it there
+  too. A long plan scrolls in a box of its own that keeps the work in hand in view, until you
+  scroll it yourself. Tap a file for its diff.
+- Browse the project's files from the header's menu button, in the interface's FILES tree, and
+  read a file highlighted as the interface shows it. **Mention** adds its path to your message.
+  On an iPad or an open iPhone Duo the tree is a rail and a file opens beside it; on a screen wide
+  enough the conversation stays in view too.
+- Ask about particular lines of a file, a diff or a review chapter, as you would in the interface's
+  File view: tap a line's number to pick it and another to stretch the pick, or select text the
+  phone's usual way, down to part of a line, and tap **Ask** for the lines it covers. Your message
+  gets the path and lines the interface would send. Tap anywhere else to let a pick go, and copy a
+  selection with the phone's own menu. In a diff, a removed line can't be picked, since the file
+  no longer has it.
+- Read the project's pull requests and issues in the same panel's GitHub tab, by the sections
+  [`/github`](github.md) shows. Tap one for its overview (what stands between it and merged, or
+  who's on an issue) and its conversation. **Mention** adds it to your message. It only reads: a
+  joined session runs with GitHub writes off, so merging, replying and resolving stay in the
+  interface.
+- Walk the open [Guided Review](guided-review.md) in the Review tab: the guide's summary and
+  chapters, each one opened beside it with the guide's notes over its diffs. **Reviewed** marks a
+  chapter read, the same progress `/review` keeps, and **Next** opens the one after. The phone
+  joins the review the interface has open rather than starting its own, since a session holds one;
+  with none open, **Review changes** reviews the working changes.
+- Comment on a review chapter: pick a line, or a run of lines, and tap **Comment**, or tap
+  **Comment on the chapter** with nothing picked. Make it a question if you want an answer rather
+  than a fix, then **Save** it to send later or **Send** it now. Each comment shows under what it's
+  about with the agent's replies, and can be replied to, resolved, or, unsent, sent or deleted.
+  The guide counts what's unsent and sends it all. Comments made in the interface show up too.
+  Editing a comment, re-anchoring one the code moved away from, and commenting on a removed line
+  are the interface's.
+
+The interface says which device joined, "iPhone joined this session", and which one answered a
+prompt, "Approved from iPhone". A session with [`joinable`](configuration.md#joining-a-session) set
+to `false` is out of reach, from your device too.
+
+## Starting a session
+
+Tap **New** on the session list to start Luxe in a folder: one where Luxe is running now, one with
+a [herdr](recipes.md#run-luxe-in-herdr) pane, one where the bridge has seen Luxe run, or any path
+you type. What you type narrows the folders it offers, by name and then by path. They're only the
+ones above: it never looks through your home folder.
+
+**herdr is optional, and recommended.** You don't need it to reach your sessions; it decides what
+happens to the ones you start away from your desk:
+
+- **With herdr running**, the bridge opens a herdr pane in that folder, in the workspace already
+  there or a new one named after it. The session survives a restart of the bridge, and waits for
+  you at your desk like any other pane.
+- **Without it**, the bridge runs `luxe --rpc` itself, and the session lasts as long as the bridge
+  does. At your desk, `luxe --resume` on it is refused while the bridge has it, and says so.
+
+The bridge uses herdr only when herdr's server is already running, and never starts it.
+
+## Notifications
+
+A device can hear when a session needs it: a prompt waiting on an answer, or a long turn finished.
+Turn them on under **Notifications** in the app's session list. On an iPhone or iPad the app has to
+be on your Home Screen first (in Safari, Share, then Add to Home Screen), and paired from there, since
+the Home Screen app keeps its own sign-in.
+
+A notification says what's waiting and where, "Approve bash" over `my-app`, never the command, and
+tapping it opens the session. Answering takes the app. So that one doesn't buzz you while you're
+at your desk:
+
+- A prompt is held for ten seconds, and one answered meanwhile is never sent.
+- A finished turn is news only after a turn of thirty seconds or more.
+- A device with that session open on screen isn't told about it.
+
+While any device has notifications on, the bridge joins each running session to watch. It joins
+watch-only, so the interface doesn't announce it and it can't act in the session.
+[Security](security.md#luxe-remote) covers what a notification carries and where it goes.
+
+## Turn it off
+
+```bash
+luxe remote service remove
+tailscale serve --https=443 off
+```
+
+The first stops the bridge and stops it starting at sign-in; the second takes the address off
+your tailnet. Your paired devices stay paired until you revoke them, in case you set it up again.
+
+## How it's kept to you
+
+Every request needs your Tailscale login, which only Tailscale Serve can vouch for, and every
+session needs a paired device as well. [Security](security.md#luxe-remote) has the details.
 @@@ page: rpc
 ---
 title: "The RPC protocol"
@@ -3758,8 +4051,8 @@ luxe --rpc --github-writes   # also lets your client publish to GitHub
 ```
 
 A client is trusted like the interface it replaces: it answers permission prompts, and it cannot
-loosen any permission rule. There is no network listener; your client is the process that started
-Luxe.
+loosen any permission rule. Nothing listens on the network. Your client either started Luxe, or
+[joined a session](#join-a-running-session) open in the interface on the same machine.
 
 ## A session
 
@@ -3767,6 +4060,7 @@ Luxe.
 →  {"kind":"ready","content":{"protocol_version":2,"luxe_version":"0.1.0","session_id":"…","cwd":"/work/app","github_writes":false}}
 →  {"kind":"state_changed","content":{"model":{…},"streaming":false,"mode":"build","thinking":"off"}}
 ←  {"kind":"submit_user_message","content":{"text":"what does this repo do?"}}
+→  {"kind":"turn_started"}
 →  {"kind":"tool_started","content":{"call_id":"call_1","name":"read"}}
 →  {"kind":"token_delta","content":{"block":0,"delta":"It is "}}
 →  {"kind":"turn_usage","content":{"prompt_tokens":5018,"completion_tokens":26,"cost_usd":0.0258,…}}
@@ -3816,6 +4110,43 @@ for line in luxe.stdout:
 Three rules make a working client: read `ready` first, answer both kinds of prompt, and ignore
 what you do not recognize.
 
+## Join a running session
+
+A session open in the interface can be joined while you keep using it, and so can one a `luxe --rpc`
+client started. `luxe join` connects to it and speaks this protocol on stdin and stdout, so the
+client above works with `["luxe", "join"]` in place of `["luxe", "--rpc"]`.
+
+```bash
+luxe join --list    # sessions running on this machine
+luxe join           # the one running in this folder
+luxe join 5898d57b  # one by the start of its id, or by its Luxe's process id
+```
+
+After `ready` comes the session so far: `session_loaded` with the transcript, the latest
+`state_changed`, `session_usage` and `workspace_updated`, a `tool_activity_updated` for each call
+of a turn in flight, and any `permission_requested` or `question_asked` still waiting. Then the
+live events, the same ones the interface gets.
+
+A joined client is a guest in someone else's session:
+
+- **Either side can answer a prompt.** The first answer counts, and `prompt_closed` tells everyone
+  to put the prompt away. The interface says which client answered.
+- **It can't switch or end the session.** `new_session` and `load_session` are refused with
+  `action_rejected`. `close`, or the end of your stdin, disconnects you and leaves Luxe running.
+- **GitHub writes are off**, and `ready` says `"github_writes": false`.
+- **Keep reading.** A client that falls far behind gets a `notice` and is disconnected. Join
+  again for a fresh copy of the session.
+
+The interface lists who's joined in its dock, and says in the conversation when a client joins or
+leaves, by the name it gives in `introduce` if it sends one within a second of connecting, or by
+its process id. A device the bridge introduces as `yours`, paired by you, is listed but not
+announced: you know your own phone joined, and a phone reconnects often.
+
+A running Luxe lists its session in a file in its [runtime folder](environment.md#integrations),
+`<pid>.json`, with the `address` to connect to: a Unix socket, or a named pipe on Windows. Connect
+there yourself to skip `luxe join`.
+To stop sessions being joined, set [`joinable`](configuration.md#joining-a-session) to `false`.
+
 ## Actions
 
 | `kind` | `content` | Does |
@@ -3831,6 +4162,7 @@ what you do not recognize.
 | `answer_question` | `{"id": "ask:…", "reply": {"answered": ["postgres"]}}` | Answer a question, or `{"reply": "cancelled"}` |
 | `set_permission_auto_approve` | `true` | Approve every prompt for the rest of the session. Deny rules still apply. |
 | `select_model` | `{"provider": "anthropic", "model": "claude-sonnet-5"}` | Switch models |
+| `list_models` | `{"request_id": "…"}` | The models you can switch to, configured ones first, each with the thinking levels it honors; answered by `models_listed`, to you alone |
 | `set_thinking_level` | `"high"` | `off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `ultra` |
 | `set_mode` | `"plan"` | `build` or `plan`; see [Plan, then build](agent.md#plan-then-build). A name that is not a mode is answered by a `notice`. |
 | `request_review` | `{"focus": "error handling"}`, or nothing | A [second opinion](agent.md#a-second-opinion) on the uncommitted changes; answered by `review_started`, then `review_finished` |
@@ -3844,6 +4176,7 @@ what you do not recognize.
 | `load_file_diff` | `{"request_id": "…", "path": "src/main.rs"}` | One file's change, outside any review; answered by `file_diff_loaded` |
 | `list_directory` | `{"request_id": "…", "path": "src"}` | One project folder's entries, without what `.gitignore` ignores unless `"include_ignored": true`, which marks each such entry `"ignored": true`; answered by `directory_listed` |
 | `read_project_file` | `{"request_id": "…", "path": "src/main.rs"}` | One project file's text, up to 2 MB; answered by `project_file_read` |
+| `introduce` | `{"name": "iPhone"}` | A joined client's name, which the interface uses when it says who joined or answered. Add `"watch_only": true` as your first line to read without being announced; Luxe then drops everything else you send. `"yours": true` says the person at the terminal paired it, so it's listed without a line in the conversation. Refused from the client that started the session. |
 | `close` | | Shut down, stopping a turn in flight the way `cancel` does. The stream ends after it. |
 
 ### Guided Review
@@ -3852,6 +4185,9 @@ A review is loaded with `load_guided_review`. Luxe answers with `guided_review_l
 carries the whole review (its `id`, `revision_id`, files, hunks and chapters), and then always
 `review_session_restored`, which carries its comments. Everything below names the review by its
 `id`. An action for a review that is no longer the open one is refused.
+
+A session has one open review, and every load makes a new one, so a second client that loads its
+own replaces the review the first is reading. To join it instead, send `show_open_review`.
 
 ```text
 ←  {"kind":"load_guided_review","content":{"request_id":"r1","target":{"kind":"working_tree"}}}
@@ -3891,6 +4227,7 @@ the comment stays `open`.
 | `edit_review` | `{"request_id", "review_id", "edit", …}` | Change the comments, as above |
 | `record_review_progress` | `{"review_id", "walked_chapter_ids": [...]}` | Which chapters were read. Saved when it changed, never answered. |
 | `record_review_seen` | `{"review_id"}` | Remember what the walked chapters covered, so the next review of the same target leads with what is new |
+| `show_open_review` | `{"request_id"}` | Ask for the review open now, whoever opened it, answered by `open_review_shown` |
 | `refresh_guided_review` | `{"request_id", "review_id", "revision_id"}` | Read the change again, keeping the comments, if the review is still at `revision_id`. Answered like a load. |
 | `commit_review_chapters` | `{"request_id", "review_id", "revision_id", "chapter_ids", "squash"}` | A commit per chapter, or one with `squash`. All chapters when `chapter_ids` is left out. Never pushes. Answered by `review_committed`. |
 | `prepare_pull_request` | `{"request_id", "review_id"}` | Draft the pull request this branch's review would open; answered by `pull_request_prepared` |
@@ -3963,6 +4300,7 @@ There are around sixty. These are the ones a front end is built on:
 | `message_committed` | A complete message was added to the transcript |
 | `permission_requested` | **Answer it** with `respond_permission`, or the turn waits. If `always_patterns` is empty, offer only `once` and `reject`. |
 | `question_asked` | **Answer it** with `answer_question` |
+| `turn_started` | A turn began, from any client. It comes before the turn's message is saved, and `turn_ended` always follows. A client joining mid-turn gets it as part of catching up. |
 | `turn_ended` | The turn finished; `reason` says why |
 | `provider_retrying` | The provider failed before answering, and Luxe is trying again |
 | `state_changed` | Model, thinking level, mode, and whether a turn is running |
@@ -3972,8 +4310,10 @@ There are around sixty. These are the ones a front end is built on:
 | `context_usage`, `context_composition` | How full the context window is, and with what |
 | `compaction_started`, `compaction_done`, `compaction_stopped` | A summary of the conversation is being written, on request or mid-turn. It can take a minute. It always ends in `compaction_done` (with `tokens_after`) or `compaction_stopped` (failed or cancelled). |
 | `workspace_updated` | The project, Git changes, todos and tools: what the dock shows |
+| `prompt_closed` | A prompt stopped waiting, answered here or by another client, or cancelled. Take it down by `id`. |
 | `session_loaded`, `sessions_refreshed` | A transcript was restored; the session list changed |
 | `notice`, `error` | Something to show. `error` ends the turn. |
+| `guests_changed` | The names of the clients joined now, sent to the interface as one joins or leaves, for its dock. |
 | `action_rejected` | Your frame was refused and nothing happened |
 
 Guided Review, as the interface sees it:
@@ -3983,6 +4323,7 @@ Guided Review, as the interface sees it:
 | `guided_review_loading`, `guided_review_loaded`, `guided_review_failed` | A review you asked for, by `request_id`. `loaded` carries the whole review: files, hunks and chapters. |
 | `guided_review_guide_updated` | Better chapters and a summary replaced the first ones, for the same pinned revision |
 | `review_session_restored` | The comments and progress that go with the review just loaded. It always follows `guided_review_loaded`, after a restart too. |
+| `open_review_shown` | The answer to `show_open_review`, under its `request_id`: the open `review` and its `session`, or neither when no review is open. `reading` says what each chapter asks of the reader: `needs_review` items, and the `reason` when one thing accounts for all of them. |
 | `review_session_saved`, `review_session_save_failed` | A change to them was stored, or refused. Luxe reports its own changes this way too: a turn starting, the agent's report, a review posted. |
 | `review_feedback_turn_dispatched`, `review_feedback_turn_completed`, `review_feedback_turn_failed` | Feedback you sent reaching the agent, and how its turn went |
 | `review_questions_answered`, `remediation_reported` | The agent's answer to a question, and its report on a fix |
@@ -3990,6 +4331,7 @@ Guided Review, as the interface sees it:
 | `last_turn_available` | The agent's last turn can be reviewed on its own |
 | `file_diff_loaded`, `file_diff_failed` | One file's change, for `load_file_diff` |
 | `directory_listed`, `directory_list_failed` | One folder's entries, for `list_directory` |
+| `models_listed` | The models for `list_models`: each has `provider` and `model` for `select_model`, a `name` to show, and its `thinking_levels` |
 | `project_file_read`, `project_file_read_failed` | One file's text, for `read_project_file` |
 
 GitHub:
@@ -4021,7 +4363,9 @@ list is closed.
 
 ## Security
 
-- Luxe listens on nothing; your client is the process that started it.
+- Nothing listens on the network. A [joined](#join-a-running-session) session takes connections
+  on a local socket or pipe that only your user account can open, and turns away any program the
+  agent itself started, so the agent can't answer its own prompts.
 - Permission rules are enforced inside Luxe. A client cannot weaken a `deny`: reading `.env` is
   refused here as everywhere.
 - Prompts go to your client to answer. To approve everything, send `set_permission_auto_approve` or
@@ -4190,6 +4534,69 @@ or `"agent": { "on_ask": "deny" }` in `config.json`. A project can set `deny` bu
 closing an issue. Auto-approve and unattended runs refuse them. To let an unattended run do one,
 allow it in your own rules, such as `"bash": { "gh pr merge *": "allow" }`.
 
+## Joining a session
+
+A session open in the interface can be [joined](rpc.md#join-a-running-session) by another program,
+which then sees the conversation and can answer its prompts. That makes who may join a security
+question:
+
+- **Only your user account.** The socket sits in a folder only you can open, only you can use it,
+  and Luxe checks the account of whatever connects. On Windows the named pipe admits your account
+  alone, and refuses remote clients.
+  Nothing listens on the network.
+- **Not the agent.** A program the agent started, at any depth, is turned away, so it can't
+  approve its own prompts. Luxe checks the joining process's ancestry. It can't see past a program
+  that detaches from its parent, such as one started with `setsid` and left running after its
+  parent exits, so treat this as a tripwire, not a wall. A command that would do that should be
+  something your rules ask about.
+- **A guest can't do everything.** A joined client can't switch or end the session, and can't
+  publish to GitHub.
+
+Anything running as you can already read your sessions on disk and your credentials, so joining
+adds a way to steer, not a way to read. To turn it off, set
+[`joinable`](configuration.md#joining-a-session) to `false`.
+
+## Luxe remote
+
+[`luxe remote`](remote.md) is the one part of Luxe that answers network requests, and it is off
+until you run it. It puts your sessions in reach of your phone, so it takes two things to get in:
+
+- **Your Tailscale login.** The bridge listens on this machine only (`127.0.0.1`) and refuses to
+  listen anywhere else. Tailscale Serve carries it to your tailnet over HTTPS and adds the login of
+  whoever is asking, replacing any the request brought. A request without one didn't come through
+  Serve and is refused, and so is a login other than yours or one you `--allow`. Luxe never uses
+  Tailscale Funnel, which would publish it to the internet.
+- **A paired device.** Any program on this machine can reach a local port and claim a login, so
+  every session also needs the credential a device gets when it pairs. An invitation works once,
+  within ten minutes. Luxe keeps only a hash of each invitation and credential, in
+  `~/.config/luxe/remote.json`. The device keeps its credential in a cookie scripts can't read,
+  sent only over HTTPS and never with a request from another site; a request a page on another
+  site makes is refused too.
+
+Revoking a device disconnects it within a few seconds. A device joins a session as a guest, with
+the same limits as any [joined client](#joining-a-session), and the interface names it when it joins
+and when it answers a prompt. The name is the device's own label: whether a client may answer
+prompts at all is still decided by the process checks above.
+
+Notifications are off until you turn them on in the app, one device at a time, and they never
+answer anything: a notification says what is waiting and where, such as "Approve bash" over the
+folder's name, never the command, and answering takes the app. While any device has them on, the
+bridge joins each running session to watch for prompts. It joins watch-only: the terminal doesn't
+announce it, and Luxe drops anything it sends, so a client nobody sees can't act. Each
+notification is sealed so only that device can read it (RFC 8291) and posted to the push service
+the device's browser picked; the push service sees when, not what. The bridge posts only to
+Apple's, Google's, Mozilla's and Microsoft's push services, so a paired device can't aim it at
+anything else on your network. It signs with a key of its own, kept in `remote.json`, and revoking
+a device ends its notifications.
+
+The bridge starts Luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
+already running and as its own `luxe --rpc` otherwise. A packager can build Luxe without the
+`remote` feature, which leaves out the bridge entirely.
+
+A session is open in one Luxe at a time. A second `luxe --resume` of a session the interface
+already has, or a resume from the session list, is refused and says which process has it. The lock
+is the operating system's, so a crash never leaves a session stuck.
+
 ## Secrets
 
 - Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. Luxe warns if
@@ -4303,6 +4710,9 @@ There is no telemetry. Luxe connects only to:
 5. GitHub, through your own `gh`, when you, the agent or an [RPC client](rpc.md#github-writes) work
    with pull requests and issues. A client can write there only if you start it with
    `--github-writes`.
+6. Your device's push service (Apple's, for an iPhone), when you turn on notifications in the
+   [`luxe remote`](remote.md#notifications) app, sealed so only that device can read them
+   (turning them off in the app stops it)
 
 None of them carries anything about you or your machine. The update check sends no version,
 platform or identifier; it downloads a public file and compares versions locally.
@@ -4310,15 +4720,23 @@ platform or identifier; it downloads a public file and compares versions locally
 One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, Luxe runs
 herdr's own command to tell it whether the agent is working, idle or waiting on you, and the id of
 the session for herdr to resume. Nothing is sent outside herdr, and `"herdr": false` stops it.
+And a running session takes connections on a local socket only you can open, so another program can
+[join it](#joining-a-session); `"joinable": false` stops that.
+
+Apart from notifications, `luxe remote` sends nothing of its own. It answers your paired devices
+through Tailscale Serve and runs your own `tailscale` and `herdr` commands; see
+[Luxe remote](#luxe-remote).
 
 What you post to GitHub is yours alone: reviews, replies and pull requests are posted from a
 preview, with nothing added, and no agent tool can post them.
 
 ## Supply chain
 
-Luxe is written in Rust with `unsafe` code denied throughout, apart from two reviewed blocks in what
-ships: one starts each command in a session of its own, so nothing the agent runs can reach your
-terminal, and one on Windows keeps the programs Luxe starts off the stdin `--rpc` reads. CI checks
+Luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
+modules that call the operating system directly. One starts each command in a session of its own,
+so nothing the agent runs can reach your terminal. On Windows, one keeps the programs Luxe starts
+off the stdin `--rpc` reads, one ends a command's whole process tree on a timeout, and one locks
+the [session pipe](#joining-a-session) to your account. CI checks
 every dependency's security advisories and license with `cargo-deny`, builds with `--locked`, and
 pins its GitHub Actions to exact commits.
 @@@ page: sessions

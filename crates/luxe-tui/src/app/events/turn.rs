@@ -62,6 +62,15 @@ pub(super) fn token_delta(app: &mut App, delta: String) {
     app.status.state = AppState::Streaming;
 }
 
+/// A turn began, maybe one a joined client asked for. One sent from here has been running since
+/// Enter, so its clock is left alone.
+pub(super) fn turn_started(app: &mut App) {
+    app.status.state = AppState::Streaming;
+    if app.status.turn_started.is_none() {
+        app.status.on_turn_start();
+    }
+}
+
 pub(super) fn turn_ended(app: &mut App) {
     end_turn(app, "The turn ended before this call ran");
     // Steering the turn ended before taking in stays held. That window is now narrow — the
@@ -111,6 +120,8 @@ pub(super) fn failed(app: &mut App, msg: String) {
 fn end_turn(app: &mut App, reason: &str) {
     // A load that failed sends no snapshot, and one that never comes must not mute the next real one
     app.arrival.owes_snapshot = false;
+    // A prompt a hook refused never commits, and must not claim the next client's message
+    app.own_commit_pending = false;
     app.interrupt_sent_at = None;
     app.streaming = false;
     app.streamed_thinking = false;
@@ -279,6 +290,14 @@ pub(super) fn mark_unfinished_tools(app: &mut App, state: ToolActivityState, sum
     for activity in stranded {
         app.apply_tool_activity(activity);
     }
+}
+
+/// The transcript line saying a requested review began.
+pub(super) fn review_started(model: &str) -> String {
+    format!(
+        "A reviewer on {model} is reading the uncommitted changes in a fresh context. Its \
+         findings will show here."
+    )
 }
 
 /// What a requested review found, as one line of the transcript and the list under it.

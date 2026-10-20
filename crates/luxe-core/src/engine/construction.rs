@@ -57,6 +57,7 @@ impl Engine {
             before_mode: tokio::sync::Mutex::new(None),
             current_leaf: tokio::sync::Mutex::new(None),
             session_id: tokio::sync::Mutex::new(initial_session_id),
+            session_claim: std::sync::Mutex::new(None),
             last_turn_baseline: tokio::sync::Mutex::new(None),
             active_guided_review: Arc::new(tokio::sync::Mutex::new(ActiveGuidedReview::default())),
             review_desk,

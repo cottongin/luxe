@@ -213,6 +213,11 @@ pub struct App {
     pub headless: bool,
     /// Whether submit sends `Action::EditResend` instead of `SubmitUserMessage`
     edit_resend_mode: bool,
+    /// Whether this front-end started a turn whose user message the engine hasn't committed yet.
+    ///
+    /// That message is already on screen, so its commit adopts the copy rather than adding one;
+    /// a commit with this unset came from a client joined to the session.
+    own_commit_pending: bool,
     /// When an interrupt was sent that the engine has not yet confirmed by ending the turn.
     pub(crate) interrupt_sent_at: Option<std::time::Instant>,
     /// Whether this session has already been told that nothing is selected.

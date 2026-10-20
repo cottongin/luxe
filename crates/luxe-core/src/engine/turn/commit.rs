@@ -31,9 +31,10 @@ impl Engine {
     /// retry grows the transcript by one identical message every time it is attempted. That entry
     /// is already history, so a re-run's context is not added to it.
     ///
-    /// A message Luxe composed — review feedback, a question from a review, a draft's brief — is
-    /// announced with `MessageCommitted`, because no front-end typed it and so none has shown it.
-    /// The reader's own words are not: their front-end put them on screen when they were sent.
+    /// Every committed message is announced with `MessageCommitted`, the reader's own words too:
+    /// a client joined to the session didn't type them, and the front-end that did reconciles the
+    /// copy it already shows. A message Luxe composed (review feedback, a draft's brief) has no
+    /// such copy anywhere, so it's announced the same way.
     pub(super) async fn commit_user_message(
         &self,
         user_message: &str,
@@ -68,16 +69,14 @@ impl Engine {
                 message.content.extend(context.and_then(hook_context_block));
                 let entry_id =
                     self.sessions_mut().append(&sid, parent, EntryKind::Message(message))?;
-                // Only the brief itself: what a hook added rides along for the model, not the reader
-                if remediation.is_some() || self.read_only.is_some() {
-                    let _ = event_tx
-                        .send(Event::MessageCommitted {
-                            session_id: sid.to_string(),
-                            entry_id: entry_id.clone(),
-                            message: Message::user(user_message),
-                        })
-                        .await;
-                }
+                // Only what was sent: what a hook added rides along for the model, not the reader
+                let _ = event_tx
+                    .send(Event::MessageCommitted {
+                        session_id: sid.to_string(),
+                        entry_id: entry_id.clone(),
+                        message: user_message_with(user_message, images),
+                    })
+                    .await;
                 entry_id
             }
         };
@@ -205,6 +204,7 @@ impl Engine {
                 None => results.push(self.dispatch_one(call, event_tx).await),
             }
         }
+        self.attach_nested_instructions(&leaf, tool_calls, &mut results, event_tx).await;
         self.commit_tool_message(leaf, Message { role: Role::Tool, content: results }, event_tx)
             .await
     }

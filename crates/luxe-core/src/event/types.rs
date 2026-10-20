@@ -44,6 +44,20 @@ impl ModelRef {
     }
 }
 
+/// One model a client can switch to, as `list_models` answers. Carries no endpoint: a base URL can
+/// hold credentials, and switching needs only the two ids.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelChoice {
+    /// Provider id, as `select_model` takes it
+    pub provider: String,
+    /// Model id, as `select_model` takes it
+    pub model: String,
+    /// The name to show
+    pub name: String,
+    /// The thinking levels it honors, lowest first: only `off` for a model that doesn't reason
+    pub thinking_levels: Vec<crate::provider::ThinkingLevel>,
+}
+
 /// Stop reason from a completed LLM turn.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -161,4 +175,18 @@ pub enum GuidedReviewFailureKind {
     InvalidTarget,
     /// Local capture, parsing, or persistence failed.
     Capture,
+}
+
+/// The answer to `show_open_review`: the review open now and its session, or neither.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct OpenReview {
+    /// Correlates this answer with its request
+    pub request_id: crate::guided_review::ReviewLoadRequestId,
+    /// The open review, with the latest guide applied
+    pub review: Option<crate::guided_review::GuidedReview>,
+    /// Its feedback session as the desk holds it
+    pub session: Option<crate::guided_review::ReviewSession>,
+    /// What each chapter asks of the reader, decided from lines a client need not keep
+    #[serde(default)]
+    pub reading: Vec<crate::guided_review::ChapterReading>,
 }

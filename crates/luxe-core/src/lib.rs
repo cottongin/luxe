@@ -38,6 +38,7 @@ pub mod issue;
 pub mod json_file;
 pub mod jsonrpc_frame;
 pub mod keymap;
+pub mod local_endpoint;
 pub mod loop_controller;
 pub mod loop_hooks;
 pub(crate) mod loop_state;

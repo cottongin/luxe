@@ -302,9 +302,8 @@ async fn fix_two_comments(
             .success());
     }
     std::fs::write(project_root.join("tracked.rs"), "fn changed() {}\n").unwrap();
-    let session_id = JsonlSessionStore::new(project_root.to_path_buf())
-        .create(&project_root.display().to_string())
-        .unwrap();
+    let session_id =
+        project_store(project_root).create(&project_root.display().to_string()).unwrap();
     let provider = Arc::new(ScriptedFixes {
         replies: std::sync::Mutex::new(replies.iter().copied().collect()),
         ..Default::default()

@@ -8,7 +8,7 @@ mod permission_mode;
 pub(crate) use commands::*;
 pub(crate) use permission_mode::PermissionModeArg;
 
-/// Luxe — a fast, lean, security-conscious agentic coding harness.
+/// Luxe's command line. `--help` shows the crate description from `Cargo.toml`, not this doc.
 #[derive(Parser, Debug)]
 #[command(name = "luxe", version, about)]
 pub(crate) struct Args {
@@ -183,11 +183,14 @@ impl Args {
                 | SubCommand::Docs(_)
                 | SubCommand::Doctor
                 | SubCommand::Init(_)
+                | SubCommand::Join(_)
                 | SubCommand::Models(_)
                 | SubCommand::Sessions(_)
                 | SubCommand::Update(_)
                 | SubCommand::Wire(_),
             ) => false,
+            #[cfg(feature = "remote")]
+            Some(SubCommand::Remote(_)) => false,
         }
     }
 
@@ -253,12 +256,15 @@ impl Args {
                 | SubCommand::Docs(_)
                 | SubCommand::Doctor
                 | SubCommand::Init(_)
+                | SubCommand::Join(_)
                 | SubCommand::Mcp(_)
                 | SubCommand::Models(_)
                 | SubCommand::Sessions(_)
                 | SubCommand::Update(_)
                 | SubCommand::Wire(_),
             ) => false,
+            #[cfg(feature = "remote")]
+            Some(SubCommand::Remote(_)) => false,
         }
     }
 

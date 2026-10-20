@@ -249,3 +249,77 @@ fn chapter_roll_up_counts_what_still_needs_review() {
     assert!(chapter_needs_review(&budget, chapter));
     assert_eq!(budget.chapter(&chapter.id).needs_review, 1);
 }
+
+/// The churn review as one chapter holding all three hunks, so a reason has to be shared to stand.
+fn one_churn_chapter() -> GuidedReview {
+    let mut review = churn_review();
+    let mut chapter = review.chapters[0].clone();
+    chapter.items = review.chapters.iter().flat_map(|it| it.items.clone()).collect();
+    review.chapters = vec![chapter];
+    review
+}
+
+/// One reason behind every item is the chapter's reason.
+///
+/// The break this catches: a chapter that reads as needing nothing but never says why, which is
+/// the line a reader checks before skipping it.
+#[test]
+fn a_reason_every_item_shares_is_the_chapters_reason() {
+    let review = one_churn_chapter();
+    let budget = review_budget(&review, &[]);
+    let reason = shared_reason(&budget, &review.chapters[0]);
+    assert_eq!(reason, Some(Accounted::Noise { class: NoiseKind::FormattingOnly }));
+}
+
+/// Different reasons for different items name none of them.
+///
+/// The break this catches: the first item's reason standing for the whole chapter, which calls a
+/// lockfile change formatting.
+#[test]
+fn mixed_reasons_name_none() {
+    let mut review = one_churn_chapter();
+    review.files[1].hunks[0].noise = NoiseKind::Lockfile;
+    let budget = review_budget(&review, &[]);
+    assert_eq!(shared_reason(&budget, &review.chapters[0]), None);
+}
+
+/// One item on the reading list means the chapter has no reason to be skipped.
+///
+/// The break this catches: skipping the item that needs review when its neighbors are churn,
+/// which is exactly the hunk a reviewer is there for.
+#[test]
+fn an_item_that_needs_review_leaves_no_reason() {
+    let review = one_churn_chapter();
+    let flagged = signal(None, Some(review.files[1].hunks[0].id.clone()), false);
+    let budget = review_budget(&review, &[flagged]);
+    assert_eq!(shared_reason(&budget, &review.chapters[0]), None);
+}
+
+/// A chapter's reading carries its id, what still needs review, and the shared reason's words.
+///
+/// The break this catches: a reading that reaches a phone without the count or the words, so it
+/// shows every chapter as one to read, or none.
+#[test]
+fn readings_carry_the_count_and_the_reasons_words() {
+    let churn = one_churn_chapter();
+    let [quiet] = chapter_readings(&churn).try_into().expect("one chapter");
+    assert_eq!(quiet.chapter_id, churn.chapters[0].id);
+    assert_eq!((quiet.needs_review, quiet.reason.as_deref()), (0, Some("formatting only")));
+    let [unvouched] = chapter_readings(&review()).try_into().expect("one chapter");
+    assert_eq!((unvouched.needs_review, unvouched.reason), (1, None));
+}
+
+/// A reading weighs what the lines say, as the terminal's budget does.
+///
+/// The break this catches: readings decided without the line flags, which would tell a phone that
+/// a chapter adding a credential is only formatting.
+#[test]
+fn readings_weigh_what_the_lines_say() {
+    let mut review = one_churn_chapter();
+    // Built here so no key-shaped literal sits in the source for the scanners to trip on
+    let key = format!("AKIA{}", "Q7ZK4M2TPLX9WRB6");
+    let added = review.files[1].hunks[0].lines.iter_mut().find(|line| line.new_line.is_some());
+    added.expect("an added line").text = format!("let key = \"{key}\";");
+    let [flagged] = chapter_readings(&review).try_into().expect("one chapter");
+    assert_eq!((flagged.needs_review, flagged.reason), (1, None));
+}

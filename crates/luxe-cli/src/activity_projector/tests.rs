@@ -336,6 +336,68 @@ fn exactly_one_card_is_working_at_a_time() {
     );
 }
 
+/// A call written while an earlier one runs waits under that one, and works again once it's over.
+///
+/// Calls run as soon as they're written, so the model can be writing one while another runs. The
+/// break this catches: opening the written call as `Composing` regardless, which puts a spinner on
+/// it beside the running card, with a paused one between them that reads as stuck.
+#[test]
+fn a_call_written_while_another_runs_waits_behind_it() {
+    let mut projector = ToolActivityProjector::default();
+    projector.project(&Event::SessionLoaded { session_id: "session-a".into(), messages: vec![] });
+    let compose = |id: &str| Event::ToolCallComposing {
+        call_id: id.into(),
+        name: "edit".into(),
+        subject: Some(format!("{id}.rs")),
+        body: None,
+    };
+    let start = |id: &str| Event::ToolStarted { call_id: id.into(), name: "edit".into() };
+    let finish = |id: &str| Event::ToolCompleted {
+        call_id: id.into(),
+        is_error: false,
+        output: "Applied".into(),
+    };
+    let steps: Vec<(&str, Event)> = vec![
+        ("the model writes the first edit", compose("a")),
+        ("which runs as soon as it's written", start("a")),
+        ("while the model writes the second", compose("b")),
+        ("and the third", compose("c")),
+        ("the first finishes", finish("a")),
+        ("the second runs", start("b")),
+        ("and finishes, with the third still being written", finish("b")),
+    ];
+
+    let mut shape = Vec::new();
+    for (note, event) in steps {
+        projector.project(&event);
+        let mut states: Vec<(String, ToolActivityState)> =
+            projector.calls.iter().map(|(id, row)| (id.clone(), row.state)).collect();
+        states.sort_by(|left, right| left.0.cmp(&right.0));
+        let working = states.iter().filter(|(_, state)| state.is_working()).count();
+        assert!(working <= 1, "{note}: {working} cards claim to be working: {states:?}");
+        shape.push((note, states.into_iter().map(|(_, state)| state).collect::<Vec<_>>()));
+    }
+
+    use ToolActivityState::{Composing, Queued, Running, Succeeded};
+    assert_eq!(
+        shape,
+        [
+            ("the model writes the first edit", vec![Composing]),
+            ("which runs as soon as it's written", vec![Running]),
+            ("while the model writes the second", vec![Running, Queued]),
+            ("and the third", vec![Running, Queued, Queued]),
+            // For the instant between one call ending and the next starting, writing the third
+            // is the only thing happening; the next event takes it back
+            ("the first finishes", vec![Succeeded, Queued, Composing]),
+            ("the second runs", vec![Succeeded, Running, Queued]),
+            (
+                "and finishes, with the third still being written",
+                vec![Succeeded, Succeeded, Composing]
+            ),
+        ],
+    );
+}
+
 /// A refused or cancelled call is answered without ever being dispatched. Its card is the one
 /// the model's writing opened, and it has to settle from there or it spins forever.
 #[test]

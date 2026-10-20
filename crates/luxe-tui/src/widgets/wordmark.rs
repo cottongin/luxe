@@ -24,6 +24,7 @@
 
 mod art;
 mod light;
+mod tile;
 
 use art::{column_groups, FULL_ART, LINE_ART, SMALL_ART};
 pub use light::smoothstep;
@@ -34,6 +35,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 use ratatui::Frame;
 use std::sync::LazyLock;
+pub use tile::tile_png;
 
 /// Ticks for one full pass of the drift (~7s at the 33ms animation tick).
 ///

@@ -11,12 +11,14 @@ homepage.workspace = true
 # Provides tool implementations (read, write, edit, bash, grep, glob, etc.).
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.2" }
+luxe-core = { path = "../luxe-core", version = "0.1.3" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }
+# Running a search's phrasings at once
+futures = { workspace = true }
 async-trait = "0.1"
 anyhow = "1"
 reqwest = { workspace = true }

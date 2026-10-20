@@ -28,6 +28,8 @@ fn run_rpc_with(flags: &[&str], input: &str) -> (String, String) {
         .current_dir(project.path())
         .env("HOME", home.path())
         .env("XDG_CONFIG_HOME", home.path().join(".config"))
+        // it shares its session, and the developer's own sessions are listed in the real one
+        .env("LUXE_RUNTIME_DIR", home.path().join("runtime"))
         .env_remove("LUXE_CONFIG_DIR")
         .env_remove("LUXE_STATE_DIR")
         // Offline and deterministic: a catalog refresh is best-effort anyway, and a test that
@@ -149,7 +151,7 @@ struct Live {
     seen: std::cell::RefCell<Vec<String>>,
     /// Where luxe writes its log, which a timeout prints
     project: std::path::PathBuf,
-    _home: tempfile::TempDir,
+    home: tempfile::TempDir,
 }
 
 impl Live {
@@ -161,6 +163,7 @@ impl Live {
             .current_dir(project)
             .env("HOME", home.path())
             .env("XDG_CONFIG_HOME", home.path().join(".config"))
+            .env("LUXE_RUNTIME_DIR", home.path().join("runtime"))
             .env("LUXE_MODELS_DEV_REFRESH", "0")
             .env("RUST_LOG", "debug")
             // not a terminal multiplexer's pane, whatever the one running the tests is
@@ -190,8 +193,15 @@ impl Live {
             frames,
             seen: Default::default(),
             project: project.to_path_buf(),
-            _home: home,
+            home,
         }
+    }
+
+    /// What this luxe published about its session for others to join, if anything.
+    fn published(&self) -> Option<serde_json::Value> {
+        let record = self.home.path().join("runtime").join(format!("{}.json", self.child.id()));
+        let text = std::fs::read_to_string(record).ok()?;
+        Some(serde_json::from_str(&text).expect("the record is JSON"))
     }
 
     fn send(&mut self, frame: serde_json::Value) {
@@ -342,6 +352,21 @@ fn rpc_drives_a_review_from_comment_to_commit() {
         .output()
         .expect("git log");
     assert_eq!(String::from_utf8_lossy(&log.stdout).lines().count(), 2, "the review's commit");
+}
+
+/// A session started over `--rpc` is shared like the terminal's, so the bridge can start one for a
+/// phone and the phone can join it.
+///
+/// The break this catches: `run_rpc` not offering its session, which leaves a session started from
+/// the phone running where nothing can reach it.
+#[test]
+fn rpc_shares_its_session() {
+    let project = tempfile::tempdir().expect("temp project");
+    let luxe = Live::start(project.path(), &[]);
+    let ready = luxe.wait("ready", |_| true);
+    let record = luxe.published().expect("a record in the runtime folder");
+    assert_eq!(record["session_id"], ready["session_id"]);
+    luxe.close();
 }
 
 /// A read-only session reviews and comments, but writes no history.

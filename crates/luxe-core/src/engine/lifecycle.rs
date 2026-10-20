@@ -6,15 +6,17 @@ impl Engine {
     pub(crate) async fn latest_user_goal(&self) -> Option<String> {
         let session_id = self.current_session_id().await;
         let leaf = self.current_leaf.lock().await.clone()?;
-        let entries =
-            self.config.session_store.read().ok()?.active_path(&session_id, &leaf).ok()?;
-        entries.iter().rev().find_map(|entry| match &entry.kind {
-            EntryKind::Message(message) if message.role == Role::User => {
-                let text = message.text();
-                (!text.trim().is_empty()).then_some(text)
-            }
-            _ => None,
-        })
+        let store = self.config.session_store.read().ok()?;
+        let goal = crate::session::with_active_path(&**store, &session_id, &leaf, |entries| {
+            entries.iter().rev().find_map(|entry| match &entry.kind {
+                EntryKind::Message(message) if message.role == Role::User => {
+                    let text = message.text();
+                    (!text.trim().is_empty()).then_some(text)
+                }
+                _ => None,
+            })
+        });
+        goal.ok()?
     }
 
     /// Reads what produced the current changes off the active transcript.
@@ -25,20 +27,17 @@ impl Engine {
         const RECENT_ENTRIES: usize = 120;
         let session_id = self.current_session_id().await;
         let leaf = self.current_leaf.lock().await.clone()?;
-        let entries =
-            self.config.session_store.read().ok()?.active_path(&session_id, &leaf).ok()?;
-        let messages: Vec<crate::message::Message> = entries
-            .iter()
-            .rev()
-            .take(RECENT_ENTRIES)
-            .collect::<Vec<_>>()
-            .into_iter()
-            .rev()
-            .filter_map(|entry| match &entry.kind {
+        let store = self.config.session_store.read().ok()?;
+        let recent = crate::session::with_active_path(&**store, &session_id, &leaf, |entries| {
+            let from = entries.len().saturating_sub(RECENT_ENTRIES);
+            let messages = entries[from..].iter().filter_map(|entry| match &entry.kind {
                 EntryKind::Message(message) => Some(message.clone()),
                 _ => None,
-            })
-            .collect();
+            });
+            messages.collect::<Vec<_>>()
+        });
+        let messages = recent.ok()?;
+        drop(store);
         let provenance = crate::guided_review::TurnProvenance::from_messages(
             self.config.guided_review_project_root.as_deref(),
             &messages,
@@ -170,6 +169,13 @@ impl Engine {
         })
     }
 
+    /// Hold the claim on the session just loaded, letting go of the one before it.
+    fn hold_claim(&self, claim: Option<crate::session::SessionClaim>) {
+        // Only `load_session` takes it, and never across an await
+        let mut held = self.session_claim.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        *held = claim;
+    }
+
     pub(crate) async fn load_session(
         &self,
         session_id: String,
@@ -177,13 +183,15 @@ impl Engine {
         event_tx: mpsc::Sender<Event>,
     ) -> Result<(), SessionError> {
         let id = SessionId(session_id.clone());
-        let (leaf, messages, used_tokens) = {
+        let (leaf, messages, used_tokens, claim) = {
             let store = self
                 .config
                 .session_store
                 .read()
                 .map_err(|_| SessionError::Other("session store lock poisoned".to_string()))?;
             let entries = store.load(&id)?;
+            // Before anything changes, so a session open in another Luxe leaves this one as it was
+            let claim = store.claim(&id)?;
             let leaf = crate::session::latest_leaf(&entries);
             let active = match leaf.as_ref() {
                 Some(leaf) => store.active_path(&id, leaf)?,
@@ -205,7 +213,7 @@ impl Engine {
                     _ => None,
                 })
                 .collect::<Vec<_>>();
-            (leaf, messages, used_tokens)
+            (leaf, messages, used_tokens, claim)
         };
 
         // A session that already carries messages is a resume (CLI `--resume`, `-c`, or the
@@ -221,6 +229,7 @@ impl Engine {
             self.retire_session_ledger(self.current_session_id().await);
         }
         *self.session_id.lock().await = id.clone();
+        self.hold_claim(claim);
         *self.current_leaf.lock().await = leaf;
         // Loading a session is how its prompt picks up instruction and skill edits
         self.forget_prompt();

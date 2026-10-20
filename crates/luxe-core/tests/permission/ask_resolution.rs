@@ -39,6 +39,36 @@ async fn ask_once_allows_the_tool() {
     assert_eq!(runs.load(Ordering::SeqCst), 1, "approved tool must run once");
 }
 
+/// Whichever front-end answers, every other one showing the prompt hears that it closed.
+///
+/// The break this catches: dropping the `PromptClosed` after the reply, which leaves a second
+/// front-end (a phone joined to the session) holding a prompt nobody is waiting on.
+#[tokio::test]
+async fn an_answered_prompt_is_announced_closed() {
+    use luxe_core::Event;
+    let (tx, mut rx, _) = spawn(bash_policy(PermissionAction::Ask, AskResolution::Prompt)).await;
+    tx.send(Action::SubmitUserMessage { content: "go".into(), images: vec![], remediation: None })
+        .await
+        .unwrap();
+    let (mut asked, mut closed) = (None, None);
+    loop {
+        let wait = tokio::time::timeout(std::time::Duration::from_secs(5), rx.recv()).await;
+        match wait.expect("the turn ends").expect("the engine is running") {
+            Event::PermissionRequested { id, .. } => {
+                asked = Some(id.as_str().to_string());
+                tx.send(Action::RespondPermission { id, reply: PermissionReply::Once })
+                    .await
+                    .unwrap();
+            }
+            Event::PromptClosed { id } => closed = Some(id),
+            Event::TurnEnded { .. } => break,
+            _ => {}
+        }
+    }
+    assert!(asked.is_some(), "the policy asks");
+    assert_eq!(closed, asked);
+}
+
 #[tokio::test]
 async fn ask_always_persists_across_the_session() {
     let (tx, mut rx, runs) = spawn(bash_policy(PermissionAction::Ask, AskResolution::Prompt)).await;

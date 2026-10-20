@@ -1,0 +1,158 @@
+/* The project panel: tabs under its bar, then the tab's view. Files is the TUI's dock tree, a
+   finger tall a row, and a file's lines are drawn as a diff's are */
+
+.panel-button {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  color: var(--luxe-muted, #97938c);
+}
+
+.panel-button .icon {
+  width: 1.1lh;
+  height: 1.1lh;
+}
+
+/* everything in the panel starts at the dock's indent */
+.panel .bar {
+  padding-inline: 1.5ch;
+}
+
+/* the project's folder rides the heading's line, so the bar stays one row; plain text, glyph and
+   all, as the TUI's dock heads its tree */
+.project-name {
+  color: var(--luxe-text, #e4dfd6);
+  font-weight: normal;
+}
+
+.badge + .project-name {
+  margin-left: 1.5ch;
+}
+
+.project-mark {
+  margin-right: 1ch;
+}
+
+/* the branch is quieter, as the TUI's section has it; a long one is what the bar cuts */
+.project-branch {
+  margin-left: 2ch;
+  color: var(--luxe-muted, #97938c);
+}
+
+/* The tabs are the TUI's switch: the one showing a lit badge, the others idle ones of the same
+   footprint, so the row never moves as the choice flips */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1ch;
+  padding: 0 1.5ch;
+}
+
+/* A phone's panel has the dock's tab too: four badges are 45 cells of the 48 a 375-point iPhone
+   has, so they sit fade to slab, the fade being the gap, a cell in from the edges */
+@media not all and (min-width: 50rem) and (min-height: 30rem) {
+  .tabs {
+    gap: 0;
+    padding: 0 1ch;
+  }
+}
+
+.tab {
+  padding: 0.6lh 0;
+}
+
+.panel .sheet-body {
+  padding-top: 0.5lh;
+}
+
+/* Rows sit flush, a line each, as the terminal's do */
+.tree-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0 1.5ch;
+  white-space: pre;
+}
+
+.tree-row:active {
+  background: var(--luxe-tool-bg, #2a2724);
+}
+
+/* a level's guide, chevron and mark are two cells each, the glyph and a space */
+.guide, .chevron, .mark {
+  flex: none;
+  width: 2ch;
+}
+
+/* the guide runs the row's full height, so a column of them reads as one line */
+.guide {
+  align-self: stretch;
+  background: linear-gradient(var(--luxe-border, #4b463f), var(--luxe-border, #4b463f))
+    0.5ch 0 / 1px 100% no-repeat;
+}
+
+.chevron {
+  color: var(--luxe-muted, #97938c);
+}
+
+.tree-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-name.folder {
+  font-weight: bold;
+}
+
+.tree-note {
+  color: var(--luxe-muted, #97938c);
+}
+
+.tree-right {
+  flex: none;
+  padding-left: 1ch;
+}
+
+.tree-right.held {
+  color: var(--luxe-warning, #faaa51);
+}
+
+.hue-secondary { color: var(--luxe-accent-secondary, #d2a5cd); }
+.hue-warning { color: var(--luxe-warning, #faaa51); }
+.hue-info { color: var(--luxe-info, #85c7d7); }
+.hue-success { color: var(--luxe-success, #81caa0); }
+.hue-error { color: var(--luxe-error, #e68485); }
+.hue-thinking-ultra { color: var(--luxe-thinking-ultra, #e790b7); }
+.hue-text { color: var(--luxe-text, #e4dfd6); }
+.hue-muted { color: var(--luxe-muted, #97938c); }
+
+.mention {
+  flex: none;
+  align-self: center;
+  padding: 0.25lh 1ch;
+  color: var(--luxe-accent, #ddc084);
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+  border-radius: var(--corner);
+}
+
+/* A file's lines keep their columns and scroll sideways together, as a diff's do */
+.file {
+  overflow-x: auto;
+}
+
+.fl {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.fl code {
+  font: inherit;
+  padding-right: 1ch;
+}

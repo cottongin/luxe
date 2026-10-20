@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pair with Luxe</title>
+<style>
+  body { background: #161616; color: #d8d8d8; font: 15px/1.5 ui-monospace, monospace; margin: 2rem; }
+  h1 { font-size: 1rem; color: #e0b46c; }
+  input, button { font: inherit; padding: .5rem; margin: .25rem 0; width: 100%; box-sizing: border-box; }
+  .error { color: #e06c6c; }
+</style>
+</head>
+<body>
+<h1>Pair this device with Luxe</h1>
+<form id="pair">
+  <label>Device name <input id="name" autocomplete="off"></label>
+  <button>Pair</button>
+</form>
+<p id="status"></p>
+<script type="module">
+  const guess = /iPad/.test(navigator.userAgent) ? "iPad" : /iPhone/.test(navigator.userAgent) ? "iPhone" : "";
+  document.getElementById("name").value = guess;
+  // the invitation rides in the fragment, which a browser never sends to a server or a log
+  const invitation = location.hash.slice(1);
+  history.replaceState(null, "", location.pathname);
+  const status = document.getElementById("status");
+  document.getElementById("pair").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const name = document.getElementById("name").value;
+    const response = await fetch("/api/pair", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ invitation, name }),
+    });
+    if (response.ok) {
+      location.replace("/");
+      return;
+    }
+    status.className = "error";
+    status.textContent = await response.text();
+  });
+</script>
+</body>
+</html>

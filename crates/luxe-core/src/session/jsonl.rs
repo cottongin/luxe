@@ -2,6 +2,8 @@
 
 use super::*;
 
+mod cache;
+
 /// In-memory index of sessions for fast lookup.
 #[derive(Debug, Default)]
 struct SessionIndex {
@@ -17,13 +19,20 @@ pub struct JsonlSessionStore {
     index: SessionIndex,
     /// Project hash for directory naming (derived from cwd).
     project_hash: String,
+    /// The parsed entries of the session this store writes
+    cache: cache::SessionCache,
 }
 
 impl JsonlSessionStore {
     /// Create a new store rooted at `root`, scanning for existing sessions.
     pub fn new(root: impl Into<PathBuf>) -> Self {
         let root = root.into();
-        let mut store = Self { root, index: SessionIndex::default(), project_hash: String::new() };
+        let mut store = Self {
+            root,
+            index: SessionIndex::default(),
+            project_hash: String::new(),
+            cache: cache::SessionCache::default(),
+        };
         store.scan_for_sessions();
         store
     }
@@ -73,6 +82,13 @@ impl JsonlSessionStore {
         self.index.sessions.keys().cloned().collect()
     }
 
+    /// Path to a session's `.jsonl` file, or [`SessionError::NotFound`].
+    fn known_path(&self, session: &SessionId) -> Result<&PathBuf, SessionError> {
+        let (path, _) =
+            self.index.sessions.get(session).ok_or(SessionError::NotFound(session.clone()))?;
+        Ok(path)
+    }
+
     /// Path to a session's `.jsonl` file, if the store knows the session.
     pub fn session_path(&self, session: &SessionId) -> Option<PathBuf> {
         self.index.sessions.get(session).map(|(path, _)| path.clone())
@@ -120,6 +136,7 @@ impl SessionStore for JsonlSessionStore {
         writer.flush()?;
 
         self.index.sessions.insert(session_id.clone(), (dir, Some(header.id.clone())));
+        self.cache.writing(&session_id);
 
         Ok(session_id)
     }
@@ -152,43 +169,28 @@ impl SessionStore for JsonlSessionStore {
     }
 
     fn load(&self, session: &SessionId) -> Result<Vec<Entry>, SessionError> {
-        let (path, _) =
-            self.index.sessions.get(session).ok_or(SessionError::NotFound(session.clone()))?;
-
-        let file = fs::File::open(path)?;
-        let reader = io::BufReader::new(file);
-
-        let mut entries = Vec::new();
-        for (line_num, line) in reader.lines().enumerate() {
-            let line = line?;
-            if line.is_empty() {
-                continue;
-            }
-            let entry: Entry = serde_json::from_str(&line)
-                .map_err(|e| SessionError::JsonParse { line: line_num + 1, error: e })?;
-            entries.push(entry);
-        }
-
-        Ok(entries)
+        let path = self.known_path(session)?;
+        self.cache.read(session, path, |entries| Ok(entries.to_vec()))
     }
 
     fn active_path(&self, session: &SessionId, leaf: &EntryId) -> Result<Vec<Entry>, SessionError> {
-        let entries = self.load(session)?;
+        let path = self.known_path(session)?;
+        self.cache.read(session, path, |entries| {
+            Ok(walk_to_root(entries, leaf)?.into_iter().cloned().collect())
+        })
+    }
 
-        let by_id: HashMap<&EntryId, &Entry> = entries.iter().map(|e| (&e.id, e)).collect();
-
-        let mut path = Vec::new();
-        let mut current_id: Option<&EntryId> = Some(leaf);
-
-        while let Some(id) = current_id {
-            let entry = by_id.get(id).ok_or(SessionError::EntryNotFound(id.clone()))?;
-            path.push((*entry).clone());
-            current_id = entry.parent_id.as_ref();
-        }
-
-        // Reverse to get root-to-leaf order.
-        path.reverse();
-        Ok(path)
+    fn visit_active_path(
+        &self,
+        session: &SessionId,
+        leaf: &EntryId,
+        visit: &mut dyn FnMut(&[&Entry]),
+    ) -> Result<(), SessionError> {
+        let path = self.known_path(session)?;
+        self.cache.read(session, path, |entries| {
+            visit(&walk_to_root(entries, leaf)?);
+            Ok(())
+        })
     }
 
     fn list_sessions(&self) -> Vec<SessionId> {
@@ -205,4 +207,29 @@ impl SessionStore for JsonlSessionStore {
         sorted.truncate(limit);
         sorted
     }
+
+    fn claim(&self, session: &SessionId) -> Result<Option<SessionClaim>, SessionError> {
+        let lock_path = self.session_dir(session).with_extension("lock");
+        match claim::claim(&lock_path)? {
+            Some(claimed) => {
+                self.cache.writing(session);
+                Ok(Some(claimed))
+            }
+            None => Err(SessionError::OpenElsewhere(session.clone())),
+        }
+    }
+}
+
+/// The entries from the root to `leaf`.
+fn walk_to_root<'a>(entries: &'a [Entry], leaf: &EntryId) -> Result<Vec<&'a Entry>, SessionError> {
+    let by_id: HashMap<&EntryId, &Entry> = entries.iter().map(|e| (&e.id, e)).collect();
+    let mut path = Vec::new();
+    let mut current_id: Option<&EntryId> = Some(leaf);
+    while let Some(id) = current_id {
+        let entry = by_id.get(id).ok_or(SessionError::EntryNotFound(id.clone()))?;
+        path.push(*entry);
+        current_id = entry.parent_id.as_ref();
+    }
+    path.reverse();
+    Ok(path)
 }

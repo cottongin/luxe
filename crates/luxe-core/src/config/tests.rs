@@ -674,6 +674,23 @@ fn herdr_reporting_is_on_until_it_is_turned_off() {
     assert!(!off.herdr());
 }
 
+/// Sessions are joinable until turned off, and a project can turn that off but not back on.
+///
+/// The break this catches: merging `joinable` like any other key, so a cloned repository's
+/// `.luxe/config.json` reopens the socket the user closed.
+#[test]
+fn a_project_can_close_joining_but_not_reopen_it() {
+    use super::merge::Layered;
+    let parse = |json: &str| serde_json::from_str::<Config>(json).unwrap();
+    assert_eq!(Config::default().joinable, None, "on, by default");
+    let reopened = Config::layered(parse(r#"{"joinable": false}"#), parse(r#"{"joinable": true}"#));
+    assert_eq!(reopened.joinable, Some(false), "the user's off stands");
+    let closed = Config::layered(Config::default(), parse(r#"{"joinable": false}"#));
+    assert_eq!(closed.joinable, Some(false), "the project's off stands");
+    let left = Config::layered(parse(r#"{"joinable": true}"#), Config::default());
+    assert_eq!(left.joinable, Some(true));
+}
+
 #[test]
 fn ensure_config_file_bootstraps_schema_without_overwriting_config() {
     let directory = tempfile::tempdir().unwrap();

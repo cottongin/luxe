@@ -112,6 +112,7 @@ fn sample_actions() -> Vec<Action> {
             walked_chapter_ids: vec![id("chapter:1")],
         },
         Action::RecordReviewSeen { review_id: id("review:1") },
+        Action::ShowOpenReview { request_id: id("review-load:3") },
         Action::RefreshGuidedReview {
             request_id: id("review-load:2"),
             review_id: id("review:1"),
@@ -183,6 +184,7 @@ fn sample_actions() -> Vec<Action> {
         Action::PlanRestack { request_id: id("restack:1") },
         Action::CheckWorktreeRemoval,
         Action::LoadFileDiff { request_id: id("file-diff:1"), path: "src/main.rs".into() },
+        Action::ListModels { request_id: "models:1".into() },
         Action::ListDirectory {
             request_id: id("listing:1"),
             path: "src".into(),
@@ -208,8 +210,37 @@ fn sample_actions() -> Vec<Action> {
             }),
         },
         Action::Restack { request_id: id("restack:1") },
+        Action::Introduce { name: "iPhone".into(), watch_only: false, yours: false },
         Action::Close,
     ]
+}
+
+/// A watch-only introduction says so on the wire, under the name the guide gives.
+///
+/// The break this catches: renaming `watch_only`, so a bridge built against one name joins a host
+/// built against the other as an ordinary, announced client.
+#[test]
+fn a_watch_only_introduction_keeps_its_wire_name() {
+    const PINNED: &str =
+        r#"{"kind":"introduce","content":{"name":"Notifications","watch_only":true}}"#;
+    let watcher =
+        Action::Introduce { name: "Notifications".into(), watch_only: true, yours: false };
+    assert_eq!(serde_json::to_string(&watcher).unwrap(), PINNED);
+    assert_eq!(serde_json::from_str::<Action>(PINNED).unwrap(), watcher);
+}
+
+/// The owner's own device says so on the wire, and an introduction without the field is someone
+/// else's, as every bridge before it sent.
+///
+/// The break this catches: renaming `yours`, so a host never knows a device is its owner's and
+/// announces every reconnect, or a missing field read as yours, quieting a stranger's join.
+#[test]
+fn an_owners_introduction_keeps_its_wire_name() {
+    const PINNED: &str = r#"{"kind":"introduce","content":{"name":"iPhone","yours":true}}"#;
+    let device = Action::Introduce { name: "iPhone".into(), watch_only: false, yours: true };
+    assert_eq!(serde_json::to_string(&device).unwrap(), PINNED);
+    let unsaid = r#"{"kind":"introduce","content":{"name":"iPhone"}}"#;
+    assert!(matches!(serde_json::from_str(unsaid), Ok(Action::Introduce { yours: false, .. })));
 }
 
 fn section() -> crate::config::GithubSection {
@@ -253,6 +284,7 @@ fn the_wire_action_vocabulary_is_pinned() {
         r#"{"kind":"edit_review","content":{"request_id":"review-save:1","review_id":"review:1","edit":"comment","anchor":{"kind":"line","file_id":"file:1","hunk_id":"hunk:1","side":"new","line":12,"context_hash":""},"severity":"question","title":"","body":"Why does this retry twice?","proposed_fix":null,"send":true}}"#,
         r#"{"kind":"record_review_progress","content":{"review_id":"review:1","walked_chapter_ids":["chapter:1"]}}"#,
         r#"{"kind":"record_review_seen","content":{"review_id":"review:1"}}"#,
+        r#"{"kind":"show_open_review","content":{"request_id":"review-load:3"}}"#,
         r#"{"kind":"refresh_guided_review","content":{"request_id":"review-load:2","review_id":"review:1","revision_id":"revision:1"}}"#,
         r#"{"kind":"commit_review_chapters","content":{"request_id":"review-save:2","review_id":"review:1","revision_id":"revision:1","squash":true}}"#,
         r#"{"kind":"prepare_pull_request","content":{"request_id":"pr-open:1","review_id":"review:1"}}"#,
@@ -272,6 +304,7 @@ fn the_wire_action_vocabulary_is_pinned() {
         r#"{"kind":"plan_restack","content":{"request_id":"restack:1"}}"#,
         r#"{"kind":"check_worktree_removal"}"#,
         r#"{"kind":"load_file_diff","content":{"request_id":"file-diff:1","path":"src/main.rs"}}"#,
+        r#"{"kind":"list_models","content":{"request_id":"models:1"}}"#,
         r#"{"kind":"list_directory","content":{"request_id":"listing:1","path":"src"}}"#,
         r#"{"kind":"read_project_file","content":{"request_id":"file-read:1","path":"src/main.rs"}}"#,
         r#"{"kind":"set_focus","content":{"focused":false}}"#,
@@ -279,6 +312,7 @@ fn the_wire_action_vocabulary_is_pinned() {
         r#"{"kind":"post_github_comment","content":{"repository":null,"number":142,"thread":"PRRT_1","answering":null,"body":"Fixed in the latest push."}}"#,
         r#"{"kind":"change_pull_request","content":{"number":142,"write":{"change":"merge","method":"squash","head_oid":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","delete_branch":"feat/threads"}}}"#,
         r#"{"kind":"restack","content":{"request_id":"restack:1"}}"#,
+        r#"{"kind":"introduce","content":{"name":"iPhone"}}"#,
         r#"{"kind":"close"}"#,
     ];
     let samples = sample_actions();

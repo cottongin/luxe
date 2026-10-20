@@ -6,11 +6,15 @@
 
 #![allow(clippy::unwrap_used)]
 
+// Backdating a directory's modified time takes opening it, which only unix allows
+#[cfg(unix)]
+mod baseline_retention;
 mod carryover;
 mod compaction;
 mod fixtures;
 mod interruption;
 mod models;
+mod nested_instructions;
 mod remediation;
 mod review_restore;
 mod turns;

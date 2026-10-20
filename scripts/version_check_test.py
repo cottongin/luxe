@@ -113,6 +113,15 @@ class Changelog(unittest.TestCase):
         self.assertFalse(vc.changelog_has("### [0.2.0]\n", "0.2.0"))
 
 
+class TagListing(unittest.TestCase):
+    def test_reads_tag_names_from_ls_remote(self):
+        listing = "3f5a\trefs/tags/v0.1.2\n6a20\trefs/tags/v0.1.1\n"
+        self.assertEqual(vc.tags_in_listing(listing), ["v0.1.2", "v0.1.1"])
+
+    def test_ignores_what_is_not_a_tag(self):
+        self.assertEqual(vc.tags_in_listing("9e30\trefs/heads/main\n\n"), [])
+
+
 class AgainstARepository(unittest.TestCase):
     """The git wiring: a real repository, a base branch, and a change on top of it."""
 
@@ -165,6 +174,24 @@ class AgainstARepository(unittest.TestCase):
 
     def test_a_site_change_needs_no_bump(self):
         self.write("web/index.html", "<p>hi</p>\n")
+        self.commit("change")
+        self.assertEqual(vc.problems("main"), [])
+
+    def test_a_release_tagged_only_on_the_public_remote_counts(self):
+        # The break this catches: reading local tags only, so a development checkout keeps
+        # adding to a version the public repository already released
+        public = tempfile.TemporaryDirectory()
+        self.addCleanup(public.cleanup)
+        self.run_git("clone", "-q", "--bare", str(self.root), public.name)
+        subprocess.run(["git", "tag", "v0.1.0", "main"], cwd=public.name, check=True)
+        self.run_git("remote", "add", "public", public.name)
+        self.write("crates/a/src/lib.rs", "pub fn new() {}\n")
+        self.commit("change")
+        self.assertIn("leaves the version at 0.1.0", " ".join(vc.problems("main")))
+
+    def test_an_unreachable_public_remote_falls_back_to_local_tags(self):
+        self.run_git("remote", "add", "public", str(self.root / "missing"))
+        self.write("crates/a/src/lib.rs", "pub fn new() {}\n")
         self.commit("change")
         self.assertEqual(vc.problems("main"), [])
 

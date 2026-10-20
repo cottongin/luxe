@@ -261,8 +261,8 @@ fn model_telemetry(app: &App, served_by: &str, row: usize, column: usize) -> Vec
     lines
 }
 
-/// The SESSION block, once a turn has something to measure: the window, tokens, cost, and what
-/// the review and compaction spent of it.
+/// The SESSION block, once a turn has something to measure or someone has joined: the window,
+/// tokens, cost, what the review and compaction spent of it, and who's joined.
 fn session_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>> {
     let styles = &app.theme_styles;
     let status = &app.status;
@@ -270,7 +270,8 @@ fn session_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>>
     let totals = &status.session.total;
     let cost = status.session_cost_label();
     let has_tokens = totals.prompt_tokens > 0 || totals.completion_tokens > 0;
-    if !(status.context_window > 0 || has_tokens || cost.is_some()) {
+    let joined = guests_row(app, row, column);
+    if !(status.context_window > 0 || has_tokens || cost.is_some() || joined.is_some()) {
         return lines;
     }
     lines.push(Line::default());
@@ -304,7 +305,19 @@ fn session_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>>
         lines.push(telemetry_row("cost", cost, styles.text, column, app));
     }
     lines.extend(source_cost_rows(app, column));
+    lines.extend(joined);
     lines
+}
+
+/// Who's joined from elsewhere, while anyone has: here rather than in the transcript, where a
+/// phone's every reconnect would add a line.
+fn guests_row(app: &App, row: usize, column: usize) -> Option<Line<'static>> {
+    let guests = &app.status.guests;
+    if guests.is_empty() {
+        return None;
+    }
+    let names = truncate_cells(&guests.join(", "), telemetry_value_width(row, column));
+    Some(telemetry_row("joined", names, app.theme_styles.text, column, app))
 }
 
 /// What the review and compaction cost, each a dimmed share of the session's total.

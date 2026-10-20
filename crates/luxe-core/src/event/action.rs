@@ -135,6 +135,13 @@ pub enum Action {
         /// The open review
         review_id: ReviewId,
     },
+    /// Ask for the review open now, whoever opened it, answered by `open_review_shown` under
+    /// `request_id`. How a second client joins a review instead of replacing it: loading one
+    /// makes a new review, and the session holds one at a time.
+    ShowOpenReview {
+        /// Correlates the answer
+        request_id: ReviewLoadRequestId,
+    },
     /// Read the open review again, keeping its comments, if it is still at `revision_id`.
     RefreshGuidedReview {
         /// Correlates the loading, loaded and failed events
@@ -301,6 +308,12 @@ pub enum Action {
         /// Project-relative, or an absolute path the session touched outside the project
         path: String,
     },
+    /// Ask which models this client can switch to, answered by `models_listed` to this client
+    /// alone.
+    ListModels {
+        /// Correlates the answer
+        request_id: String,
+    },
     /// List one project folder, answered by `directory_listed` or `directory_list_failed`.
     ListDirectory {
         /// Correlates the answer
@@ -351,6 +364,23 @@ pub enum Action {
     },
 
     // === Lifecycle ===
+    /// A client that joined a running session names itself, so the interface can say who joined
+    /// and who answered a prompt. Refused from the client that started the session.
+    ///
+    /// Args: `name` — how to call it, such as the device the bridge relays for. Cosmetic: any
+    /// program running as you could send it. `watch_only` — the client only reads, so the
+    /// interface doesn't say it joined, and nothing it sends afterward reaches the engine. Honored
+    /// only as the client's first line, so a client can't act and then go quiet.
+    Introduce {
+        /// How to call the client
+        name: String,
+        /// Reads without being announced, and can't act
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        watch_only: bool,
+        /// Paired by the person at the terminal, who needn't be told their own device joined
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        yours: bool,
+    },
     /// Shut the engine down, stopping a turn in flight the way `cancel` does. The event stream
     /// ends after it.
     Close,

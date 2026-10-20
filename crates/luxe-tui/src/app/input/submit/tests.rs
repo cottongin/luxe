@@ -65,6 +65,51 @@ async fn a_message_the_engine_never_took_is_marked_never_sent() {
     assert!(!marked(|block| matches!(block, ConvoBlock::Image { .. })), "its image is not");
 }
 
+/// An app with a turn running, and the actions it sends.
+fn mid_turn() -> (App, mpsc::Receiver<Action>) {
+    let (tx, rx) = mpsc::channel(8);
+    let config = luxe_core::config::Config::default();
+    let mut app = App::new(tx, luxe_core::keymap::KeyMap::defaults(), config);
+    app.status.model = "gpt-5.6".into();
+    app.status.state = AppState::Streaming;
+    (app, rx)
+}
+
+fn trace_png() -> AttachedImage {
+    let (data, mime) = ("aW1hZ2U=".into(), "image/png".into());
+    AttachedImage { data, mime, filename: "trace.png".into(), width: 4, height: 4 }
+}
+
+/// A message with an image, sent mid-turn, waits for a turn of its own: steering carries text
+/// alone, so steering it would deliver the words and drop the image.
+///
+/// The break this catches: Enter mid-turn steering a message with a pasted screenshot, which the
+/// model never sees, and which leaves the tray when the words are delivered.
+#[tokio::test]
+async fn a_message_with_an_image_waits_for_its_own_turn() {
+    let (mut app, mut sent) = mid_turn();
+    app.editor.prepend_messages([("why does it stall here?".to_string(), vec![trace_png()])]);
+
+    submit_prompt(&mut app);
+
+    assert!(sent.try_recv().is_err(), "nothing steered the turn");
+    assert_eq!(app.queued_count(), 1);
+    assert_eq!(app.pending_submissions[0].images.len(), 1);
+}
+
+/// The break this catches: the image check catching every mid-turn message, so plain text no
+/// longer steers the running turn.
+#[tokio::test]
+async fn a_message_without_one_still_steers() {
+    let (mut app, mut sent) = mid_turn();
+    app.editor.prepend_messages([("also check the backoff".to_string(), vec![])]);
+
+    submit_prompt(&mut app);
+
+    assert!(matches!(sent.try_recv(), Ok(Action::SteerTurn { .. })));
+    assert_eq!(app.queued_count(), 0);
+}
+
 /// A draft whose mentions nest still places its chips instead of crashing on submit.
 #[test]
 fn nested_mention_text_places_chips() {

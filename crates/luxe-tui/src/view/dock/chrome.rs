@@ -9,25 +9,13 @@ use ratatui::{
     text::{Line, Span},
 };
 
-/// The color-independent lifecycle marker.
-const fn change_status_marker(status: luxe_core::workspace::FileChangeStatus) -> &'static str {
-    use luxe_core::workspace::FileChangeStatus as Status;
-    match status {
-        Status::Added => "A",
-        Status::Modified => "M",
-        Status::Deleted => "D",
-        Status::Renamed => "R",
-        Status::Untracked => "?",
-    }
-}
-
 /// The dock's marker and color for `status`, for another surface that shows a file's Git status
 /// and must show it the same way.
 pub(crate) fn status_mark(
     status: luxe_core::workspace::FileChangeStatus,
     theme: &crate::theme::styles::ThemeStyles,
 ) -> (&'static str, ratatui::style::Style) {
-    (change_status_marker(status), status_style(status, theme))
+    (crate::marks::change(status), status_style(status, theme))
 }
 
 fn status_style(

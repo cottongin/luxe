@@ -42,16 +42,18 @@ pub(crate) fn activity_parts(app: &App) -> Option<(&'static str, String)> {
     }
 }
 
-/// Formats turn elapsed time compactly: `45s` under a minute, `1:23` beyond.
+/// Formats a live timer: `45s`, `1m 23s`, then `1h 04m`.
 ///
-/// Whole seconds, for the reason the tool card's duration is: this is redrawn on every frame of a
-/// running turn, and a tenths digit there is a number moving ten times a second beside a spinner
-/// that is already saying the same thing.
+/// The one format for every clock that counts up, tool cards included, so a turn and the call
+/// inside it never read in two notations. Whole seconds: this is redrawn every frame, and a tenths
+/// digit is a number moving ten times a second beside a bar that already shows motion. Seconds go
+/// past an hour, where nobody acts on them.
 pub(crate) fn format_elapsed_compact(elapsed: std::time::Duration) -> String {
-    if elapsed.as_secs() < 60 {
-        format!("{}s", elapsed.as_secs())
-    } else {
-        format!("{}:{:02}", elapsed.as_secs() / 60, elapsed.as_secs() % 60)
+    let secs = elapsed.as_secs();
+    match secs {
+        0..=59 => format!("{secs}s"),
+        60..=3_599 => format!("{}m {:02}s", secs / 60, secs % 60),
+        _ => format!("{}h {:02}m", secs / 3_600, (secs % 3_600) / 60),
     }
 }
 

@@ -136,9 +136,7 @@ jobs:
       - name: Webfonts cover the assets
         run: scripts/site-fonts.sh --check
 
-      # The one part of docs/brand/voice.md a machine can judge. Everything else in it — evidence
-      # with claims, naming the trade-off — is a human's call, and a checker that pretended otherwise
-      # would be one nobody trusts.
+      # The part of docs/brand/voice.md a machine can judge: banned words and British spellings
       - name: Voice
         run: python3 scripts/voice-check.py
 
@@ -161,6 +159,24 @@ jobs:
         run: cargo doc --workspace --no-deps --locked
         env:
           RUSTDOCFLAGS: -D warnings
+
+      # The phone app's end-to-end test drives a real `luxe` (a session, the bridge, pairing) in
+      # WebKit, the only engine an iPhone has. It runs here because the Build step above already
+      # made `target/debug/luxe`: a job of its own would compile the workspace a second time, and
+      # the binary is too large to hand between jobs cheaply. The app's types and unit tests need
+      # no Rust, so they stay in `remote-app`.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: crates/luxe-remote/app-tests/package-lock.json
+
+      - name: Phone app end to end (WebKit)
+        working-directory: crates/luxe-remote/app-tests
+        run: |
+          npm ci
+          npx playwright install --with-deps webkit
+          npm run e2e
 
   # Does it build and pass on the platforms nobody develops on? Linux above is the canonical gate —
   # `fmt` is an answer about the source, not about the OS, so running it three times would only
@@ -342,12 +358,42 @@ jobs:
         run: node ../scripts/site-cross.mjs --require webkit
         working-directory: web
 
+  # The phone app `luxe remote` serves. It ships as written, with no build step, so this is where a
+  # type error gets caught: its JSDoc checked by tsc, and its folds unit-tested. The end-to-end
+  # test, one whole turn in WebKit, runs in `gate`, which already has a `luxe` built.
+  remote-app:
+    name: phone app
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: crates/luxe-remote/app-tests
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: crates/luxe-remote/app-tests/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Types
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
   # The one check a ruleset requires. A skipped job reports as passing but a skipped matrix job
   # reports under no name a ruleset can hold, so this sums them up: it fails when any job failed or
   # was cancelled, `changes` included, and passes when each one passed or had nothing to check.
   passed:
     name: CI passed
-    needs: [changes, gate, portability, msrv, supply-chain, website]
+    needs: [changes, gate, portability, msrv, supply-chain, website, remote-app]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

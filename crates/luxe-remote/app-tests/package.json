@@ -1,0 +1,20 @@
+{
+  "name": "luxe-remote-app-tests",
+  "private": true,
+  "description": "Type checks, unit tests and the WebKit end-to-end test for the luxe remote phone app",
+  "type": "module",
+  "scripts": {
+    "check": "tsc -p . && tsc -p tsconfig.worker.json && tsc -p tsconfig.tests.json",
+    "test": "node --import ./register.mjs --test",
+    "e2e": "node --test --test-timeout=60000 e2e/flow.mjs"
+  },
+  "devDependencies": {
+    "@preact/signals": "2.11.3",
+    "@preact/signals-core": "1.14.4",
+    "htm": "3.1.1",
+    "playwright": "1.63.0",
+    "preact": "11.0.1",
+    "typescript": "5.9.3",
+    "@types/node": "^24.0.0"
+  }
+}

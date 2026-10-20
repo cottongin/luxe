@@ -1,6 +1,9 @@
 //! Baseline — the turn snapshots and persisted review a restarted engine picks up again.
 
 use super::*;
+use crate::guided_review::{
+    prune_turn_baselines, LastTurnRecordStoreError, UNREFERENCED_BASELINE_AGE,
+};
 
 impl Engine {
     /// Restores a complete retained Last Turn baseline without reading the mutable workspace.
@@ -141,10 +144,15 @@ impl Engine {
         );
         let record = LastTurnRecord::new(&baseline.session_id, baseline.turn_id.as_str())
             .map_err(|error| GuidedReviewError::LastTurnRecord(error.to_string()))?;
-        tokio::task::spawn_blocking(move || LastTurnRecordStore::new(project_root).save(&record))
-            .await
-            .map_err(|_| GuidedReviewError::LastTurnRecordTask)?
-            .map_err(|error| GuidedReviewError::LastTurnRecord(error.to_string()))?;
+        tokio::task::spawn_blocking(move || {
+            LastTurnRecordStore::new(&project_root).save(&record)?;
+            let keep = [record.baseline_id(), record.after_snapshot_id()];
+            prune_turn_baselines(&project_root, &keep, UNREFERENCED_BASELINE_AGE);
+            Ok::<_, LastTurnRecordStoreError>(())
+        })
+        .await
+        .map_err(|_| GuidedReviewError::LastTurnRecordTask)?
+        .map_err(|error| GuidedReviewError::LastTurnRecord(error.to_string()))?;
         Ok(())
     }
 }

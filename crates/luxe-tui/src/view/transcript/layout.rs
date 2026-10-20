@@ -3,7 +3,7 @@
 use super::reveal::{rendered_chars, revealed_lines};
 use super::rows::{append_banded_rows, folded_run_rows, Banded};
 use super::{LayoutContext, TranscriptLayout, UnitSignature};
-use crate::app::{App, ToolRunFold};
+use crate::app::{App, ConversationItem, ConvoBlock, ToolRunFold};
 use crate::view::{blocks, wrapping, ConversationCanvasWidths};
 use ratatui::text::Line;
 use std::rc::Rc;
@@ -154,6 +154,7 @@ fn layout_folded_run(
         selected: app.selected_block.is_some_and(|index| range.contains(&index)),
         never_sent: false,
         expanded: false,
+        images: None,
     };
     // A run that is still working spins, so its line is different every tick and
     // there is nothing about it a later frame could reuse.
@@ -189,10 +190,10 @@ fn layout_item(
         selected: app.selected_block == Some(block_index),
         never_sent: app.was_never_sent(item_id),
         expanded: app.message_is_expanded(item_id),
+        images: image_revision(app, item),
     };
-    // Anything that redraws on a clock of its own — a spinner, an image the store is still
-    // sizing — has nothing worth keeping between frames.
-    let volatile = draws_by_itself(app, item);
+    // A spinner redraws on a clock of its own, so there is nothing worth keeping between frames
+    let volatile = draws_by_itself(item);
     let cached_chars = (!volatile).then(|| layout.reusable(&signature)).flatten();
 
     // The reveal decides how much of an item to draw from its *rendered* character count, and
@@ -328,28 +329,35 @@ fn newest_revision(app: &App, range: std::ops::Range<usize>) -> crate::app::Bloc
         .unwrap_or(crate::app::BlockRevision::ZERO)
 }
 
-/// Whether a block's own drawing moves without the transcript changing.
-///
-/// A working card spins, and an image is laid out against a store that may still be loading or
-/// resizing it. Those units are rebuilt every frame, because there is nothing about them a later
-/// frame could honestly reuse.
+/// Whether a block's own drawing moves without the transcript changing: a working card spins.
+/// Such a unit is rebuilt every frame, because there is nothing about it a later frame could reuse.
 ///
 /// **Working**, not running: a call the model is still writing spins too, and the memo is keyed on
 /// the card's revision — so a provider that delivers a tool call's arguments in one lump at the end
 /// left the spinner frozen for the whole time it took to arrive, which reads worse than no spinner
 /// at all.
-fn draws_by_itself(app: &App, item: &crate::app::ConversationItem) -> bool {
+fn draws_by_itself(item: &ConversationItem) -> bool {
     match item.block() {
-        crate::app::ConvoBlock::Image { .. } => true,
-        crate::app::ConvoBlock::Tool(tool) => {
-            tool.activity.state.is_working()
-                || app.tool_images.contains_key(&(
-                    tool.activity.session_id.clone(),
-                    tool.activity.call_id.clone(),
-                ))
-        }
+        ConvoBlock::Tool(tool) => tool.activity.state.is_working(),
         _ => false,
     }
+}
+
+/// The image store's layout revision for an item that draws an image, `None` for one that
+/// doesn't.
+///
+/// An image's rows depend on the store (its size, the tier, the cell geometry) as well as on the
+/// item, so they are keyed on both. Rebuilding them every frame would cost a session with a
+/// hundred screenshots a hundred card layouts a frame, wherever they sit.
+fn image_revision(app: &App, item: &ConversationItem) -> Option<u64> {
+    let draws_image = match item.block() {
+        ConvoBlock::Image { .. } => true,
+        ConvoBlock::Tool(tool) => app
+            .tool_images
+            .contains_key(&(tool.activity.session_id.clone(), tool.activity.call_id.clone())),
+        _ => false,
+    };
+    draws_image.then(|| app.images.layout_revision())
 }
 
 /// True when a rendered line carries no visible content.

@@ -144,6 +144,69 @@ or `"agent": { "on_ask": "deny" }` in `config.json`. A project can set `deny` bu
 closing an issue. Auto-approve and unattended runs refuse them. To let an unattended run do one,
 allow it in your own rules, such as `"bash": { "gh pr merge *": "allow" }`.
 
+## Joining a session
+
+A session open in the interface can be [joined](rpc.md#join-a-running-session) by another program,
+which then sees the conversation and can answer its prompts. That makes who may join a security
+question:
+
+- **Only your user account.** The socket sits in a folder only you can open, only you can use it,
+  and Luxe checks the account of whatever connects. On Windows the named pipe admits your account
+  alone, and refuses remote clients.
+  Nothing listens on the network.
+- **Not the agent.** A program the agent started, at any depth, is turned away, so it can't
+  approve its own prompts. Luxe checks the joining process's ancestry. It can't see past a program
+  that detaches from its parent, such as one started with `setsid` and left running after its
+  parent exits, so treat this as a tripwire, not a wall. A command that would do that should be
+  something your rules ask about.
+- **A guest can't do everything.** A joined client can't switch or end the session, and can't
+  publish to GitHub.
+
+Anything running as you can already read your sessions on disk and your credentials, so joining
+adds a way to steer, not a way to read. To turn it off, set
+[`joinable`](configuration.md#joining-a-session) to `false`.
+
+## Luxe remote
+
+[`luxe remote`](remote.md) is the one part of Luxe that answers network requests, and it is off
+until you run it. It puts your sessions in reach of your phone, so it takes two things to get in:
+
+- **Your Tailscale login.** The bridge listens on this machine only (`127.0.0.1`) and refuses to
+  listen anywhere else. Tailscale Serve carries it to your tailnet over HTTPS and adds the login of
+  whoever is asking, replacing any the request brought. A request without one didn't come through
+  Serve and is refused, and so is a login other than yours or one you `--allow`. Luxe never uses
+  Tailscale Funnel, which would publish it to the internet.
+- **A paired device.** Any program on this machine can reach a local port and claim a login, so
+  every session also needs the credential a device gets when it pairs. An invitation works once,
+  within ten minutes. Luxe keeps only a hash of each invitation and credential, in
+  `~/.config/luxe/remote.json`. The device keeps its credential in a cookie scripts can't read,
+  sent only over HTTPS and never with a request from another site; a request a page on another
+  site makes is refused too.
+
+Revoking a device disconnects it within a few seconds. A device joins a session as a guest, with
+the same limits as any [joined client](#joining-a-session), and the interface names it when it joins
+and when it answers a prompt. The name is the device's own label: whether a client may answer
+prompts at all is still decided by the process checks above.
+
+Notifications are off until you turn them on in the app, one device at a time, and they never
+answer anything: a notification says what is waiting and where, such as "Approve bash" over the
+folder's name, never the command, and answering takes the app. While any device has them on, the
+bridge joins each running session to watch for prompts. It joins watch-only: the terminal doesn't
+announce it, and Luxe drops anything it sends, so a client nobody sees can't act. Each
+notification is sealed so only that device can read it (RFC 8291) and posted to the push service
+the device's browser picked; the push service sees when, not what. The bridge posts only to
+Apple's, Google's, Mozilla's and Microsoft's push services, so a paired device can't aim it at
+anything else on your network. It signs with a key of its own, kept in `remote.json`, and revoking
+a device ends its notifications.
+
+The bridge starts Luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
+already running and as its own `luxe --rpc` otherwise. A packager can build Luxe without the
+`remote` feature, which leaves out the bridge entirely.
+
+A session is open in one Luxe at a time. A second `luxe --resume` of a session the interface
+already has, or a resume from the session list, is refused and says which process has it. The lock
+is the operating system's, so a crash never leaves a session stuck.
+
 ## Secrets
 
 - Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. Luxe warns if
@@ -257,6 +320,9 @@ There is no telemetry. Luxe connects only to:
 5. GitHub, through your own `gh`, when you, the agent or an [RPC client](rpc.md#github-writes) work
    with pull requests and issues. A client can write there only if you start it with
    `--github-writes`.
+6. Your device's push service (Apple's, for an iPhone), when you turn on notifications in the
+   [`luxe remote`](remote.md#notifications) app, sealed so only that device can read them
+   (turning them off in the app stops it)
 
 None of them carries anything about you or your machine. The update check sends no version,
 platform or identifier; it downloads a public file and compares versions locally.
@@ -264,14 +330,22 @@ platform or identifier; it downloads a public file and compares versions locally
 One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, Luxe runs
 herdr's own command to tell it whether the agent is working, idle or waiting on you, and the id of
 the session for herdr to resume. Nothing is sent outside herdr, and `"herdr": false` stops it.
+And a running session takes connections on a local socket only you can open, so another program can
+[join it](#joining-a-session); `"joinable": false` stops that.
+
+Apart from notifications, `luxe remote` sends nothing of its own. It answers your paired devices
+through Tailscale Serve and runs your own `tailscale` and `herdr` commands; see
+[Luxe remote](#luxe-remote).
 
 What you post to GitHub is yours alone: reviews, replies and pull requests are posted from a
 preview, with nothing added, and no agent tool can post them.
 
 ## Supply chain
 
-Luxe is written in Rust with `unsafe` code denied throughout, apart from two reviewed blocks in what
-ships: one starts each command in a session of its own, so nothing the agent runs can reach your
-terminal, and one on Windows keeps the programs Luxe starts off the stdin `--rpc` reads. CI checks
+Luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
+modules that call the operating system directly. One starts each command in a session of its own,
+so nothing the agent runs can reach your terminal. On Windows, one keeps the programs Luxe starts
+off the stdin `--rpc` reads, one ends a command's whole process tree on a timeout, and one locks
+the [session pipe](#joining-a-session) to your account. CI checks
 every dependency's security advisories and license with `cargo-deny`, builds with `--locked`, and
 pins its GitHub Actions to exact commits.

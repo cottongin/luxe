@@ -27,7 +27,14 @@ pub(super) fn message_committed(app: &mut App, session_id: String, entry_id: Str
             // The user's own words are never held back — a steer that lands mid-turn has to be
             // visible the moment it lands, not when the prose above it finishes arriving.
             app.reveal_catch_up();
-            for (block_index, text) in luxe_core::briefs::readers_words(&msg.content) {
+            let words = luxe_core::briefs::readers_words(&msg.content);
+            if std::mem::take(&mut app.own_commit_pending) {
+                let block_index = words.first().map_or(0, |(index, _)| *index);
+                if adopt_own_message(app, &session_id, &entry_id, block_index) {
+                    return;
+                }
+            }
+            for (block_index, text) in words {
                 app.convo.push(ConversationItem::new(
                     persisted_id(&session_id, &entry_id, block_index),
                     user_block(text),
@@ -49,7 +56,19 @@ pub(super) fn message_committed(app: &mut App, session_id: String, entry_id: Str
     }
 }
 
+/// This front-end's own message, on screen since it was sent, takes the id the engine gave it.
+///
+/// The copy on screen keeps its chips and images, which the committed text doesn't carry.
+fn adopt_own_message(app: &mut App, session_id: &str, entry_id: &str, block_index: usize) -> bool {
+    let Some(index) = app.last_user_message_index() else {
+        return false;
+    };
+    app.convo[index].id = persisted_id(session_id, entry_id, block_index);
+    true
+}
+
 pub(super) fn session_loaded(app: &mut App, session_id: String, messages: Vec<SessionMessage>) {
+    app.own_commit_pending = false;
     app.review.last_turn = None;
     app.mcp_listed.clear();
     app.worktree_emptied = false;

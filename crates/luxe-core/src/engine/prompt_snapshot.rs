@@ -88,14 +88,16 @@ impl Engine {
             }
         };
         let sid = self.current_session_id().await;
-        let entries = match self.sessions().active_path(&sid, &leaf) {
-            Ok(entries) => entries,
+        let read = crate::session::with_active_path(&**self.sessions(), &sid, &leaf, |entries| {
+            crate::compaction::context_messages(entries)
+        });
+        let messages = match read {
+            Ok(messages) => messages,
             Err(error) => {
                 warn!(%error, "could not read which branch the model last heard of");
                 return None;
             }
         };
-        let messages = crate::compaction::context_messages(&entries);
         let users = messages.iter().rev().filter(|message| message.role == Role::User);
         users.flat_map(|message| message.content.iter().skip(1).rev()).find_map(|block| match block
         {

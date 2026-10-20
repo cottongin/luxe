@@ -46,7 +46,7 @@ async fn the_keyless_endpoint_returns_usable_results_with_content() {
 }
 
 #[tokio::test]
-async fn domain_and_multi_query_filters_reach_the_endpoint() {
+async fn the_domain_filter_reaches_the_endpoint() {
     if !enabled() {
         eprintln!("skipped: set LUXE_TEST_LIVE_WEB=1 to run");
         return;
@@ -57,7 +57,6 @@ async fn domain_and_multi_query_filters_reach_the_endpoint() {
             "async runtime",
             5,
             &SearchOptions {
-                also: vec!["tokio runtime internals".to_string()],
                 include_domains: vec!["docs.rs".to_string()],
                 include_content: true,
                 ..Default::default()

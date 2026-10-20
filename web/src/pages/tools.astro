@@ -352,7 +352,11 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     </section>
 
     <section class="section group" id="tasks">
-      <h2 class="group__name">Whole tasks</h2>
+      <h2 class="group__name">What a task costs</h2>
+      <div class="split split--tasks">
+      {/* The words, the table and its note are one column, so the chart starts beside the words
+          and the note sits under what it qualifies */}
+      <div class="tasks__data">
       <div class="prose">
         <p>
           Luxe, Claude Code, Codex and OpenCode each ran the first twelve Django tasks of
@@ -361,10 +365,6 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
           spent on the same task, as a multiple of what Luxe spent: above 1× costs more than Luxe.
         </p>
       </div>
-      <div class="split split--tasks">
-      {/* The table and its note are one column, so the note sits under what it qualifies rather
-          than below whichever of table and chart runs longer */}
-      <div class="tasks__data">
       <table class="costs">
         <thead>
           <tr>
@@ -620,24 +620,25 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
     margin-bottom: var(--space-2) !important;
   }
 
-  /* The words, and beside them what they claim, drawn; one column once there is no room. Shares
-     rather than a fixed text column: the prose keeps its own measure, and the drawing gets room for
-     its longest command just above the breakpoint */
+  /* The words, and beside them what they claim, drawn; one column once there is no room. The text
+     column is the prose's own measure, so the drawing starts one gap from the words rather than
+     after a column wider than they are */
   .split {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr);
     gap: var(--space-5) var(--space-6);
     align-items: center;
   }
 
   .split--tasks {
-    grid-template-columns: auto minmax(0, 1fr);
     align-items: start;
-    margin-top: var(--space-5);
+  }
+
+  .tasks__data .prose {
+    margin-top: 0;
   }
 
   .split--tasks .costs {
-    margin-top: 0;
     width: 100%;
   }
 

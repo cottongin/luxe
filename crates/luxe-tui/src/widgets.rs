@@ -21,7 +21,9 @@ pub use card::{card, card_inner_width};
 pub(crate) use fit::{elide_path_components, truncate_middle};
 pub use fit::{truncate_end, truncate_start};
 pub use gauge::fill_gauge;
-pub use language_glyph::{language_hue, language_icon, GENERIC_LANGUAGE};
+pub use language_glyph::{
+    language_hue, language_hue_role, language_icon, LanguageHue, GENERIC_LANGUAGE,
+};
 pub use panel::{
     code_spans, footed_body, key_hint, key_hint_row, panel_block, panel_title, panel_title_width,
     render_footed, render_footer, split_footer, titled_panel, FOOTER_ROWS, PANEL_BORDER_TYPE,
@@ -33,8 +35,8 @@ pub use slab::{
 };
 pub use tool_glyph::{tool_glyph, tool_icon, GENERIC_TOOL};
 pub use wordmark::{
-    banner_frame_due, render_wordmark, smoothstep, BannerClock, Wordmark, WordmarkInk, BAND,
-    DRIFT_DEPTH, DRIFT_FRAME_TICKS, DRIFT_PERIOD_TICKS, LEAN, PEAK_DARK, PEAK_LIGHT,
+    banner_frame_due, render_wordmark, smoothstep, tile_png, BannerClock, Wordmark, WordmarkInk,
+    BAND, DRIFT_DEPTH, DRIFT_FRAME_TICKS, DRIFT_PERIOD_TICKS, LEAN, PEAK_DARK, PEAK_LIGHT,
     SHINE_CYCLE_TICKS, SHINE_SWEEP_TICKS, STILL_TICK,
 };
 pub use wrap::{wrap_cells, wrap_line, wrap_lines, wrapped_row_starts};

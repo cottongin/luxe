@@ -25,6 +25,7 @@ guide is reference, for when you need it.
 | Resume a session, or see what fills the context | [Sessions and context](sessions.md) |
 | See what the agent can use | [Tools](tools.md) |
 | Let the agent work through a plan on its own | [Autonomous runs](loop.md) |
+| Reach your sessions from your phone or tablet | [Luxe on your phone](remote.md) |
 | Change the theme, keys or statusline | [Configuration](configuration.md) |
 | Give the agent your project's conventions | [Project context](project-context.md) |
 | Add tools, skills or your own commands | [Extending Luxe](extending.md), [Recipes](recipes.md) |

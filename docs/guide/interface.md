@@ -113,7 +113,8 @@ While the agent works, you can keep typing:
 | `alt+↑` | Bring waiting messages back into the composer to edit |
 | `ctrl+esc` | Stop the turn. Waiting messages come back into the composer. |
 
-A waiting message sits above the composer, marked `steering` or `queued`, until it is delivered.
+A waiting message sits above the composer, marked `steering` or `queued`, until it is delivered. A
+message with an image is always queued, because steering carries text only.
 
 `ctrl+v` or `shift+insert` pastes. Pasted text of three lines or more, or over 150 bytes, becomes a
 `[Pasted 40 lines]` chip, and a pasted image becomes `[Pasted Image]`. Both are sent in full. A chip, like a mention, is deleted with one `backspace`.
@@ -144,7 +145,7 @@ conversation, or in its place below 80 columns.
 | **FILES** | The project as a tree, with what changed marked in it. Click a file to [preview](#preview) it. |
 | **ELSEWHERE** | Files the session changed outside the project, when there are any |
 | **MODEL** | The provider, model, thinking level and [mode](agent.md#plan-then-build). Click the model to change it, or the mode to switch it. |
-| **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. |
+| **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. While a phone or another client has [joined](remote.md), a **joined** row names it. |
 
 `alt+d` shows or hides the dock, and `/dock left` or `/dock right` moves it. To set it for good:
 

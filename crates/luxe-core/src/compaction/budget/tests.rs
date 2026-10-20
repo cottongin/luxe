@@ -52,9 +52,9 @@ fn a_summary_gets_room_beyond_what_reasoning_spends() {
         ..Default::default()
     };
 
-    // Fails if the allowance drops back to where thinking alone could exhaust it
+    // Fails if the allowance drops back to the 16K a long session's summary ran out of
     let roomy = summary_max_tokens(&model(1_000_000, 128_000), 880_000).expect("a cap");
-    assert!(roomy >= 16_000, "{roomy}");
+    assert!(roomy >= 32_000, "{roomy}");
     // Fails if the model's own output limit is ignored
     assert_eq!(summary_max_tokens(&model(1_000_000, 8_000), 10_000), Some(8_000));
     // An unknown limit is no limit of its own
@@ -302,7 +302,7 @@ fn observed_occupancy_reads_the_last_agent_call_and_stops_at_a_compaction() {
     // call measures its own context, not the turn's.
     assert_eq!(last_observed_context_tokens(&[usage(UsageSource::Agent, 4, 200_000, 900)]), None);
     assert_eq!(last_observed_context_tokens(&[usage(UsageSource::Review, 1, 50_000, 100)]), None);
-    assert_eq!(last_observed_context_tokens(&[]), None);
+    assert_eq!(last_observed_context_tokens::<Entry>(&[]), None);
 
     // A call that measured nothing measured nothing — it is not an empty context. Reading it
     // as one would report a full window as fresh and hand the next request the whole output

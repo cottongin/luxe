@@ -139,6 +139,19 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 { "herdr": false }
 ```
 
+### Joining a session
+
+A running Luxe lets another program on this machine join its session: `luxe join`, a script, or
+whatever you build on [the RPC protocol](rpc.md#join-a-running-session). Only your user account can
+connect, and nothing listens on the network. To turn it off:
+
+```json title="~/.config/luxe/config.json"
+{ "joinable": false }
+```
+
+`LUXE_JOINABLE=0` turns it off for one run. A project's config can turn it off too, but can't turn
+it back on once yours has.
+
 ### Updates
 
 Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
@@ -204,6 +217,7 @@ Every key in `config.json`, with its default.
 | `notification_method` | `auto` | `auto`, `osc9` or `osc777` |
 | `bell` | `false` | Terminal bell when a turn ends or something waits on you |
 | `herdr` | `true` | Report the agent's state to herdr; see [herdr](#herdr) |
+| `joinable` | `true` | Let another program on this machine join a running session; see [Joining a session](#joining-a-session) |
 | `statusline.visibility` | `auto` | `auto`, `shown` or `hidden`; see [Appearance](appearance.md#statusline) |
 | `statusline.style` | `slab` | `slab` or `flat` |
 | `statusline.left` | `["project", "branch", "pr", "todo", "changes"]` | Modules on the left |

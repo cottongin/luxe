@@ -239,3 +239,58 @@ fn image_ids_stay_inside_the_protocols_range() {
     assert_eq!(store.allocate_id(), kitty::MAX_ID);
     assert_eq!(store.allocate_id(), 1, "and wraps rather than overflowing");
 }
+
+/// The break this catches: an image arriving without moving the layout revision, so a card laid
+/// out before it landed keeps its old rows.
+#[test]
+fn a_new_image_moves_the_layout_revision_and_a_known_one_does_not() {
+    let mut store = store(ImageTier::Blocks);
+    let empty = store.layout_revision();
+    let key = ImageKey::new("k");
+    assert!(store.insert(key.clone(), png(32, 16), origin("shot.png")));
+    let landed = store.layout_revision();
+    assert_ne!(landed, empty, "a new source moves it");
+
+    assert!(store.insert(key, png(32, 16), origin("shot.png")));
+    assert_eq!(store.layout_revision(), landed, "a known one changes nothing a layout reads");
+}
+
+/// The break this catches: a new cell size or tier leaving image rows sized for the old one, or
+/// a repeated report of the same geometry throwing every image card's layout away.
+#[test]
+fn only_a_real_change_of_geometry_or_tier_moves_the_layout_revision() {
+    let mut store = store(ImageTier::Blocks);
+    let start = store.layout_revision();
+    store.set_cell_size(CellSize { width: 10, height: 20 });
+    store.set_tier(ImageTier::Blocks);
+    assert_eq!(store.layout_revision(), start, "the same geometry and tier change nothing");
+
+    store.set_cell_size(CellSize { width: 8, height: 16 });
+    let resized = store.layout_revision();
+    assert_ne!(resized, start, "a new cell size moves it");
+    store.set_tier(ImageTier::Text);
+    assert_ne!(store.layout_revision(), resized, "a new tier moves it");
+}
+
+/// The break this catches: a source that is gone (cleared for another session, or dropped for not
+/// decoding) leaving its card laid out as though it could still be drawn.
+#[test]
+fn losing_a_source_moves_the_layout_revision() {
+    let (mut store, _) = seeded(ImageTier::Blocks, 32, 16);
+    let seeded_at = store.layout_revision();
+    store.clear();
+    assert_ne!(store.layout_revision(), seeded_at, "clearing moves it");
+
+    // A header that parses ahead of pixels that don't: the source is dropped on first paint
+    let mut broken = png(32, 16);
+    let pixels = broken.len() - 20;
+    broken[pixels] ^= 0xff;
+    let key = ImageKey::new("broken");
+    assert!(store.insert(key.clone(), broken, origin("broken.png")));
+    let inserted = store.layout_revision();
+    let fit = store.fit(&key, 6, 24).expect("the header gives a size");
+    let mut buf = Buffer::empty(Rect::new(0, 0, 10, 2));
+    assert!(!store.paint_row(&mut buf, (0, 0), &key, fit, 0, Color::Reset));
+    assert!(!store.contains(&key), "the source is gone");
+    assert_ne!(store.layout_revision(), inserted, "and the layout revision says so");
+}

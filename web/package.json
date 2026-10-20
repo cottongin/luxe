@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "luxe.dev \u2014 the website for the Luxe agentic coding harness",
+  "description": "luxe.dev, the website for Luxe: a beautiful coding agent for your terminal",
   "engines": {
     "node": ">=24"
   },

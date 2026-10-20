@@ -34,6 +34,7 @@ impl Layered for Config {
             notification_method,
             bell,
             herdr,
+            joinable,
             statusline,
             conversation,
             dock,
@@ -65,6 +66,11 @@ impl Layered for Config {
             notification_method: notification_method.or(global.notification_method),
             bell: bell.or(global.bell),
             herdr: herdr.or(global.herdr),
+            // A project can close its sessions to other front-ends, never open what the user closed
+            joinable: match global.joinable {
+                Some(false) => Some(false),
+                _ => joinable.or(global.joinable),
+            },
             statusline: Layered::layered(global.statusline, statusline),
             conversation: Layered::layered(global.conversation, conversation),
             dock: Layered::layered(global.dock, dock),
