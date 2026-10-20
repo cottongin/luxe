@@ -6,6 +6,7 @@
 // so nothing waits on the round trip to be readable.
 
 import { useLayoutEffect, useRef, useState } from "preact/hooks";
+import { Answers, questionOutcome } from "./answers.js";
 import { html, landedIn } from "./html.js";
 import { useRendered } from "./render.js";
 
@@ -31,13 +32,28 @@ export function windowOf(items, shown) {
   return { hidden, drawn: hidden ? items.slice(hidden) : items };
 }
 
-/** @param {{ items: TranscriptItem[] }} props */
-export function Transcript({ items }) {
+/**
+ * Where the drawn items start, of `length`, when at least the latest `shown` are wanted. A reader
+ * following the bottom gets the latest `shown`. One reading above it keeps the start where it was,
+ * so new items grow the list below them rather than taking items from over them: WebKit doesn't
+ * anchor the scroll, and every item dropped from the top moved what they were reading.
+ * @param {number | null} start where the drawn items started last time, if they have
+ * @param {number} length @param {number} shown @param {boolean} following
+ */
+export function windowStart(start, length, shown, following) {
+  const latest = Math.max(0, length - shown);
+  return following || start === null ? latest : Math.min(start, latest);
+}
+
+/** @param {{ items: TranscriptItem[], following: boolean }} props */
+export function Transcript({ items, following }) {
   const [shown, setShown] = useState(WINDOW);
   const list = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const start = useRef(/** @type {number | null} */ (null));
   const keepPlace = useKeptPlace(list);
-  const { hidden, drawn } = windowOf(items, shown);
-  const more = () => keepPlace(() => setShown(shown + WINDOW));
+  start.current = windowStart(start.current, items.length, shown, following);
+  const { hidden, drawn } = windowOf(items, items.length - start.current);
+  const more = () => keepPlace(() => setShown(items.length - Math.max(0, hidden - WINDOW)));
   const count = html`<span class="dim">${hidden.toLocaleString()} more</span>`;
   return html`<div class="transcript" ref=${list} onClick=${copyCode}>
     ${hidden ? html`<button type="button" class="earlier" onClick=${more}>Show earlier ${count}</button>` : null}
@@ -118,15 +134,10 @@ function Reply({ item }) {
   return html`<${Rendered} className="item reply md" rendered=${rendered} text=${item.text.value} />`;
 }
 
-/** @param {{ item: TextItem }} props */
+/** Reasoning in full, as the TUI shows it by default. @param {{ item: TextItem }} props */
 function Thinking({ item }) {
-  const [open, setOpen] = useState(false);
   const rendered = useRendered({ kind: "reasoning", text: item.text.value }, !!item.provisional);
-  const toggle = () => setOpen(!open);
-  /** @param {KeyboardEvent} event */
-  const onKey = (event) => (event.key === "Enter" || event.key === " ") && toggle();
-  return html`<div class=${`item thinking ${open ? "open" : ""}`} role="button" tabindex="0"
-    aria-expanded=${open} onClick=${toggle} onKeyDown=${onKey}>
+  return html`<div class="item thinking">
     <${Rendered} className="md reasoning" rendered=${rendered} text=${item.text.value} />
   </div>`;
 }
@@ -140,6 +151,8 @@ function ToolCard({ card }) {
     <span class="tool-label">${call.label}</span>
     <span class="tool-time">${standing(call)}</span>
     ${body(call)}`;
+  const outcome = call.name === "question" && output ? questionOutcome(output) : null;
+  if (outcome) return html`<div class=${`item tool ${call.state}`}><div class="tool-head">${head}</div><${Answers} outcome=${outcome} /></div>`;
   if (!output) return html`<div class=${`item tool ${call.state}`}><div class="tool-head">${head}</div></div>`;
   return html`<details class=${`item tool ${call.state}`}>
     <summary class="tool-head">${head}</summary>

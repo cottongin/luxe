@@ -120,7 +120,7 @@ fn threads_of(
 
 impl Engine {
     /// Reports what in the working tree is not committed, asked fresh from git rather than read
-    /// from the last snapshot, which may predate a file made outside Luxe.
+    /// from the last snapshot, which may predate a file made outside luxe.
     pub(crate) fn check_worktree_removal(&self, event_tx: &mpsc::Sender<Event>) {
         let root = self.config.guided_review_project_root.clone();
         let event_tx = event_tx.clone();

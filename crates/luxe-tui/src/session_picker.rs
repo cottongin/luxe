@@ -112,6 +112,11 @@ impl SessionPickerState {
         self.nav.query()
     }
 
+    /// The cursor's row among the visible matches.
+    pub(crate) fn cursor(&self) -> usize {
+        self.nav.selected()
+    }
+
     /// Returns the number of visible matches.
     pub fn match_count(&self) -> usize {
         self.nav.match_count()
@@ -354,19 +359,23 @@ impl SessionPickerState {
             .saturating_add(1)
             .saturating_sub(capacity)
             .min(self.nav.filtered_indices().len().saturating_sub(capacity));
-        let end = start.saturating_add(capacity).min(self.nav.filtered_indices().len());
+        let total = self.nav.filtered_indices().len();
+        let end = start.saturating_add(capacity).min(total);
+        let width = crate::widgets::list_rows_width(area.width, total, area.height);
         // Two cells for the cursor column, and the frame the selected row is cut with.
         let available_width =
-            area.width.saturating_sub(4 + crate::widgets::SELECTION_FRAME as u16) as usize;
+            width.saturating_sub(4 + crate::widgets::SELECTION_FRAME as u16) as usize;
         {
             let mut regions = hit.borrow_mut();
             for offset in 0..end.saturating_sub(start) {
                 let row_y = area.y.saturating_add(offset as u16);
                 regions.push(
-                    Rect::new(area.x, row_y, area.width, 1),
+                    Rect::new(area.x, row_y, width, 1),
                     crate::mouse::MouseTarget::SessionRow(start + offset),
                 );
             }
+            let list = crate::mouse::OverlayList::Sessions;
+            crate::widgets::list_scrollbar(frame, &mut regions, area, list, (start, total), theme);
         }
 
         let items: Vec<ListItem> = self.nav.filtered_indices()[start..end]
@@ -392,13 +401,13 @@ impl SessionPickerState {
                         Span::styled(gap, background),
                         Span::styled(session.age.clone(), theme.muted.patch(background)),
                     ],
-                    usize::from(area.width),
+                    usize::from(width),
                     selected,
                     theme,
                 ))
             })
             .collect();
-        frame.render_widget(List::new(items), area);
+        frame.render_widget(List::new(items), Rect { width, ..area });
     }
 
     /// Renders a multi-line preview of the selected session: a heading, the session title + age,

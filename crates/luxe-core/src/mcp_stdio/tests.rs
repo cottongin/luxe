@@ -108,7 +108,7 @@ for line in sys.stdin:
     std::env::set_var("LUXE_TEST_REAL_TOKEN", "supersecret");
 
     let mut env = std::collections::HashMap::new();
-    // The value uses `${VAR}` interpolation against Luxe's env.
+    // The value uses `${VAR}` interpolation against luxe's env.
     env.insert("LUXE_TEST_TOKEN".to_string(), "${LUXE_TEST_REAL_TOKEN}".to_string());
 
     let config = McpServerConfig {
@@ -236,7 +236,7 @@ for line in sys.stdin:
     assert!(error.to_string().len() < 30_000, "a bounded tail: {}", error.to_string().len());
 }
 
-/// `initialize` offers the protocol version Luxe speaks.
+/// `initialize` offers the protocol version luxe speaks.
 #[tokio::test]
 async fn initialize_offers_the_current_protocol_version() {
     if std::process::Command::new("python3").arg("--version").output().is_err() {

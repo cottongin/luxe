@@ -27,14 +27,14 @@ row, and the agent receives the text your program gave for it.
 | `icon` | One Nerd Font glyph for the tab, as the character or a JSON escape. Without one, the tab shows a tag; without a Nerd Font, a plain mark. |
 
 Sources are read from your own config only, since each one runs a program. Their tabs come after
-Luxe's own: Files, Skills, GitHub and MCP, whose kinds `file`, `skill`, `github` and `mcp` are
+luxe's own: Files, Skills, GitHub and MCP, whose kinds `file`, `skill`, `github` and `mcp` are
 taken. Two sources with the same kind get one tab, the first's.
 
 ## What the program prints
 
-Luxe runs the program, in the project, the first time its tab opens, and lists what it prints: one
-JSON object per line. The rows are kept until Luxe exits, so a new ticket, or a change to your
-script, shows up the next time you start Luxe. The program has no terminal and no stdin, so it
+luxe runs the program, in the project, the first time its tab opens, and lists what it prints: one
+JSON object per line. The rows are kept until luxe exits, so a new ticket, or a change to your
+script, shows up the next time you start luxe. The program has no terminal and no stdin, so it
 cannot prompt for a sign-in.
 
 ```json
@@ -54,7 +54,7 @@ wrong. If the program fails, the tab shows the last line it wrote to stderr, or 
 and it runs again the next time the tab opens.
 
 Make `text` enough for the agent to find the rest: a title and a link, or an ID it can look up with
-a CLI or an MCP server. A mention you type by hand, or one not picked since Luxe started, reaches
+a CLI or an MCP server. A mention you type by hand, or one not picked since luxe started, reaches
 the agent as `Jira PROJ-12` alone. What a tracker says is other people's words, and it reaches your model
 provider once you mention it.
 
@@ -75,4 +75,4 @@ jq -c --arg site "$site" '.issues[] | {
 ```
 
 Make it executable (`chmod +x`), put it on your `PATH`, and add the Jira entry above. For Asana,
-see [Recipes](recipes.md#asana). Or ask Luxe to write one for the tracker you use.
+see [Recipes](recipes.md#asana). Or ask luxe to write one for the tracker you use.

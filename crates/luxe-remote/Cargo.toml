@@ -3,7 +3,7 @@ name = "luxe-remote"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "The bridge that lets your own phone or tablet drive Luxe sessions running on this machine"
+description = "The bridge that lets your own phone or tablet drive luxe sessions running on this machine"
 repository.workspace = true
 homepage.workspace = true
 # The app's checks run from the repository, with npm; nothing in them builds the crate
@@ -18,7 +18,7 @@ exclude = ["app-tests/"]
 # reqwest and the workspace's rustls.
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-core = { path = "../luxe-core", version = "0.1.4" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

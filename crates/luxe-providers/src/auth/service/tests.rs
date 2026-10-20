@@ -160,8 +160,7 @@ async fn connecting_a_local_server_records_where_it_is() {
         .await
         .expect("the server answered");
 
-    // Whatever the server reported, in the order the list settles into.
-    assert_eq!(outcome.suggested_model.as_deref(), Some("gemma-4-12b"));
+    assert!(outcome.notes.iter().any(|note| note.contains("2 models available")));
     assert!(service.store().credential("lmstudio").is_none(), "nothing to store, so nothing is");
 
     let config: serde_json::Value = serde_json::from_str(
@@ -170,6 +169,8 @@ async fn connecting_a_local_server_records_where_it_is() {
     .unwrap();
     assert_eq!(config["providers"]["lmstudio"]["base_url"], server.endpoint);
     assert_eq!(config["default_provider"], "lmstudio");
+    // The model is the reader's to choose: a login that wrote one would be luxe picking favorites
+    assert!(config.get("default_model").is_none(), "no model chosen for them: {config}");
     // And what it is serving, which no catalog can answer for a machine it has never seen.
     assert_eq!(
         config["providers"]["lmstudio"]["served_models"],
@@ -344,8 +345,7 @@ async fn a_resource_with_discovery_off_is_never_asked() {
     assert!(recorded(&models, "foundry-openai").0.is_empty(), "one switch covers the resource");
 }
 
-/// Logging in reads the deployments with the key just typed, records them for every surface
-/// and suggests one that is actually deployed rather than one Azure merely offers.
+/// Logging in reads the deployments with the key just typed and records them for every surface.
 #[tokio::test]
 async fn a_foundry_login_records_the_deployments_it_found() {
     let server = LocalServer::start(FOUNDRY_LISTING);
@@ -360,7 +360,6 @@ async fn a_foundry_login_records_the_deployments_it_found() {
         .await
         .expect("configured");
 
-    assert_eq!(outcome.suggested_model.as_deref(), Some("claude-opus-5"));
     assert!(
         outcome.notes.iter().any(|note| note.contains("3 chat deployments")),
         "{:?}",
@@ -757,17 +756,6 @@ fn model_lists_are_parsed_from_both_shapes_and_summarized() {
     let many: Vec<String> = (0..10).map(|index| format!("m{index}")).collect();
     let summary = describe_models(&many).unwrap();
     assert!(summary.starts_with("10 models available (m0, m1, m2, …"), "got {summary}");
-}
-
-#[test]
-fn the_suggested_model_is_one_the_account_can_actually_use() {
-    let openai = provider_descriptor("openai").unwrap();
-    // Preference order wins when it's available.
-    let available = vec!["gpt-4o".to_string(), "gpt-5.4".to_string(), "gpt-5".to_string()];
-    assert_eq!(pick_model(openai, &available).as_deref(), Some("gpt-5.4"));
-    // Otherwise fall back to what the endpoint offered rather than inventing an id.
-    assert_eq!(pick_model(openai, &["local-thing".to_string()]).as_deref(), Some("local-thing"));
-    assert_eq!(pick_model(openai, &[]), None);
 }
 
 #[test]

@@ -111,7 +111,7 @@ pub fn worktree_path(project: &Path, branch: &str) -> PathBuf {
     project.join(WORKTREES_DIR).join(branch.replace(['/', '\\'], "-"))
 }
 
-/// The project a Luxe-made worktree belongs to, when `dir` is one or is inside one: what
+/// The project a luxe-made worktree belongs to, when `dir` is one or is inside one: what
 /// `<project>/.luxe/worktrees/<name>` leaves behind. `None` anywhere else.
 ///
 /// What a session in a worktree needs to reach what lives beside the project's `.luxe/` and never

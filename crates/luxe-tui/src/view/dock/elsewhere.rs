@@ -225,7 +225,7 @@ fn external_row_line(
 ///
 /// The branch is not decoration here. A worktree's row lists everything Git reports there,
 /// including changes this session did not make, and naming the branch is what tells a reader they
-/// are looking at another repository's whole working tree rather than at a list of Luxe's edits.
+/// are looking at another repository's whole working tree rather than at a list of luxe's edits.
 /// A folded place trades it for the count, which is what a heading standing alone has to say, and
 /// recedes, since folded reads as dealt with. A branch never takes more than a third of the row:
 /// the place is what the row is for.

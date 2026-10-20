@@ -321,7 +321,7 @@ fn a_comment_the_agent_replied_to_says_so_on_its_card() {
     assert!(text.contains("agent: Agent reported: not fixed."), "{text}");
 }
 
-/// A comment a fix turn ended with no word on says so on its card, with Luxe's reason under
+/// A comment a fix turn ended with no word on says so on its card, with luxe's reason under
 /// it, rather than still claiming the agent is on it.
 #[test]
 fn a_comment_with_no_word_from_the_agent_says_so_on_its_card() {

@@ -121,7 +121,7 @@ impl DeviceBook {
         Self { file: JsonFile::new(path, FileMode::OwnerOnly) }
     }
 
-    /// Where it lives unless told otherwise: `remote.json` beside Luxe's other settings.
+    /// Where it lives unless told otherwise: `remote.json` beside luxe's other settings.
     pub fn default_path() -> PathBuf {
         luxe_core::user_dirs::luxe_config_dir().join("remote.json")
     }

@@ -6,7 +6,7 @@ group: "Extend"
 ---
 
 An [MCP](https://modelcontextprotocol.io) server gives the agent new tools: a browser, a database,
-your issue tracker. Luxe reaches every server through one `mcp` tool, so a server's tools cost
+your issue tracker. luxe reaches every server through one `mcp` tool, so a server's tools cost
 nothing in a request until the agent looks for them:
 
 ```text
@@ -44,14 +44,14 @@ removed by editing that file. `luxe mcp list` starts nothing: it shows every con
 disabled ones included, and marks a project's entries `not started (project)`, with or without
 `--trust-project`. In a session, `/mcp` shows each server, how it connects and its tools.
 
-Luxe also reads `~/.config/mcp/mcp.json`, and a project's `.mcp.json` and `.luxe/mcp.json`. Where
+luxe also reads `~/.config/mcp/mcp.json`, and a project's `.mcp.json` and `.luxe/mcp.json`. Where
 two files name the same server, the project's wins.
 
 ### Server settings
 
 | Key | Does |
 | --- | --- |
-| `command`, `args`, `env` | Start a local server. An `env` value can use `${VAR}` or `$env:VAR`; an unset one is empty, and Luxe logs which. |
+| `command`, `args`, `env` | Start a local server. An `env` value can use `${VAR}` or `$env:VAR`; an unset one is empty, and luxe logs which. |
 | `url`, `headers` | Connect to a remote server. `headers` take `${VAR}` the same way. |
 | `auth` | Sign in: see [below](#sign-in) |
 | `lifecycle` | `lazy` (the default) connects on first use and disconnects when idle. `eager` connects at start; `keep_alive` stays connected. |
@@ -75,7 +75,7 @@ A remote server signs in with a token or with OAuth.
 }
 ```
 
-For OAuth, sign in once in a browser, and Luxe refreshes the token from then on:
+For OAuth, sign in once in a browser, and luxe refreshes the token from then on:
 
 ```bash
 luxe mcp login --id linear
@@ -83,7 +83,7 @@ luxe mcp login --id linear
 
 The agent never starts a sign-in. Tokens are kept in `~/.local/state/luxe/mcp-auth.json`, readable
 only by you. With `LUXE_STATE_DIR` set they are kept there instead, so a moved state directory does
-not share the default one's sign-ins. If that file stops being valid JSON, Luxe moves it to
+not share the default one's sign-ins. If that file stops being valid JSON, luxe moves it to
 `mcp-auth.json.bad` (or a dated name, if one is already there) rather than write over it, and you
 sign in again.
 
@@ -156,7 +156,7 @@ A server's descriptions and results are treated as information, never as instruc
 
 ### Servers a project brings
 
-A project's `.mcp.json` names programs that would run on your machine. Luxe starts a project's
+A project's `.mcp.json` names programs that would run on your machine. luxe starts a project's
 servers in an interactive session, or with `--trust-project`, but not in a headless or loop run. To
 decide for every run, set `lsp.project_servers` in your own config; see
 [Tools](tools.md#a-server-the-project-installed).

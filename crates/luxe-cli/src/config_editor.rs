@@ -1,4 +1,4 @@
-//! Config editor handoff — opens one of Luxe's files outside the alternate screen.
+//! Config editor handoff — opens one of luxe's files outside the alternate screen.
 //!
 //! The TUI returns control before this runs, so terminal editors inherit a normal terminal.
 //! When the editor exits, the CLI rebuilds the TUI and reloads the updated configuration.
@@ -47,7 +47,7 @@ pub(crate) async fn open_config_file(path: PathBuf) -> anyhow::Result<PathBuf> {
 /// credential file created world-readable is a credential file leaked.
 fn ensure_file(path: PathBuf) -> anyhow::Result<PathBuf> {
     if path == Config::global_path() {
-        return Config::ensure_global_file().context("creating Luxe user config");
+        return Config::ensure_global_file().context("creating luxe user config");
     }
     if path.exists() {
         return Ok(path);

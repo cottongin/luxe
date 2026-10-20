@@ -503,9 +503,9 @@ fn dock_footer_bottom_anchors_model_telemetry() {
         .expect("MODEL heading row");
     // Identity stays at the top; telemetry sinks to the bottom near the composer.
     assert!(model_row > project_row, "telemetry should sit below identity: {content}");
-    // Heading, model, thinking and mode, then SESSION's heading, context and cost
+    // Heading, provider, model, thinking and mode, then SESSION's heading, context and cost
     assert!(
-        model_row >= height - 7,
+        model_row >= height - 8,
         "telemetry should be bottom-anchored (row {model_row} of {height}): {content}"
     );
 }

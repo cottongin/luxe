@@ -39,16 +39,14 @@ impl ConfigFile {
         self.file.path()
     }
 
-    /// Point Luxe at a provider (and optionally a model) by default.
+    /// Point luxe at a provider by default, leaving `default_model` as the user wrote it.
     ///
-    /// This is what makes a first login actually take effect for the *next* launch; the running
-    /// session switches through `Action::SetModel`.
-    pub fn set_defaults(&self, provider: &str, model: Option<&str>) -> Result<(), FileError> {
+    /// This is what makes a first login take effect for the *next* launch. The model stays the
+    /// reader's choice: the one they last picked is remembered apart from this file, and a login
+    /// that wrote one would be luxe choosing for them.
+    pub fn set_default_provider(&self, provider: &str) -> Result<(), FileError> {
         self.file.modify(|root| {
             root.insert("default_provider".into(), Value::String(provider.to_string()));
-            if let Some(model) = model.filter(|model| !model.is_empty()) {
-                root.insert("default_model".into(), Value::String(model.to_string()));
-            }
             Ok(())
         })
     }
@@ -80,7 +78,7 @@ impl ConfigFile {
                 // the compat flag below recorded an `anthropic-messages` endpoint as
                 // chat/completions, and the choice made in the wizard was silently lost.
                 block.insert("api".into(), Value::String(api.as_str().to_string()));
-                // Kept beside it because a Luxe old enough to predate `api` reads this one, and a
+                // Kept beside it because a luxe old enough to predate `api` reads this one, and a
                 // config file outlives the release that wrote it.
                 let compat = block
                     .entry("compat".to_string())
@@ -196,18 +194,18 @@ mod tests {
     }
 
     #[test]
-    fn defaults_are_written_without_disturbing_anything_else() {
+    fn the_default_provider_is_written_without_disturbing_anything_else() {
         let (_dir, config) = config();
         std::fs::write(
             config.path(),
             r#"{"models": {"a/b": {"context_window": 1}}, "default_model": "old"}"#,
         )
         .unwrap();
-        config.set_defaults("openai", Some("gpt-5.4")).unwrap();
+        config.set_default_provider("openai").unwrap();
         let root = serde_json::from_str::<Value>(&std::fs::read_to_string(config.path()).unwrap())
             .unwrap();
         assert_eq!(root["default_provider"], "openai");
-        assert_eq!(root["default_model"], "gpt-5.4");
+        assert_eq!(root["default_model"], "old", "the user's own default stays theirs");
         assert_eq!(root["models"]["a/b"]["context_window"], 1, "unrelated config survives");
     }
 

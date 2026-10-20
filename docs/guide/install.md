@@ -1,6 +1,6 @@
 ---
 title: "Install"
-summary: "Install Luxe, check your setup, and pick a font."
+summary: "Install luxe, check your setup, and pick a font."
 order: 1
 group: "Get started"
 ---
@@ -24,6 +24,11 @@ With Homebrew, on macOS or Linux:
 brew install evanwhittaker/tap/luxe
 ```
 
+Homebrew finishes with a line that names the installed version; run `luxe --version`
+to check. Since Homebrew 6, a tap has to be trusted before its code runs. The full name above
+trusts luxe's formula for you, but Homebrew can still stop on *another* tap you already have. If it
+names one, trust it with `brew trust <user>/<repository>`, or remove it with `brew untap`.
+
 With Cargo, which builds it, so you need Rust 1.89 or newer ([rustup](https://rustup.rs) installs
 one):
 
@@ -43,7 +48,7 @@ about your policy is saved.
 
 Any of them installs the `luxe` command; `luxe --version` checks it worked.
 
-To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
+To update, run `luxe update`, or `/update` inside luxe. luxe checks once a day for a newer release
 and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
 to turn the check off.
 
@@ -67,17 +72,17 @@ cargo build --release
 
 ## Requirements
 
-Luxe runs natively on Linux, macOS and Windows. Only a terminal and a model are required.
+luxe runs natively on Linux, macOS and Windows. Only a terminal and a model are required.
 
 | | |
 | --- | --- |
 | **Terminal** | Any current terminal with UTF-8. On Windows, use Windows Terminal. |
 | **Model** | An API key, a ChatGPT, Copilot or OpenRouter subscription, or a local server such as LM Studio or Ollama. See [Providers](providers.md). |
-| **Git** | For reviewing changes and working in worktrees. Without a repository, Luxe runs with nothing to review. |
+| **Git** | For reviewing changes and working in worktrees. Without a repository, luxe runs with nothing to review. |
 | **GitHub CLI** | Optional. `gh`, signed in, for issues and pull requests. |
 | **A Nerd Font** | Optional, for icons. See [Fonts](#fonts). |
 
-Luxe also uses these when they are installed:
+luxe also uses these when they are installed:
 
 - `ast-grep`, for structural search.
 - A language server per language, for code intelligence. See [Code
@@ -90,7 +95,7 @@ Luxe also uses these when they are installed:
 luxe doctor
 ```
 
-`luxe doctor` lists the tools, language servers and debug adapters Luxe found, which ones work, and
+`luxe doctor` lists the tools, language servers and debug adapters luxe found, which ones work, and
 how to install what is missing:
 
 ```
@@ -106,7 +111,7 @@ Language servers
 
 ## Fonts
 
-Luxe draws its icons from a [Nerd Font](https://www.nerdfonts.com/) when your terminal has one.
+luxe draws its icons from a [Nerd Font](https://www.nerdfonts.com/) when your terminal has one.
 Without one, it falls back to plain characters on its own, and every icon has a word beside it, so
 nothing becomes unreadable.
 
@@ -134,7 +139,7 @@ desktop's font instead. To check what a name resolves to:
 fc-match -f '%{file}\n' "JetBrainsMono NFM"
 ```
 
-JetBrains Mono lacks six symbols Luxe draws (`ℹ︎ ↳︎ ↺︎ ⏸︎ ✔︎ ✖︎`), and your system fills them in
+JetBrains Mono lacks six symbols luxe draws (`ℹ︎ ↳︎ ↺︎ ⏸︎ ✔︎ ✖︎`), and your system fills them in
 from another font. For every character from one face, use **IosevkaTerm** or **Adwaita Mono**:
 
 ```bash
@@ -145,26 +150,26 @@ scoop install nerd-fonts/IosevkaTerm-NF-Mono nerd-fonts/AdwaitaMono-NF-Mono
 ```
 
 To use the wider icons anyway, set `"glyphs": "nerd_wide"` in
-[`config.json`](configuration.md), and Luxe gives each icon two cells.
+[`config.json`](configuration.md), and luxe gives each icon two cells.
 
 ## On Windows
 
-Install [Git for Windows](https://gitforwindows.org/). Luxe finds its `bash` even though it is not
+Install [Git for Windows](https://gitforwindows.org/). luxe finds its `bash` even though it is not
 on `PATH`, and the agent needs a POSIX shell for most commands. Without one, commands run through
 `cmd.exe`, which handles `cargo test` or `npm run build` but not much else.
 
-If WSL is installed, Luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
+If WSL is installed, luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
 against a different filesystem.
 
 Python on Windows is `py` or `python`. `python3` is usually the Microsoft Store's placeholder, so
-Luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
+luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
 commands run Python in UTF-8 mode (`PYTHONUTF8=1`) unless you have set it yourself, so output with
 characters outside your code page doesn't crash them.
 
-Windows Terminal keeps a column at the right edge for its scrollbar. To give it to Luxe, set
+Windows Terminal keeps a column at the right edge for its scrollbar. To give it to luxe, set
 **Scrollbar visibility** to **Hidden** in your profile's **Appearance** settings.
 
-## Where Luxe keeps files
+## Where luxe keeps files
 
 | | Linux and macOS | Windows |
 | --- | --- | --- |
@@ -174,9 +179,9 @@ Windows Terminal keeps a column at the right edge for its scrollbar. To give it 
 
 An `XDG_CONFIG_HOME`, `XDG_STATE_HOME` or `XDG_CACHE_HOME` you have set wins on every platform.
 `LUXE_CONFIG_DIR` moves every configuration file, API key and provider sign-in. `LUXE_STATE_DIR`
-moves the state Luxe keeps for you: the model you last chose, MCP sign-ins, and the logs of
+moves the state luxe keeps for you: the model you last chose, MCP sign-ins, and the logs of
 commands that only report, such as `luxe auth`.
 
-Inside a project, Luxe keeps its sessions, logs and caches in `.luxe/`, with a `.gitignore` that
+Inside a project, luxe keeps its sessions, logs and caches in `.luxe/`, with a `.gitignore` that
 keeps all of it out of Git except the files a team may want to share: `permissions.json`,
 `mcp.json`, `hooks.json` and `skills/`.

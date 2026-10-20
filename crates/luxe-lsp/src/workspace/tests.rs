@@ -218,7 +218,7 @@ const FIXTURE_SERVER: &str = "luxe-fixture-project-server";
 /// A project that installed its own language server, as npm leaves one.
 ///
 /// The binary is a shell script that exits immediately, so the handshake always fails — which
-/// is the point: what is under test is which path Luxe *chose to launch*, and the recorded
+/// is the point: what is under test is which path luxe *chose to launch*, and the recorded
 /// failure names it.
 fn project_with_its_own_server(tag: &str) -> tempfile::TempDir {
     let dir = project_dir(tag);
@@ -286,7 +286,7 @@ async fn a_project_server_is_refused_by_name_when_it_is_not_allowed() {
 /// Allowed, the same binary is the one launched.
 ///
 /// It fails its handshake, which is what the fixture is for: the failure quotes the command,
-/// so it is evidence of *which* copy Luxe ran rather than of the server working.
+/// so it is evidence of *which* copy luxe ran rather than of the server working.
 #[tokio::test]
 async fn an_allowed_project_server_is_the_one_launched() {
     let root_dir = project_with_its_own_server("allowed");

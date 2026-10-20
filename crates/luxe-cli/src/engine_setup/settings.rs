@@ -153,16 +153,17 @@ impl AgentSettings {
     /// Resolve settings, letting `cli` overrides win over env and config.
     pub(crate) fn resolve(repo_root: PathBuf, cli: CliOverrides) -> Self {
         let config = load_luxe_config();
-        // What the last session picked, unless the user asked us not to remember. It sits *below*
-        // the CLI and the environment (a one-off `--model` must stay a one-off) and *above* the
-        // configured default, which is the point: the default is where you start, not where you are
-        // pinned.
+        // What the last session picked in this project, or anywhere when this project has no pick
+        // of its own, unless the user asked us not to remember. It sits *below* the CLI and the
+        // environment (a one-off `--model` must stay a one-off) and *above* the configured
+        // default, which is the point: the default is where you start, not where you are pinned.
         let ui_config = luxe_core::config::Config::load(&repo_root);
         let remembered = ui_config
             .agent
             .remember_model()
             .then(luxe_core::runtime_state::RuntimeState::load)
             .unwrap_or_default();
+        let last_chosen = remembered.model_for(&repo_root);
 
         let named_provider = cli.provider.or_else(|| env_nonempty("LUXE_PROVIDER"));
         let from_flag_or_env = cli.model.clone().or_else(|| env_nonempty("LUXE_MODEL"));
@@ -175,17 +176,14 @@ impl AgentSettings {
         };
         let provider = named_provider
             .or(provider_in_model)
-            .or_else(|| remembered.model.as_ref().map(|model| model.provider.clone()))
+            .or_else(|| last_chosen.map(|model| model.provider.clone()))
             .or_else(|| config.default_provider.clone())
             .unwrap_or_else(|| "openai_compat".to_string());
 
         // A remembered model only applies to the provider it was chosen for: pairing last session's
         // Anthropic model id with a locally forced provider would resolve to nothing.
-        let remembered_model = remembered
-            .model
-            .as_ref()
-            .filter(|model| model.provider == provider)
-            .map(|model| model.id.clone());
+        let remembered_model =
+            last_chosen.filter(|model| model.provider == provider).map(|model| model.id.clone());
         // A configured `default_model` belongs to the provider it was configured alongside. Pairing
         // it with a provider forced on the command line produces combinations that don't exist —
         // `claude-sonnet-5` on Codex — so it only applies when that provider can actually serve it.

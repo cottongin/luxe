@@ -21,7 +21,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Luxe-specific
+# luxe-specific
 .luxe/
 # Verification captures — throwaway evidence for one session, megabytes of it.
 .pi/agent-loop/screenshots/

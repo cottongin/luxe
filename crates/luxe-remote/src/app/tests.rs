@@ -139,13 +139,13 @@ fn the_page_says_how_headings_are_cut() {
 /// screen, and the meta the app reads; an unnamed one is the page as written.
 ///
 /// The break this catches: the page's title or home screen meta reworded so the swap finds
-/// nothing, leaving two computers' apps both "Luxe", or a name put in unescaped.
+/// nothing, leaving two computers' apps both "luxe", or a name put in unescaped.
 #[test]
 fn the_page_is_named_for_its_computer() {
     let page = AppFiles::get("index.html").expect("the page");
     let page = String::from_utf8_lossy(&page.data);
     let named = named_page(&page, Some("desk"));
-    assert!(named.contains("<title>Luxe \u{00b7} desk</title>"), "{named}");
+    assert!(named.contains("<title>luxe \u{00b7} desk</title>"), "{named}");
     assert!(named.contains(r#"name="apple-mobile-web-app-title" content="desk""#));
     assert!(named.contains(r#"<meta name="luxe-machine" content="desk">"#));
     assert!(named_page(&page, Some("a\"b")).contains(r#"content="a&quot;b""#));

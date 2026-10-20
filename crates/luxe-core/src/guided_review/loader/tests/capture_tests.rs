@@ -10,7 +10,7 @@ async fn repository() -> (tempfile::TempDir, LocalGit) {
     let project = tempfile::tempdir().unwrap();
     let git = LocalGit::new(project.path());
     git.run("initialize repository", &["init", "--quiet"]).await.unwrap();
-    git.run("name the author", &["config", "user.name", "Luxe Tests"]).await.unwrap();
+    git.run("name the author", &["config", "user.name", "luxe Tests"]).await.unwrap();
     git.run("mail the author", &["config", "user.email", "tests@luxe.invalid"]).await.unwrap();
     std::fs::write(project.path().join("keep.txt"), "kept\n").unwrap();
     commit_all(&git, "initial").await;
@@ -154,7 +154,7 @@ async fn a_commit_of_empty_and_binary_additions_loads_whole() {
     assert!(!review.chapters.is_empty());
 }
 
-/// Luxe's own rendering of an empty file that is gone parses as the deletion it describes.
+/// luxe's own rendering of an empty file that is gone parses as the deletion it describes.
 #[test]
 fn an_empty_whole_file_deletion_parses() {
     let rendered = crate::guided_review::render_whole_file_deletion(Path::new("gone.txt"), "");

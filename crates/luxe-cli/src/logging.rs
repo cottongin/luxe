@@ -11,7 +11,7 @@
 //! ranks a directory holding one above a nearer checkout, so a stray left in `/tmp` re-roots every
 //! repository beneath it.
 //!
-//! Level is controlled by `LUXE_LOG` (or `RUST_LOG`). The default is `info` for Luxe's own crates
+//! Level is controlled by `LUXE_LOG` (or `RUST_LOG`). The default is `info` for luxe's own crates
 //! and `warn` for everything else — a normal run leaves a readable account of what the agent did,
 //! without `hyper` and `rustls` narrating every socket. Init is best-effort: logging must never
 //! crash or block the app.
@@ -54,7 +54,7 @@ impl<'a> MakeWriter<'a> for RedactingFile {
     }
 }
 
-/// Luxe's own crates, which is what the default filter turns up.
+/// luxe's own crates, which is what the default filter turns up.
 ///
 /// Spelled out rather than matched by prefix because `EnvFilter` has no glob for a target prefix, and
 /// a filter that quietly matched nothing would look exactly like a quiet run.
@@ -69,7 +69,7 @@ const LUXE_TARGETS: [&str; 8] = [
     "luxe_tools",
 ];
 
-/// The default filter: Luxe at `info`, everything else at `warn`.
+/// The default filter: luxe at `info`, everything else at `warn`.
 ///
 /// Two things have to be true at once. A normal run should leave an account someone can read — which
 /// `warn` did not, and which is why routine loop behavior had drifted up to `warn!` just to be
@@ -167,22 +167,22 @@ fn open_log(dir: &Path, rotate_at: u64) -> io::Result<(File, Option<io::Error>)>
     #[cfg(unix)]
     std::os::unix::fs::OpenOptionsExt::mode(&mut options, 0o600);
     let file = options.open(&path)?;
-    // a log an older Luxe created at the umask's default is tightened too
+    // a log an older luxe created at the umask's default is tightened too
     #[cfg(unix)]
     file.set_permissions(std::os::unix::fs::PermissionsExt::from_mode(0o600))?;
     Ok((file, rotated))
 }
 
-/// Drop a self-ignoring `.gitignore` into `.luxe/`, and upgrade one Luxe wrote itself.
+/// Drop a self-ignoring `.gitignore` into `.luxe/`, and upgrade one luxe wrote itself.
 ///
-/// The directory ignores itself (the trick pytest/ruff/venv use), so running Luxe inside any repo
+/// The directory ignores itself (the trick pytest/ruff/venv use), so running luxe inside any repo
 /// needs no root-`.gitignore` edit or global git config. The rule is an *allowlist*: everything is
 /// machine-local by default (`*` — sessions, logs, caches, review memory, per-user UI prefs), with
 /// explicit exceptions for the handful of project-config files a team may want to version
 /// (`permissions.json`, `mcp.json`, `hooks.json`, `skills/`). Ignoring by default is the safe
-/// direction: a new artifact kind Luxe writes later stays out of git until someone opts it in.
+/// direction: a new artifact kind luxe writes later stays out of git until someone opts it in.
 ///
-/// A file Luxe did not author is never touched, so a user's own curation survives.
+/// A file luxe did not author is never touched, so a user's own curation survives.
 fn ensure_self_ignored(luxe_dir: &Path) {
     let ignore = luxe_dir.join(".gitignore");
     match std::fs::read_to_string(&ignore) {
@@ -219,7 +219,7 @@ const SELF_IGNORE_BODY: &str = "\
 # and luxe keeps it out of its own reviews and changes lists for the same reason.
 *
 
-# Exceptions: project config you may want to version and share. Luxe rewrites
+# Exceptions: project config you may want to version and share. luxe rewrites
 # this file while its first line says it made it; to choose for yourself, replace
 # the file, first line included, with your own.
 !permissions.json

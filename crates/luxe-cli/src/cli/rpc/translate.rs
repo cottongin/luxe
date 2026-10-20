@@ -75,7 +75,7 @@ impl GithubWrites {
         match self {
             Self::Allowed => None,
             Self::NotEnabled => Some(format!(
-                "{kind} publishes to GitHub, which this session does not allow: start Luxe with \
+                "{kind} publishes to GitHub, which this session does not allow: start luxe with \
                  --github-writes to let a client do that"
             )),
             Self::ReadOnly => Some(format!(
@@ -151,7 +151,7 @@ fn session_refusal(wire: &WireAction, policy: &Policy) -> Option<String> {
     let switches = matches!(wire, WireAction::NewSession | WireAction::LoadSession(_));
     if policy.joined && switches {
         let reason = "would switch the session the terminal is showing: switch it there, or start \
-                      another Luxe";
+                      another luxe";
         return Some(format!("{kind} {reason}"));
     }
     None

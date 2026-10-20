@@ -1,5 +1,5 @@
 //! `luxe remote setup` — from nothing to a paired phone, asking before each step that changes
-//! something outside Luxe.
+//! something outside luxe.
 //!
 //! Four steps: Tailscale is there and signed in; Serve carries `https://<this machine>/` to the
 //! bridge; a user service runs the bridge at login; and an invitation to scan. Each step that is
@@ -108,7 +108,7 @@ fn service_step(port: u16, tailnet: &Tailnet, allow: Vec<String>) {
         return;
     }
     if !confirm("Run the bridge whenever you're signed in, as a user service?") {
-        outln!("Skipped. Run `luxe remote` yourself whenever your devices should reach Luxe.");
+        outln!("Skipped. Run `luxe remote` yourself whenever your devices should reach luxe.");
         return;
     }
     let launch =

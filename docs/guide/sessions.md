@@ -1,8 +1,8 @@
 ---
 title: "Sessions and context"
-summary: "Resume past sessions, see what fills the context window, and how Luxe keeps long sessions going."
+summary: "Resume past sessions, see what fills the context window, and how luxe keeps long sessions going."
 order: 8
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Sessions
@@ -10,7 +10,7 @@ group: "Using Luxe"
 Every conversation is saved as it goes, in `.luxe/sessions/` inside the project. Quitting loses
 nothing.
 
-| To | In Luxe | From the command line |
+| To | In luxe | From the command line |
 | --- | --- | --- |
 | Pick up the last session | **Resume** on the start screen | `luxe -c` |
 | Find an older one | Type part of its title on the start screen, or open **Sessions…** (`/sessions`) | `luxe sessions list`, then `luxe --resume <id>` |
@@ -40,7 +40,7 @@ threshold. A price you set in `models.json` replaces the catalog's, tiers and al
 Anthropic keeps a cached prompt for five minutes after it was last read. A turn that waits longer
 than that, on a slow command, a permission prompt or a question, loses the cache, and the next
 request pays to write the whole conversation again: about $2 on a 400k-token Opus session. So while
-a turn runs, Luxe re-sends its last request with a one-token reply just before the five minutes are
+a turn runs, luxe re-sends its last request with a one-token reply just before the five minutes are
 up. That costs a cache read, a tenth of the write it saves.
 
 `agent.cache_warming` decides when:
@@ -52,7 +52,7 @@ up. That costs a cache read, a tenth of the write it saves.
 | `off` | Never |
 
 A refresh goes out only when it is expected to save at least $0.05, so a short conversation is
-never refreshed. Between turns Luxe cannot know you will reply, so `idle` refreshes only a large
+never refreshed. Between turns luxe cannot know you will reply, so `idle` refreshes only a large
 conversation. On real sessions it lost money overall, which is why it is not the default. Refreshes
 are never sent on a subscription plan, or for an Anthropic model using a fixed thinking budget,
 whose cache would change on replay. Their cost shows under **cache warming** in `/cost`.
@@ -82,7 +82,7 @@ more on every turn instead of on each pause.
 | tool schemas | The tools the agent can call | `tools.disabled`; see [Tools](tools.md) |
 | instructions | Your `AGENTS.md` files | A shorter file; see [Project context](project-context.md) |
 | skills | The list of skills the agent can load | Fewer, or shorter descriptions |
-| harness | Luxe's own instructions | Nothing; this is fixed |
+| harness | luxe's own instructions | Nothing; this is fixed |
 | appended | One-time context added to a resumed session, such as what changed while you were away | `/new` |
 
 The largest single items are named under a row, which is usually how you find a `read` or `bash`
@@ -90,7 +90,7 @@ call that should have been narrower. The total is what the provider reported for
 
 ## Compaction
 
-When a conversation fills 90% of the usable window, Luxe summarizes it and carries on, keeping the
+When a conversation fills 90% of the usable window, luxe summarizes it and carries on, keeping the
 most recent part word for word. The summary records the goal, constraints, progress, decisions,
 next steps and the files the session touched. You see a line like
 `Compacted the conversation — 82k → 21k of context.`
@@ -99,7 +99,7 @@ next steps and the files the session touched. You see a line like
 conversation that already fits in what `keep_recent` keeps has nothing to summarize, and `/compact`
 says so.
 
-Before summarizing, from 80% full, Luxe first replaces old tool output in the request with a short
+Before summarizing, from 80% full, luxe first replaces old tool output in the request with a short
 placeholder. The session file keeps everything; only what is sent changes.
 
 To change when and how it happens:
@@ -127,7 +127,7 @@ To change when and how it happens:
 | `summarizer` | the session's model | The model that writes the summary, as `provider/id`, on a provider you have set up. A smaller, cheaper model is usually enough, and `/cost` prices its spend as it does any other model's. |
 
 This works in a project's `.luxe/config.json` too, and so does `agent.cache_warming`, which a project
-can turn down but not up. The compaction settings in `/settings` apply the next time Luxe starts.
+can turn down but not up. The compaction settings in `/settings` apply the next time luxe starts.
 
 ## Long command output
 

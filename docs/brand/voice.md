@@ -1,9 +1,9 @@
-# Luxe's voice
+# luxe's voice
 
-How Luxe sounds anywhere a person reads it: the TUI, the phone app, the site, the guide, `--help`,
+How luxe sounds anywhere a person reads it: the TUI, the phone app, the site, the guide, `--help`,
 errors and release notes. How the agent talks is set in `luxe-core::context`, not here.
 
-**In one line:** plain, direct and warm. Luxe sounds confident because it's good, not because it
+**In one line:** plain, direct and warm. luxe sounds confident because it's good, not because it
 says so.
 
 ## Principles
@@ -16,7 +16,7 @@ says so.
   with all the best models". CI fails on the marketing words listed in `scripts/voice-check.py`.
 - **Use the real name.** Feature names, git terms and key names are what people search for. Explain
   one if you have to; don't swap it for a cuter word.
-- **Don't oversell the model.** Luxe drives models; it isn't one. Talk about what Luxe does: what
+- **Don't oversell the model.** luxe drives models; it isn't one. Talk about what luxe does: what
   the model sees, what it can touch, how you review what it did.
 - **Have some fun, in the right places.** Wordplay belongs in headlines and empty states: "As good
   as it gits.", "Get excited." Never in errors, buttons, permission prompts or anything read when
@@ -30,7 +30,7 @@ The TUI and the phone app use labels, not sentences. People glance at UI; they d
 | --- | --- | --- |
 | Button | `Review changes` | `Click here to review your changes` |
 | Key hint | `ctrl+g to review` | `Press ctrl+g to open a review of what changed.` |
-| Status | `Compacting` | `Luxe is now compacting your conversation…` |
+| Status | `Compacting` | `luxe is now compacting your conversation…` |
 | Empty state | `No sessions yet. Run luxe in a project to start one.` | `Nothing to see here!` |
 | Error | `No shell found. Install Git for Windows and try again.` | `Oops! Something went wrong.` |
 
@@ -67,7 +67,7 @@ People read `docs/guide/` mid-task, and so do the agents they point at it.
 
 ## Words
 
-- **Luxe** in prose, `luxe` for the command. Never all caps.
+- **luxe** in prose, `luxe` for the command. Never all caps.
 - **Model,** not "AI". **Coding agent,** not "platform" or "solution".
 - **American spelling.** `scripts/voice-check.py` checks it, comments included.
 

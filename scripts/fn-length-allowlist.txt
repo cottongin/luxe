@@ -1,7 +1,7 @@
 # Functions allowed over clippy's too_many_lines threshold. See scripts/fn-length-check.py.
 # <lines[,lines…]> <path> <fn>  # reason
     406 crates/luxe-tui/src/commands/built_in.rs built_in  # the command catalog: one `Command` literal per entry, no logic to pull out, so a new command raises this by its own entry
-    369 crates/luxe-tui/src/app/messages.rs reduce_inner  # the `Msg` reducer, one arm per message and nearly all of them one call; the fat arms already live in `app::messages::*`
+    366 crates/luxe-tui/src/app/messages.rs reduce_inner  # the `Msg` reducer, one arm per message and nearly all of them one call; the fat arms already live in `app::messages::*`
     351 crates/luxe-tui/src/app/commands.rs dispatch_action  # maps each `UiAction` to the one call that handles it; arms are a line or two and a handler that grows moves out
     237 crates/luxe-tui/src/app/events.rs reduce  # the `Event` reducer, one arm per engine event; the long arms delegate to `app::events::*`
     218 crates/luxe-core/src/engine/run.rs run  # the engine action loop, a dispatch over `Action` where each arm is one handler call; the arms that did real work are methods

@@ -85,7 +85,7 @@ fn resolved_merges_sources_with_project_luxe_winning() {
         r#"{ "mcpServers": { "shared": { "command": "a" }, "only-std": { "command": "b" } } }"#,
     )
     .unwrap();
-    // Luxe project file overrides `shared` and adds `only-luxe`.
+    // luxe project file overrides `shared` and adds `only-luxe`.
     std::fs::create_dir_all(root.join(".luxe")).unwrap();
     McpConfigStore::for_repo(root).add(stdio("only-luxe")).unwrap();
     let mut shared = stdio("shared");
@@ -101,7 +101,7 @@ fn resolved_merges_sources_with_project_luxe_winning() {
     resolved.sort_by(|a, b| a.id.cmp(&b.id));
     let ids: Vec<&str> = resolved.iter().map(|s| s.id.as_str()).collect();
     assert_eq!(ids, ["only-luxe", "only-std", "shared"]);
-    // The Luxe project entry wins for `shared`.
+    // The luxe project entry wins for `shared`.
     let shared = resolved.iter().find(|s| s.id == "shared").unwrap();
     assert_eq!(shared.name, "overridden");
 }
@@ -109,7 +109,7 @@ fn resolved_merges_sources_with_project_luxe_winning() {
 /// A cloned repository's `.mcp.json` must not choose what runs on a run that refuses the
 /// project's own tooling.
 ///
-/// An `eager` server in one used to spawn the moment Luxe opened the tree, headless included,
+/// An `eager` server in one used to spawn the moment luxe opened the tree, headless included,
 /// with nothing asked — the same hole `.luxe/hooks.json` is closed against.
 #[test]
 fn a_refused_project_cannot_start_its_own_servers() {
@@ -236,8 +236,8 @@ fn the_standard_shape_keeps_its_auth() {
     assert_eq!(oauth.redirect_uri.as_deref(), Some("http://127.0.0.1:8765/callback"));
 }
 
-/// `"kind": "oauth"` is the spelling in every example, and it parses in Luxe's own shape; the
-/// `o_auth` Luxe used to write still does; and it is written back as `oauth`. Pinned against
+/// `"kind": "oauth"` is the spelling in every example, and it parses in luxe's own shape; the
+/// `o_auth` luxe used to write still does; and it is written back as `oauth`. Pinned against
 /// the literal, because a round trip through the same enum passes whatever the spelling is.
 #[test]
 fn oauth_is_spelled_oauth() {
@@ -287,7 +287,7 @@ fn a_secret_is_hidden_from_debug_and_survives_a_rewrite() {
     );
 }
 
-/// A file Luxe creates is owner-only, since it can hold a secret; a mode the user chose stays.
+/// A file luxe creates is owner-only, since it can hold a secret; a mode the user chose stays.
 #[cfg(unix)]
 #[test]
 fn saving_starts_private_and_keeps_a_chosen_mode() {
@@ -302,9 +302,9 @@ fn saving_starts_private_and_keeps_a_chosen_mode() {
     assert_eq!(mode(store.path()), 0o644, "a mode the user set is theirs");
 }
 
-/// A Luxe-shape file with one entry that does not parse is reported, not read as no servers.
+/// A luxe-shape file with one entry that does not parse is reported, not read as no servers.
 ///
-/// The break this catches: the failed Luxe parse fell through to the standard shape, which read
+/// The break this catches: the failed luxe parse fell through to the standard shape, which read
 /// the same file as an empty `mcpServers` map, so every server in it vanished without a log line.
 #[test]
 fn a_luxe_file_with_one_bad_entry_is_reported() {

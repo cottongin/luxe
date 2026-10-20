@@ -313,7 +313,7 @@ fn bounded_text(text: &str, limit: usize) -> String {
     value
 }
 
-/// Luxe's own project directory, excluded from what it reports as *your* changes.
+/// luxe's own project directory, excluded from what it reports as *your* changes.
 const LUXE_PROJECT_DIR: &str = ".luxe";
 
 async fn project_identity(root: &Path) -> ProjectIdentity {

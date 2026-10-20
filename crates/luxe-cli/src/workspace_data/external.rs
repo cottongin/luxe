@@ -32,7 +32,7 @@ pub(super) async fn collect_external_summary(
         }
         let changes = collect_change_summary(root.clone()).await;
         // A repository that *contains* the project — an edit in a sibling directory of a checkout
-        // Luxe was opened one level inside — reports the project's own files too. Those already
+        // luxe was opened one level inside — reports the project's own files too. Those already
         // have a section, and listing them twice would double every number on the screen.
         let mut files = changes.files;
         files.retain(|file| !luxe_core::paths::contains(project_root, &root.join(&file.path)));

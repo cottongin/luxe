@@ -186,7 +186,7 @@ fn the_posix_shell_report_matches_the_shell_that_was_chosen() {
 /// A repository's own binary is found, and running it is a decision the caller has to make.
 ///
 /// The gate is the point of the function: with it off the project copy must be invisible even
-/// though it is sitting right there, because that is the difference between Luxe choosing a
+/// though it is sitting right there, because that is the difference between luxe choosing a
 /// program and a repository choosing one for it.
 #[test]
 fn a_project_binary_is_found_only_when_it_is_allowed() {

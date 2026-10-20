@@ -105,17 +105,11 @@ fn report_success(service: &ProviderAuth, outcome: &LoginOutcome) {
         field("models", note);
     }
     field("saved to", &luxe_core::paths::home_relative(&service.store_path()));
-    if let Some(model) = &outcome.suggested_model {
-        field("model", &format!("{model}  {}", style::dim("(now the default)")));
-    }
     // Advice sits apart from the summary: it's about what to do later, not what just happened.
     for advice in &outcome.advice {
         outln!("\n  {}", style::dim(advice));
     }
-    match outcome.suggested_model {
-        Some(_) => outln!("\nRun `luxe` to start, or `/model` to pick another."),
-        None => outln!("\nRun `luxe` to start, then `/model` to pick a model."),
-    }
+    outln!("\nRun `luxe` to start, then `/model` to pick a model.");
 }
 
 /// `luxe auth list` — every provider and how it's configured.

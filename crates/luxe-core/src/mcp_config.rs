@@ -92,7 +92,7 @@ struct StandardServer {
     enabled: bool,
     #[serde(default)]
     timeout_secs: Option<u64>,
-    /// Luxe's own addition to the shape: other hosts ignore it, and without it an OAuth server
+    /// luxe's own addition to the shape: other hosts ignore it, and without it an OAuth server
     /// written the way `docs/guide/mcp.md` shows lost its auth without a word
     #[serde(default)]
     auth: Option<McpAuth>,
@@ -102,7 +102,7 @@ fn default_true() -> bool {
     true
 }
 
-/// Read a config file in either the Luxe (`servers`) or standard (`mcpServers`) shape. A missing,
+/// Read a config file in either the luxe (`servers`) or standard (`mcpServers`) shape. A missing,
 /// empty, or unparseable file yields no servers (so a stray file never blocks launch), and says so.
 fn load_any(path: &Path) -> Vec<McpServerConfig> {
     let Ok(text) = std::fs::read_to_string(path) else { return Vec::new() };
@@ -117,8 +117,8 @@ fn load_any(path: &Path) -> Vec<McpServerConfig> {
 
 /// The servers `text` names in either shape, or why it names none it meant to.
 ///
-/// A Luxe-shape file that fails to parse also reads as an empty standard one, so when the
-/// standard shape finds nothing the Luxe error is the one that explains the file.
+/// A luxe-shape file that fails to parse also reads as an empty standard one, so when the
+/// standard shape finds nothing the luxe error is the one that explains the file.
 fn parse_any(text: &str) -> Result<Vec<McpServerConfig>, String> {
     let luxe = serde_json::from_str::<McpConfigFile>(text);
     if let Ok(file) = &luxe {
@@ -224,11 +224,11 @@ impl McpConfigStore {
     /// precedence (project overrides user-global; luxe-owned overrides the shared standard file):
     ///
     /// 1. `~/.config/mcp/mcp.json` (standard, user-global) — lowest
-    /// 2. `~/.config/luxe/mcp.json` (Luxe, user-global)
+    /// 2. `~/.config/luxe/mcp.json` (luxe, user-global)
     /// 3. `.mcp.json` (standard, project)
-    /// 4. `.luxe/mcp.json` (Luxe, project) — highest
+    /// 4. `.luxe/mcp.json` (luxe, project) — highest
     ///
-    /// Both the Luxe shape (`{ "servers": [...] }`) and the standard shape
+    /// Both the luxe shape (`{ "servers": [...] }`) and the standard shape
     /// (`{ "mcpServers": { id: {...} } }`, as written by Cursor/Claude/Codex) are understood, so an
     /// existing MCP setup works with no conversion.
     pub fn resolved(repo_root: &Path) -> Vec<McpServerConfig> {
@@ -266,7 +266,7 @@ impl McpConfigStore {
         [repo_root.join(".mcp.json"), repo_root.join(".luxe").join("mcp.json")]
     }
 
-    /// The shared `mcp/mcp.json` other clients read, then Luxe's own.
+    /// The shared `mcp/mcp.json` other clients read, then luxe's own.
     fn user_sources() -> Vec<PathBuf> {
         let shared = crate::user_dirs::config_home().map(|home| home.join("mcp").join("mcp.json"));
         let own = crate::user_dirs::luxe_config_home().map(|luxe| luxe.join("mcp.json"));

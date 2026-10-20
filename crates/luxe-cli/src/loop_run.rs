@@ -179,7 +179,7 @@ mod tests {
             external_work: None,
             review_context_files: Vec::new(),
             review_exclude: Vec::new(),
-            remember_runtime_state: false,
+            remember_choices_in: None,
             cache_warming: luxe_core::cache_warming::CacheWarming::Off,
             review_insight_provider: None,
             github: None,
@@ -197,7 +197,7 @@ mod tests {
                 event_rx,
                 running_rx,
                 "Continue building.".into(),
-                crate::loop_view::LoopView::new(true),
+                crate::loop_view::LoopView::new(true, 0),
             )
             .await
         });

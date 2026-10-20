@@ -28,7 +28,7 @@ fn repository() -> tempfile::TempDir {
     let project = tempfile::tempdir().unwrap();
     let root = project.path();
     git(root, &["init", "--quiet"]);
-    git(root, &["config", "user.name", "Luxe Tests"]);
+    git(root, &["config", "user.name", "luxe Tests"]);
     git(root, &["config", "user.email", "tests@luxe.invalid"]);
     std::fs::create_dir_all(root.join("src")).unwrap();
     std::fs::write(root.join("src/lib.rs"), "one\ntwo\nthree\n").unwrap();
@@ -250,7 +250,7 @@ async fn a_loose_files_other_states_each_read_as_themselves() {
     assert!(vanished.is_none());
 }
 
-/// A file too large or too binary to retain, and one Luxe never saw, are the same answer: it
+/// A file too large or too binary to retain, and one luxe never saw, are the same answer: it
 /// cannot say what changed, so it must not present the file as new.
 #[tokio::test]
 async fn a_loose_file_with_no_retained_copy_refuses_to_guess() {

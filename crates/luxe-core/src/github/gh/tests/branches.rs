@@ -43,7 +43,7 @@ fn a_search_lists_pull_requests_and_issues_with_where_they_are() {
     let deleted =
         SEARCH_ISSUES.replacen("\"author\":{\"login\":", "\"author\":null,\"x\":{\"login\":", 1);
     assert_eq!(parse_search(&deleted).unwrap().items[0].author, "", "a deleted account");
-    // A frame from a Luxe that sent no state reads as open, not as an error
+    // A frame from a luxe that sent no state reads as open, not as an error
     let older = r#"{"pull_request":true,"number":1,"title":"T","url":"u","repository":"a/b","author":"","draft":false,"updated_at":""}"#;
     let item: ListItem = serde_json::from_str(older).unwrap();
     assert_eq!(item.state, PullRequestState::Open);
@@ -72,7 +72,7 @@ fn what_merged_below_a_stack_is_read_with_where_it_went() {
 
 pub(super) const STATUS_UNSTACKED: &str =
     include_str!("../../fixtures/branch_status_unstacked.json");
-/// A real chain of Luxe's own, read from the middle: seven below down to `master`, two above,
+/// A real chain of luxe's own, read from the middle: seven below down to `master`, two above,
 /// and the evidence that checks wait for trunk — the bottom one has them, this one none.
 #[test]
 fn a_pull_request_in_the_middle_of_a_stack_knows_where_it_sits() {

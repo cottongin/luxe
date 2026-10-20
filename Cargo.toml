@@ -6,12 +6,12 @@ members = ["crates/*"]
 # Every crate here releases together from one workspace, so the versions move in lockstep and each
 # crate inherits this one. The internal `path` dependencies carry the same number explicitly — cargo
 # uses the path locally and the version on crates.io, and refuses to publish a path dep without one.
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/evanwhittaker/luxe"
 homepage = "https://luxe.dev"
-# Bound by the dependencies: uuid needs 1.89, and ratatui, image and darling 1.88. Luxe's own floor
+# Bound by the dependencies: uuid needs 1.89, and ratatui, image and darling 1.88. luxe's own floor
 # is lower (`user_dirs` relies on `std::env::home_dir`, which returned `$HOME` on Windows before
 # 1.85). The `msrv` CI job builds the workspace on exactly this version, so the number cannot drift.
 rust-version = "1.89"
@@ -106,7 +106,7 @@ image = { version = "0.25", default-features = false, features = [
 [workspace.lints.rust]
 # `deny`, not `forbid`, so an audited exception can carry its own `#[allow]`, which is the line a
 # reviewer has to look at. The shipped program has one: `program::detach_from_terminal`, whose
-# `pre_exec(setsid)` is how a spawned command leaves Luxe's terminal (std's `Command::setsid` is not
+# `pre_exec(setsid)` is how a spawned command leaves luxe's terminal (std's `Command::setsid` is not
 # stable). The others are the counting allocators in luxe-tui's frame-budget test and render-perf
 # example, which never ship.
 unsafe_code = "deny"

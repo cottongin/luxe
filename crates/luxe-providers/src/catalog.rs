@@ -1,4 +1,4 @@
-//! Model catalog — what Luxe knows about a model, and where it learned it.
+//! Model catalog — what luxe knows about a model, and where it learned it.
 //!
 //! A model released after the binary was built still has to work properly: the right context
 //! window, output cap, reasoning levels, and pricing, not silent fallbacks. Metadata therefore

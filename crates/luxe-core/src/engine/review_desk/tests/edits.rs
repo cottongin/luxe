@@ -245,7 +245,7 @@ async fn carried_comments_join_and_only_the_ones_still_placed_are_sent() {
     assert!(submitted(&effects).is_some());
 }
 
-/// A revision conflict (another Luxe wrote first) refuses the edit, takes the stored session,
+/// A revision conflict (another luxe wrote first) refuses the edit, takes the stored session,
 /// and lets the next edit through.
 ///
 /// The break this catches: holding on to the older revision, which refuses every edit after it too.
@@ -261,7 +261,7 @@ async fn a_revision_conflict_takes_the_stored_session_and_recovers() {
 
     let (request_id, effects) =
         edit(&mut desk, ReviewEdit::SetOutcome { outcome: ReviewOutcome::Accepted }).await;
-    assert!(refusal_for(&effects, &request_id).contains("Another Luxe"));
+    assert!(refusal_for(&effects, &request_id).contains("Another luxe"));
     let restored = effects.iter().find_map(|effect| match effect {
         Effect::Event(Event::ReviewSessionRestored { session }) => Some(session.outcome),
         _ => None,

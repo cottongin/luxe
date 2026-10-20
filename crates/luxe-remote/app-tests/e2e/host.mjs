@@ -1,4 +1,4 @@
-// A Luxe of the test's own: a session in a fresh git project, driven by the mock model, and a
+// A luxe of the test's own: a session in a fresh git project, driven by the mock model, and a
 // bridge serving it, all under one temporary directory, so nothing touches the real config.
 
 import { spawn, execFileSync } from "node:child_process";
@@ -17,11 +17,11 @@ export const LOGIN = "e2e@luxe.test";
 /** The `luxe` to test: `LUXE_BIN`, or the debug build. */
 const LUXE = process.env.LUXE_BIN ?? join(REPO, "target/debug/luxe");
 
-/** Starts a session and a bridge for the mock model on `modelPort`. */
-export async function startHost(modelPort) {
+/** Starts a session and a bridge for the mock model on `modelPort`, in a project named `name`. */
+export async function startHost(modelPort, name = "project") {
   const root = mkdtempSync(join(tmpdir(), "luxe-e2e-"));
   const env = isolatedEnv(root);
-  const project = gitProject(root);
+  const project = gitProject(root, name);
   writeConfig(env.LUXE_CONFIG_DIR, modelPort);
   const children = [];
   const host = { root, project, children, stop: () => stop(host) };
@@ -39,11 +39,11 @@ function isolatedEnv(root) {
   return env;
 }
 
-function gitProject(root) {
-  const project = join(root, "project");
+function gitProject(root, name) {
+  const project = join(root, name);
   mkdirSync(project);
   const git = (...args) => execFileSync("git", ["-c", "user.name=e2e", "-c", "user.email=e2e@luxe.test", ...args], { cwd: project });
-  git("init", "-q");
+  git("init", "-q", "-b", "main");
   // a few lines, so a phone can pick a range of them and select part of one
   writeFileSync(join(project, "README.md"), "# e2e\n\nThe port is 4519.\nThe host is luxe.local.\n");
   git("add", ".");

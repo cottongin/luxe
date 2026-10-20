@@ -1,7 +1,7 @@
 //! Launch — starting a session for a device: in a herdr pane when herdr is running, otherwise as a
 //! `luxe --rpc` child of the bridge.
 //!
-//! Either way the new Luxe shares its session like any other, so a device joins it through the
+//! Either way the new luxe shares its session like any other, so a device joins it through the
 //! same route as one started at the desk. The bridge learns which session is the new one by
 //! watching for its record in the runtime folder.
 
@@ -20,7 +20,7 @@ use crate::folders::{self, Folder, FolderBook};
 
 pub(crate) use herdr::Herdr;
 
-/// How long a new Luxe gets to share its session. It takes about a second.
+/// How long a new luxe gets to share its session. It takes about a second.
 const APPEAR_TIMEOUT: Duration = Duration::from_secs(20);
 /// How often the runtime folder is reread while waiting.
 const APPEAR_POLL: Duration = Duration::from_millis(250);
@@ -47,7 +47,7 @@ pub(crate) enum LaunchError {
     /// The child couldn't be started
     #[error("couldn't start luxe: {0}")]
     Spawn(#[source] std::io::Error),
-    /// Luxe started but no session showed up in time
+    /// luxe started but no session showed up in time
     #[error("luxe started in {0} but didn't share a session within 20 seconds")]
     NeverAppeared(String),
 }
@@ -87,16 +87,16 @@ impl Launcher {
         (listed.await.unwrap_or_default(), in_herdr)
     }
 
-    /// Notes the folders Luxe is running in, for the list a device starts sessions from.
+    /// Notes the folders luxe is running in, for the list a device starts sessions from.
     pub(crate) async fn saw(&self, running: Vec<String>) {
         let book = self.folders.clone();
         let noted = tokio::task::spawn_blocking(move || book.saw(&running)).await;
         if let Ok(Err(error)) = noted {
-            tracing::warn!(%error, "could not note the folders Luxe is running in");
+            tracing::warn!(%error, "could not note the folders luxe is running in");
         }
     }
 
-    /// Starts Luxe in `folder` and waits for the session it shares.
+    /// Starts luxe in `folder` and waits for the session it shares.
     pub(crate) async fn start(
         &self,
         folder: &Path,
@@ -210,7 +210,7 @@ async fn appeared(
 
 /// The session in `running` that wasn't there `before` and works on `folder`.
 ///
-/// "Works on" rather than "is in": a Luxe started in a subfolder of a repository shares the
+/// "Works on" rather than "is in": a luxe started in a subfolder of a repository shares the
 /// repository's root as its folder.
 fn newcomer(running: &[LiveSession], before: &HashSet<u32>, folder: &Path) -> Option<LiveSession> {
     let folder = folder.canonicalize().ok()?;

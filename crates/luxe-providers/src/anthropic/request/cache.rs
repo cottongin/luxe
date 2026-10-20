@@ -6,7 +6,7 @@ use super::super::*;
 /// far) from cache instead of re-reading it every turn.
 ///
 /// Anthropic caches the whole prompt prefix up to and including each marked block, in the canonical
-/// order tools → system → messages, and allows four markers. Luxe spends them on:
+/// order tools → system → messages, and allows four markers. luxe spends them on:
 ///
 ///   1. the system prompt, at the end of its shared part,
 ///   2. the last listed tool definition — with (1), the ~static floor. A deferred one can't

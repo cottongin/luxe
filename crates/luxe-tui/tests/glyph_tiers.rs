@@ -302,7 +302,7 @@ fn no_surface_reaches_for_a_powerline_triangle_at_any_tier() {
     set_tier(GlyphTier::Nerd);
 }
 
-/// The default has to be the look Luxe ships with, so a surface rendered without any resolution step
+/// The default has to be the look luxe ships with, so a surface rendered without any resolution step
 /// is unchanged from before the tiers existed.
 #[test]
 fn the_untouched_default_is_the_nerd_vocabulary() {

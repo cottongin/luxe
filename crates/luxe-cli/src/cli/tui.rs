@@ -11,7 +11,7 @@ fn footer_note(repo_root: &std::path::Path) -> Option<String> {
     crate::update_check::cached_notice(repo_root).map(|_| UPDATE_HINT.to_string())
 }
 
-/// What the dashboard says when a newer Luxe exists.
+/// What the dashboard says when a newer luxe exists.
 const UPDATE_HINT: &str = "Update available · /update";
 
 /// Whether the startup dashboard should be shown.
@@ -295,7 +295,7 @@ async fn starting_status(
 /// mid-session shows up without relaunching. The probe is the same menu built after asking every
 /// connected local server what it is serving — a list that changes the moment somebody loads a
 /// model, and that only the endpoint knows. An Azure resource is the same question asked of a
-/// cloud: what is deployed there changes in a portal Luxe never sees. A server that is off leaves
+/// cloud: what is deployed there changes in a portal luxe never sees. A server that is off leaves
 /// the record standing.
 fn model_menu_sources(
     settings: &crate::engine_setup::AgentSettings,

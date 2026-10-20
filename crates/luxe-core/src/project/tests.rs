@@ -126,7 +126,7 @@ fn only_a_project_directory_counts_as_one() {
 
 // === a `.luxe/` claims nothing outside its checkout ===
 
-/// The reported case: Luxe launched once in `~/.config` left a `.luxe/` there, and every
+/// The reported case: luxe launched once in `~/.config` left a `.luxe/` there, and every
 /// config directory under it opened as `~/.config` from then on, sessions and all.
 #[test]
 fn a_luxe_directory_outside_any_checkout_claims_nothing_below_it() {
@@ -154,7 +154,7 @@ fn a_luxe_directory_above_a_checkout_does_not_claim_it() {
 }
 
 /// A non-VCS tree has no top anybody agrees on, so a subdirectory is not inherited by its
-/// parent's project however recently Luxe ran there.
+/// parent's project however recently luxe ran there.
 #[test]
 fn a_loose_subdirectory_is_its_own_project() {
     let tree = tempfile::tempdir().expect("temp tree");

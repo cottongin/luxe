@@ -41,7 +41,7 @@ impl Engine {
         }
     }
 
-    /// What this engine leaves out of a review: Luxe's own directory, plus `review.exclude`.
+    /// What this engine leaves out of a review: luxe's own directory, plus `review.exclude`.
     pub(crate) fn review_exclusions(&self) -> crate::guided_review::ReviewExclusions {
         crate::guided_review::ReviewExclusions::new(&self.config.review_exclude)
     }

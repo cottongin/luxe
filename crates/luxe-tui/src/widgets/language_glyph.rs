@@ -14,12 +14,12 @@
 //!
 //! # Which languages are here
 //!
-//! The ones Luxe is first-class in, which is not a taste judgment: every language with a default
+//! The ones luxe is first-class in, which is not a taste judgment: every language with a default
 //! entry in `luxe-lsp`'s server registry or `luxe-dap`'s adapter registry earns a mark, and
 //! `every_first_class_language_has_a_mark` fails if one is added to either registry without one.
 //! On top of those sit the languages that show up in *answers* rather than in a project —
 //! `json`, `yaml`, `toml`, `markdown`, `html`, `css`, `sql`, `diff` — and a handful of common
-//! others. Anything unrecognized keeps the generic [`GENERIC_LANGUAGE`] mark, because a fence Luxe
+//! others. Anything unrecognized keeps the generic [`GENERIC_LANGUAGE`] mark, because a fence luxe
 //! has never heard of is still a fence.
 //!
 //! Spellings are folded rather than multiplied: `rs` is `rust`, `sh`/`zsh`/`shell` are `bash`,
@@ -143,7 +143,7 @@ mod tests {
     use super::*;
     use crate::glyphs::GlyphTier;
 
-    /// The languages Luxe ships a language server or a debug adapter for. Read off
+    /// The languages luxe ships a language server or a debug adapter for. Read off
     /// `luxe-lsp/src/default-lsp-servers.json` and `luxe-dap/src/default-debug-adapters.json`
     /// rather than invented, so this list is a claim about the product and not about this file.
     const FIRST_CLASS: &[&str] = &[
@@ -163,7 +163,7 @@ mod tests {
         "c",
     ];
 
-    /// A language Luxe can run a server or a debugger for is one it claims to know, so a fence in
+    /// A language luxe can run a server or a debugger for is one it claims to know, so a fence in
     /// it must not fall back to the generic mark. Add an entry to either registry without one here
     /// and this is what says so.
     #[test]

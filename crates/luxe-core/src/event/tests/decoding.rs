@@ -6,7 +6,7 @@ use super::*;
 /// read it before the derived ones replaced them.
 ///
 /// The break this catches: the mirror enums decode only what their attributes say, so a
-/// `#[serde(default)]` missing there turns a frame a client or an older Luxe sends into an error.
+/// `#[serde(default)]` missing there turns a frame a client or an older luxe sends into an error.
 /// Every row leaves out a field that is not an `Option`, which decodes as `None` regardless.
 #[test]
 fn what_a_sender_may_leave_out_still_decodes() {

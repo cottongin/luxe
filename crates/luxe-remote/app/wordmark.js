@@ -42,9 +42,9 @@ export async function loadWordmark(get = fetch) {
 
 export function Wordmark() {
   const art = drawing.value;
-  if (!art) return html`<span class="title">Luxe</span>`;
+  if (!art) return html`<span class="title">luxe</span>`;
   // a custom property set through the DOM, which the page's style-src allows
-  return html`<svg class="wordmark" viewBox=${art.viewBox} role="img" aria-label="Luxe"
+  return html`<svg class="wordmark" viewBox=${art.viewBox} role="img" aria-label="luxe"
     style=${{ "--drift-depth": art.depth }}>
     ${art.paths.map((d, index) => html`<path d=${d} style=${{ "--phase": driftPhase(index, art.paths.length) }} />`)}
   </svg>`;

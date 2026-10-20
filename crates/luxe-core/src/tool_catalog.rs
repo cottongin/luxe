@@ -1,9 +1,9 @@
-//! Tool catalog — every built-in tool Luxe can register, with what a person needs to know to
+//! Tool catalog — every built-in tool luxe can register, with what a person needs to know to
 //! decide whether they want it.
 //!
 //! One list for every surface that names tools without a registry in hand: `luxe init`, the setup
 //! surface, the Tools settings page, the deny-list's typo check. The registry is the authority on
-//! what a run *has*; this is the authority on what Luxe *offers*, whatever this machine happens to
+//! what a run *has*; this is the authority on what luxe *offers*, whatever this machine happens to
 //! have installed. A CLI test holds the two together, so a tool cannot ship without an entry.
 
 /// How a settings surface groups a tool.

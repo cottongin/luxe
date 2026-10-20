@@ -101,7 +101,7 @@ async fn an_interactive_merge_is_an_ordinary_prompt() {
     assert_eq!(runs.load(Ordering::SeqCst), 1);
 }
 
-/// Luxe does not run commands as root, attended or not, and the refusal says how to hand the
+/// luxe does not run commands as root, attended or not, and the refusal says how to hand the
 /// command over rather than leaving the model to reword it past the rule.
 #[tokio::test]
 async fn running_as_root_is_refused_with_the_handoff_in_the_reply() {

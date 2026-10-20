@@ -186,7 +186,7 @@ async fn a_report_beside_a_tool_call_is_read_when_the_turn_ends() {
 
 /// A Guide like [`GuideManifestProvider`]'s, and fix turns answered from a script.
 ///
-/// Every call a fix turn makes — the feedback itself, or Luxe asking for the report — takes the
+/// Every call a fix turn makes — the feedback itself, or luxe asking for the report — takes the
 /// next reply, with `{review}`, `{revision}`, `{first}` and `{second}` filled in from the feedback.
 /// [`UNTIL_CANCELLED`] answers nothing until the turn is cancelled, and [`CUT_OFF`] stops partway
 /// through a tool call's arguments, as a reply that hit its token limit does.
@@ -290,7 +290,7 @@ async fn fix_two_comments(
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {
@@ -392,7 +392,7 @@ async fn fix_two_comments(
     (*finished, asked)
 }
 
-/// What Luxe said on a comment's thread, in its own name.
+/// What luxe said on a comment's thread, in its own name.
 fn luxe_notes(finding: &luxe_core::guided_review::ReviewFinding) -> Vec<&str> {
     use luxe_core::guided_review::FindingMessageAuthor;
     let notes = finding.thread.iter().filter(|m| m.author == FindingMessageAuthor::System);
@@ -425,7 +425,7 @@ async fn a_missing_report_is_asked_for_once_and_the_answer_counts() {
 }
 
 /// An agent that cannot produce a usable report is asked once, not again and again, and then
-/// each comment says so, and why, in Luxe's name; the comments stay where the reviewer left them.
+/// each comment says so, and why, in luxe's name; the comments stay where the reviewer left them.
 #[tokio::test]
 async fn an_agent_that_never_reports_leaves_word_on_each_comment() {
     use luxe_core::guided_review::FindingState;

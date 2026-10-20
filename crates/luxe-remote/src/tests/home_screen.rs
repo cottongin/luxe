@@ -30,7 +30,7 @@ impl Renderer for Sketch {
 /// paired with two computers keeps two apps it can tell apart.
 ///
 /// The break this catches: the name set on the bridge but never reaching the routes that read it,
-/// so both computers' apps are added as "Luxe".
+/// so both computers' apps are added as "luxe".
 #[tokio::test]
 async fn a_named_bridge_serves_an_app_named_for_its_computer() {
     let bridge = harness_with(|bridge| bridge.named("desk")).await;

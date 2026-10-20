@@ -1,11 +1,11 @@
 ---
 title: "Security and permissions"
-summary: "What the agent may do, the rules and prompts that decide it, secrets, and what Luxe sends over the network."
+summary: "What the agent may do, the rules and prompts that decide it, secrets, and what luxe sends over the network."
 order: 1
 group: "Reference"
 ---
 
-The agent reads and writes files and runs commands on your machine. Luxe lets ordinary work through
+The agent reads and writes files and runs commands on your machine. luxe lets ordinary work through
 without asking, keeps a few guardrails on at all times, and gives you rules to tighten the rest.
 For real isolation, run it in a [container](#isolation).
 
@@ -105,7 +105,7 @@ open. They don't sandbox a language server, which can index other files and runs
 code.
 
 A project's `.luxe/permissions.json` can only make your rules stricter, never looser, unless you
-start Luxe with `--trust-project`.
+start luxe with `--trust-project`.
 
 ## The permission prompt
 
@@ -151,11 +151,11 @@ which then sees the conversation and can answer its prompts. That makes who may 
 question:
 
 - **Only your user account.** The socket sits in a folder only you can open, only you can use it,
-  and Luxe checks the account of whatever connects. On Windows the named pipe admits your account
+  and luxe checks the account of whatever connects. On Windows the named pipe admits your account
   alone, and refuses remote clients.
   Nothing listens on the network.
 - **Not the agent.** A program the agent started, at any depth, is turned away, so it can't
-  approve its own prompts. Luxe checks the joining process's ancestry. It can't see past a program
+  approve its own prompts. luxe checks the joining process's ancestry. It can't see past a program
   that detaches from its parent, such as one started with `setsid` and left running after its
   parent exits, so treat this as a tripwire, not a wall. A command that would do that should be
   something your rules ask about.
@@ -166,19 +166,19 @@ Anything running as you can already read your sessions on disk and your credenti
 adds a way to steer, not a way to read. To turn it off, set
 [`joinable`](configuration.md#joining-a-session) to `false`.
 
-## Luxe remote
+## luxe remote
 
-[`luxe remote`](remote.md) is the one part of Luxe that answers network requests, and it is off
+[`luxe remote`](remote.md) is the one part of luxe that answers network requests, and it is off
 until you run it. It puts your sessions in reach of your phone, so it takes two things to get in:
 
 - **Your Tailscale login.** The bridge listens on this machine only (`127.0.0.1`) and refuses to
   listen anywhere else. Tailscale Serve carries it to your tailnet over HTTPS and adds the login of
   whoever is asking, replacing any the request brought. A request without one didn't come through
-  Serve and is refused, and so is a login other than yours or one you `--allow`. Luxe never uses
+  Serve and is refused, and so is a login other than yours or one you `--allow`. luxe never uses
   Tailscale Funnel, which would publish it to the internet.
 - **A paired device.** Any program on this machine can reach a local port and claim a login, so
   every session also needs the credential a device gets when it pairs. An invitation works once,
-  within ten minutes. Luxe keeps only a hash of each invitation and credential, in
+  within ten minutes. luxe keeps only a hash of each invitation and credential, in
   `~/.config/luxe/remote.json`. The device keeps its credential in a cookie scripts can't read,
   sent only over HTTPS and never with a request from another site; a request a page on another
   site makes is refused too.
@@ -192,28 +192,28 @@ Notifications are off until you turn them on in the app, one device at a time, a
 answer anything: a notification says what is waiting and where, such as "Approve bash" over the
 folder's name, never the command, and answering takes the app. While any device has them on, the
 bridge joins each running session to watch for prompts. It joins watch-only: the terminal doesn't
-announce it, and Luxe drops anything it sends, so a client nobody sees can't act. Each
+announce it, and luxe drops anything it sends, so a client nobody sees can't act. Each
 notification is sealed so only that device can read it (RFC 8291) and posted to the push service
 the device's browser picked; the push service sees when, not what. The bridge posts only to
 Apple's, Google's, Mozilla's and Microsoft's push services, so a paired device can't aim it at
 anything else on your network. It signs with a key of its own, kept in `remote.json`, and revoking
 a device ends its notifications.
 
-The bridge starts Luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
-already running and as its own `luxe --rpc` otherwise. A packager can build Luxe without the
+The bridge starts luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
+already running and as its own `luxe --rpc` otherwise. A packager can build luxe without the
 `remote` feature, which leaves out the bridge entirely.
 
-A session is open in one Luxe at a time. A second `luxe --resume` of a session the interface
+A session is open in one luxe at a time. A second `luxe --resume` of a session the interface
 already has, or a resume from the session list, is refused and says which process has it. The lock
 is the operating system's, so a crash never leaves a session stuck.
 
 ## Secrets
 
-- Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. Luxe warns if
+- Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. luxe warns if
   `auth.json` or `models.json` can be read by others.
 - A key is found in this order: `--api-key` or `LUXE_API_KEY`, then what you signed in with, then
   the provider's own variable, then a provider block in `auth.json` or `models.json`. For a provider
-  Luxe does not know, the block comes before `OPENAI_API_KEY`. The order is the same for the
+  luxe does not know, the block comes before `OPENAI_API_KEY`. The order is the same for the
   provider a session starts on and for one you switch to in `/model`.
 - A key can be `$VAR` or `!command` rather than the value, so it never sits in a file. A command
   runs when a key is needed, so treat these files like your shell's startup file. It runs from your
@@ -221,7 +221,7 @@ is the operating system's, so a crash never leaves a session stuck.
   needs a graphical prompt.
 - Anything that looks like a secret (API keys, tokens, private keys, passwords in URLs) is removed
   from tool output before the model, the transcript, hooks or the log see it. So is every key and
-  token Luxe itself has used or loaded, whatever it looks like, including `$VAR` and `!command`
+  token luxe itself has used or loaded, whatever it looks like, including `$VAR` and `!command`
   keys and MCP tokens, as long as it is at least 8 characters.
 - MCP sign-in tokens are kept in `~/.local/state/luxe/mcp-auth.json`, outside your config folder,
   so a dotfiles repository never carries them.
@@ -275,23 +275,23 @@ Opening a repository should not run its code. So, without `--trust-project`:
   [Tools](tools.md#a-server-the-project-installed).
 
 Its `AGENTS.md` and skills, including the ones it commits in `.agents/skills/`, still reach the
-model, because your own project's are the point of the feature. Luxe removes text a reviewer
+model, because your own project's are the point of the feature. luxe removes text a reviewer
 cannot see, comments and invisible Unicode, and leaves out a file it cannot finish checking; see
-[What Luxe removes](project-context.md#what-luxe-removes). Plain text is still instructions, so read
+[What luxe removes](project-context.md#what-luxe-removes). Plain text is still instructions, so read
 an unfamiliar repository's `AGENTS.md` as you would its `Makefile`.
 Text from GitHub, such as issues and comments, is filtered the same way and given to the agent as
 someone else's words, not as instructions. So are MCP servers' descriptions and results.
 
 A language server can run project code itself: rust-analyzer runs `build.rs`. Treat opening a
-repository in Luxe like building it.
+repository in luxe like building it.
 
-A repository the agent fetches with `web_fetch` is different: you never chose to open it. Luxe
+A repository the agent fetches with `web_fetch` is different: you never chose to open it. luxe
 clones it into `.luxe/gh-cache/` with symbolic links flattened to plain files, and starts no
 language server or formatter there; see [Tools](tools.md#github-repositories).
 
 ### Isolation
 
-Rules are a policy, not a sandbox. For hard isolation, run Luxe in a container that mounts only the
+Rules are a policy, not a sandbox. For hard isolation, run luxe in a container that mounts only the
 project:
 
 ```bash
@@ -302,9 +302,9 @@ docker run --rm -it -v "$PWD":/work -w /work -e ANTHROPIC_API_KEY <image-with-lu
 Do not mount your home folder or SSH keys. `--network none` works for everything but the model
 provider, the web tools, the catalog refresh and the update check.
 
-## What Luxe sends over the network
+## What luxe sends over the network
 
-There is no telemetry. Luxe connects only to:
+There is no telemetry. luxe connects only to:
 
 1. The model provider you configured, including the cache refreshes described in
    [Keeping the cache warm](sessions.md#keeping-the-cache-warm) (`"agent": { "cache_warming": "off" }`
@@ -327,7 +327,7 @@ There is no telemetry. Luxe connects only to:
 None of them carries anything about you or your machine. The update check sends no version,
 platform or identifier; it downloads a public file and compares versions locally.
 
-One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, Luxe runs
+One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, luxe runs
 herdr's own command to tell it whether the agent is working, idle or waiting on you, and the id of
 the session for herdr to resume. Nothing is sent outside herdr, and `"herdr": false` stops it.
 And a running session takes connections on a local socket only you can open, so another program can
@@ -335,16 +335,16 @@ And a running session takes connections on a local socket only you can open, so 
 
 Apart from notifications, `luxe remote` sends nothing of its own. It answers your paired devices
 through Tailscale Serve and runs your own `tailscale` and `herdr` commands; see
-[Luxe remote](#luxe-remote).
+[luxe remote](#luxe-remote).
 
 What you post to GitHub is yours alone: reviews, replies and pull requests are posted from a
 preview, with nothing added, and no agent tool can post them.
 
 ## Supply chain
 
-Luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
+luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
 modules that call the operating system directly. One starts each command in a session of its own,
-so nothing the agent runs can reach your terminal. On Windows, one keeps the programs Luxe starts
+so nothing the agent runs can reach your terminal. On Windows, one keeps the programs luxe starts
 off the stdin `--rpc` reads, one ends a command's whole process tree on a timeout, and one locks
 the [session pipe](#joining-a-session) to your account. CI checks
 every dependency's security advisories and license with `cargo-deny`, builds with `--locked`, and

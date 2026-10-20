@@ -31,7 +31,7 @@ impl Remote {
         let project = dir.path().join("project");
         git(dir.path(), &["init", "--quiet", "--bare", "-b", "main", origin.to_str().unwrap()]);
         git(dir.path(), &["init", "--quiet", "-b", "main", seed.to_str().unwrap()]);
-        git(&seed, &["config", "user.name", "Luxe Tests"]);
+        git(&seed, &["config", "user.name", "luxe Tests"]);
         git(&seed, &["config", "user.email", "tests@luxe.local"]);
         git(&seed, &["remote", "add", "origin", origin.to_str().unwrap()]);
         let base = commit(&seed, "parser.rs", "fn parse() {}\n", "Start");
@@ -39,7 +39,7 @@ impl Remote {
         git(dir.path(), &["clone", "--quiet", origin.to_str().unwrap(), project.to_str().unwrap()]);
         // The project commits too, in the tests that commit a review, and a machine with no global
         // identity — a fresh CI runner, Windows under wine — would refuse
-        git(&project, &["config", "user.name", "Luxe Tests"]);
+        git(&project, &["config", "user.name", "luxe Tests"]);
         git(&project, &["config", "user.email", "tests@luxe.local"]);
         std::fs::create_dir(project.join(".luxe")).unwrap();
         std::fs::write(project.join(".luxe/.gitignore"), "*\n").unwrap();

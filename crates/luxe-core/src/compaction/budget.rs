@@ -32,7 +32,7 @@ pub fn estimate_message_tokens(messages: &[Message]) -> u64 {
 /// Estimate the tokens a request spends before any conversation: the system prompt and the tool
 /// schemas.
 ///
-/// Far from negligible — Luxe's harness plus two dozen JSON schemas is tens of thousands of
+/// Far from negligible — luxe's harness plus two dozen JSON schemas is tens of thousands of
 /// tokens, and leaving it out of a prompt figure is how a request that "fits" turns into a 400.
 pub fn estimate_prefix_tokens(system: Option<&str>, tools: &[ToolSchema]) -> u64 {
     let system = system.map(|text| text.len() as u64 / 4).unwrap_or(0);
@@ -176,7 +176,7 @@ pub fn usable_context_window(context_window: u64, max_tokens: u32, reserve_token
 /// percent on a 200K prompt is thousands of tokens out. Mirrors Pi's margin.
 pub const CONTEXT_SAFETY_TOKENS: u32 = 4_096;
 
-/// The smallest output cap Luxe will ask for once the window is full. Useless as an answer, but a
+/// The smallest output cap luxe will ask for once the window is full. Useless as an answer, but a
 /// request that asks for zero (or a negative) output is a hard rejection rather than a short reply.
 const MIN_MAX_TOKENS: u32 = 1;
 

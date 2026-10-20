@@ -649,7 +649,7 @@ fn identical_text_is_carried_once_and_different_text_is_not_touched() {
     assert!(found[0].is_loaded());
     assert!(!found[1].is_loaded());
     assert_eq!(found[1].duplicate_of, Some(root.join("AGENTS.md")), "a byte-identical copy");
-    assert!(found[2].is_loaded(), "overlap is the author's to settle, not Luxe's");
+    assert!(found[2].is_loaded(), "overlap is the author's to settle, not luxe's");
 }
 
 /// Two empty files are not "the same instructions" in any sense worth reporting.
@@ -682,7 +682,7 @@ fn a_directory_prefers_agents_md_but_accepts_claude_md() {
 fn the_global_files_put_the_shared_one_first() {
     let files = global_context_files();
     assert!(global_context_file().ends_with(std::path::Path::new("luxe").join("agents.md")));
-    assert_eq!(files.last(), Some(&global_context_file()), "Luxe's own comes last");
+    assert_eq!(files.last(), Some(&global_context_file()), "luxe's own comes last");
     if let Some(home) = crate::user_dirs::home_dir() {
         assert_eq!(files.first(), Some(&home.join(".agents").join("AGENTS.md")));
     }

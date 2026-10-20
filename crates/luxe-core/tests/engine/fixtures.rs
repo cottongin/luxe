@@ -222,7 +222,7 @@ pub(crate) fn review_engine_config(
     }
 }
 
-/// The session store a project keeps under `.luxe`, as Luxe does, where Guided Review never looks.
+/// The session store a project keeps under `.luxe`, as luxe does, where Guided Review never looks.
 ///
 /// Anywhere else in the project, the sessions are untracked files a review reads, and on Windows
 /// an open session's claim locks its `.lock` file against that read, so the review never loads.
@@ -322,7 +322,7 @@ pub(crate) fn base_config(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,

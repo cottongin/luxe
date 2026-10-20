@@ -185,11 +185,8 @@ fn reduce_inner(app: &mut App, msg: Msg) {
             app.toggle_block_details_at(index);
         }
         Msg::ScrollDock { up } => app.dock.scroll_by(up, app.dock_scroll_max.get()),
-        Msg::ScrollContextFiles { up } => {
-            if let Some(files) = app.overlays.context_files.as_mut() {
-                files.scroll_by(up);
-            }
-        }
+        Msg::ScrollContextFiles { up } => scroll_context_files(app, up),
+        Msg::ScrollOverlayList { list, up } => app.walk_overlay_list(list, up),
         Msg::ScrollDockList { list, up } => {
             app.dock.scroll_list_by(list, up, app.dock_list_metrics(list));
         }
@@ -444,6 +441,13 @@ fn reduce_inner(app: &mut App, msg: Msg) {
     }
 }
 
+/// Scrolls the context files overlay, when it's open.
+fn scroll_context_files(app: &mut App, up: bool) {
+    if let Some(files) = app.overlays.context_files.as_mut() {
+        files.scroll_by(up);
+    }
+}
+
 /// Moves the surface behind a scrollbar to where its track was pressed or dragged.
 fn drag_scrollbar(app: &mut App, region: crate::mouse::ScrollRegionId, row: u16, height: u16) {
     use crate::mouse::ScrollRegionId;
@@ -476,6 +480,7 @@ fn drag_scrollbar(app: &mut App, region: crate::mouse::ScrollRegionId, row: u16,
         ScrollRegionId::DockList(list) => {
             app.dock.drag_list(list, row, height, app.dock_list_metrics(list));
         }
+        ScrollRegionId::OverlayList(list) => app.drag_overlay_list(list, row, height),
         ScrollRegionId::Dock | ScrollRegionId::ContextFiles => {}
     }
 }

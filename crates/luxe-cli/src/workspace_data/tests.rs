@@ -118,7 +118,7 @@ fn git_repo_with_a_commit(root: &Path) {
 }
 
 /// A checkout is asked the same question the project is asked, which is the whole point of
-/// recording the root instead of the file: this change is made with the shell, so nothing Luxe
+/// recording the root instead of the file: this change is made with the shell, so nothing luxe
 /// tracks per-file could have seen it.
 #[tokio::test]
 async fn an_external_checkout_is_reported_by_git() {
@@ -130,7 +130,7 @@ async fn an_external_checkout_is_reported_by_git() {
 
     let work = ExternalWork::new();
     work.observe(&sibling.join("lib.rs"));
-    // Not through any Luxe tool — exactly what the per-file ledger cannot know about.
+    // Not through any luxe tool — exactly what the per-file ledger cannot know about.
     std::fs::write(sibling.join("lib.rs"), "alpha\nbeta\ngamma\n").unwrap();
 
     let summary = collect_external_summary(work.record(), &project).await;
@@ -143,7 +143,7 @@ async fn an_external_checkout_is_reported_by_git() {
     assert_eq!(summary.total_files, 1);
 }
 
-/// A repository Luxe was opened *inside* reports the project's own files too. They already have
+/// A repository luxe was opened *inside* reports the project's own files too. They already have
 /// a section, and counting them twice would double every number on screen.
 #[tokio::test]
 async fn a_parent_checkout_does_not_report_the_project_twice() {

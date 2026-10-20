@@ -106,7 +106,7 @@ and the agent can look it up through the MCP server. See [Mention sources](menti
 ## Subagents
 
 A subagent is a separate context that does one job and returns a summary, which is what a headless
-Luxe run is:
+luxe run is:
 
 ```bash
 luxe --headless --read-only --model openai/gpt-5.6 --format json \
@@ -129,7 +129,7 @@ To let the agent start one itself, wrap that command in an MCP server with a
 - Return the subagent's stderr when it fails, so the agent sees why.
 - Give a subagent that writes its own worktree, with `git worktree add`, so it stays out of yours.
 
-Luxe refuses to nest more than two levels deep, since an agent that starts two subagents per turn
+luxe refuses to nest more than two levels deep, since an agent that starts two subagents per turn
 would multiply fast. `LUXE_MAX_DEPTH` raises the limit.
 
 ## A guard that asks a model
@@ -182,10 +182,10 @@ fi
 - **Nobody answers in a headless run**, so its `ask` is allowed there. Use `--on-ask deny`, or
   `"hook_ask": "deny"` in `permissions.json`, to make it hold.
 
-## Run Luxe in Herdr
+## Run luxe in Herdr
 
 [Herdr](https://herdr.dev) keeps coding agents in panes and shows which ones are working, waiting
-on you, or done. Luxe reports its state to Herdr on its own when it runs in a Herdr pane:
+on you, or done. luxe reports its state to Herdr on its own when it runs in a Herdr pane:
 **working** during a turn, **blocked** when it needs you, and **done** when the turn ends.
 
 ```bash
@@ -202,11 +202,11 @@ curl -fsSL https://raw.githubusercontent.com/ogulcancelik/herdr/master/SKILL.md 
   -o ~/.config/luxe/skills/herdr/SKILL.md
 ```
 
-`LUXE_HERDR=0` or `{ "herdr": false }` in Luxe's config turns the reporting off.
+`LUXE_HERDR=0` or `{ "herdr": false }` in luxe's config turns the reporting off.
 
-### Luxe colors in Herdr
+### luxe colors in Herdr
 
-Herdr has no theme files — it takes a built-in theme plus per-token overrides. This is Luxe's
+Herdr has no theme files — it takes a built-in theme plus per-token overrides. This is luxe's
 own palette in those tokens, so the pane and the multiplexer around it read as one program:
 
 ```toml title="~/.config/herdr/config.toml"
@@ -214,12 +214,12 @@ own palette in those tokens, so the pane and the multiplexer around it read as o
 name = "vesper"          # the closest built-in; every token below is overridden anyway
 
 [theme.custom]
-accent        = "#ddc084"  # champagne, the one color Luxe leads with
+accent        = "#ddc084"  # champagne, the one color luxe leads with
 text          = "#e4dfd6"
 subtext0      = "#97938c"
 overlay0      = "#4d4a45"
 overlay1      = "#97938c"
-sidebar_bg    = "#12100e"  # the base surface, same as Luxe's background
+sidebar_bg    = "#12100e"  # the base surface, same as luxe's background
 panel_bg      = "#12100e"  # the tab bar sits on it too, so the chrome is one field
 surface0      = "#201e1a"
 surface1      = "#2e2b27"
@@ -231,7 +231,7 @@ yellow        = "#ddc084"  # working — an agent at work glows in the accent
 green         = "#81caa0"  # idle / done
 red           = "#e68485"  # blocked, needs you
 peach         = "#faaa51"  # interrupted
-blue          = "#85c7d7"  # Luxe has one cool hue, so blue and teal share it
+blue          = "#85c7d7"  # luxe has one cool hue, so blue and teal share it
 teal          = "#85c7d7"
 
 [ui]
@@ -239,18 +239,18 @@ accent = "#ddc084"         # borders and navigation chrome, which read off their
 ```
 
 Reload it in place with `prefix+shift+r`, or `herdr server reload-config`. For any of the other
-[themes](appearance.md) Luxe ships, the hexes are in its theme file and the token names above do
+[themes](appearance.md) luxe ships, the hexes are in its theme file and the token names above do
 not change.
 
 The one token worth a second thought is `panel_bg`: Herdr draws the active tab as `panel_bg` text
 on an `accent` fill, so it has to stay dark enough to read there. Lifting it to `#201e1a` gives the
 tab bar a surface of its own if you prefer the chrome delineated.
 
-## Luxe from your phone
+## luxe from your phone
 
 Your sessions keep running on your computer, and your phone or tablet reaches them over
 [Tailscale](https://tailscale.com), a private network between your own devices. Nothing is opened to
-the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is Luxe's own way in.
+the internet. This is the terminal over SSH; [luxe on your phone](remote.md) is luxe's own way in.
 
 1. Install Tailscale on the computer and on the phone, and sign in to the same account on both.
 2. On the computer, turn on SSH. On Linux and macOS, Tailscale can do it for you:
@@ -260,10 +260,10 @@ the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is 
    ```
 
    On Windows, turn on the OpenSSH Server in Settings, under Optional features.
-3. Run Luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
+3. Run luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
    them in.
 4. On the phone, connect with an SSH app such as Blink Shell or Termius, using the computer's
-   Tailscale name, and run `herdr`. It attaches to the panes you left, with Luxe where it was.
+   Tailscale name, and run `herdr`. It attaches to the panes you left, with luxe where it was.
 
 ```bash
 mosh you@desk -- herdr
@@ -273,24 +273,24 @@ mosh you@desk -- herdr
 cellular. It needs `mosh` installed on the computer too, which Linux and macOS have and Windows
 does not; plain `ssh` works everywhere.
 
-On an iPad with a keyboard, this is Luxe as you know it. On a phone, Luxe fits a narrow screen,
+On an iPad with a keyboard, this is luxe as you know it. On a phone, luxe fits a narrow screen,
 and Herdr marks which session is waiting on you.
 
-### A notification when Luxe needs you
+### A notification when luxe needs you
 
-[Luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
+[luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
 [hook](hooks.md) can post to [ntfy](https://ntfy.sh), whose app shows it on your phone:
 
 ```json title="~/.config/luxe/hooks.json"
 {
   "PermissionRequested": [
-    { "command": ["curl", "-s", "-d", "Luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
+    { "command": ["curl", "-s", "-d", "luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
   ],
   "BeforeToolUse": [
-    { "matcher": "question", "command": ["curl", "-s", "-d", "Luxe has a question", "https://ntfy.sh/your-topic"] }
+    { "matcher": "question", "command": ["curl", "-s", "-d", "luxe has a question", "https://ntfy.sh/your-topic"] }
   ],
   "AgentEnd": [
-    { "command": ["curl", "-s", "-d", "Luxe finished", "https://ntfy.sh/your-topic"] }
+    { "command": ["curl", "-s", "-d", "luxe finished", "https://ntfy.sh/your-topic"] }
   ]
 }
 ```
@@ -303,11 +303,11 @@ and Herdr marks which session is waiting on you.
 ## A local model in LM Studio
 
 1. Load a model in LM Studio and start its server.
-2. In Luxe, open **Configuration** and choose **Connect a local or custom model**, then
+2. In luxe, open **Configuration** and choose **Connect a local or custom model**, then
    **LM Studio**. Leave the endpoint blank for the default.
 3. Choose the model in the picker that opens.
 
-LM Studio ignores the chat-template settings Luxe sends a local server by default, so for
+LM Studio ignores the chat-template settings luxe sends a local server by default, so for
 thinking levels to reach the model, send them as `reasoning_effort`, and start each session at a
 sensible level. Connecting already wrote an `lmstudio` provider to `models.json`, so add these keys
 to it rather than replacing the file:

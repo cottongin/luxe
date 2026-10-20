@@ -1,6 +1,6 @@
 # flagship — the hero: one small feature, written, reviewed and ready to ship.
 #
-# What using Luxe looks like, at the speed it happens: a request, the agent reading its way in, an
+# What using luxe looks like, at the speed it happens: a request, the agent reading its way in, an
 # edit with its diff, the tests really run, and a reply that says what changed. Then the part no
 # other agent has: the change read back as a Guided Review, a chapter at a time, and finished into a
 # pull request drafted from it. Nothing is staged and nothing is sped up; only the dead air between
@@ -14,7 +14,7 @@
 # being drafted, are marked `squeeze`…`resume`: `cast-edit.py` plays each in two seconds, every
 # frame kept, and the clock on screen still says how long it took.
 #
-# The recorder starts Luxe with the dashboard off, so a take opens on the session itself rather
+# The recorder starts luxe with the dashboard off, so a take opens on the session itself rather
 # than on three seconds of a splash screen it is not about.
 
 #: cols 120

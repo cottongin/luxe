@@ -10,7 +10,7 @@
 //! so a project carrying forty skills has a long list rather than rows nobody can reach. Past that
 //! what it wants is a filter box — still not a submenu.
 //!
-//! It sits beside [`crate::configuration`] rather than inside it on purpose. Those are Luxe's own
+//! It sits beside [`crate::configuration`] rather than inside it on purpose. Those are luxe's own
 //! settings — a theme, a credential, a keymap. These belong to the *project*: a different author,
 //! a different lifecycle, and they travel with the repository rather than the machine.
 //!
@@ -277,7 +277,7 @@ impl ContextFilesState {
 /// dashboard disagree with the prompt.
 ///
 /// `cwd` is the project root, which paths are shown relative to; `instructions_from` is where the
-/// instruction walk starts, which is where Luxe was launched — the same directory the prompt walks
+/// instruction walk starts, which is where luxe was launched — the same directory the prompt walks
 /// from, or the list would come up short of what a turn reads.
 pub fn discover(cwd: &Path, instructions_from: &Path) -> Vec<ContextFileRow> {
     let found = luxe_core::instructions::context_files(instructions_from);

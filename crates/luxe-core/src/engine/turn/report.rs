@@ -2,7 +2,7 @@
 //!
 //! A fix request ends with the report the agent is to fill in. The turn reads everything the agent
 //! said in it, every message rather than only the last, as the turn is about to end. A report that
-//! reads goes to the review. When there is none Luxe can use, Luxe appends one message saying what
+//! reads goes to the review. When there is none luxe can use, luxe appends one message saying what
 //! was wrong, with the template again, and the turn goes on for the answer: once, so a model that
 //! cannot comply costs a call rather than a loop. Whatever still has no word from the agent when
 //! the turn ends, however it ended, goes to the review desk, which notes it on the comment.
@@ -16,9 +16,9 @@ use crate::guided_review::FindingId;
 pub(super) struct ReportWatch {
     /// Every assistant text the turn committed, in order
     said: Vec<String>,
-    /// Whether Luxe has asked for the report this turn
+    /// Whether luxe has asked for the report this turn
     asked: bool,
-    /// Why the last reading found no report Luxe could use
+    /// Why the last reading found no report luxe could use
     problem: Option<&'static str>,
     /// The comments the delivered report spoke for; `None` until one is delivered
     covered: Option<Vec<FindingId>>,
@@ -141,7 +141,7 @@ const NO_REPORT: &str = "it wrote no report";
 /// No `Submission:` line, which is how a retried submission finds the message it already sent.
 fn report_request(context: &RemediationTurnContext, reason: &str) -> String {
     format!(
-        "{REPORT_REQUEST}\nYour reply did not give the report Luxe reads to update the review: \
+        "{REPORT_REQUEST}\nYour reply did not give the report luxe reads to update the review: \
          {reason}. Do not redo any work. Reply with just this block, one line per \
          comment in the order they were sent, each status set to fixed, not_fixed or \
          needs_clarification and each note saying what you did, in one sentence.\n\n{}",

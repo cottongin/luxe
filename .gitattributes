@@ -14,7 +14,7 @@
 
 # Development-process artifacts — excluded from published release archives.
 #
-# These are Luxe's own planning spine, journal, and dogfooding memory. Luxe never
+# These are luxe's own planning spine, journal, and dogfooding memory. luxe never
 # *requires* them at runtime (every reader treats them as read-if-present), so a fresh
 # consumer repo starts clean. `git archive` (and scripts/publish-clean.sh) drop them via
 # the `export-ignore` attribute below; the files stay in this development repo for history.

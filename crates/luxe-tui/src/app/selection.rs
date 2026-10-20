@@ -1,6 +1,6 @@
 //! Text-selection handling — mouse drags over the transcript, the composer and the Changes pane.
 //!
-//! Mouse capture takes the terminal's own click-drag selection away, so Luxe provides it: a press
+//! Mouse capture takes the terminal's own click-drag selection away, so luxe provides it: a press
 //! anchors, a drag extends, and a release copies (the copy-on-select behavior a terminal would
 //! have given you). A press that lands twice on the same cell escalates to the word under it and
 //! then to the whole line, the other two gestures capture costs. The composer keeps its selection

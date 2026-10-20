@@ -207,7 +207,7 @@ mod tests {
             number,
             repository: repository.map(str::to_owned),
         };
-        store.record(&pr(7, Some("Upstream/Luxe")), seen(&["a"])).unwrap();
+        store.record(&pr(7, Some("Upstream/luxe")), seen(&["a"])).unwrap();
         store.record(&pr(7, None), seen(&["b"])).unwrap();
 
         assert_eq!(store.load(&pr(7, Some("upstream/luxe"))).unwrap().item_ids, vec!["a"]);

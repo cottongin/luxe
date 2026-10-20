@@ -3,7 +3,7 @@ name = "luxe-core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Luxe's engine: the agent loop, session model, context assembly, permissions, and the Provider/Tool/Hook traits"
+description = "luxe's engine: the agent loop, session model, context assembly, permissions, and the Provider/Tool/Hook traits"
 repository.workspace = true
 homepage.workspace = true
 
@@ -66,7 +66,7 @@ globset = "0.4"
 [target.'cfg(unix)'.dependencies]
 rustix = { version = "1", features = ["process", "stdio", "system"] }
 
-# Pointing stdin at the null device on Windows, and keeping the pipe Luxe took out of every child:
+# Pointing stdin at the null device on Windows, and keeping the pipe luxe took out of every child:
 # no safe API does either, and without it every child of `luxe --rpc` stalls behind the protocol
 # read. See `program::take_stdin`. Job objects end a command's whole tree on a timeout, where
 # Windows has no process group to signal; see `program::TreeGuard`. A session's named pipe needs a

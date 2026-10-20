@@ -1,6 +1,6 @@
 use super::*;
 
-/// Windows Python writes cp1252 into a pipe, so a `✓` in a test's output crashed it under Luxe.
+/// Windows Python writes cp1252 into a pipe, so a `✓` in a test's output crashed it under luxe.
 #[test]
 fn windows_commands_get_python_utf8_mode() {
     assert_eq!(python_utf8(None, true), Some("1"));

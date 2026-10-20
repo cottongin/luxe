@@ -119,21 +119,21 @@ fn a_notifier_exists_only_when_notifications_are_on_and_knows_about_tmux() {
 fn the_sequence_reaches_a_terminal_and_never_a_redirected_stream() {
     let notifier = TerminalNotifier { protocol: Protocol::Osc9, tmux: false };
     let mut sink = Vec::new();
-    notifier.write_to(&mut sink, false, "Luxe", "done");
+    notifier.write_to(&mut sink, false, "luxe", "done");
     assert!(sink.is_empty(), "not a terminal: nothing written");
-    notifier.write_to(&mut sink, true, "Luxe", "done");
-    assert_eq!(sink, b"\x1b]9;Luxe: done\x07");
+    notifier.write_to(&mut sink, true, "luxe", "done");
+    assert_eq!(sink, b"\x1b]9;luxe: done\x07");
 }
 
 #[test]
 fn each_protocol_is_written_as_its_terminals_expect() {
     assert_eq!(
-        sequence(Protocol::Osc9, false, "Luxe · app", "Turn finished"),
-        "\x1b]9;Luxe · app: Turn finished\x07"
+        sequence(Protocol::Osc9, false, "luxe · app", "Turn finished"),
+        "\x1b]9;luxe · app: Turn finished\x07"
     );
     assert_eq!(
-        sequence(Protocol::Osc777, false, "Luxe; app", "Turn failed: a; b"),
-        "\x1b]777;notify;Luxe, app;Turn failed: a; b\x07",
+        sequence(Protocol::Osc777, false, "luxe; app", "Turn failed: a; b"),
+        "\x1b]777;notify;luxe, app;Turn failed: a; b\x07",
         "the title cannot carry the field separator; the last field can"
     );
 }
@@ -141,8 +141,8 @@ fn each_protocol_is_written_as_its_terminals_expect() {
 #[test]
 fn inside_tmux_the_sequence_is_wrapped_for_passthrough() {
     assert_eq!(
-        sequence(Protocol::Osc9, true, "Luxe", "done"),
-        "\x1bPtmux;\x1b\x1b]9;Luxe: done\x07\x1b\\"
+        sequence(Protocol::Osc9, true, "luxe", "done"),
+        "\x1bPtmux;\x1b\x1b]9;luxe: done\x07\x1b\\"
     );
 }
 
@@ -151,10 +151,10 @@ fn inside_tmux_the_sequence_is_wrapped_for_passthrough() {
 #[test]
 fn outside_text_cannot_end_the_sequence_or_start_its_own() {
     let hostile = "boom\x07\x1b]52;c;cHduZWQ=\x07\nsecond line\r\u{9b}31m";
-    let written = sequence(Protocol::Osc9, false, "Luxe", hostile);
+    let written = sequence(Protocol::Osc9, false, "luxe", hostile);
     let inner = &written["\x1b]9;".len()..written.len() - 1];
     assert!(!inner.chars().any(char::is_control), "{written:?}");
-    assert_eq!(inner, "Luxe: boom ]52;c;cHduZWQ= second line 31m");
+    assert_eq!(inner, "luxe: boom ]52;c;cHduZWQ= second line 31m");
 }
 
 #[test]

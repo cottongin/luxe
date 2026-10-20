@@ -233,7 +233,7 @@ fn every_telemetry_value_opens_on_one_column_clear_of_the_badge() {
             .unwrap_or_else(|| panic!("no {label} row in {rendered:?}"));
         UnicodeWidthStr::width(&row[..row.len() - row.trim_start_matches(label).trim_start().len()])
     };
-    for label in ["anthropic", "thinking", "context", "tokens", "cost", "compaction"] {
+    for label in ["provider", "model", "thinking", "context", "tokens", "cost", "compaction"] {
         assert_eq!(value_at(label), TELEMETRY_LABEL_WIDTH, "{label} in {rendered:?}");
     }
 
@@ -275,10 +275,13 @@ fn the_token_row_sheds_its_footnote_rather_than_the_rail() {
         "a session with room keeps its footnote: {large}"
     );
 
-    // At the top of the range the footnote goes, and the counts never do.
-    let vast = token_value(&totals(999_900_000, 999_900_000, 999_900_000), room);
-    assert_eq!(vast, "↑999.9M ↓999.9M", "the two counts are the row");
-    assert!(vast.width() <= room, "{vast} still overruns");
+    // The default rail now seats all three even at the top of the range
+    let vast = totals(999_900_000, 999_900_000, 999_900_000);
+    assert!(token_value(&vast, room).width() <= room, "the widest still overruns");
+
+    // In a tighter row the footnote goes, and the counts never do
+    let tight = "↑999.9M ↓999.9M ↺999.9M".width() - 1;
+    assert_eq!(token_value(&vast, tight), "↑999.9M ↓999.9M", "the two counts are the row");
 
     // Nothing to report is not the same as no room to report it.
     assert_eq!(token_value(&totals(900_000, 42_000, 0), room), "↑900k ↓42k");
@@ -317,74 +320,85 @@ fn every_telemetry_row_fits_the_rail() {
         );
     }
 
-    // The other end of the same budget: the column has to seat the longest provider anyone has
-    // put in front of it, or this is all arithmetic about nothing.
-    assert!(
-        TELEMETRY_LABEL_WIDTH > "foundry-anthropic".width(),
-        "a gateway-prefixed provider is cut, which is the whole reason for the column's width"
-    );
+    // A gateway-prefixed provider reads in full as a value on the default rail
     app.status.provider = "foundry-anthropic".into();
-    app.status.model = "Claude Fable 5.1 (EU)".into();
     let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
     assert!(
-        rendered.iter().any(|row| row.starts_with("foundry-anthropic ")),
+        rendered
+            .iter()
+            .any(|row| row.starts_with("provider") && row.ends_with("foundry-anthropic")),
         "the provider is elided: {rendered:?}"
     );
 
-    // And the third end: the label column is a split, so taking a cell from the value is
-    // taking it from a model's name. Both of these elide, and a column that seated every
-    // provider id ever written would leave the names — where the variety actually is — paying
-    // for it on every row of every session.
+    // The label column is paid for out of a model's name, so a routine one fits whole
     let name_room = telemetry_value_width(DEFAULT_ROW, TELEMETRY_LABEL_WIDTH)
         .saturating_sub(icon_cells(Icon::Model.glyph()));
     assert!(
-        name_room >= "Claude Sonnet 4.6".width(),
+        name_room >= "Claude Sonnet 4.6 (EU)".width(),
         "a routine model name does not fit in {name_room} cells"
     );
 }
 
-/// The model row is a row like the others: who serves it on the left, what it is on the right.
-///
-/// It used to be the block's headline — the one line in MODEL and SESSION with no label column,
-/// so its icon sat where every other row's *label* starts and the grid broke at the top. The
-/// provider is what the column was missing: the one fact about the model its name does not say.
+/// The column is sized to our own labels, so it has to seat the widest of them, a cost source's.
 #[test]
-fn the_model_row_is_labeled_by_who_serves_it() {
+fn the_label_column_seats_every_label() {
+    use luxe_core::usage::UsageSource;
+    let sources = [UsageSource::Agent, UsageSource::Review, UsageSource::Compaction];
+    let labels = sources.iter().map(|source| source.label()).chain([
+        UsageSource::CacheWarm.label(),
+        "provider",
+        "approvals",
+    ]);
+    for label in labels {
+        assert!(label.width() <= WIDEST_TELEMETRY_LABEL, "{label} is wider than the column");
+    }
+}
+
+/// The provider is a row of its own, label left and value right like every other row, directly
+/// above the model it serves, and wears its own mark.
+#[test]
+fn the_provider_is_its_own_row_above_the_model() {
     let mut app = app();
     app.status.model = "claude-sonnet-5".into();
     app.status.provider = "anthropic".into();
 
     let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
-    let model = rendered.iter().find(|row| row.contains("claude-sonnet-5")).expect("a model");
-    assert!(model.starts_with("anthropic"), "{model:?}");
+    let model = rendered.iter().position(|row| row.contains("claude-sonnet-5")).expect("a model");
+    assert!(rendered[model].starts_with("model "), "{:?}", rendered[model]);
     assert!(
-        model.ends_with(&crate::glyphs::icon_label(Icon::Model.glyph(), "claude-sonnet-5")),
-        "the value keeps its own mark: {model:?}"
+        rendered[model]
+            .ends_with(&crate::glyphs::icon_label(Icon::Model.glyph(), "claude-sonnet-5")),
+        "the value keeps its own mark: {:?}",
+        rendered[model]
     );
+    let provider = &rendered[model - 1];
+    let mark = crate::widgets::provider_icon("anthropic").glyph();
+    assert!(provider.starts_with("provider "), "{provider:?}");
+    assert!(provider.ends_with(&crate::glyphs::icon_label(mark, "anthropic")), "{provider:?}");
 }
 
-/// A provider longer than the column is cut rather than allowed to shove the value out of it —
-/// provider ids are whatever a config names them, and the grid is the whole point of the block.
+/// A provider longer than its value column is cut at the rail's edge, and keeps the column.
 #[test]
-fn a_long_provider_is_cut_to_its_column() {
+fn a_long_provider_is_cut_in_its_value_column() {
     let mut app = app();
     app.status.model = "claude-sonnet-5".into();
-    app.status.provider = "a-self-hosted-gateway".into();
+    app.status.provider = "a-self-hosted-gateway-with-a-very-long-name".into();
 
     let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
-    let model = rendered.iter().find(|row| row.contains(Icon::Model.glyph())).expect("a model");
-    let opens_at = model.find(Icon::Model.glyph()).expect("the value's mark");
+    let provider = rendered.iter().find(|row| row.starts_with("provider")).expect("a provider");
+    let value = provider.trim_start_matches("provider").trim_start();
     assert_eq!(
-        UnicodeWidthStr::width(&model[..opens_at]),
+        UnicodeWidthStr::width(&provider[..provider.len() - value.len()]),
         TELEMETRY_LABEL_WIDTH,
-        "the value moved off its column: {model:?}"
+        "the value moved off its column: {provider:?}"
     );
+    assert!(UnicodeWidthStr::width(provider.as_str()) <= DEFAULT_ROW, "{provider:?} overruns");
+    assert!(!provider.contains("very-long-name"), "nothing was cut: {provider:?}");
 }
 
-/// A rail dragged wide gives the grid air and the provider its whole name; the default rail
-/// keeps the column it has always had.
+/// A rail dragged wide gives the grid air; the default rail keeps its floor.
 #[test]
-fn a_wide_rail_widens_the_grid_and_seats_a_long_provider() {
+fn a_wide_rail_widens_the_grid() {
     let mut app = app();
     app.status.model = "claude-opus-5".into();
     app.status.provider = "foundry-anthropic".into();
@@ -393,7 +407,7 @@ fn a_wide_rail_widens_the_grid_and_seats_a_long_provider() {
         telemetry_lines(app)
             .iter()
             .map(text)
-            .filter(|row| row.starts_with("foundry-anthropic") || row.starts_with("context"))
+            .filter(|row| row.starts_with("provider") || row.starts_with("context"))
             .map(|row| {
                 let label = row.split_whitespace().next().unwrap_or_default().to_string();
                 let value = row[label.len()..].trim_start();
@@ -401,42 +415,35 @@ fn a_wide_rail_widens_the_grid_and_seats_a_long_provider() {
             })
             .collect()
     };
-    assert_eq!(value_column(&app), [TELEMETRY_LABEL_WIDTH; 2], "the default rail is unchanged");
+    assert_eq!(value_column(&app), [TELEMETRY_LABEL_WIDTH; 2], "the default rail is the floor");
 
     app.dock_rail.set(crate::workspace_layout::DOCK_MAX_WIDTH);
     let wide = value_column(&app);
-    assert_eq!(wide, [21; 2], "seventeen cells of provider, four of air, one grid: {wide:?}");
-
-    app.status.provider = "a-self-hosted-gateway-provider".into();
-    let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
-    assert!(
-        rendered.iter().any(|row| row.starts_with("a-self-hosted-gateway-provider ")),
-        "a wide rail seats the whole name: {rendered:?}"
-    );
-    for row in &rendered {
-        assert!(UnicodeWidthStr::width(row.as_str()) <= row_width(&app), "{row:?} overruns");
-    }
+    assert_eq!(wide, [WIDEST_TELEMETRY_LABEL + 4; 2], "four cells of air, one grid: {wide:?}");
 }
 
 #[test]
 fn the_label_column_grows_only_where_there_is_room() {
-    assert_eq!(telemetry_label_width(40, 17), TELEMETRY_LABEL_WIDTH);
-    assert_eq!(telemetry_label_width(40, 30), TELEMETRY_LABEL_WIDTH, "cut, as it always was");
+    let widest = WIDEST_TELEMETRY_LABEL;
+    assert_eq!(telemetry_label_width(40, widest), TELEMETRY_LABEL_WIDTH);
+    assert_eq!(telemetry_label_width(40, 30), 16, "never past two fifths of the row");
     assert_eq!(telemetry_label_width(78, 8), TELEMETRY_LABEL_WIDTH, "short labels keep the floor");
-    assert_eq!(telemetry_label_width(78, 17), 21);
+    assert_eq!(telemetry_label_width(78, widest), widest + 4);
     assert_eq!(telemetry_label_width(78, 60), 31, "never past two fifths of the row");
 }
 
-/// Before the engine has said anything there is no provider to name, and a blank label column
-/// would leave the value sitting where no other row's value sits.
+/// Before the engine has said anything there is no provider to name, so the row says `none`
+/// rather than vanishing and moving every row under it.
 #[test]
-fn a_model_with_no_provider_yet_still_labels_its_row() {
+fn a_model_with_no_provider_yet_keeps_its_rows() {
     let mut app = app();
     app.status.model = "claude-sonnet-5".into();
 
     let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
-    let model = rendered.iter().find(|row| row.contains("claude-sonnet-5")).expect("a model");
-    assert!(model.starts_with("model"), "{model:?}");
+    let model = rendered.iter().position(|row| row.contains("claude-sonnet-5")).expect("a model");
+    assert!(rendered[model].starts_with("model"), "{:?}", rendered[model]);
+    assert!(rendered[model - 1].starts_with("provider"), "{rendered:?}");
+    assert!(rendered[model - 1].ends_with("none"), "{rendered:?}");
 }
 
 /// One block for what the session consumed, so the window is not a section of its own.

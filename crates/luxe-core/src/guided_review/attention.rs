@@ -4,7 +4,7 @@
 //! for everything it can be expected to disclose and the wrong one for the rest. That line decides
 //! what belongs here: a file edited without ever being read, a credential-shaped addition, a
 //! weakened gate. The agent cannot report the first — it does not know — and has every incentive to
-//! soften the other two. Luxe can see all three because it is the harness that produced the change.
+//! soften the other two. luxe can see all three because it is the harness that produced the change.
 //!
 //! Who wrote a change is deliberately not here: read off the transcript it is a guess, wrong often
 //! enough to cost more than it tells anyone, since a formatter, a pasted file, or a path spelled

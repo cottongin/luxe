@@ -368,7 +368,7 @@ fn parse_match(value: &serde_json::Value) -> Result<AstGrepMatch, AstGrepError> 
     Ok(AstGrepMatch {
         file: PathBuf::from(file),
         range: (start as usize, end as usize),
-        // ast-grep reports 0-based lines; every other Luxe surface is 1-based.
+        // ast-grep reports 0-based lines; every other luxe surface is 1-based.
         line: line as usize + 1,
         column: column as usize,
         text: text.to_string(),

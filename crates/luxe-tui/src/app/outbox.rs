@@ -16,7 +16,7 @@ pub struct Outbox {
     /// A file the reader chose to edit. The editor needs the terminal back, so the TUI exits and
     /// the CLI runs it, the same way the Configuration surface's own `EditFile` does.
     pub editor_file: Option<PathBuf>,
-    /// The session's worktree, to remove once Luxe has left it: only the loop can end the session
+    /// The session's worktree, to remove once luxe has left it: only the loop can end the session
     /// and only the CLI can remove the directory the process is standing in
     pub worktree_removal: Option<PathBuf>,
     /// A pull request to check out and fix in a new session, with the comments that go with it
@@ -25,7 +25,7 @@ pub struct Outbox {
     pub issue: Option<u64>,
     /// A session of yours to leave this one for, and what the reader carries into it
     pub resume: Option<crate::main_loop::ResumeLaunch>,
-    /// Whether to leave and update Luxe
+    /// Whether to leave and update luxe
     pub update: bool,
     /// Text to hand to the reader's editor and bring back
     pub text_edit: Option<TextEdit>,

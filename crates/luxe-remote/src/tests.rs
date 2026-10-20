@@ -22,7 +22,7 @@ type DeviceSocket =
 const SESSION: &str = "5898d57b-0000-4000-8000-000000000001";
 const OWNER: &str = "alex@github";
 
-/// A session as a running Luxe shares it: an endpoint, and its record beside it.
+/// A session as a running luxe shares it: an endpoint, and its record beside it.
 struct FakeSession {
     listener: EndpointListener,
     _record: Publication,
@@ -170,7 +170,7 @@ async fn the_bridge_listens_on_loopback_only() {
 
 /// The list names running sessions and keeps their local address on this machine.
 ///
-/// The break this catches: listing a record whose Luxe has died, which the app shows as a session
+/// The break this catches: listing a record whose luxe has died, which the app shows as a session
 /// that fails to open; or sending the endpoint's path, which means nothing off this machine.
 #[tokio::test]
 async fn the_list_shows_running_sessions_without_their_address() {
@@ -286,7 +286,7 @@ async fn starting_in_a_folder_that_isnt_there_is_refused() {
     assert!(refused.text().await.unwrap().contains("isn't a folder"));
 }
 
-/// The folders a device can start in include the ones Luxe is running in, counted.
+/// The folders a device can start in include the ones luxe is running in, counted.
 ///
 /// The break this catches: listing only remembered folders, so a project open at the desk right
 /// now is missing from the phone's list until it's been seen once before.

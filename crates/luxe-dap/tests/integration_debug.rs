@@ -281,7 +281,7 @@ async fn attach_by_pid_reaches_a_stop() {
 ///
 /// Adapters do this. `gdb --interpreter=dap` answers `stepIn` with `success: true` and then sends
 /// no event at all when there is nowhere to step (confirmed against the raw protocol), and no
-/// client can invent a stop that was never reported. What Luxe owes is a reply that says which
+/// client can invent a stop that was never reported. What luxe owes is a reply that says which
 /// situation this is: the old one was `request 'event' timed out` after the full thirty-second
 /// budget, which names an internal wait instead of the program's state and offers nothing to do
 /// about it.

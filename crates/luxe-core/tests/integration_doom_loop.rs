@@ -117,7 +117,7 @@ async fn a_repeated_identical_call_is_blocked_unattended_with_actionable_feedbac
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,

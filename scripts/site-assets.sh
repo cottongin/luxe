@@ -6,7 +6,7 @@
 # fixture runner. That is the point — a screenshot taken by hand is a claim about a build nobody can
 # reproduce, and it starts lying the first time a border changes.
 #
-# Run it after anything that changes how Luxe looks, and commit the result. CI runs it with
+# Run it after anything that changes how luxe looks, and commit the result. CI runs it with
 # `--check`, which regenerates into a scratch directory and fails if the committed assets differ.
 #
 # The *demos* are not here and cannot be. They are recordings of real sessions against a real
@@ -116,7 +116,7 @@ guide_dir="${repo_root}/docs/guide/images"
 # The phone app's wordmark, from the same art. The app has no build step, so it ships the file
 app_dir="${repo_root}/crates/luxe-remote/app/generated"
 
-# Luxe's own theme, the one the site is set in. The colors are baked into each file rather than left
+# luxe's own theme, the one the site is set in. The colors are baked into each file rather than left
 # as custom properties, so a capture stays correct wherever it is embedded — a README, someone's
 # blog. The theme preview is the one picture drawn in every theme, below.
 THEMES=("luxe")

@@ -35,7 +35,7 @@ case "$cmd" in
 esac
 ```
 
-A project's `.luxe/hooks.json` runs only when you start Luxe with `--trust-project`, since opening a
+A project's `.luxe/hooks.json` runs only when you start luxe with `--trust-project`, since opening a
 repository should never run its commands. When both are loaded, a project's hooks run after yours.
 
 ### Hook settings
@@ -49,7 +49,7 @@ repository should never run its commands. When both are loaded, a project's hook
 
 `on_timeout: "deny"` makes a guard fail closed. `"ask"` puts the question to you instead, at
 `BeforeToolUse`; at other points it acts as `allow`. A
-`decision` Luxe does not recognize, a typo or different casing included, gets the same treatment,
+`decision` luxe does not recognize, a typo or different casing included, gets the same treatment,
 with a warning in the log, and its `args` and `context` are dropped.
 
 ## Matchers
@@ -74,10 +74,10 @@ points without a tool call ignore the matcher.
 | Point | Runs | stdin | Can |
 | --- | --- | --- | --- |
 | `SessionStart` | A session starts or resumes, including a switch to it from another session | `{"Other": null}` | |
-| `SessionEnd` | A session ends, including a switch to another session; Luxe waits for the hook | `{"Other": null}` | |
+| `SessionEnd` | A session ends, including a switch to another session; luxe waits for the hook | `{"Other": null}` | |
 | `UserPromptSubmit` | You send a message, including one sent while the agent works | `{"Other": {"content": "…"}}` | block it, add context |
 | `BeforeAgentStart` | A turn is about to start | `{"Other": null}` | |
-| `AgentStart` | Luxe is about to call the model | `{"Other": null}` | |
+| `AgentStart` | luxe is about to call the model | `{"Other": null}` | |
 | `BeforeToolUse` | Before each tool call | `{"ToolUse": {"tool_name": "bash", "args": {…}}}` | block it, ask you, rewrite it |
 | `AfterToolUse` | After each tool call | `{"ToolResult": {"tool_name": "bash", "result": "…", "is_error": false}}` | add context to the result |
 | `FileChanged` | `write`, `edit`, an applied rename or code action, or an `ast_grep` rewrite changed a file | `{"FileChanged": {"path": "/abs/file", "operation": "edit"}}` | |
@@ -99,7 +99,7 @@ that hook alone, with a warning naming the nearest real point.
 
 | Field | Where | Does |
 | --- | --- | --- |
-| `decision` | Required in any answer | `deny` blocks the call or message. `ask` raises a permission prompt, at `BeforeToolUse`. `allow`, or no output at all, means no opinion. An answer without `decision` counts as one Luxe cannot read. |
+| `decision` | Required in any answer | `deny` blocks the call or message. `ask` raises a permission prompt, at `BeforeToolUse`. `allow`, or no output at all, means no opinion. An answer without `decision` counts as one luxe cannot read. |
 | `reason` | with `deny` or `ask` | Shown to the model when a call is blocked, to you when a message is blocked, and on the prompt |
 | `args` | `BeforeToolUse` | New values for the call's arguments. Keys you leave out keep their values. |
 | `context` | `AfterToolUse`, `UserPromptSubmit` | Text added to the tool result, or saved with your message, for the model to see |
@@ -152,7 +152,7 @@ saved. Read a hook script before installing it, as you would anything on your `P
 }
 ```
 
-Luxe already adds language server errors after every edit; a hook like this is for a different
+luxe already adds language server errors after every edit; a hook like this is for a different
 check.
 
 **Refuse messages that contain an internal token:**
@@ -176,7 +176,7 @@ command is destructive.
 
 ## Coming from Claude Code
 
-| Claude Code | Luxe |
+| Claude Code | luxe |
 | --- | --- |
 | `PreToolUse`, `PostToolUse` | `BeforeToolUse`, `AfterToolUse` |
 | `UserPromptSubmit` with `additionalContext` | `UserPromptSubmit` with `context` |

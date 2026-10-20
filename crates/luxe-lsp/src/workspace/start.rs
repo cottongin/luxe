@@ -45,7 +45,7 @@ impl WorkspaceLspClient {
                 None => Tried::Absent,
             };
         };
-        // Worth an `info`: it is the one case where the program Luxe ran came from the tree
+        // Worth an `info`: it is the one case where the program luxe ran came from the tree
         // being edited rather than from the machine, and a reader should be able to find that
         // out from a normal run rather than by reasoning about it.
         if luxe_core::program::project_local(root, &candidate.command).as_deref()

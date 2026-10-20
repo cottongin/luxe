@@ -78,7 +78,7 @@ fn render_rail_divider(frame: &mut Frame, area: Rect, guide: Rect, app: &App) {
 /// Renders the dedicated full-screen Guided Review source state.
 pub(super) fn render(frame: &mut Frame, inner: Rect, app: &App) {
     // Borderless surface: a dock-style left rail carries the review metadata and Guide, divided
-    // from the content pane by a single rule — no outer frame, matching the rest of Luxe. The
+    // from the content pane by a single rule — no outer frame, matching the rest of luxe. The
     // metadata lives in the rail (wide) or the context header (medium/narrow).
     if !app.guided_review_workspace.settle_surface(inner.width >= 40 && inner.height >= 5) {
         render_minimum_size(frame, inner, app);

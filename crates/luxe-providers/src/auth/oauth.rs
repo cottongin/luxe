@@ -105,11 +105,11 @@ impl CallbackServer {
             match &result {
                 Ok(_) => {
                     let message = "You can close this tab and return to the terminal.";
-                    arrival.answer(200, "Signed in to Luxe", message).await;
+                    arrival.answer(200, "Signed in to luxe", message).await;
                 }
                 Err(message) => {
                     let message = format!("Authorization failed: {message}");
-                    arrival.answer(400, "Luxe couldn't finish the sign-in", &message).await;
+                    arrival.answer(400, "luxe couldn't finish the sign-in", &message).await;
                 }
             }
             let _ = sender.send(result);
@@ -381,7 +381,7 @@ fn truncate(text: &str, max: usize) -> String {
 /// Decode a JWT payload without verifying it.
 ///
 /// Only ever used to read a claim the provider put there for us (the ChatGPT account id). The token
-/// is opaque to Luxe otherwise; we are not making a trust decision on it.
+/// is opaque to luxe otherwise; we are not making a trust decision on it.
 pub fn decode_jwt_payload(token: &str) -> Option<Value> {
     let payload = token.split('.').nth(1)?;
     let bytes = base64::engine::general_purpose::URL_SAFE_NO_PAD

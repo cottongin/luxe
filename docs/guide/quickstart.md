@@ -8,7 +8,7 @@ group: "Get started"
 This walks through one change from start to finish: connect a model, ask for something, review
 what the agent did, and open a pull request.
 
-## 1. Start Luxe in your project
+## 1. Start luxe in your project
 
 ```bash
 cd your-project
@@ -20,14 +20,14 @@ Reviewing changes and opening a pull request need a Git repository. A pull reque
 branch other than the one it merges into; `luxe --worktree` makes one for you, in a
 [worktree](github.md#work-in-a-worktree) of its own.
 
-The first time, Luxe asks four questions: a theme, a provider, which tools the agent can use, and
-what Luxe opens on. Each one previews or explains itself, and `enter` moves on. `s` skips setup and
+The first time, luxe asks four questions: a theme, a provider, which tools the agent can use, and
+what luxe opens on. Each one previews or explains itself, and `enter` moves on. `s` skips setup and
 keeps none of the answers, though a provider you signed in to stays signed in. Your answers go to
 `~/.config/luxe/config.json`, and `/settings` or `luxe init` changes them later.
 
 ![Setup, on its theme step](images/quickstart-setup.svg)
 
-After that, Luxe opens on the start screen: a prompt, with your last session, your other sessions
+After that, luxe opens on the start screen: a prompt, with your last session, your other sessions
 and **Configuration** listed under it, or **Set up a provider** first if you have none yet. Type to ask something or to find a session or a command, or
 use `↑`/`↓` and `enter` to open a row.
 
@@ -48,7 +48,7 @@ and pick one:
 
 When it connects, the model picker opens. Choose a model, and change it any time with `/model`.
 
-An API key in your environment works too. Luxe finds `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+An API key in your environment works too. luxe finds `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
 `GEMINI_API_KEY` and the rest, and offers that provider's models. To sign in from a script or a
 machine without the interface, use the CLI:
 
@@ -81,7 +81,7 @@ place on a narrow one.
 
 ## 4. Review the change
 
-Press `ctrl+g` to start a **Guided Review**. Luxe writes a guide to the change, split into
+Press `ctrl+g` to start a **Guided Review**. luxe writes a guide to the change, split into
 chapters, each with what changed, why, and how it was checked, next to the code. When
 `review ready` shows above the prompt, press `ctrl+g` again to open it.
 
@@ -100,7 +100,7 @@ Comments go to the agent as work to do when you finish with **Request fixes**.
 ## 5. Open a pull request
 
 This needs the GitHub CLI, `gh`, signed in (`gh auth login`): **Open pull request** is offered once
-`gh` says the branch has none. Finish the review (`alt+enter`) and choose it. Luxe drafts the title
+`gh` says the branch has none. Finish the review (`alt+enter`) and choose it. luxe drafts the title
 and description from the review. The heading says what happens before it opens, such as
 "commits and pushes first". The pull request pictured came from a session that took up an issue
 ([`luxe --issue 123`](github.md#start-from-an-issue)), so its branch is named for the issue and its

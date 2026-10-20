@@ -35,7 +35,7 @@ async fn the_socket_is_private_and_goes_with_the_listener() {
     assert_eq!(mode(&run), 0o700, "the folder");
     assert_eq!(mode(&socket), 0o600, "the socket");
     drop(listener);
-    assert!(!socket.exists(), "a stopped Luxe leaves no socket behind");
+    assert!(!socket.exists(), "a stopped luxe leaves no socket behind");
     assert!(connect(&socket.to_string_lossy()).await.is_err());
 }
 

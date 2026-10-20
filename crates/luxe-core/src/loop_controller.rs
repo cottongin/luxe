@@ -349,7 +349,7 @@ impl LoopStatus {
     ///
     /// The flag alone cannot answer it: a killed run leaves `running: true` behind and has no way
     /// to correct it. An unrecorded owner reads as running, because that is what the file says and
-    /// there is nothing to contradict it — a state written by an older Luxe, or a run marked
+    /// there is nothing to contradict it — a state written by an older luxe, or a run marked
     /// resumable and not yet started.
     pub fn is_live(&self) -> bool {
         self.running && !matches!(self.liveness, crate::loop_state::LoopLiveness::Gone { .. })

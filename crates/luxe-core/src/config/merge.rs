@@ -259,7 +259,7 @@ impl Layered for LspConfig {
 }
 
 impl Layered for UpdateConfig {
-    // `global` only, same reasoning in a lower key: whether Luxe reaches the network on your
+    // `global` only, same reasoning in a lower key: whether luxe reaches the network on your
     // behalf is your decision, not a decision a repository you cloned makes.
     fn layered(global: Self, project: Self) -> Self {
         let Self { check: _ } = project;

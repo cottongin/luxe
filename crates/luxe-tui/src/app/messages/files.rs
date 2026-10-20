@@ -18,28 +18,46 @@ pub(crate) fn changed(app: &App) -> Vec<DockChangeItem> {
         .unwrap_or_default()
 }
 
-/// Asks for every listing the tree is about to need and does not have.
+/// Most listings the tree has asked for and not had back.
 ///
-/// Called whenever what is open, or what changed, may have moved. A refused send leaves the folder
-/// unasked, so the next sync tries again rather than the tree waiting on an answer that is never
-/// coming.
+/// A change across the project stales every open folder at once, and asking for all of them in one
+/// go would fill the engine's queue ahead of what the reader sends next: a steer, a cancel. Each
+/// landed listing syncs again, so the rest follow as these come back.
+pub(crate) const MAX_LISTINGS_IN_FLIGHT: usize = 8;
+
+/// Asks for the listings the tree is about to need and does not have, a few at a time.
+///
+/// Called whenever what is open, or what changed, may have moved, and on every landed listing.
+/// The reader didn't ask for these, so a refused send says nothing; it leaves the folder unasked,
+/// and the next sync tries again rather than the tree waiting on an answer that is never coming.
 pub(crate) fn sync(app: &mut App) {
     if app.workspace.is_none() {
         return;
     }
     let changes = changed(app);
     app.files.refresh_if_changed(&changes);
-    for folder in app.files.wanted(&changes) {
-        let request_id = ListingRequestId::new();
-        let action = Action::ListDirectory {
-            request_id: request_id.clone(),
-            path: folder.clone(),
-            include_ignored: app.files.show_ignored,
-        };
-        if app.send_action(action, "list a folder") {
-            app.files.requested(&folder, request_id);
+    let room = MAX_LISTINGS_IN_FLIGHT.saturating_sub(app.files.in_flight());
+    for folder in app.files.wanted(&changes).into_iter().take(room) {
+        // A full queue refuses the rest of this burst too
+        if !ask_for_listing(app, &folder) {
+            break;
         }
     }
+}
+
+/// Asks the engine for one folder's listing and notes it as in flight. Answers whether it went.
+fn ask_for_listing(app: &mut App, folder: &str) -> bool {
+    let request_id = ListingRequestId::new();
+    let action = Action::ListDirectory {
+        request_id: request_id.clone(),
+        path: folder.to_string(),
+        include_ignored: app.files.show_ignored,
+    };
+    if !app.send_quietly(action, "list a folder") {
+        return false;
+    }
+    app.files.requested(folder, request_id);
+    true
 }
 
 /// Applies a landed listing or its failure. Answers whether the event was the tree's.

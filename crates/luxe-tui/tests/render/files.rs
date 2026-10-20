@@ -83,6 +83,64 @@ fn the_tree_lists_the_project_beside_its_changes() {
     assert!(content.contains("file00.rs"), "and the change, revealed: {content}");
 }
 
+/// Every listing request waiting in the queue, as (request, folder).
+fn listing_requests(
+    rx: &mut tokio::sync::mpsc::Receiver<luxe_core::engine::Action>,
+) -> Vec<(luxe_core::project_files::ListingRequestId, String)> {
+    let mut asked = Vec::new();
+    while let Ok(action) = rx.try_recv() {
+        if let luxe_core::engine::Action::ListDirectory { request_id, path, .. } = action {
+            asked.push((request_id, path));
+        }
+    }
+    asked
+}
+
+/// Lands `folders` as the listing of `path`, every entry a folder.
+fn land_folders(
+    app: &mut App,
+    request_id: luxe_core::project_files::ListingRequestId,
+    path: &str,
+    folders: &[String],
+) {
+    use luxe_core::project_files::{DirectoryEntry, DirectoryListing, EntryKind};
+    let entries = folders
+        .iter()
+        .map(|name| DirectoryEntry {
+            name: name.clone(),
+            kind: EntryKind::Directory,
+            ignored: false,
+        })
+        .collect();
+    let listing = DirectoryListing { path: path.into(), entries, omitted: 0 };
+    app.update(Msg::Engine(luxe_core::event::Event::DirectoryListed { request_id, listing }));
+}
+
+/// A change in many folders asks for their listings a few at a time, and the rest follow as
+/// answers land.
+///
+/// The break this catches: every open folder asked for in one go, filling the engine's queue ahead
+/// of the reader's own steer and flashing "the engine is busy" for work they never asked for.
+#[test]
+fn a_change_across_many_folders_asks_for_their_listings_a_few_at_a_time() {
+    let (mut app, mut rx) = create_app_with_engine();
+    app.update(Msg::Engine(luxe_core::event::Event::WorkspaceUpdated(Box::new(
+        changed_workspace("tree-burst", 20),
+    ))));
+    let (root, _) = listing_requests(&mut rx).pop().expect("the root is asked for");
+    // src and its twenty modules are all open on the way to a change
+    land_folders(&mut app, root, "", &["src".to_string()]);
+
+    let first = listing_requests(&mut rx);
+    assert_eq!(first.len(), 8, "no more than eight in flight: {first:?}");
+    let (answered, folder) = first[0].clone();
+    land_folders(&mut app, answered, &folder, &[]);
+    let next = listing_requests(&mut rx);
+    assert_eq!(next.len(), 1, "one landed, so one more is asked for: {next:?}");
+    assert!(!first.iter().any(|(_, asked)| *asked == next[0].1), "and it's a new folder");
+    assert_eq!(app.status.toast(), None, "and nothing told the reader to try again");
+}
+
 /// A file that did not change opens whole, numbered and highlighted, with no Diff to switch to.
 #[test]
 fn an_unchanged_file_opens_whole_in_the_file_view() {

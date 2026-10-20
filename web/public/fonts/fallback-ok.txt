@@ -1,4 +1,4 @@
-# Characters Luxe draws that the terminal face does not contain.
+# Characters luxe draws that the terminal face does not contain.
 #
 # The reader's own font draws these — on the web through the CSS fallback chain, in a terminal
 # through fontconfig. Listing one here is a decision, not a shrug: it says the glyph is polish, its
@@ -10,5 +10,5 @@
 #
 # The list is currently empty. JetBrains Mono lacks six marks, and the Adwaita Mono subset beside it
 # carries exactly those, so between them the two faces cover everything. Under Lilex this file held
-# sixteen entries, every one of them a glyph Luxe drew and the font it recommended could not. Keep
+# sixteen entries, every one of them a glyph luxe drew and the font it recommended could not. Keep
 # it empty if you can. If you cannot, say which glyph, and why losing it costs nothing.

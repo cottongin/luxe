@@ -53,8 +53,8 @@ fn review_targets_round_trip_without_literal_diff_payloads() {
 }
 
 /// Context comes from the project's own artifacts. It used to read `.pi/agent-loop/PLAN.md` —
-/// a file belonging to the harness Luxe is developed with, excluded from release archives —
-/// so a shipped Luxe always produced empty excerpts.
+/// a file belonging to the harness luxe is developed with, excluded from release archives —
+/// so a shipped luxe always produced empty excerpts.
 #[test]
 fn draft_collects_project_local_sources_in_stable_categories() {
     let project = tempfile::tempdir().unwrap();

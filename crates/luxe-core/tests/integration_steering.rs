@@ -122,7 +122,7 @@ fn engine_config(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,
@@ -345,7 +345,7 @@ impl Provider for TextOnlyProvider {
 ///
 /// The delivery checkpoint only runs at the top of a tool iteration, so a turn that ends on a
 /// text-only response used to leave the steer buffered until the user's next submission — a message
-/// they watched Luxe accept and then apparently ignore.
+/// they watched luxe accept and then apparently ignore.
 #[tokio::test]
 async fn a_steer_that_lands_during_the_final_response_is_not_stranded() {
     let tmp = tempfile::tempdir().unwrap();

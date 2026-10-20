@@ -170,7 +170,7 @@ async fn a_tool_call_announces_itself_while_the_model_is_still_writing_it() {
 
 /// What the reader sends is announced like any other committed message, before the reply.
 ///
-/// The break this catches: announcing only messages Luxe composed, so a client joined to the
+/// The break this catches: announcing only messages luxe composed, so a client joined to the
 /// session (the phone app, `luxe join`) shows answers to questions it never saw, and its snapshot
 /// for a later joiner leaves them out too.
 #[tokio::test]

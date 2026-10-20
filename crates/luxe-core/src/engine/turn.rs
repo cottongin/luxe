@@ -292,7 +292,7 @@ impl Engine {
             *self.draft_answer.lock().await = committed.text.clone();
         }
         // The checkpoint that delivers a steer only runs at the top of an iteration, so ending here
-        // would leave it buffered until the user's next submission — a message they watched Luxe
+        // would leave it buffered until the user's next submission — a message they watched luxe
         // accept and then apparently ignore. Each continuation consumes the buffer, so this can
         // only extend the turn as often as the user actually types.
         if !self.pending_steers.lock().await.is_empty() {

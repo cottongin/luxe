@@ -1,6 +1,6 @@
 // @ts-check
 // The models a session can switch to, asked for each time the details sheet opens and answered to
-// this device alone. An older Luxe doesn't know the question and refuses it, so the sheet says so
+// this device alone. An older luxe doesn't know the question and refuses it, so the sheet says so
 // rather than waiting for an answer that won't come.
 
 import { signal } from "@preact/signals";

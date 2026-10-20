@@ -5,7 +5,7 @@
 # too): JetBrains Mono Nerd Font Mono, and Adwaita Mono for the marks it lacks. The subset differs.
 # The site draws a known set of characters; the app draws whatever a model writes. So it keeps the
 # ranges text is written in (Latin, Greek, Cyrillic, punctuation, arrows, maths, box drawing) plus
-# every glyph Luxe draws: the TUI's glyph table at every tier (the glyph_codepoints example), and,
+# every glyph luxe draws: the TUI's glyph table at every tier (the glyph_codepoints example), and,
 # when the website has been built, its coverage.txt, which catches what captures show outside the
 # table. Anything else falls through the CSS stack to the phone's own font, one glyph at a time.
 #
@@ -69,7 +69,7 @@ for style in Regular Bold Italic; do
 		"${out_dir}/jetbrains-mono-${style,,}.woff2" "${unicodes}"
 done
 
-# Only Luxe's own marks come from Adwaita: filling every gap in the text ranges would add its
+# Only luxe's own marks come from Adwaita: filling every gap in the text ranges would add its
 # drawing of characters JetBrains Mono chose to leave out, for little a phone can't draw itself
 gaps="$(comm -23 <(printf '%s' "${luxe}" | tr ',' '\n' | sort -u) \
 	<(cmap "${out_dir}/jetbrains-mono-regular.woff2" | sort -u) | paste -sd, -)"

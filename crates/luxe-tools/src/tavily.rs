@@ -1,4 +1,4 @@
-//! Tavily — a search API built for agents, so it takes Luxe's whole option set as parameters.
+//! Tavily — a search API built for agents, so it takes luxe's whole option set as parameters.
 //!
 //! Domain include/exclude, a recency window and a result cap are all first-class here, and the
 //! `content` field on each result is already the query-relevant extract rather than a meta

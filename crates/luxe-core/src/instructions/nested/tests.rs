@@ -12,7 +12,7 @@ fn checkout(files: &[&str]) -> tempfile::TempDir {
     dir
 }
 
-/// What [`nested_files`] names for `target`, from Luxe launched at `launch`, both under `root`.
+/// What [`nested_files`] names for `target`, from luxe launched at `launch`, both under `root`.
 fn shown(root: &Path, launch: &str, target: &str) -> Vec<String> {
     let files = nested_files(&root.join(launch), &root.join(target));
     files.into_iter().map(|file| file.shown).collect()

@@ -12,7 +12,7 @@ impl Engine {
     pub(super) async fn assemble_prompt(
         &self,
     ) -> Result<(Vec<MeasuredSection>, Option<String>), EngineError> {
-        // Two directories, and they differ whenever Luxe is launched below the project root: the
+        // Two directories, and they differ whenever luxe is launched below the project root: the
         // one the launch named, which only decides which `AGENTS.md` files apply, and the one every
         // tool actually runs in. The prompt reports the second as `cwd`: a session opened in
         // `packages/app` must not be told it is there while `pwd` answers with the root, and a
@@ -147,7 +147,7 @@ fn build_deferred_tools_section(catalog: &[(String, String)]) -> String {
     out
 }
 
-/// Hand-written catalog lines for Luxe's own deferred tools, shorter than anything
+/// Hand-written catalog lines for luxe's own deferred tools, shorter than anything
 /// [`catalog_line`] can cut from a description. A tool not listed here, an MCP server's or a newer
 /// one, gets the generated line.
 const CATALOG_SUMMARIES: &[(&str, &str)] = &[

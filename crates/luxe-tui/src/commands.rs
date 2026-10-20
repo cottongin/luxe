@@ -1,4 +1,4 @@
-//! commands — the one list of what Luxe can do, for the palette and the slash flyout.
+//! commands — the one list of what luxe can do, for the palette and the slash flyout.
 //!
 //! Both doors read this registry: `Ctrl+K` lists everything that can run where you are, `/` lists
 //! the ones with a slash trigger. A command is data — a name you would say out loud, a sentence
@@ -369,7 +369,7 @@ pub struct CommandRegistry {
 }
 
 impl CommandRegistry {
-    /// Every command Luxe knows.
+    /// Every command luxe knows.
     pub fn all() -> Self {
         Self::from_sources([built_in()])
     }
@@ -383,7 +383,7 @@ impl CommandRegistry {
 
     /// Joins lists of commands into one, the first to claim an id keeping it.
     ///
-    /// The built-ins come first, so nothing added later can take over a name Luxe already answers
+    /// The built-ins come first, so nothing added later can take over a name luxe already answers
     /// to.
     pub fn from_sources(sources: impl IntoIterator<Item = Vec<Command>>) -> Self {
         let mut commands: Vec<Command> = Vec::new();

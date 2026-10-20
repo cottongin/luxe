@@ -46,7 +46,7 @@ async fn serve(port: u16, allow: Vec<String>, devices: DeviceBook) -> anyhow::Re
     let logins = allowed_logins(tailnet, allow)?;
     let access = Access { logins: logins.clone(), devices };
     let bridge = bridge(port, access, machine).await?;
-    outln!("Luxe remote is listening on http://{}. Ctrl-C stops it.", bridge.address());
+    outln!("luxe remote is listening on http://{}. Ctrl-C stops it.", bridge.address());
     outln!("It lets in {}, from a paired device.", logins.join(", "));
     bridge
         .serve(async {

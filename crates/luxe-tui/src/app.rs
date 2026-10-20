@@ -49,6 +49,7 @@ mod msg;
 mod navigation;
 mod opener;
 mod outbox;
+mod overlay_lists;
 mod overlays;
 mod pickers;
 mod plan_handoff;

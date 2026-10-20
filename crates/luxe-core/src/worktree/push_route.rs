@@ -9,7 +9,7 @@ use super::{git, WorktreeError};
 /// A branch on the head's own name needs nothing more: it tracks the head, and git pushes it
 /// there. A renamed one (a fork's `main` checked out as `mara/main`, since `main` is yours) gets a
 /// remote of its own with exactly one mapping, named by its `pushRemote`. A mapping on the shared
-/// remote would reroute every other branch pushed to it, so one an earlier Luxe wrote there is
+/// remote would reroute every other branch pushed to it, so one an earlier luxe wrote there is
 /// moved onto its branch's own route whichever branch is being opened; a rule of the reader's own
 /// is left alone.
 pub(super) async fn route_push(
@@ -28,7 +28,7 @@ pub(super) async fn route_push(
     Ok(())
 }
 
-/// Moves each `refs/heads/B:refs/heads/H` rule on `remote` that an earlier Luxe wrote (B tracks H
+/// Moves each `refs/heads/B:refs/heads/H` rule on `remote` that an earlier luxe wrote (B tracks H
 /// on that remote) onto B's own route.
 async fn migrate_shared_rules(project: &Path, remote: &str) -> Result<(), WorktreeError> {
     let shared = format!("remote.{remote}.push");

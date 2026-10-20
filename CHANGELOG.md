@@ -1,13 +1,50 @@
 # Changelog
 
-Every release of Luxe, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). While Luxe is below
+Every release of luxe, newest first. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). While luxe is below
 1.0, a minor bump (0.x.0) may break config, flags or the `--rpc` protocol, and a patch bump never
 does.
 
 The version on `main` is always the next release. The first change to what ships (`crates/`,
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
+
+## [0.1.4]
+
+### Added
+
+- luxe remembers the model you last chose in each project, and starts there. A project you haven't
+  chosen in yet starts on the model you last chose anywhere, then on `default_model`.
+- The mouse wheel and the scrollbar work in every list in a modal: the model picker, the palette,
+  themes, sessions, providers, settings and the `/` and `@` flyouts. Both move the cursor, so Enter
+  never picks a row you can't see.
+- The dock's telemetry row starts with the provider, beside its own mark where the font has one.
+
+### Changed
+
+- The name is written lowercase everywhere, as **luxe**, even to start a sentence. The dot in
+  **luxe.** belongs to the logo.
+- `luxe --help` opens with "A coding agent for your terminal."
+- Signing in no longer picks a model for you. The model picker opens at the top of its list, and
+  nothing changes until you choose.
+- Loop output marks each phase with a colored rail and each iteration with a bracket inside it. In
+  a terminal a tool's line shows `○` while it runs, then a green `✓` or a red `✗`.
+- The phone app shows a turn's reasoning in full, as the interface does. It was cut to three lines
+  with nothing to say there was more.
+- A phone notification for a question reads "The agent has a question for you".
+
+### Fixed
+
+- On Windows, `luxe update` replaces the running luxe. Windows won't overwrite a program while
+  it runs, so the old copy is moved aside and deleted at the next launch.
+- A luxe that's already signed in no longer opens first-run setup, even if setup was never
+  finished. Quitting it partway left nothing saved, so it came back at the next launch.
+- Opening a large project in the file tree no longer shows "engine busy". It asked for every
+  changed folder at once and overflowed the queue; it now asks for a few at a time.
+- The phone app stays where you are while you read back through a long session. Each new item
+  dropped the oldest from the top of the page, which moved everything you were reading.
+- A question answered from the phone app shows its answer on its card, as the interface does. It
+  was hidden behind a tap, as raw text.
 
 ## [0.1.3]
 

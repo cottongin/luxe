@@ -29,7 +29,7 @@ impl OpenaiCompatProvider {
         let mut messages: Vec<serde_json::Value> = Vec::with_capacity(req.messages.len());
         // A `tool` message has nowhere to put an image — this schema allows content parts only on
         // a `user` message — and a `user` message may not be interleaved between two `tool`
-        // messages. Luxe emits consecutive tool messages routinely (refusals, then results, plus a
+        // messages. luxe emits consecutive tool messages routinely (refusals, then results, plus a
         // synthesized repair), so the pixels are collected across the whole *run* and handed over
         // once, after every tool message in it.
         let accepts_images = req.model.input.contains(&luxe_core::provider::Modality::Image);
@@ -251,7 +251,7 @@ pub(super) fn request_headers(
 ) -> Vec<(&'static str, &'static str)> {
     let mut headers = copilot_request_headers(compat, req);
     if compat.openrouter_headers {
-        headers.extend([("HTTP-Referer", LUXE_HOME), ("X-Title", "Luxe")]);
+        headers.extend([("HTTP-Referer", LUXE_HOME), ("X-Title", "luxe")]);
     }
     headers
 }

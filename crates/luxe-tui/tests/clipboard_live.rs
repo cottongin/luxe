@@ -40,5 +40,5 @@ async fn a_copy_is_readable_by_the_wayland_clipboard() {
         .await
         .expect("wl-paste runs");
     let pasted = String::from_utf8_lossy(&pasted.stdout).to_string();
-    assert_eq!(pasted, payload, "the Wayland clipboard must hold what Luxe just copied");
+    assert_eq!(pasted, payload, "the Wayland clipboard must hold what luxe just copied");
 }

@@ -322,7 +322,7 @@ pub struct ExternalRootSummary {
     ///
     /// A worktree's listing is everything Git sees there, including changes the shell made and
     /// changes that were already uncommitted — the same reading the project's own section gives.
-    /// A non-Git group lists only the files Luxe's tools touched, which is all anything can know.
+    /// A non-Git group lists only the files luxe's tools touched, which is all anything can know.
     pub git: bool,
     /// Bounded changed-file rows, relative to [`ExternalRootSummary::root`].
     pub files: Vec<FileChangeSummary>,

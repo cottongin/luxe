@@ -2,7 +2,7 @@
 title: "The interface"
 summary: "The start screen, the conversation, the composer, the dock, the statusline and the preview."
 order: 3
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ![The dock beside the preview, showing one file's diff](images/interface-peek.svg)
@@ -14,7 +14,7 @@ This page names the keys for each part of the screen. All of them, and how to re
 
 ## The start screen
 
-Luxe opens on a prompt. Type and press `enter` to ask in a new session, or choose a row from the
+luxe opens on a prompt. Type and press `enter` to ask in a new session, or choose a row from the
 list under it with `↑`/`↓` and `enter`.
 
 | Row | Opens |
@@ -25,7 +25,7 @@ list under it with `↑`/`↓` and `enter`.
 | **Sessions…** | Every session in this project, searchable. `/sessions` opens it too, here or in a session. |
 | **Review changes** | A [Guided Review](guided-review.md) of your uncommitted changes, when there are any |
 | **Configuration** | Providers, credentials, [settings](configuration.md#settings) and config files, once a provider is set up |
-| **Quit** | Leaves Luxe. `ctrl+c` does too, here and in a session, even mid-turn, unless a prompt or menu is open, which it answers instead. |
+| **Quit** | Leaves luxe. `ctrl+c` does too, here and in a session, even mid-turn, unless a prompt or menu is open, which it answers instead. |
 | **RECENT** | Your other recent sessions |
 
 Typing narrows the list. The first row becomes **Ask in a new session**, and under it come the
@@ -59,7 +59,7 @@ screen and opens a new session. **Start screen** in `/settings` sets the same ke
 
 ![The minimal start screen](images/interface-launcher-minimal.svg)
 
-Luxe works on the project it was started in. To switch projects, `cd` there and run `luxe`.
+luxe works on the project it was started in. To switch projects, `cd` there and run `luxe`.
 
 ## The conversation
 
@@ -158,7 +158,7 @@ conversation, or in its place below 80 columns.
 `mode` is `auto` (beside the conversation when there is room), `shown` or `hidden`.
 
 Drag the line between the dock and the conversation to make the dock wider or narrower. It stays
-that width the next time Luxe starts; double-click the line to put it back.
+that width the next time luxe starts; double-click the line to put it back.
 
 ### Files
 
@@ -264,12 +264,12 @@ scrollbar to scroll, or press anywhere on it to jump.
 
 The lines between panes move: the dock's, the preview's, and the one beside a review's guide. A line
 lights under the pointer; drag it to resize the pane beside it, or double-click it to put the pane
-back to its own width. Luxe remembers the widths for next time.
+back to its own width. luxe remembers the widths for next time.
 
 Drag across the conversation or the composer to select, and the selection is copied when you let
 go. Click a message to copy all of it. `ctrl+insert` or `ctrl+shift+c` copies a selection too.
 
-Your terminal's own copy key reaches Luxe only if the terminal passes it through. Either hold
+Your terminal's own copy key reaches luxe only if the terminal passes it through. Either hold
 `shift` (`option` on macOS) while dragging, to make a selection the terminal copies itself, or let
 the copy key fall through when the terminal has nothing selected. In Ghostty:
 
@@ -277,7 +277,7 @@ the copy key fall through when the terminal has nothing selected. In Ghostty:
 keybind = performable:control+insert=copy_to_clipboard
 ```
 
-Luxe copies to the desktop clipboard, and over SSH through the terminal (OSC 52). Inside tmux,
+luxe copies to the desktop clipboard, and over SSH through the terminal (OSC 52). Inside tmux,
 that needs `set -g set-clipboard on`.
 
 `/mouse off` hands the mouse back to the terminal for the session, and `"mouse": false` in

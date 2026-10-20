@@ -1,4 +1,4 @@
-//! Luxe TUI — ratatui front-end for the Luxe agent.
+//! luxe TUI — ratatui front-end for the luxe agent.
 //!
 //! This crate wraps the headless core in an interactive terminal UI. It is a thin
 //! subscriber to the core `Event` stream: it holds no business logic, only rendering

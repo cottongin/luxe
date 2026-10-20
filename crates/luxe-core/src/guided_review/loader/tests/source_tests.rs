@@ -41,7 +41,7 @@ async fn complete_head_worktree_source_has_one_tracked_stream_and_sorted_untrack
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -292,7 +292,7 @@ async fn provenance_marks_staged_and_unstaged_changes_without_a_patch() {
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -324,7 +324,7 @@ async fn index_delete_and_worktree_recreate_remains_a_final_state_noop() {
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -364,7 +364,7 @@ async fn tracked_capture_compares_the_head_to_the_final_worktree_state() {
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -453,7 +453,7 @@ async fn unborn_worktree_resolves_to_the_empty_tree() {
     );
 }
 
-/// Luxe's own directory is a byproduct of the tool running, never the user's change.
+/// luxe's own directory is a byproduct of the tool running, never the user's change.
 ///
 /// It arrived in reviews two ways: as an untracked path (`.luxe/.gitignore` used to un-ignore
 /// itself, which is all Git needs to report the whole directory), and — for anyone who committed
@@ -488,7 +488,7 @@ async fn an_untracked_file_the_policy_cannot_hold_is_left_out_and_named() {
     git.run("stage initial file", &["add", "tracked.txt"]).await.unwrap();
     git.run(
         "commit initial file",
-        &["-c", "user.name=Luxe", "-c", "user.email=luxe@example.invalid", "commit", "-qm", "base"],
+        &["-c", "user.name=luxe", "-c", "user.email=luxe@example.invalid", "commit", "-qm", "base"],
     )
     .await
     .unwrap();

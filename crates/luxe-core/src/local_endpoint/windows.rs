@@ -4,7 +4,7 @@
 //! the anonymous account, and reading is the whole transcript; and a pipe can be opened across the
 //! network while the Server service runs. So every instance is created with a descriptor granting
 //! this user alone, remote clients are refused, and the first instance must be new, so nothing can
-//! claim the name before Luxe does.
+//! claim the name before luxe does.
 
 use super::{EndpointError, Joined, LocalStream};
 use std::path::Path;

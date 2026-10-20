@@ -39,7 +39,7 @@ async fn last_turn_preserves_preexisting_dirty_and_untracked_content() {
     git.run("configure test identity", &["config", "user.email", "tests@example.invalid"])
         .await
         .unwrap();
-    git.run("configure test name", &["config", "user.name", "Luxe Tests"]).await.unwrap();
+    git.run("configure test name", &["config", "user.name", "luxe Tests"]).await.unwrap();
     std::fs::write(project.path().join("tracked.txt"), "committed\n").unwrap();
     git.run("stage fixture", &["add", "tracked.txt"]).await.unwrap();
     git.run("commit fixture", &["commit", "--quiet", "-m", "fixture"]).await.unwrap();

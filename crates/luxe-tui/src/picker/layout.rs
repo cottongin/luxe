@@ -100,6 +100,16 @@ impl Window {
         Self { divider, start, end: (start + capacity).min(lines) }
     }
 
+    /// The first line on screen, for the bar beside the window.
+    pub(crate) fn top(self) -> usize {
+        self.start
+    }
+
+    /// Every line the list has, a rule included, for the bar beside the window.
+    pub(crate) fn lines(len: usize, divider: Option<usize>) -> usize {
+        len + usize::from(divider.is_some())
+    }
+
     /// Each line on screen, top to bottom.
     pub(crate) fn slots(self) -> impl Iterator<Item = Slot> {
         (self.start..self.end).map(move |line| match self.divider {

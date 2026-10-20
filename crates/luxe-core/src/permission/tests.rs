@@ -85,7 +85,7 @@ fn modes_layer_over_the_guardrails() {
     assert_eq!(yolo.decide(&check("read", ".env")), Allow);
 }
 
-/// Your own `deny` outranks every mode, `yolo` included: `yolo` lifts the guardrails Luxe ships,
+/// Your own `deny` outranks every mode, `yolo` included: `yolo` lifts the guardrails luxe ships,
 /// not the rules you wrote. Holding a server's calls back until an approved provider is in use
 /// depends on exactly this.
 #[test]

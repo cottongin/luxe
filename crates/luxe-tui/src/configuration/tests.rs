@@ -117,7 +117,7 @@ fn the_cursor_stops_at_both_ends_of_each_list() {
 }
 
 /// "Configured" and "signed in" are not the same claim: an environment variable is the user's
-/// shell rather than something Luxe stored, and the summary has to say which.
+/// shell rather than something luxe stored, and the summary has to say which.
 #[test]
 fn the_summary_names_every_credential_and_where_it_came_from() {
     let providers = vec![

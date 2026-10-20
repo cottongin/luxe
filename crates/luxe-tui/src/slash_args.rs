@@ -130,14 +130,14 @@ pub(crate) fn fill(trigger: &str, words: &[Word<'_>], typed: &str) -> Option<Str
 /// What a lit stretch of the composer is.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum Mark {
-    /// A slash trigger Luxe answers to: `/diff`
+    /// A slash trigger luxe answers to: `/diff`
     Command,
     /// A word one of its forms spells out: the `pr` in `/diff pr 12`
     Keyword,
 }
 
 /// The stretches of `draft` to light: a known trigger at its start, and the words after it that one
-/// of the command's forms spells out. A trigger Luxe does not know lights nothing, which is the cue
+/// of the command's forms spells out. A trigger luxe does not know lights nothing, which is the cue
 /// that it was mistyped; values (`12`, a path) stay in the text's own color.
 ///
 /// Only the first line: a command is one line, and whatever follows a newline is prose.

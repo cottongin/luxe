@@ -76,7 +76,7 @@ fn cell_fraction_glyphs_are_drawn_not_typeset() {
     for glyph in ['\u{e0b8}', '\u{e0ba}', '\u{e0bc}', '\u{e0be}'] {
         assert!(is_drawn(glyph), "U+{:04X} should be geometry", glyph as u32);
     }
-    // Letters and the geometric shapes Luxe uses as marks stay text: any font has them, and
+    // Letters and the geometric shapes luxe uses as marks stay text: any font has them, and
     // they carry meaning that should remain selectable.
     for glyph in ['a', '\u{276f}', '\u{25cf}', '\u{25c6}'] {
         assert!(!is_drawn(glyph), "U+{:04X} should be typeset", glyph as u32);

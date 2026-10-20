@@ -1,6 +1,6 @@
 //! Mention sources — a program the `@` picker lists references from.
 //!
-//! Luxe knows files and GitHub. Everything else a person works from — Jira issues, Asana tasks, a
+//! luxe knows files and GitHub. Everything else a person works from — Jira issues, Asana tasks, a
 //! runbook index — is a program they point it at: it prints one JSON object a line, and each line
 //! becomes a row in a tab of its own. A picked row goes into the composer as `@[kind:id]` and
 //! reaches the model as the row's `text`, a reference and never the thing itself; the agent looks

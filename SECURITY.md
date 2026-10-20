@@ -1,13 +1,13 @@
 # Security
 
-Luxe runs a model's commands on your machine, so a hole in it matters. If you find one, please tell
+luxe runs a model's commands on your machine, so a hole in it matters. If you find one, please tell
 me privately before anyone else.
 
 ## Reporting
 
 [Open a private advisory](https://github.com/evanwhittaker/luxe/security/advisories/new) on GitHub,
 or email [contact@luxe.dev](mailto:contact@luxe.dev). Say what you did, what happened, and the
-Luxe version (`luxe --version`). A transcript or a minimal repository that shows it helps most.
+luxe version (`luxe --version`). A transcript or a minimal repository that shows it helps most.
 
 I'll answer within a few days, keep you posted while it's fixed, and credit you in the advisory and
 the release notes unless you'd rather not be named. Please give the fix time to ship before you

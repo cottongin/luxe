@@ -83,7 +83,7 @@ impl RequestAuth {
     /// Both `x-api-key` and `api-key`, for Foundry's Anthropic passthrough.
     ///
     /// The endpoint authenticates on `x-api-key` and its own portal samples show `api-key`, so
-    /// Anthropic's `AnthropicFoundry` client sends the pair and so does Luxe. One header would
+    /// Anthropic's `AnthropicFoundry` client sends the pair and so does luxe. One header would
     /// work today against a 401 that costs a user an evening.
     pub fn foundry_key(key: &ApiKey) -> Self {
         let key = remembered(key);

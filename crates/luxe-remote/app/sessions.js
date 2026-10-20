@@ -88,7 +88,7 @@ function Row({ session }) {
   return html`<a class="session" href=${`#/session/${encodeURIComponent(session.session_id)}`}>
     <span class="name">${folderName(session.cwd)}</span>
     <span class="dim path">${session.cwd}</span>
-    <span class="dim">${session.session_id.slice(0, 8)} · Luxe ${session.luxe_version}</span>
+    <span class="dim">${session.session_id.slice(0, 8)} · luxe ${session.luxe_version}</span>
   </a>`;
 }
 

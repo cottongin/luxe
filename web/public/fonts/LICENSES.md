@@ -31,7 +31,7 @@ Subset to exactly the characters the generated assets and captures draw, plus pr
 a couple of hundred codepoints out of several thousand. Regular (400), Bold (700) and Italic.
 
 **Why this font.** It's the monospace face most people already have in their terminal, so a
-capture on this site looks like Luxe will look for them.
+capture on this site looks like luxe will look for them.
 
 ## Adwaita Mono Nerd Font Mono — the six marks JetBrains Mono lacks
 

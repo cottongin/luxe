@@ -77,10 +77,10 @@ const SCOPE: &str = "openid profile email offline_access";
 /// Claim namespace OpenAI puts the account id under.
 const AUTH_CLAIM: &str = "https://api.openai.com/auth";
 
-/// How Luxe identifies itself to the Codex backend, unless `LUXE_CODEX_ORIGINATOR` says otherwise.
+/// How luxe identifies itself to the Codex backend, unless `LUXE_CODEX_ORIGINATOR` says otherwise.
 ///
-/// Sent on the authorize request and on every Codex call. Honest by default — Luxe says it is
-/// Luxe. The override exists because this is the one value in the flow taken from another client's
+/// Sent on the authorize request and on every Codex call. Honest by default — luxe says it is
+/// luxe. The override exists because this is the one value in the flow taken from another client's
 /// behavior rather than from documentation: if the backend ever refuses an unknown originator, a
 /// user can get working again without waiting for a release.
 const DEFAULT_ORIGINATOR: &str = "luxe";
@@ -408,7 +408,7 @@ mod tests {
         let _guard = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
         let previous = std::env::var("LUXE_CODEX_ORIGINATOR").ok();
         std::env::remove_var("LUXE_CODEX_ORIGINATOR");
-        assert_eq!(originator(), "luxe", "Luxe identifies itself honestly by default");
+        assert_eq!(originator(), "luxe", "luxe identifies itself honestly by default");
 
         std::env::set_var("LUXE_CODEX_ORIGINATOR", "codex_cli_rs");
         assert_eq!(originator(), "codex_cli_rs");

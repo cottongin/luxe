@@ -1,15 +1,15 @@
 //! Nesting — how deep inside other Luxes this one runs, and the ceiling on it.
 
-/// Environment variable carrying how many Luxe processes enclose this one.
+/// Environment variable carrying how many luxe processes enclose this one.
 ///
-/// Inherited by every child, so a nested Luxe reads its own depth without anything having to
-/// recognize that a command *is* Luxe — which is undecidable from a `bash` argv anyway.
+/// Inherited by every child, so a nested luxe reads its own depth without anything having to
+/// recognize that a command *is* luxe — which is undecidable from a `bash` argv anyway.
 pub const NESTING_DEPTH_VAR: &str = "LUXE_DEPTH";
 
 /// Override for [`DEFAULT_MAX_NESTING_DEPTH`].
 pub const MAX_NESTING_DEPTH_VAR: &str = "LUXE_MAX_DEPTH";
 
-/// How deep Luxe may nest before refusing to start.
+/// How deep luxe may nest before refusing to start.
 ///
 /// Two is enough for the delegation people actually want — a session spawns a subagent, and that
 /// subagent may itself consult one — and short enough that a runaway is three processes rather
@@ -19,17 +19,17 @@ pub const MAX_NESTING_DEPTH_VAR: &str = "LUXE_MAX_DEPTH";
 /// it). A guard that costs one environment variable is cheaper than rediscovering that.
 pub const DEFAULT_MAX_NESTING_DEPTH: u32 = 2;
 
-/// Why a nested Luxe refused to start.
+/// Why a nested luxe refused to start.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 #[error(
-    "refusing to start: this Luxe is {depth} levels deep inside another Luxe (limit {max}).\n\
+    "refusing to start: this luxe is {depth} levels deep inside another luxe (limit {max}).\n\
      Nesting multiplies — each level can spawn several of the next — so the limit is a guard \
      against a runaway, not a judgement about your setup.\n\
      Raise it with {var}=<n> if you meant this, or unset {depth_var} if a stale value is \
      lingering in your shell."
 )]
 pub struct NestingRefused {
-    /// How many Luxe processes enclose this one.
+    /// How many luxe processes enclose this one.
     pub depth: u32,
     /// The ceiling that was exceeded.
     pub max: u32,
@@ -39,7 +39,7 @@ pub struct NestingRefused {
     depth_var: &'static str,
 }
 
-/// Whether a Luxe at `depth` may run under a ceiling of `max`.
+/// Whether a luxe at `depth` may run under a ceiling of `max`.
 ///
 /// Split out from the environment so the policy is testable without mutating process state.
 pub fn check_nesting(depth: u32, max: u32) -> Result<(), NestingRefused> {

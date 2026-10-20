@@ -3,7 +3,7 @@
 //! Web Push, as iOS has offered it to home-screen web apps since 16.4: a device that opted in
 //! gives the bridge a subscription, and the bridge posts each notification, sealed so only that
 //! device can read it, straight to the push service the subscription names (Apple's, for an
-//! iPhone). There is no Luxe server in between, and the push service sees when, not what.
+//! iPhone). There is no luxe server in between, and the push service sees when, not what.
 //!
 //! [`watch`] hears what the sessions are waiting for, and [`notify`] takes each notice to every
 //! subscribed device that doesn't have that session open in front of it.

@@ -1,6 +1,6 @@
 //! `luxe models` — inspect and refresh the model catalog.
 //!
-//! Exists mostly for one question: *why does Luxe think my model has a 128k window?* `show`
+//! Exists mostly for one question: *why does luxe think my model has a 128k window?* `show`
 //! answers it directly by printing which layer won each field, so a stale cache, a missing
 //! provider mapping, and a forgotten config override are all distinguishable at a glance.
 

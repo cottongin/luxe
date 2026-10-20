@@ -70,7 +70,7 @@ fn empty_guided_review() -> GuidedReview {
 
 /// A `ready` from a build that predates `github_writes` reads as a session that refuses writes.
 ///
-/// The safe default for a client replaying a capture, or talking to an older Luxe: assuming writes
+/// The safe default for a client replaying a capture, or talking to an older luxe: assuming writes
 /// were allowed would offer buttons that can only be refused.
 #[test]
 fn a_ready_without_github_writes_reads_as_refusing_them() {

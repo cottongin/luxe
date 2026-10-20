@@ -4,7 +4,7 @@
 Some surfaces do not survive being watched. Guided Review puts a chapter's argument beside the code
 it argues about, and a reader meeting it for the first time needs to *stop* on it — played at demo
 speed it registers as motion rather than as information. So the same capture that makes a demo also
-makes the stills, and there is still exactly one source of truth for what Luxe looks like.
+makes the stills, and there is still exactly one source of truth for what luxe looks like.
 
 **The drawing is not done here.** This replays the recording with `pyte` to work out what is on the
 screen, then hands that grid to `fixture_svg --grid`, which is the exporter the generated

@@ -17,7 +17,7 @@ pub(super) async fn collect_change_summary(root: PathBuf) -> WorkspaceChangesSum
     let counts = numstat.as_deref().map(parse_numstat).unwrap_or_default();
     let files = parse_status(&status)
         .into_iter()
-        // Luxe's own project directory — sessions, logs, tasks, review artifacts — is not the
+        // luxe's own project directory — sessions, logs, tasks, review artifacts — is not the
         // user's work. Listing it made the dock's count disagree with the review's forever.
         .filter(|(path, _)| !path.starts_with(LUXE_PROJECT_DIR))
         .map(|(path, status)| {

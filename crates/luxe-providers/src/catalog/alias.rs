@@ -1,30 +1,30 @@
-//! Id mapping between Luxe's names and models.dev's.
+//! Id mapping between luxe's names and models.dev's.
 //!
-//! Luxe provider names are user-chosen (`lmstudio`, `dashscope`, `openai_compat`) and model ids
+//! luxe provider names are user-chosen (`lmstudio`, `dashscope`, `openai_compat`) and model ids
 //! are whatever the endpoint expects, so neither is guaranteed to be a models.dev key. Both
 //! mappings here affect **metadata lookup only** — the wire id a provider receives is never
 //! rewritten.
 
 use crate::config::ProviderConfig;
 
-/// Luxe provider names that don't match their models.dev id.
+/// luxe provider names that don't match their models.dev id.
 ///
 /// Deliberately tiny: almost every name maps verbatim, the provider catalog carries the rest, and a
 /// user whose provider needs a different id sets `"models_dev"` on it.
 const ALIASES: &[(&str, &str)] = &[
-    // Luxe's default provider name; an OpenAI-compatible endpoint serving `gpt-*` really is
+    // luxe's default provider name; an OpenAI-compatible endpoint serving `gpt-*` really is
     // serving OpenAI's models, and a local server's ids simply won't match anything.
     ("openai_compat", "openai"),
     ("dashscope", "alibaba"),
 ];
 
-/// The models.dev provider id to look a Luxe provider up under.
+/// The models.dev provider id to look a luxe provider up under.
 ///
 /// Config wins, then the provider catalog, then the alias table, then the name verbatim. Never
 /// `None`: a name that matches nothing just finds no models, which is the right answer for a local
 /// server.
 ///
-/// The catalog step is what makes a subscription provider work at all: `openai-codex` is a Luxe
+/// The catalog step is what makes a subscription provider work at all: `openai-codex` is a luxe
 /// provider, not a models.dev one, and without the mapping its models resolve to no metadata (a
 /// zero context window, no pricing) and never appear in the picker.
 pub fn models_dev_provider<'a>(provider: &'a str, config: Option<&'a ProviderConfig>) -> &'a str {

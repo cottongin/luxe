@@ -340,7 +340,7 @@ fn right_segment(module: StatuslineModule, app: &App, palette: Palette) -> Optio
             ))
         }
         // The bar's right anchor is where a reader looks to see what is answering, so it answers
-        // either way. Luxe chooses no model on the reader's behalf, and a module that simply
+        // either way. luxe chooses no model on the reader's behalf, and a module that simply
         // vanished would leave the one session where that matters with nothing to explain a
         // refused turn.
         StatuslineModule::Model => {

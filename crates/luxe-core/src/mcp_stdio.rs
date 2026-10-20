@@ -171,7 +171,7 @@ impl McpStdioClient {
 
 impl Drop for McpStdioClient {
     /// `kill_on_drop` reaches only the server. A server that delegates spawns work of its own —
-    /// a headless Luxe, a browser — and that went on running, writing files, after the session
+    /// a headless luxe, a browser — and that went on running, writing files, after the session
     /// that asked for it had exited.
     fn drop(&mut self) {
         self.kill_group_if_running();

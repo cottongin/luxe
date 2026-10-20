@@ -1,8 +1,8 @@
-//! Frame gutter — where Luxe draws relative to the edges it meets.
+//! Frame gutter — where luxe draws relative to the edges it meets.
 //!
-//! The terminal's edge gets no air: Luxe draws flush to it and uses every column it was given,
+//! The terminal's edge gets no air: luxe draws flush to it and uses every column it was given,
 //! which also lines it up with a host that frames the pane (herdr's tab row starts flush at the
-//! pane's left edge). A rule Luxe drew itself keeps a column of air on the side facing the text.
+//! pane's left edge). A rule luxe drew itself keeps a column of air on the side facing the text.
 //! These tests pin both halves.
 
 use luxe_tui::app::{App, Msg};
@@ -51,7 +51,7 @@ fn luxe_draws_flush_to_both_terminal_edges() {
     assert!(inked(&buffer, buffer.area.width - 1), "the right edge is drawn on");
 }
 
-/// The inner gutter answers a different question — it keeps text off a rule Luxe owns — so it
+/// The inner gutter answers a different question — it keeps text off a rule luxe owns — so it
 /// stays. Measured off the dock separator, the one edge both columns meet.
 #[test]
 fn the_column_beside_the_dock_keeps_its_air() {

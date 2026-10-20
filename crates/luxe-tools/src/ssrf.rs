@@ -13,7 +13,7 @@
 //!   CGNAT, ULA. Reaching these is lateral movement: credentials the user never handed over, or a
 //!   machine that merely shares their network. Denied, and a much stronger claim than the tool's
 //!   convenience.
-//! - **This machine** — loopback. Luxe is a coding agent with an unrestricted `bash`, so
+//! - **This machine** — loopback. luxe is a coding agent with an unrestricted `bash`, so
 //!   `curl http://127.0.0.1:4321` is already one tool call away and permitted by default. Refusing
 //!   the same origin to `web_fetch` and `screenshot` grants no protection whatsoever; it only breaks
 //!   the thing `screenshot mode=url` exists to do, and the model works around it with `bash` and a

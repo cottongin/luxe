@@ -8,7 +8,7 @@ mod permission_mode;
 pub(crate) use commands::*;
 pub(crate) use permission_mode::PermissionModeArg;
 
-/// Luxe's command line. `--help` shows the crate description from `Cargo.toml`, not this doc.
+/// luxe's command line. `--help` shows the crate description from `Cargo.toml`, not this doc.
 #[derive(Parser, Debug)]
 #[command(name = "luxe", version, about)]
 pub(crate) struct Args {
@@ -17,7 +17,7 @@ pub(crate) struct Args {
     pub(crate) headless: bool,
 
     /// Speak the JSONL front-end protocol on stdio: wire actions in, events out. For editor
-    /// plugins, alternative UIs, and anything driving Luxe as a session rather than a one-shot.
+    /// plugins, alternative UIs, and anything driving luxe as a session rather than a one-shot.
     /// See `docs/guide/rpc.md`.
     #[arg(long, conflicts_with = "headless")]
     pub(crate) rpc: bool,
@@ -279,7 +279,7 @@ impl Args {
     }
 }
 
-/// Parse a `--thinking` level name into a `ThinkingLevel`, accepting the same spellings Luxe
+/// Parse a `--thinking` level name into a `ThinkingLevel`, accepting the same spellings luxe
 /// displays (`off`..`ultra`, plus `max` as an alias for `ultra`). Returns `None` for unknown input.
 pub(crate) fn parse_thinking_level(raw: &str) -> Option<luxe_core::provider::ThinkingLevel> {
     let name = raw.trim().to_ascii_lowercase();

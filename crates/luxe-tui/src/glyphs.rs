@@ -6,7 +6,7 @@
 //! So each icon is declared once in the `icons!` table below, by *meaning*, with all three of its
 //! renderings beside it:
 //!
-//! - [`GlyphTier::Nerd`] — Material Design icons from a patched font, the look Luxe ships with.
+//! - [`GlyphTier::Nerd`] — Material Design icons from a patched font, the look luxe ships with.
 //! - [`GlyphTier::Unicode`] — Geometric Shapes, Arrows and two Dingbats: no private use anywhere,
 //!   nothing newer than Unicode 1.1 outside a couple of shapes, and every entry one cell wide.
 //! - [`GlyphTier::Ascii`] — plain punctuation, for SSH into a minimal box, a CI log, or a terminal
@@ -66,7 +66,8 @@ pub use format::{configured_glyph, icon_cells, icon_gap, icon_label, icon_prefix
 pub use spinner::spinner;
 #[cfg(test)]
 pub(crate) use spinner::spinner_ticks_per_frame;
-pub use state::{braille, resolve_vocabulary, set_braille, set_tier, tier};
+pub use state::RECENT_BRANDS;
+pub use state::{braille, brands, resolve_vocabulary, set_braille, set_brands, set_tier, tier};
 use unicode_width::UnicodeWidthStr;
 #[cfg(test)]
 use {
@@ -171,6 +172,20 @@ icons! {
     Model => ["\u{f06a9}", "●", "%"],
     /// Model reasoning
     Thinking => ["\u{f0335}", "●", "~"],
+    /// Who serves the model, when it has no mark of its own (`md-cloud_outline`)
+    Provider => ["\u{f0163}", "○", "@"],
+    /// Google, serving Gemini (`md-google`)
+    ProviderGoogle => ["\u{f02ad}", "○", "@"],
+    /// Microsoft Azure, serving Foundry (`md-microsoft_azure`)
+    ProviderAzure => ["\u{f0805}", "○", "@"],
+    /// Amazon Bedrock (`md-aws`)
+    ProviderAws => ["\u{f0e0f}", "○", "@"],
+    /// OpenAI (`cod-openai`), one of the [`RECENT_BRANDS`]
+    ProviderOpenAi => ["\u{ec81}", "○", "@"],
+    /// Anthropic (`cod-claude`), one of the [`RECENT_BRANDS`]
+    ProviderAnthropic => ["\u{ec82}", "○", "@"],
+    /// GitHub Copilot (`cod-copilot`), one of the [`RECENT_BRANDS`]
+    ProviderCopilot => ["\u{ec1e}", "○", "@"],
     // === Dashboard menu ===
     Find => ["\u{f021e}", "○", "/"],
     NewSession => ["\u{f0214}", "►", "+"],

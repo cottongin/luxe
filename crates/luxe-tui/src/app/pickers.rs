@@ -36,29 +36,30 @@ impl App {
 
     /// The same, opening with something to say first. Args: `(note)`.
     pub(crate) fn open_model_picker_with(&mut self, note: Vec<String>) {
+        let active = self.active_model_info.as_ref().map(|info| info.r#ref.clone());
+        self.open_model_picker_on(note, active);
+    }
+
+    /// The same, with the cursor on the first row rather than the model in use. Args: `(note)`.
+    pub(crate) fn open_model_picker_at_top(&mut self, note: Vec<String>) {
+        self.open_model_picker_on(note, None);
+    }
+
+    /// Opens the picker with the cursor on `start`, or the top. Args: `(note, start)`.
+    fn open_model_picker_on(
+        &mut self,
+        note: Vec<String>,
+        start: Option<luxe_core::provider::ModelRef>,
+    ) {
         if let Some(sources) = &self.model_sources {
             self.model_catalog = (sources.build)().catalog;
         }
         if self.model_catalog.is_empty() {
-            match self.provider_configured() {
-                true => self.push_convo(ConvoBlock::System(
-                    "No models available to switch to — add models under \"models\" in your Luxe \
-                     config."
-                        .to_string(),
-                )),
-                false => {
-                    self.push_convo(ConvoBlock::System(
-                        "No provider is configured, so there are no models to choose from yet."
-                            .to_string(),
-                    ));
-                    self.open_configuration();
-                }
-            }
+            self.explain_no_models();
             return;
         }
-        let active = self.active_model_info.as_ref().map(|info| info.r#ref.clone());
         self.overlays.model_picker = Some(
-            crate::model_picker::ModelPickerState::open(self.model_catalog.clone(), active)
+            crate::model_picker::ModelPickerState::open(self.model_catalog.clone(), start)
                 .with_note(note),
         );
         // Drawn from what is on disk, then corrected by whatever a local server says when it
@@ -66,6 +67,22 @@ impl App {
         // beats a frame that waits on a socket.
         self.outbox.model_probe =
             self.model_sources.as_ref().is_some_and(|sources| sources.probe.is_some());
+    }
+
+    /// Says why there is no picker, and sends a machine with no provider to setup.
+    fn explain_no_models(&mut self) {
+        if self.provider_configured() {
+            self.push_convo(ConvoBlock::System(
+                "No models available to switch to — add models under \"models\" in your luxe \
+                 config."
+                    .to_string(),
+            ));
+            return;
+        }
+        self.push_convo(ConvoBlock::System(
+            "No provider is configured, so there are no models to choose from yet.".to_string(),
+        ));
+        self.open_configuration();
     }
 
     /// Apply a catalog rebuilt off the frame, leaving an open picker where the reader had it.
@@ -81,7 +98,7 @@ impl App {
 
     /// Whether a turn has a model to run on.
     ///
-    /// Luxe chooses none on the reader's behalf, so a session can legitimately open with nothing
+    /// luxe chooses none on the reader's behalf, so a session can legitimately open with nothing
     /// selected — the dashboard's first screen is one of the places you pick. The engine refuses a
     /// turn either way ([`luxe_core::engine::EngineError::NoModel`]); this is what lets the UI ask
     /// before the reader's message leaves the composer.

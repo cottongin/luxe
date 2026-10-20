@@ -172,7 +172,7 @@ async fn start_loop(
         event_rx,
         running_rx,
         kickoff,
-        crate::loop_view::LoopView::new(quiet),
+        crate::loop_view::LoopView::new(quiet, phase),
     )
     .await?;
     Ok(())

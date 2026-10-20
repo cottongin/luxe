@@ -1,7 +1,7 @@
 //! Provider catalog — the curated set of providers a user can configure, and how each is reached.
 //!
 //! Curated rather than derived: models.dev knows every provider's models but not the wire quirks
-//! Luxe needs (which API a provider speaks, whether it takes `developer` roles, how it spells a
+//! luxe needs (which API a provider speaks, whether it takes `developer` roles, how it spells a
 //! thinking toggle), and a *wrong* default is worse than an absent one. Anything not listed here
 //! still works — `custom` covers any OpenAI-compatible endpoint, and a hand-written `models.json`
 //! provider block always wins over these defaults.
@@ -151,12 +151,6 @@ pub struct ProviderDescriptor {
     /// Separate from having an OAuth method: OpenRouter's flow mints a key that bills real credits
     /// per token, so it is *not* subscription-metered.
     pub subscription_billed: bool,
-    /// Models worth defaulting to, best first.
-    ///
-    /// A capable workhorse rather than the flagship: nobody who never chose a model should be handed
-    /// the most expensive one. Only ever used when the account can actually reach the id, so a stale
-    /// entry costs nothing but a fallback.
-    pub preferred_models: &'static [&'static str],
 }
 
 impl ProviderDescriptor {
@@ -267,7 +261,7 @@ impl ProviderDescriptor {
 
 /// Alternate spellings accepted on the command line and in config.
 ///
-/// `openai_compat` is Luxe's historical default provider name; the rest are the names people
+/// `openai_compat` is luxe's historical default provider name; the rest are the names people
 /// actually type.
 const ALIASES: &[(&str, &str)] = &[
     ("openai_compat", "openai"),

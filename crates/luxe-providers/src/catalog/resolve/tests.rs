@@ -1,7 +1,7 @@
 use super::*;
 use crate::config::{CompatFlags, CostConfig};
 
-/// The real models.dev entry for Claude Opus 5, trimmed to what Luxe reads.
+/// The real models.dev entry for Claude Opus 5, trimmed to what luxe reads.
 const OPUS_5: &str = r#"{"anthropic":{"models":{"claude-opus-5":{
         "name":"Claude Opus 5","reasoning":true,"tool_call":true,
         "reasoning_options":[{"type":"effort","values":["low","medium","high","xhigh","max"]}],
@@ -525,7 +525,7 @@ fn provider_alias_routes_a_custom_name_to_its_models_dev_id() {
 
 /// The catalog's own account of which dial a model exposes decides how the Anthropic adapter
 /// asks for thinking, so it has to survive resolution intact — and an effort-only list is a
-/// closed set, which is what stops Luxe asking for a level the endpoint never advertised.
+/// closed set, which is what stops luxe asking for a level the endpoint never advertised.
 #[test]
 fn declared_reasoning_dials_survive_resolution() {
     // Real 2026-07 shapes: Sonnet 5 (effort only), Sonnet 4.5 (a token budget), Opus 4.5 (both).

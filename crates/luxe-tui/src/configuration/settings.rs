@@ -170,6 +170,11 @@ impl SettingsState {
         self.selectable().iter().position(|row| *row == self.cursor).unwrap_or(0)
     }
 
+    /// How many rows the cursor can land on.
+    pub(crate) fn selectable_count(&self) -> usize {
+        self.selectable().len()
+    }
+
     /// Handle a keypress.
     pub fn on_key(&mut self, key: &KeyEvent) -> ConfigOutcome {
         self.notice = None;

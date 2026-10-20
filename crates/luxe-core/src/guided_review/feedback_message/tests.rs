@@ -138,7 +138,7 @@ fn formatter_keeps_review_evidence_deterministic_and_structured() {
     assert!(message.contains("Do not rewrite unrelated code."));
 
     // the report a fix request asks for is the last thing it says, with the real IDs in it,
-    // and filled in it is a report Luxe accepts
+    // and filled in it is a report luxe accepts
     let template = crate::guided_review::remediation_report_template(std::slice::from_ref(
         &finding.finding_id,
     ));

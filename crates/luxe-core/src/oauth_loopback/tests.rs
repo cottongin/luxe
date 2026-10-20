@@ -75,7 +75,7 @@ async fn an_error_description_is_escaped_in_the_page() {
     let browser = tokio::spawn(async move { send("127.0.0.1", port, target).await });
     let arrival = callback.wait(None).await.unwrap();
     let message = format!("Authorization failed: {}", arrival.error().unwrap());
-    arrival.answer(400, "Luxe couldn't finish the sign-in", &message).await;
+    arrival.answer(400, "luxe couldn't finish the sign-in", &message).await;
     let page = browser.await.unwrap();
     assert!(page.contains("&lt;script&gt;alert(1)&lt;/script&gt;"), "{page}");
     assert!(!page.contains("<script>"), "{page}");

@@ -2,7 +2,7 @@
 //!
 //! Ignored, so it never runs in CI or on a machine without a ChatGPT plan, and reports as ignored
 //! rather than passed. Run on purpose, it needs a stored credential and fails without one. It
-//! exists because the `x-codex-*` headers Luxe's plan meter reads are undocumented: they were read
+//! exists because the `x-codex-*` headers luxe's plan meter reads are undocumented: they were read
 //! off a live response, and the only way to learn they have moved is to ask. A failure here means the meter has gone quiet, not that the login is broken.
 //!
 //! Run it with `--no-capture` to also see the raw headers, which is what you want when it fails:

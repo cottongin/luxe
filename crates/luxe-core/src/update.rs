@@ -1,6 +1,6 @@
-//! Update notice — whether a newer Luxe exists, and what *this* user should run to get it.
+//! Update notice — whether a newer luxe exists, and what *this* user should run to get it.
 //!
-//! Luxe never rewrites its own binary. It notices that it is behind and says so in the dashboard
+//! luxe never rewrites its own binary. It notices that it is behind and says so in the dashboard
 //! footer, and on request runs the update command that matches how this copy was installed, so
 //! the install's owner does the replacing. Telling somebody who installed through Homebrew to run
 //! `cargo install --force` is worse than saying nothing: it is wrong, and following it leaves them
@@ -35,7 +35,7 @@ pub const RELEASE_MANIFEST_URL: &str =
 /// Where a human downloads a build by hand.
 pub const RELEASES_PAGE: &str = "https://github.com/evanwhittaker/luxe/releases";
 
-/// How this copy of Luxe got onto the machine.
+/// How this copy of luxe got onto the machine.
 ///
 /// Determines the advice, and would determine a self-updater's *refusal* if one were ever built —
 /// a binary owned by a package manager must decline and name its owner rather than fight it.
@@ -47,13 +47,13 @@ pub enum InstallSource {
     Homebrew,
     /// A path a distribution's package manager owns (`/usr/bin`, `/bin`).
     SystemPackage,
-    /// Luxe's own installer script, known by the updater it puts beside the binary.
+    /// luxe's own installer script, known by the updater it puts beside the binary.
     Installer,
     /// A release archive, `/usr/local/bin`, or a local build.
     Archive,
 }
 
-/// The updater Luxe's installer script puts beside the binary, named `<package>-update` by dist.
+/// The updater luxe's installer script puts beside the binary, named `<package>-update` by dist.
 pub const INSTALLER_UPDATER: &str = "luxe-cli-update";
 
 impl InstallSource {
@@ -76,7 +76,7 @@ impl InstallSource {
     }
 
     /// Classify a path. Split out from [`Self::detect`] because a function that can only be
-    /// exercised by reinstalling Luxe four ways is a function with no tests.
+    /// exercised by reinstalling luxe four ways is a function with no tests.
     pub fn from_path(path: &Path) -> Self {
         // `paths::display` is the one owner of "a path becomes a string", forward slashes included,
         // so the needles below read the same on every platform.
@@ -139,7 +139,7 @@ impl InstallSource {
 /// The cached answer to "what is the newest release", plus when we last asked.
 ///
 /// Shaped after `luxe_providers::catalog::store::Meta` on purpose: same freshness question, same
-/// answer. Every field defaults, so a cache written by an older Luxe still loads.
+/// answer. Every field defaults, so a cache written by an older luxe still loads.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct UpdateState {
@@ -215,7 +215,7 @@ impl UpdateNotice {
     /// The one line the dashboard prints.
     pub fn line(&self) -> String {
         format!(
-            "Luxe {} is available (you have {}) — {}",
+            "luxe {} is available (you have {}) — {}",
             self.latest,
             self.current,
             self.source.advice()

@@ -176,7 +176,7 @@ pub enum FindingMessageAuthor {
     Reviewer,
     /// A remediation report from the active agent.
     Agent,
-    /// Luxe-generated lifecycle evidence.
+    /// luxe-generated lifecycle evidence.
     System,
 }
 
@@ -186,7 +186,7 @@ impl FindingMessageAuthor {
         match self {
             Self::Reviewer => "Reviewer",
             Self::Agent => "Agent",
-            Self::System => "Luxe",
+            Self::System => "luxe",
         }
     }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerate the embedded models.dev snapshot.
 #
-# Luxe resolves model metadata from four layers (defaults -> snapshot -> cache -> config). The
+# luxe resolves model metadata from four layers (defaults -> snapshot -> cache -> config). The
 # snapshot is the offline/first-run floor: it's what a fresh install with no network knows. The
 # runtime refresh keeps a live install current, so this only needs to run at release cadence —
 # CI does it weekly and opens a PR when the bytes change.

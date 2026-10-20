@@ -134,7 +134,7 @@ const SIGN_IN: [ConfigChoice; 3] =
 impl SetupState {
     /// Open on the first step, with every answer pre-set to what `config` already says.
     ///
-    /// `themes` is every theme by name; `desktop` the one the desktop is wearing, when Luxe can
+    /// `themes` is every theme by name; `desktop` the one the desktop is wearing, when luxe can
     /// follow one; `active` the theme in force right now.
     pub fn open(
         mode: SetupMode,
@@ -150,7 +150,7 @@ impl SetupState {
         offered.extend(themes.into_iter().map(Some));
         let theme = match config.theme.as_deref() {
             Some(name) => offered.iter().position(|offer| offer.as_deref() == Some(name)),
-            // Nothing chosen yet: the desktop's when there is one, Luxe's own otherwise
+            // Nothing chosen yet: the desktop's when there is one, luxe's own otherwise
             None if desktop.is_some() => Some(0),
             None => offered.iter().position(|offer| offer.as_deref() == Some("luxe")),
         }
@@ -269,18 +269,19 @@ impl SetupState {
         self.advance(configured)
     }
 
-    fn step_cursor(&mut self, delta: isize) -> ConfigOutcome {
-        let (cursor, rows) = match self.step {
-            Step::Theme => (&mut self.theme, self.themes.len()),
-            Step::Provider => (&mut self.provider, SIGN_IN.len() + 1),
-            Step::Tools => (&mut self.tool, self.tools.len()),
-            Step::Start => (&mut self.start, StartScreen::ALL.len()),
-        };
-        *cursor = cursor.saturating_add_signed(delta).min(rows.saturating_sub(1));
+    /// The cursor and the row count of the step showing.
+    pub(crate) fn step_list(&self) -> (usize, usize) {
         match self.step {
-            Step::Theme => ConfigOutcome::PreviewTheme(self.previewed_theme()),
-            _ => ConfigOutcome::Consumed,
+            Step::Theme => (self.theme, self.themes.len()),
+            Step::Provider => (self.provider, SIGN_IN.len() + 1),
+            Step::Tools => (self.tool, self.tools.len()),
+            Step::Start => (self.start, StartScreen::ALL.len()),
         }
+    }
+
+    fn step_cursor(&mut self, delta: isize) -> ConfigOutcome {
+        let (cursor, rows) = self.step_list();
+        self.select(cursor.saturating_add_signed(delta).min(rows.saturating_sub(1)))
     }
 
     /// Enter: the provider step's sign-in rows open the wizard; everywhere else, on to the next
@@ -350,7 +351,7 @@ mod tests {
         assert_eq!(setup.choices().theme.as_deref(), Some("nord"));
 
         let plain = fresh(None);
-        assert_eq!(plain.choices().theme.as_deref(), Some("luxe"), "no desktop: Luxe's own");
+        assert_eq!(plain.choices().theme.as_deref(), Some("luxe"), "no desktop: luxe's own");
     }
 
     #[test]

@@ -51,7 +51,7 @@ const PAGES = [
  * Pages only applies `_headers` and a wrong charset turns every em dash into mojibake for a model.
  */
 const TEXTS = [
-	{ path: "/llms.txt", type: "text/plain", expect: ["# Luxe", "/docs/install.md"] },
+	{ path: "/llms.txt", type: "text/plain", expect: ["# luxe", "/docs/install.md"] },
 	{ path: "/llms-full.txt", type: "text/plain", expect: ["# Install"] },
 	{ path: "/docs/install.md", type: "text/markdown", expect: ["# Install"] },
 ];
@@ -398,7 +398,7 @@ const CAPTURE_ADVANCE = 0.6;
  * An SVG loaded through `<img src>` is a document of its own in secure static mode: it cannot see
  * this page's `@font-face`, so the subset webfont never reached a single screenshot and every Nerd
  * Font icon in them drew as tofu. None of that is visible to anyone with the face installed
- * locally, which is anyone who works on Luxe — so the check has to be a measurement taken in the
+ * locally, which is anyone who works on luxe — so the check has to be a measurement taken in the
  * page.
  *
  * `foreign` is the structural half: a capture that is not an `<svg>` holding real `<text>` in *this*

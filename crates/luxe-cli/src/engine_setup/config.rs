@@ -1,7 +1,7 @@
 //! Configuration loading — auth/models, permissions, command hooks, and env resolution.
 //!
 //! Every reader treats its file as read-if-present: a missing or malformed config degrades to
-//! defaults rather than failing, so Luxe runs the same with or without user config.
+//! defaults rather than failing, so luxe runs the same with or without user config.
 
 use std::path::PathBuf;
 
@@ -65,7 +65,7 @@ pub(crate) fn load_luxe_config() -> ModelsConfig {
 
 /// Warn if a secrets file is readable by group or other.
 ///
-/// Luxe writes its own secret files `0600` (MCP token store, review stores), but `auth.json`/
+/// luxe writes its own secret files `0600` (MCP token store, review stores), but `auth.json`/
 /// `models.json` are user-authored, so we can only nudge: ssh and aws-cli take the same stance
 /// (warn/refuse on loose credential permissions). Unix-only; a no-op elsewhere.
 #[cfg(unix)]
@@ -230,7 +230,7 @@ pub(crate) fn global_permissions_path() -> PathBuf {
     luxe_config_dir().join("permissions.json")
 }
 
-/// Luxe's own config directory. See [`luxe_core::user_dirs::luxe_config_dir`], the one owner.
+/// luxe's own config directory. See [`luxe_core::user_dirs::luxe_config_dir`], the one owner.
 pub(crate) fn luxe_config_dir() -> PathBuf {
     luxe_core::user_dirs::luxe_config_dir()
 }

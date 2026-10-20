@@ -43,7 +43,7 @@ impl App {
     }
 
     /// Write what setup gathered, and go where finishing goes: the start screen on a first run,
-    /// out of Luxe under `luxe init`.
+    /// out of luxe under `luxe init`.
     pub(crate) fn finish_setup(&mut self, choices: SetupChoices) {
         let mode = self.setup_mode();
         if let Err(error) = write_choices(&choices) {

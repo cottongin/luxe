@@ -30,8 +30,7 @@ pub fn render_mention_flyout(
     let empty = match (tab, listed) {
         (MentionTab::Files, _) => "No matching files",
         (MentionTab::Skills, Some(Listed { entries, .. })) if entries.is_empty() => {
-            "No skills yet: one is a folder holding a SKILL.md, in ~/.config/luxe/skills/ or the \
-             project's .luxe/skills/"
+            "No skills found · add <name>/SKILL.md to ~/.config/luxe/skills/ or .luxe/skills/"
         }
         (MentionTab::Skills, _) => "No matching skills",
         (MentionTab::Mcp, _) => "No matching servers",
@@ -96,6 +95,7 @@ pub fn render_mention_flyout(
             detail: None,
             // The same height on every tab, so switching tabs never moves the frame
             rows: Some(crate::picker::TABBED_ROWS),
+            list: crate::mouse::OverlayList::Mention,
         },
     );
 }

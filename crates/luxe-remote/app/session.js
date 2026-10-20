@@ -28,18 +28,20 @@ import { createWorkspace, diffRequest } from "./workspace.js";
 const PROTOCOL_VERSION = 2;
 
 /** @import { Frame, Status } from "./connection.js" */
+/** @import { Signal } from "@preact/signals" */
 /** @typedef {ReturnType<typeof createView>} View */
 
 /** @param {{ sessionId: string }} props */
 export function SessionView({ sessionId }) {
   const view = useMemo(createView, [sessionId]);
   const transcriptRef = useRef(/** @type {HTMLElement | null} */ (null));
+  const following = useMemo(() => signal(true), [sessionId]);
   useLink(sessionId, view);
-  usePinnedScroll(transcriptRef);
+  usePinnedScroll(transcriptRef, following);
   return html`
     <${Header} view=${view} sessionId=${sessionId} />
     <main ref=${transcriptRef}>
-      <${Transcript} items=${view.transcript.items.value} />
+      <${Transcript} items=${view.transcript.items.value} following=${following.value} />
       <${Ending} status=${view.status.value} problem=${view.problem.value} />
     </main>
     <${Footer} view=${view} />
@@ -203,7 +205,7 @@ function applyFrame(view, frame) {
   if (frame.kind !== "ready") return view.transcript.apply(frame);
   view.title.value = folderName(frame.content.cwd);
   if (frame.content.protocol_version !== PROTOCOL_VERSION) {
-    view.problem.value = `Protocol mismatch: Luxe uses ${frame.content.protocol_version}, this app ${PROTOCOL_VERSION}.`;
+    view.problem.value = `Protocol mismatch: luxe uses ${frame.content.protocol_version}, this app ${PROTOCOL_VERSION}.`;
   }
 }
 
@@ -225,24 +227,27 @@ function Ending({ status, problem }) {
 /**
  * Follow new output while the reader is at the bottom; leave them be once they scroll up. Only
  * scrolling up lets go: items drawn late grow the page under a scroll to the bottom, which would
- * otherwise read as the reader having left it.
- * @param {{ current: HTMLElement | null }} ref
+ * otherwise read as the reader having left it. `following` says which, for the transcript's window.
+ * @param {{ current: HTMLElement | null }} ref @param {Signal<boolean>} following
  */
-function usePinnedScroll(ref) {
-  useEffect(() => (ref.current ? followGrowth(ref.current) : undefined), []);
+function usePinnedScroll(ref, following) {
+  useEffect(() => (ref.current ? followGrowth(ref.current, following) : undefined), [following]);
 }
 
-/** Keeps the page at the bottom as `transcript` grows, until stopped. @param {HTMLElement} transcript */
-function followGrowth(transcript) {
-  let pinned = true;
+/**
+ * Keeps the page at the bottom as `transcript` grows, until stopped.
+ * @param {HTMLElement} transcript @param {Signal<boolean>} following
+ */
+function followGrowth(transcript, following) {
+  following.value = true;
   let lastY = scrollY;
   const page = document.documentElement;
   const onScroll = () => {
-    if (innerHeight + scrollY >= page.scrollHeight - 48) pinned = true;
-    else if (scrollY < lastY) pinned = false;
+    if (innerHeight + scrollY >= page.scrollHeight - 48) following.value = true;
+    else if (scrollY < lastY) following.value = false;
     lastY = scrollY;
   };
-  const follow = new ResizeObserver(() => pinned && scrollTo(0, page.scrollHeight));
+  const follow = new ResizeObserver(() => following.value && scrollTo(0, page.scrollHeight));
   addEventListener("scroll", onScroll, { passive: true });
   follow.observe(transcript);
   return () => {

@@ -65,7 +65,7 @@ pub fn route_key(app: &mut App, key: &KeyEvent) -> RouteAction {
 
     let routed = match app.current_view {
         // A surface opened *from* the dashboard owns the keys while it is up, and Esc closes it
-        // rather than quitting Luxe — the surface underneath is what the reader came from.
+        // rather than quitting luxe — the surface underneath is what the reader came from.
         ViewMode::Dashboard if !app.dashboard_owns_input() => None,
         ViewMode::Dashboard => dashboard_key(app, key),
         // The model picker is the last step of setting a provider up, so while it is open it owns
@@ -253,7 +253,7 @@ pub(crate) fn collect_exit_for_tests(app: &mut App, exit: &mut TuiExit) {
 /// A surface that picked a file to edit cannot run the editor itself — it needs the terminal back,
 /// and only this loop can hand it over — and a worktree cannot be removed while the process stands
 /// in it. Collected after engine events as well as keys: the removal is decided by the engine's
-/// answer, and one that waited for the next key press left Luxe running until something was typed.
+/// answer, and one that waited for the next key press left luxe running until something was typed.
 pub(super) fn collect_exit(app: &mut App, exit: &mut TuiExit) {
     if let Some(parked) = app.outbox.exit() {
         *exit = parked;

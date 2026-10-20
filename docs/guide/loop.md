@@ -2,7 +2,7 @@
 title: "Autonomous runs"
 summary: "Let the agent work through a phased plan on its own, with tests and a reviewer at each phase."
 order: 12
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 `luxe loop` runs the agent on its own, phase by phase through your plan. A phase only counts as done
@@ -55,7 +55,7 @@ A run uses your session's model, or `--model`. Only one run at a time works in a
 
 ## Check each phase
 
-When the agent says a phase is done, Luxe checks it before moving on:
+When the agent says a phase is done, luxe checks it before moving on:
 
 1. **Your commands.** Each must pass.
 2. **A reviewer**, if `gate.review` is on and the commands passed. It runs in a fresh session, so
@@ -98,12 +98,21 @@ phase with `luxe loop phase --set <next>`.
 A run prints one line per step, timed from its start:
 
 ```text
-      19s    write logstats.py
-      49s    test python3 -m unittest -q
-    1m09s  phase 0 claimed complete — running the gate
-    1m31s  the acceptance commands passed — asking the reviewer
-    2m34s  phase 0 accepted — now on phase 1
+       0s  ┃ phase 0
+       0s  ┃ ┌ start
+      19s  ┃ │ ✓ write logstats.py
+      49s  ┃ │ ✗ test python3 -m unittest -q · failed
+    1m09s  ┃ │ phase 0 claimed complete — running the gate
+    1m31s  ┃ │ the acceptance commands passed — asking the reviewer
+    2m34s  ┃ │ phase 0 accepted — now on phase 1
+    2m40s  ┃ └ turn ended · 6 tools · 2m40s
+    2m41s  ┃ phase 1
+    2m41s  ┃ ┌ iteration 1
 ```
+
+The heavy rail on the left marks the phase, in a color of its own, and the bracket inside it marks
+each iteration. In a terminal, a tool's line shows `○` while it runs, then turns green with `✓` or
+red with `✗` when it ends. Piped to a file there's no color, and a failure gets a line of its own.
 
 `luxe loop status` shows what it has cost, by model:
 

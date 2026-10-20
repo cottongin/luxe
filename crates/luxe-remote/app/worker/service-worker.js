@@ -33,7 +33,7 @@ function read(data) {
 /** @param {Notice | null} notice */
 function show(notice) {
   if (!notice?.title) {
-    return worker.registration.showNotification("Luxe", { body: "A session wants you", icon: ICON });
+    return worker.registration.showNotification("luxe", { body: "A session wants you", icon: ICON });
   }
   const { title, body, session } = notice;
   return worker.registration.showNotification(title, { body, icon: ICON, data: { session } });

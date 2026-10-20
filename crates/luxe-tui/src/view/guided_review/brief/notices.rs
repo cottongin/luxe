@@ -97,7 +97,7 @@ fn work_done_outside(app: &App) -> Option<String> {
 }
 
 /// Whether the review has no record of the work that produced it (a base/commit review, or a
-/// working tree Luxe did not write).
+/// working tree luxe did not write).
 fn no_provenance(review: &GuidedReview) -> bool {
     review.provenance.as_ref().is_none_or(|provenance| {
         provenance.commands.is_empty() && provenance.written_paths.is_empty()

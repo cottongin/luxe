@@ -302,7 +302,7 @@ fn filtering_a_menu_keeps_its_recent_lead_honest() {
 }
 
 /// The first list to claim an id or a slash trigger keeps it, so nothing added after the
-/// built-ins can take over a name Luxe already answers to.
+/// built-ins can take over a name luxe already answers to.
 #[test]
 fn a_later_source_cannot_take_a_built_in_id_or_trigger() {
     let impostor = |id: &'static str, slash: &'static str| {

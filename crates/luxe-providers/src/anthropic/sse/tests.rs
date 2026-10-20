@@ -27,7 +27,7 @@ fn stop(reason: &str) -> Vec<ProviderEvent> {
     ))
 }
 
-/// A refusal is the model declining, not finishing, and a stop reason Luxe does not know is
+/// A refusal is the model declining, not finishing, and a stop reason luxe does not know is
 /// said as itself.
 ///
 /// The break this catches: every stop reason the decoder did not name became `EndTurn`, so a

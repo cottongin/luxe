@@ -40,6 +40,44 @@ pub(crate) fn auth_service() -> luxe_tui::auth_wizard::AuthServiceHandle {
     std::sync::Arc::new(luxe_providers::auth::ProviderAuth::new())
 }
 
+/// Carries the flags that shape this run, rather than where it starts, onto `settings`.
+fn apply_run_flags(args: &Args, settings: &mut crate::engine_setup::AgentSettings) {
+    settings.resume = resume_from_args(args);
+    settings.permission_mode = permission_mode_from_args(args);
+    settings.trust_project = args.trust_project;
+    settings.disable_tools = args.no_tool.clone();
+    settings.enable_tools = args.with_tool.clone();
+    apply_thinking_flag(args.thinking.as_deref(), settings);
+    settings.auto_approve = args.auto_approve;
+    if let Some(on_ask) = args.on_ask {
+        settings.on_ask = on_ask.into();
+    }
+    if args.auto_approve && !args.prompts_a_human() && args.starts_an_engine() {
+        settings.startup_notices.push(
+            "--auto-approve: an unattended run already allows an `ask`. `--on-ask deny` is how to \
+             make one refuse instead."
+                .to_string(),
+        );
+    }
+    if args.plan {
+        settings.initial_mode = Some(luxe_core::mode::PLAN.to_string());
+    }
+}
+
+/// Pins the thinking level `--thinking` names; a level luxe doesn't know is reported and ignored.
+fn apply_thinking_flag(raw: Option<&str>, settings: &mut crate::engine_setup::AgentSettings) {
+    let Some(raw) = raw else {
+        return;
+    };
+    match args::parse_thinking_level(raw) {
+        Some(level) => {
+            settings.initial_thinking = Some(level);
+            settings.thinking_forced = true;
+        }
+        None => eprintln!("luxe: ignoring unknown --thinking level '{raw}'"),
+    }
+}
+
 /// Top-level dispatch: parse args and route to the requested mode.
 pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
     // The guide is in the binary and needs nothing else: no project, no settings, no network
@@ -58,34 +96,7 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
     let root = enter_project(&mut args, &invoked_from)?;
     // Resolve provider/model/auth once (CLI flags > env > config) and share it downstream.
     let mut settings = crate::engine_setup::AgentSettings::resolve(root, args.overrides());
-    settings.resume = resume_from_args(&args);
-    settings.permission_mode = permission_mode_from_args(&args);
-    settings.trust_project = args.trust_project;
-    settings.disable_tools = args.no_tool.clone();
-    settings.enable_tools = args.with_tool.clone();
-    if let Some(raw) = args.thinking.as_deref() {
-        match args::parse_thinking_level(raw) {
-            Some(level) => {
-                settings.initial_thinking = Some(level);
-                settings.thinking_forced = true;
-            }
-            None => eprintln!("luxe: ignoring unknown --thinking level '{raw}'"),
-        }
-    }
-    settings.auto_approve = args.auto_approve;
-    if let Some(on_ask) = args.on_ask {
-        settings.on_ask = on_ask.into();
-    }
-    if args.auto_approve && !args.prompts_a_human() && args.starts_an_engine() {
-        settings.startup_notices.push(
-            "--auto-approve: an unattended run already allows an `ask`. `--on-ask deny` is how to \
-             make one refuse instead."
-                .to_string(),
-        );
-    }
-    if args.plan {
-        settings.initial_mode = Some(luxe_core::mode::PLAN.to_string());
-    }
+    apply_run_flags(&args, &mut settings);
 
     if args.starts_an_engine() {
         enter_worktree(&args, &mut settings).await?;
@@ -104,9 +115,13 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
     // loop run needs the right context window just as much. Best-effort and non-blocking.
     crate::model_catalog::spawn_refresh();
 
-    // Ask, at most daily, whether a newer Luxe exists. The answer lands in a cache and is read by
+    // Ask, at most daily, whether a newer luxe exists. The answer lands in a cache and is read by
     // the *next* launch's dashboard, so nothing here is on the path to a first token.
     crate::update_check::spawn_check(&settings.state_root);
+    // The copy a Windows update moved aside; nothing to find anywhere else
+    if cfg!(windows) {
+        update_command::remove_leftover();
+    }
 
     if let Some(cmd) = args.command {
         match cmd {

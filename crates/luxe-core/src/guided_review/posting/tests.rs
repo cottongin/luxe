@@ -48,7 +48,7 @@ fn review() -> GuidedReview {
     }
 }
 
-/// GitHub's patch agrees with Luxe's diff unless a test says otherwise.
+/// GitHub's patch agrees with luxe's diff unless a test says otherwise.
 fn patches_matching(review: &GuidedReview) -> Vec<FilePatch> {
     review
         .files

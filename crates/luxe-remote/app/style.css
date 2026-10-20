@@ -1,23 +1,23 @@
 /* The app is set like the terminal: one monospace face, one line height, widths in `ch`. Colors
-   come from `/theme.css`, the active theme; each fallback is Luxe's own, for a theme whose token
+   come from `/theme.css`, the active theme; each fallback is luxe's own, for a theme whose token
    is the terminal's default color, which a page can't know. Rendered text is `markdown.css`. */
 
 @font-face {
-  font-family: "Luxe Mono";
+  font-family: "luxe Mono";
   src: url("fonts/jetbrains-mono-regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Luxe Mono";
+  font-family: "luxe Mono";
   src: url("fonts/jetbrains-mono-bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Luxe Mono";
+  font-family: "luxe Mono";
   src: url("fonts/jetbrains-mono-italic.woff2") format("woff2");
   font-style: italic;
   font-display: swap;
@@ -25,14 +25,14 @@
 
 /* A separate family, so the browser takes from it only what the first face lacks */
 @font-face {
-  font-family: "Luxe Mono Marks";
+  font-family: "luxe Mono Marks";
   src: url("fonts/adwaita-mono-regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Luxe Mono Marks";
+  font-family: "luxe Mono Marks";
   src: url("fonts/adwaita-mono-bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
@@ -44,6 +44,17 @@
   --corner: 0.5ch;
   /* the least a finger is given to hit, Apple's 44 points */
   --tap: 2.4lh;
+  /* where a top edge's content starts: under the status bar */
+  --top-inset: env(safe-area-inset-top);
+}
+
+/* From the Home Screen, iOS 26 blurs a strip of the page just under the status bar, and a page has
+   no way to turn that off (only a native app's web view does). So the top bar's words start below
+   it, and only its background sits in the blur. A Safari tab has its own toolbar up there. */
+@media (display-mode: standalone) {
+  :root {
+    --top-inset: calc(env(safe-area-inset-top) + 0.75lh);
+  }
 }
 
 body {
@@ -51,7 +62,7 @@ body {
   padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: var(--luxe-background, #12100e);
   color: var(--luxe-text, #e4dfd6);
-  font: 13px / var(--cell) "Luxe Mono", "Luxe Mono Marks", ui-monospace, monospace;
+  font: 13px / var(--cell) "luxe Mono", "luxe Mono Marks", ui-monospace, monospace;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -64,7 +75,7 @@ button {
   text-align: start;
 }
 
-/* Buttons keep Luxe's square shape: no browser's rounded tap blob or focus ring, which hug a lone
+/* Buttons keep luxe's square shape: no browser's rounded tap blob or focus ring, which hug a lone
    icon into a circle. A press or a keyboard's focus marks the button's own box instead */
 button,
 a {
@@ -125,7 +136,7 @@ main {
   display: flex;
   gap: 1ch;
   align-items: baseline;
-  padding: calc(env(safe-area-inset-top) + 0.5lh) 1ch 0.5lh;
+  padding: calc(var(--top-inset) + 0.5lh) 1ch 0.5lh;
   background: var(--luxe-background, #12100e);
   border-bottom: 1px solid var(--luxe-border-muted, #2e2b27);
 }
@@ -370,7 +381,7 @@ h2 {
   padding-inline: 1ch;
 }
 
-/* Your words on a band; a brief Luxe wrote to the agent, as one muted line */
+/* Your words on a band; a brief luxe wrote to the agent, as one muted line */
 .user-message .words,
 .user-message.plain {
   display: block;
@@ -399,18 +410,11 @@ h2 {
   padding-inline: 1ch;
 }
 
-/* Reasoning stays three rows until it's tapped open */
+/* Reasoning in full, as the TUI shows it: a clipped block reads as text that never arrived */
 .thinking {
   padding-inline: 1ch;
   font-style: italic;
   color: var(--luxe-thinking-text, #97938c);
-  max-height: 3lh;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.thinking.open {
-  max-height: none;
 }
 
 .tool {
@@ -450,6 +454,29 @@ h2 {
   padding-inline-start: 3ch;
   color: var(--luxe-tool-output, #e4dfd6);
   white-space: pre-wrap;
+}
+
+/* A question's answers sit under the question, in the voice of the reader's own messages */
+.answers {
+  padding-inline-start: 3ch;
+}
+
+.answers p {
+  margin: 0;
+}
+
+.answer {
+  color: var(--luxe-accent, #ddc084);
+}
+
+.answer-label {
+  margin-inline-end: 1ch;
+  font-weight: bold;
+  color: var(--luxe-success, #81caa0);
+}
+
+.answer-note {
+  color: var(--luxe-muted, #97938c);
 }
 
 .tool-output {

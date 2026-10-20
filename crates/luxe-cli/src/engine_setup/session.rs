@@ -169,7 +169,7 @@ pub(super) fn attach_session(
     Ok((session_id, claim))
 }
 
-/// Claim `session_id` for this process, or say which Luxe has it open and how to get there.
+/// Claim `session_id` for this process, or say which luxe has it open and how to get there.
 fn claim_session(
     store: &luxe_core::session::JsonlSessionStore,
     session_id: &SessionId,
@@ -181,7 +181,7 @@ fn claim_session(
     }
 }
 
-/// Why `session` can't be opened here right now, when another Luxe has it open.
+/// Why `session` can't be opened here right now, when another luxe has it open.
 ///
 /// Asked before leaving the session that's running, so the reader stays where they are rather
 /// than landing outside the TUI. This process's own claims don't count against it.
@@ -195,7 +195,7 @@ pub(crate) fn open_elsewhere_now(state_root: &std::path::Path, session: &str) ->
     }
 }
 
-/// Where the session is open, when the Luxe that has it says so, and what to do about it.
+/// Where the session is open, when the luxe that has it says so, and what to do about it.
 fn open_elsewhere(id: &SessionId) -> String {
     let runtime = luxe_core::user_dirs::luxe_runtime_dir();
     let holder = luxe_core::local_endpoint::live_sessions(&runtime)
@@ -207,7 +207,7 @@ fn open_elsewhere(id: &SessionId) -> String {
     };
     // `luxe join` is not offered: it speaks the protocol, so a person running it sees JSON
     format!(
-        "session {id} is already open in another Luxe{place}. Carry on there, or close it \
+        "session {id} is already open in another luxe{place}. Carry on there, or close it \
          there first"
     )
 }
@@ -299,7 +299,7 @@ mod tests {
         };
 
         let refused = attach_session(&settings, &mut store).expect_err("held elsewhere");
-        let expected = format!("session {id} is already open in another Luxe");
+        let expected = format!("session {id} is already open in another luxe");
         assert!(refused.to_string().contains(&expected), "{refused}");
         assert!(open_elsewhere_now(dir.path(), &id.0).is_some());
         drop(other_process);

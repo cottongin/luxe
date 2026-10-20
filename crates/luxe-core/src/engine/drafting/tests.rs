@@ -155,7 +155,7 @@ async fn a_thread_brief_carries_the_code_now_and_the_commits_since() {
     let dir = tempfile::tempdir().unwrap();
     let root = dir.path();
     git(root, &["init", "--quiet", "-b", "main"]);
-    git(root, &["config", "user.name", "Luxe Tests"]);
+    git(root, &["config", "user.name", "luxe Tests"]);
     git(root, &["config", "user.email", "tests@luxe.local"]);
     let lines: Vec<String> = (1..=20).map(|n| format!("line {n}")).collect();
     std::fs::write(root.join("router.rs"), lines.join("\n")).unwrap();

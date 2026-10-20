@@ -98,7 +98,7 @@ fn partial_config_round_trips() {
     assert_eq!(config.dock, DockConfig::default());
 }
 
-/// Every leniently read setting, through its resolver: each value it knows, one from a newer Luxe,
+/// Every leniently read setting, through its resolver: each value it knows, one from a newer luxe,
 /// and none at all.
 #[test]
 fn every_lenient_setting_resolves_known_unknown_and_absent_values() {

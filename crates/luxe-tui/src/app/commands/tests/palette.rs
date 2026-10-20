@@ -50,7 +50,7 @@ fn every_listed_command_runs_where_it_is_listed() {
                     "{place} lists {:?}, and running it does nothing",
                     entry.command.name
                 );
-                // What would leave Luxe is recorded, never launched: this loop runs every command
+                // What would leave luxe is recorded, never launched: this loop runs every command
                 // on every run of the suite, and it once opened a browser tab each time
                 let crate::app::ExternalOpener::Recorded(opened) = &app.opener else {
                     panic!("{place}: a test app must not be able to launch anything");

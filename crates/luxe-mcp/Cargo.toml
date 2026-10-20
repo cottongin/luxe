@@ -3,7 +3,7 @@ name = "luxe-mcp"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Model Context Protocol client for Luxe: stdio and HTTP transports, with OAuth for hosted servers"
+description = "Model Context Protocol client for luxe: stdio and HTTP transports, with OAuth for hosted servers"
 repository.workspace = true
 homepage.workspace = true
 
@@ -13,7 +13,7 @@ homepage.workspace = true
 # no-HTTP rule forbids in core itself. The low-level stdio transport stays in luxe-core.
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-core = { path = "../luxe-core", version = "0.1.4" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

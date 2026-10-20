@@ -2,7 +2,7 @@
 //!
 //! A diff shows the result; the process is where the review-critical signals live. A skipped test,
 //! a file edited without ever being read, a weakened gate, work nobody asked for — none of those
-//! appear in the patch. Luxe is the harness, so it can read them off its own transcript instead of
+//! appear in the patch. luxe is the harness, so it can read them off its own transcript instead of
 //! inferring intent from filenames.
 //!
 //! This is bounded, redacted, UI-neutral data. It grounds the chaptering prompt and renders as the
@@ -53,7 +53,7 @@ impl CommandRun {
     }
 }
 
-/// Whether a command line reads as a test run across the ecosystems Luxe drives.
+/// Whether a command line reads as a test run across the ecosystems luxe drives.
 fn looks_like_test_command(command: &str) -> bool {
     let lowered = command.to_ascii_lowercase();
     [
@@ -118,7 +118,7 @@ impl TurnProvenance {
             match message.role {
                 Role::User => {
                     if let Some(text) = message_text(message) {
-                        // Feedback submissions are Luxe talking to itself, not a user request.
+                        // Feedback submissions are luxe talking to itself, not a user request.
                         if !text.starts_with("Guided review feedback") {
                             provenance.requests.push(bounded(&text, MAX_ACCOUNT_CHARS));
                         }

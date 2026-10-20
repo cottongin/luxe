@@ -1,7 +1,7 @@
 //! shiki_theme — luxe's palette as a syntax theme for the website's code blocks.
 //!
 //! The docs describe a terminal program; highlighting their code in somebody else's palette is a
-//! small lie about what Luxe looks like. This writes a TextMate theme from the same JSON the TUI
+//! small lie about what luxe looks like. This writes a TextMate theme from the same JSON the TUI
 //! loads, so the code on the page is colored by the product's own tokens.
 //!
 //! It is also the palette's hardest test. A theme with six accents can hide a weak one behind a
@@ -32,7 +32,7 @@ fn theme_json(name: &str, theme: &HashMap<String, ColorValue>) -> String {
     let hex = |token: &str| -> String {
         match theme.get(token) {
             Some(ColorValue::Rgb(red, green, blue)) => format!("#{red:02x}{green:02x}{blue:02x}"),
-            // Every token this maps is RGB in Luxe's own themes; anything else would be a theme
+            // Every token this maps is RGB in luxe's own themes; anything else would be a theme
             // this generator was not written for, and inventing a color would hide that.
             _ => panic!("{name}.{token} is not an RGB color"),
         }

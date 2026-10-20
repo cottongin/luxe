@@ -146,7 +146,7 @@ fn an_explicitly_empty_field_overrides_rather_than_inherits() {
 #[test]
 fn a_new_language_needs_a_command_and_says_so_when_it_lacks_one() {
     let mut registry = ServerRegistry::new();
-    // Languages Luxe does not ship, so there is nothing for a patch to inherit a command from.
+    // Languages luxe does not ship, so there is nothing for a patch to inherit a command from.
     // Asserted rather than assumed: this test read `lua` as unshipped until the day it was.
     for unshipped in ["elixir", "cobol"] {
         assert!(!registry.is_supported(unshipped), "{unshipped} must not be a built-in here");

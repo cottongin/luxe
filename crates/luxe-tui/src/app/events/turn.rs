@@ -192,7 +192,7 @@ fn follow_reported_model(app: &mut App, reported: &luxe_core::event::ModelRef) {
 
 /// Rings the bell and sends a desktop notification for `event`, each where the reader asked for it.
 ///
-/// The bell answers every moment, since asking for one is asking to be told when Luxe needs you;
+/// The bell answers every moment, since asking for one is asking to be told when luxe needs you;
 /// the notification answers the moments `notifications` names. Headless has nobody to tell.
 pub(super) fn alert(app: &App, event: NotificationEvent, body: &str) {
     if app.headless {
@@ -223,8 +223,8 @@ fn notify_reader(app: &App, body: &str) {
     }
     let project = app.project_root.as_deref().and_then(std::path::Path::file_name);
     let title = match project {
-        Some(name) => format!("Luxe · {}", name.to_string_lossy()),
-        None => "Luxe".to_string(),
+        Some(name) => format!("luxe · {}", name.to_string_lossy()),
+        None => "luxe".to_string(),
     };
     app.notifier.notify(&title, body);
 }

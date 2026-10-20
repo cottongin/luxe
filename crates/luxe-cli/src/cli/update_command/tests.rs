@@ -69,13 +69,8 @@ fn no_luxe_on_path_or_no_version_cannot_be_judged() {
 /// Only the reader's own command is ever named, and a check offers `luxe update` beside it.
 #[test]
 fn the_instructions_name_the_owners_command_or_none() {
-    let check = instructions(InstallSource::Cargo, true, false);
+    let check = instructions(InstallSource::Cargo, true);
     assert!(check.contains("luxe update") && check.contains("cargo install"), "{check}");
-    let download = instructions(InstallSource::Archive, false, false);
+    let download = instructions(InstallSource::Archive, false);
     assert!(download.contains("download it from"), "{download}");
-    let windows = instructions(InstallSource::Cargo, false, true);
-    assert!(
-        windows.contains("once it has exited") && windows.contains("cargo install"),
-        "{windows}"
-    );
 }

@@ -8,7 +8,7 @@ pub(super) fn hex(color: Color) -> Option<String> {
         Color::Rgb(red, green, blue) => (red, green, blue),
         Color::Indexed(index) => indexed_rgb(index),
         Color::Reset => return None,
-        // The sixteen named colors belong to the terminal's palette. Luxe's own themes are pure
+        // The sixteen named colors belong to the terminal's palette. luxe's own themes are pure
         // RGB, so this is only reached by a user theme; xterm's defaults are the least surprising
         // stand-in available.
         named => indexed_rgb(named_index(named)?),

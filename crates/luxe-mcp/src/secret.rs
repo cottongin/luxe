@@ -14,7 +14,7 @@ use luxe_core::secret_command::SECRET_COMMAND_TIMEOUT;
 /// Each carries the sentence that says what to do about it, with the secret's own name in it.
 #[derive(Debug, thiserror::Error)]
 pub enum SecretError {
-    /// Nothing there: it is empty, or a `${VAR}` that is not set where Luxe runs
+    /// Nothing there: it is empty, or a `${VAR}` that is not set where luxe runs
     #[error("{0}")]
     Unset(String),
     /// A `!command` in a config that may not run one
@@ -56,7 +56,7 @@ async fn resolve(written: &str, commands_allowed: bool, what: &str) -> Result<St
         if expanded.trim().is_empty() {
             return Err(SecretError::Unset(match named_variable(written) {
                 Some(name) => format!(
-                    "{what} is `${{{name}}}`, and {name} is not set where Luxe is running — export \
+                    "{what} is `${{{name}}}`, and {name} is not set where luxe is running — export \
                      it, or add the export to your shell profile so every terminal has it"
                 ),
                 None => format!("{what} is empty"),
@@ -80,7 +80,7 @@ async fn resolve(written: &str, commands_allowed: bool, what: &str) -> Result<St
 ///
 /// Asked only once the secret has expanded to nothing, so whatever it names is unset or blank, and
 /// the first is the one to name: a secret that expands to nothing is nearly always a variable
-/// exported in one terminal and not the one Luxe runs in, and saying which is the whole of the fix.
+/// exported in one terminal and not the one luxe runs in, and saying which is the whole of the fix.
 /// Whichever marker comes first, the order [`luxe_core::mcp_client::expand_env`] reads them in.
 fn named_variable(written: &str) -> Option<&str> {
     let braced = written.find("${");
@@ -124,7 +124,7 @@ mod tests {
             unset.to_string(),
             format!(
                 "{WHAT} is `${{LUXE_MCP_SECRET_UNSET}}`, and LUXE_MCP_SECRET_UNSET is not set where \
-                 Luxe is running — export it, or add the export to your shell profile so every \
+                 luxe is running — export it, or add the export to your shell profile so every \
                  terminal has it"
             )
         );

@@ -47,7 +47,7 @@ fn a_worktree_finds_its_projects_skills() {
 /// A folded description is read whole, not as the `>` that introduces it.
 ///
 /// Pinned against the real shape rather than an invented one: this is `github/gh-stack`'s own
-/// `SKILL.md`, the first widely-published skill Luxe was pointed at, and it exposed the bug
+/// `SKILL.md`, the first widely-published skill luxe was pointed at, and it exposed the bug
 /// immediately. The description is all a session knows about a skill until something opens it,
 /// so `>` meant a skill the model had no reason to load.
 #[test]
@@ -132,7 +132,7 @@ fn write_skill_in(skills: &Path, slug: &str, description: &str) -> PathBuf {
     path
 }
 
-/// A skill installed for every agent, by `npx skills` or by hand, is installed for Luxe too —
+/// A skill installed for every agent, by `npx skills` or by hand, is installed for luxe too —
 /// at home and in the repository, which commits `.agents/skills` like any other file.
 #[test]
 fn the_shared_agents_folders_are_read() {
@@ -155,7 +155,7 @@ fn the_shared_agents_folders_are_read() {
     );
 }
 
-/// The reverse of what Luxe used to do: `load` took the first match, which was the global one.
+/// The reverse of what luxe used to do: `load` took the first match, which was the global one.
 #[test]
 fn a_project_skill_beats_a_personal_one_of_the_same_name() {
     let tmp = tempfile::tempdir().unwrap();
@@ -164,7 +164,7 @@ fn a_project_skill_beats_a_personal_one_of_the_same_name() {
     let project = tmp.path().join("project");
     std::fs::create_dir_all(&project).unwrap();
     write_skill_in(&home.join(".agents").join("skills"), "review", "Personal");
-    write_skill_in(&home.join(".config").join("luxe").join("skills"), "review", "Luxe-wide");
+    write_skill_in(&home.join(".config").join("luxe").join("skills"), "review", "luxe-wide");
     write_skill_in(&project.join(".agents").join("skills"), "review", "Shared in the repo");
     let winner = write_skill_in(&project.join(".luxe").join("skills"), "review", "This project");
 

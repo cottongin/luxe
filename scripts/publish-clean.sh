@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Materialize a clean, publishable copy of Luxe — without this repo's development
+# Materialize a clean, publishable copy of luxe — without this repo's development
 # artifacts (PROJECT.md, PROGRESS.md, docs/plan/, .pi/, …) or its git history.
 #
 # The exclusions are declared as `export-ignore` in .gitattributes, so `git archive`
 # does the filtering for us. The result is a fresh tree suitable for `git init` in a
-# new public repository. Luxe never requires the excluded files at runtime.
+# new public repository. luxe never requires the excluded files at runtime.
 #
 # Usage:
 #   scripts/publish-clean.sh <target-dir> [ref]

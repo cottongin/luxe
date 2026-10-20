@@ -104,7 +104,7 @@ impl App {
             let stored: Vec<String> =
                 service.stored().into_iter().map(|option| option.id).collect();
             let message = match stored.is_empty() {
-                true => "Nothing is signed in. /login sets a provider up.".to_string(),
+                true => "Not signed in to any provider · /login to add one".to_string(),
                 false => format!("Usage: /logout <provider> — signed in: {}", stored.join(", ")),
             };
             self.push_convo(ConvoBlock::System(message));
@@ -167,14 +167,18 @@ impl App {
     /// flow does not stop to be congratulated. What the login had to say (the account, how many
     /// models it reached, any advice that only makes sense now) becomes the picker's opening line,
     /// and the transcript keeps the whole of it for a reader who scrolls back.
+    ///
+    /// The picker opens at the top with nothing chosen: which model to run is the reader's call,
+    /// and a cursor already resting on one reads as luxe recommending it.
     fn finish_login(&mut self, outcome: luxe_core::auth::LoginOutcome) {
         self.close_auth_wizard();
-        let adopted = self.adopt_login(&outcome);
         self.refresh_configuration();
         let configured = self.provider_configured();
         self.set_provider_configured(configured);
-        self.push_convo(ConvoBlock::System(login_report(&outcome, adopted.as_deref())));
-        self.open_model_picker_with(login_note(&outcome, adopted.as_deref()));
+        self.push_convo(ConvoBlock::System(login_report(&outcome)));
+        let current = Some(self.status.model.as_str()).filter(|model| !model.is_empty());
+        let note = login_note(&outcome, current);
+        self.open_model_picker_at_top(note);
     }
 
     /// Re-read what is configured, so the Configuration summary reflects a login that just landed.
@@ -184,45 +188,19 @@ impl App {
             configuration.refresh(&service.providers());
         }
     }
-
-    /// Switch the session onto a provider that was just configured, answering what it landed on.
-    ///
-    /// Without this, a login only takes effect on the next launch: the engine keeps routing to
-    /// whatever was active when the session started. The catalog is rebuilt first so a model that
-    /// only exists because of this login can be found.
-    fn adopt_login(&mut self, outcome: &luxe_core::auth::LoginOutcome) -> Option<String> {
-        if let Some(sources) = &self.model_sources {
-            self.model_catalog = (sources.build)().catalog;
-        }
-        let provider = outcome.provider_id.as_str();
-        let entry = self.model_catalog.iter().find(|entry| {
-            entry.info.r#ref.provider == provider
-                && outcome.suggested_model.as_deref().is_some_and(|id| entry.info.r#ref.id == id)
-        });
-        // Fall back to any model for that provider, so a login always leaves a usable session.
-        let info = entry
-            .or_else(|| {
-                self.model_catalog.iter().find(|entry| entry.info.r#ref.provider == provider)
-            })
-            .map(|entry| entry.info.clone())?;
-        let display = info.display().to_string();
-        self.apply_model_selection(info);
-        Some(display)
-    }
 }
 
-/// What the model picker says at the top of itself after a login. Args: `(outcome, adopted)`.
+/// What the model picker says at the top of itself after a login. Args: `(outcome, current)`.
 ///
 /// Two lines at most, because the reader is on their way to choosing a model and this is a caption
-/// rather than a report — the whole of it is in the transcript ([`login_report`]). `adopted` is
-/// the model the login already left the session on, which is the row the cursor is sitting on;
-/// saying so is what stops it reading as a choice the reader has not made yet.
-fn login_note(outcome: &luxe_core::auth::LoginOutcome, adopted: Option<&str>) -> Vec<String> {
+/// rather than a report — the whole of it is in the transcript ([`login_report`]). `current` is
+/// the model the session was already on, which Esc keeps.
+fn login_note(outcome: &luxe_core::auth::LoginOutcome, current: Option<&str>) -> Vec<String> {
     // No count of the models, and none of their names: they are the rows underneath this line.
     vec![
         format!("{}.", configured_headline(outcome)),
-        match adopted {
-            Some(model) => format!("Now on {model} — enter keeps it, or choose another."),
+        match current {
+            Some(model) => format!("Choose a model, or esc to stay on {model}."),
             None => "Choose a model to finish setting up.".to_string(),
         },
     ]
@@ -242,16 +220,13 @@ fn configured_headline(outcome: &luxe_core::auth::LoginOutcome) -> String {
     }
 }
 
-/// The whole of what a login had to say, for the transcript. Args: `(outcome, adopted)`.
-fn login_report(outcome: &luxe_core::auth::LoginOutcome, adopted: Option<&str>) -> String {
+/// The whole of what a login had to say, for the transcript.
+fn login_report(outcome: &luxe_core::auth::LoginOutcome) -> String {
     let mut lines = vec![format!("{}.", configured_headline(outcome))];
     if let Some(account) = &outcome.account {
         lines.push(format!("Account: {account}"));
     }
     lines.extend(outcome.notes.iter().cloned());
-    if let Some(model) = adopted {
-        lines.push(format!("Model: {model}"));
-    }
     lines.extend(outcome.advice.iter().cloned());
     lines.join("\n")
 }

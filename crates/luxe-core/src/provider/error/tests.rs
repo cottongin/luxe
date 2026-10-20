@@ -130,7 +130,7 @@ fn nested(texts: &[&'static str]) -> Layer {
 ///
 /// The break this catches, which shipped: `format!("{e}")` on a `reqwest::Error`. Its `Display`
 /// stops at "error sending request for url (...)" and the reason sits three levels down its
-/// source chain — so every connection refused, DNS failure and timeout in Luxe reported the same
+/// source chain — so every connection refused, DNS failure and timeout in luxe reported the same
 /// uninformative line, and a real provider outage was indistinguishable from a typo in a base URL.
 #[test]
 fn the_whole_chain_reaches_the_message() {

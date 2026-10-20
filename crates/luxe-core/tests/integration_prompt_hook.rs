@@ -101,7 +101,7 @@ fn config(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,
@@ -234,7 +234,7 @@ async fn hook_context_rides_in_the_transcript_not_the_system_prompt() {
 
 /// The prompt's `cwd` is where tools run, not the directory the launch named.
 ///
-/// Launched in `packages/app`, Luxe moves to the project root and keeps the launch directory only
+/// Launched in `packages/app`, luxe moves to the project root and keeps the launch directory only
 /// to pick instruction files. The prompt reported the launch directory anyway, so a real model
 /// was told it was in `packages/app` and `pwd` answered with the root.
 #[tokio::test]
@@ -410,7 +410,7 @@ fn feedback_engine(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,

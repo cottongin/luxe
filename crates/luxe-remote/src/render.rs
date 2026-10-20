@@ -2,7 +2,7 @@
 //!
 //! Markdown, highlighted code, tool glyphs and the status line's wording are the TUI's, and the
 //! bridge doesn't depend on the TUI, so `luxe-cli` hands one in as a [`Renderer`]. What a user
-//! message shows (the reader's own words, and a brief Luxe wrote to the agent as one line saying
+//! message shows (the reader's own words, and a brief luxe wrote to the agent as one line saying
 //! so) is core's call (`luxe_core::briefs`), so that is made here. The bridge keeps no session
 //! state, so the app asks: once for a finished message, and a few times a second for one still
 //! growing or a status that changed.
@@ -283,7 +283,7 @@ pub(crate) struct Rendered {
 /// `piece` as the app's HTML.
 pub(crate) fn render(renderer: &dyn Renderer, piece: &Piece) -> String {
     match piece {
-        // what the agent wrote for Luxe to read (a remediation report, a draft) isn't the reader's
+        // what the agent wrote for luxe to read (a remediation report, a draft) isn't the reader's
         Piece::Answer { text } => renderer.markdown(&briefs::for_the_reader(text), Voice::Answer),
         Piece::Reasoning { text } => renderer.markdown(text, Voice::Reasoning),
         Piece::User { content } => user_message(content) + &images_attached(renderer, content),

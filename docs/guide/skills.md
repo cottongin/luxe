@@ -21,7 +21,7 @@ One folder per skill, with a `SKILL.md` in it:
 | `.luxe/skills/<name>/` | This project. Git sees it too, since `.luxe/` keeps `skills/` out of what it ignores. |
 
 `.agents/skills/` is where Codex, OpenCode, Pi, GitHub Copilot and the `npx skills` installer put
-skills, so one installed for any of them works here too. Luxe reads a repository's `.agents/skills/`
+skills, so one installed for any of them works here too. luxe reads a repository's `.agents/skills/`
 from the top of the repository down to the project. When two skills share a name, whatever its case,
 the one lower in the table wins, so a project's skill replaces your own, and between nested
 `.agents/skills/` folders the deeper one wins. A skill reached twice through a symbolic link counts
@@ -54,8 +54,8 @@ with a note telling the agent to read the rest of the file.
 The agent loads a skill when its description fits the task. To ask for one yourself, mention it:
 `@`, `tab` to **Skills**, and `enter`, as in *split this into a stack with @[skill:gh-stack]*.
 
-**Project context** lists the skills Luxe found: type `skills` on the start screen and open it. A
-`SKILL.md` placed directly in `skills/`, without its own folder, is skipped, and Luxe names it at
+**Project context** lists the skills luxe found: type `skills` on the start screen and open it. A
+`SKILL.md` placed directly in `skills/`, without its own folder, is skipped, and luxe names it at
 startup. The list in the agent's instructions is read with a session's first message, and again
 when you resume one. The `@` picker and the `skill` tool look again every time, so a skill added
 mid-session can be mentioned or loaded at once.
@@ -76,6 +76,6 @@ itself, one level too high.
 
 A skill's text reaches the model as instructions, so read a skill before installing it, as you
 would a script. The same goes for a repository you clone: its `.agents/skills/` and
-`.luxe/skills/` reach the model without `--trust-project`. Luxe removes comments and invisible
+`.luxe/skills/` reach the model without `--trust-project`. luxe removes comments and invisible
 characters from skill files, as it does from [`AGENTS.md`](project-context.md#what-luxe-removes),
 but without a notice.

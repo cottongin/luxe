@@ -21,6 +21,9 @@ pub(in crate::configuration) const PANEL_WIDTH: u16 = 112;
 /// Width of the theme list and the tool list, beside what each explains.
 const LIST_WIDTH: u16 = 34;
 
+/// Which list the wheel and the bar move on a setup step: the surface's, whichever step it is on.
+const SETUP_LIST: crate::mouse::OverlayList = crate::mouse::OverlayList::Configuration;
+
 impl SetupState {
     /// Rows the panel would like, which leaves the wordmark what is left.
     pub fn panel_height(area: Rect) -> u16 {
@@ -37,8 +40,8 @@ impl SetupState {
         configured: &[String],
     ) {
         let title = match self.mode {
-            SetupMode::FirstRun => "Welcome to Luxe",
-            SetupMode::Init => "Set up Luxe",
+            SetupMode::FirstRun => "Welcome to luxe",
+            SetupMode::Init => "Set up luxe",
         };
         let block = crate::widgets::titled_panel(Icon::Config.glyph(), title, theme)
             .padding(Padding::horizontal(1));
@@ -111,6 +114,9 @@ impl SetupState {
         let start =
             (self.theme + 1).saturating_sub(height).min(self.themes.len().saturating_sub(height));
         let mut regions = hit.borrow_mut();
+        let shown = (start, self.themes.len());
+        crate::widgets::list_scrollbar(f, &mut regions, list, SETUP_LIST, shown, theme);
+        let rows = crate::widgets::list_rows_width(list.width, self.themes.len(), list.height);
         let lines: Vec<Line<'static>> = self
             .themes
             .iter()
@@ -119,7 +125,7 @@ impl SetupState {
             .take(height)
             .map(|(index, offer)| {
                 regions.push(
-                    Rect::new(list.x, list.y + (index - start) as u16, list.width, 1),
+                    Rect::new(list.x, list.y + (index - start) as u16, rows, 1),
                     MouseTarget::ConfigRow(index),
                 );
                 let chosen = index == self.theme;
@@ -136,11 +142,11 @@ impl SetupState {
                     ),
                     Span::styled(label, theme.label_on(chosen)),
                 ];
-                selection_row(spans, usize::from(list.width), chosen, theme)
+                selection_row(spans, usize::from(rows), chosen, theme)
             })
             .collect();
         drop(regions);
-        f.render_widget(Paragraph::new(lines), list);
+        f.render_widget(Paragraph::new(lines), Rect { width: rows, ..list });
 
         let sample = Rect {
             x: list.right() + 3,
@@ -234,11 +240,14 @@ impl SetupState {
         hit: &std::cell::RefCell<HitRegions>,
     ) {
         let list = Rect { width: (LIST_WIDTH + 18).min(body.width), ..body };
-        let width = usize::from(list.width);
         let height = usize::from(list.height);
         let start =
             (self.tool + 1).saturating_sub(height).min(self.tools.len().saturating_sub(height));
         let mut regions = hit.borrow_mut();
+        let shown = (start, self.tools.len());
+        crate::widgets::list_scrollbar(f, &mut regions, list, SETUP_LIST, shown, theme);
+        let rows = crate::widgets::list_rows_width(list.width, self.tools.len(), list.height);
+        let width = usize::from(rows);
         let lines: Vec<Line<'static>> = self
             .tools
             .iter()
@@ -247,7 +256,7 @@ impl SetupState {
             .take(height)
             .map(|(index, (tool, enabled))| {
                 regions.push(
-                    Rect::new(list.x, list.y + (index - start) as u16, list.width, 1),
+                    Rect::new(list.x, list.y + (index - start) as u16, rows, 1),
                     MouseTarget::ConfigRow(index),
                 );
                 let chosen = index == self.tool;
@@ -270,7 +279,7 @@ impl SetupState {
             })
             .collect();
         drop(regions);
-        f.render_widget(Paragraph::new(lines), list);
+        f.render_widget(Paragraph::new(lines), Rect { width: rows, ..list });
 
         let side = Rect {
             x: list.right() + 3,
@@ -319,7 +328,7 @@ impl SetupState {
     ) {
         f.render_widget(
             Paragraph::new(Line::from(Span::styled(
-                "What Luxe opens on when you run it in a project.",
+                "What luxe opens on when you run it in a project.",
                 theme.muted,
             ))),
             Rect { height: 1, ..body },

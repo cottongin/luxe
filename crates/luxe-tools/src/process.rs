@@ -83,10 +83,10 @@ fn shell_command(command: &str, cwd: &Path) -> Command {
     child
 }
 
-/// The `PYTHONUTF8` a command gets, when Luxe sets one: on Windows, unless the user chose.
+/// The `PYTHONUTF8` a command gets, when luxe sets one: on Windows, unless the user chose.
 ///
 /// Python there writes to a pipe in the console's code page, cp1252, so a script printing `✓`
-/// fails with `UnicodeEncodeError` under Luxe and works in the user's terminal. UTF-8 mode is what
+/// fails with `UnicodeEncodeError` under luxe and works in the user's terminal. UTF-8 mode is what
 /// Python does everywhere else.
 fn python_utf8(inherited: Option<&std::ffi::OsStr>, windows: bool) -> Option<&'static str> {
     (windows && inherited.is_none()).then_some("1")

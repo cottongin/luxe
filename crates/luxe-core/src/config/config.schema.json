@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Luxe config",
+  "title": "luxe config",
   "type": "object",
   "properties": {
     "$schema": {
@@ -9,7 +9,7 @@
     },
     "theme": {
       "type": "string",
-      "description": "Theme name: a built-in (luxe, catppuccin, nord, tokyo-night, and more — /theme lists them all), the name of a file in themes/, or omarchy to follow the Omarchy desktop's theme. When omitted, Luxe follows Omarchy when it is running there, and uses luxe otherwise."
+      "description": "Theme name: a built-in (luxe, catppuccin, nord, tokyo-night, and more — /theme lists them all), the name of a file in themes/, or omarchy to follow the Omarchy desktop's theme. When omitted, luxe follows Omarchy when it is running there, and uses luxe otherwise."
     },
     "colors": {
       "type": "object",
@@ -54,7 +54,7 @@
       "type": "string",
       "enum": ["auto", "nerd", "nerd_wide", "unicode", "ascii"],
       "default": "auto",
-      "description": "How much glyph fidelity the TUI asks for. Icons are decoration \u2014 the words beside them carry the meaning \u2014 so every setting is fully usable. nerd draws Material Design icons from a Nerd Font (the look Luxe ships with); nerd_wide draws the same icons with a second cell of clearance, for a Nerd Font's non-Mono cut, whose icons carry two cells of ink behind a one-cell advance and so paint over the space after them; unicode uses Geometric Shapes and Arrows only, so no patched font is needed; ascii reduces to plain punctuation for a minimal or non-UTF-8 terminal. auto (default) picks nerd where those glyphs can actually be drawn \u2014 kitty bundles its own symbol font, and elsewhere fontconfig is asked whether any installed font provides them \u2014 and unicode otherwise. auto never picks nerd_wide: both cuts of a face report the same advance, so there is nothing to measure."
+      "description": "How much glyph fidelity the TUI asks for. Icons are decoration \u2014 the words beside them carry the meaning \u2014 so every setting is fully usable. nerd draws Material Design icons from a Nerd Font (the look luxe ships with); nerd_wide draws the same icons with a second cell of clearance, for a Nerd Font's non-Mono cut, whose icons carry two cells of ink behind a one-cell advance and so paint over the space after them; unicode uses Geometric Shapes and Arrows only, so no patched font is needed; ascii reduces to plain punctuation for a minimal or non-UTF-8 terminal. auto (default) picks nerd where those glyphs can actually be drawn \u2014 kitty bundles its own symbol font, and elsewhere fontconfig is asked whether any installed font provides them \u2014 and unicode otherwise. auto never picks nerd_wide: both cuts of a face report the same advance, so there is nothing to measure."
     },
     "images": {
       "type": "string",
@@ -108,7 +108,7 @@
     "herdr": {
       "type": "boolean",
       "default": true,
-      "description": "When Luxe runs in a herdr pane, report whether it is working, idle or waiting on you, so herdr's sidebar, notifications and `herdr agent wait` follow it. On by default; nothing is sent outside herdr."
+      "description": "When luxe runs in a herdr pane, report whether it is working, idle or waiting on you, so herdr's sidebar, notifications and `herdr agent wait` follow it. On by default; nothing is sent outside herdr."
     },
     "joinable": {
       "type": "boolean",
@@ -147,7 +147,7 @@
           "type": "array",
           "items": { "type": "string" },
           "default": [],
-          "description": "Project-relative globs a review leaves out, e.g. [\"PROGRESS.md\", \"docs/design/**\"]. Luxe's own .luxe/ directory is always excluded and needs no entry. Supports *, ** and ?; a trailing / matches a directory and everything under it. Excluded files are counted and named in the Brief, never silently dropped."
+          "description": "Project-relative globs a review leaves out, e.g. [\"PROGRESS.md\", \"docs/design/**\"]. luxe's own .luxe/ directory is always excluded and needs no entry. Supports *, ** and ?; a trailing / matches a directory and everything under it. Excluded files are counted and named in the Brief, never silently dropped."
         }
       },
       "additionalProperties": false
@@ -183,7 +183,7 @@
         "remember_model": {
           "type": "boolean",
           "default": true,
-          "description": "Remember the model and thinking level picked in a session and use them next launch. Precedence: --model/--thinking flag, then LUXE_MODEL/LUXE_PROVIDER, then what you last picked, then default_model in models.json — and nothing under that, because Luxe never picks a model for you. Set false to always start from the configured default."
+          "description": "Remember the model and thinking level picked in a session and use them next launch. Precedence: --model/--thinking flag, then LUXE_MODEL/LUXE_PROVIDER, then what you last picked, then default_model in models.json — and nothing under that, because luxe never picks a model for you. Set false to always start from the configured default."
         },
         "on_ask": {
           "type": "string",
@@ -195,7 +195,7 @@
           "type": "string",
           "enum": ["off", "streaming", "idle"],
           "default": "streaming",
-          "description": "When Luxe keeps a conversation's prompt cache alive through a long wait, by re-sending the last request with a one-token cap just before the cache entry expires (five minutes on Anthropic, unless supports_long_cache_retention asks for an hour). A refresh is a cache read of the prompt; the write it saves is usually ten times that. streaming (the default) does it while a turn is running — a slow tool, a permission prompt, a question — where the next request is certain. idle also does it for up to 30 minutes after a turn ends, where a reply is a guess, so a refresh is sent only on a conversation large enough to make the guess pay. off never does. Either way nothing is sent unless it is expected to save at least $0.05, never on a subscription plan, and its cost shows on /cost as cache warming. A project's config may turn this down and may not turn it up."
+          "description": "When luxe keeps a conversation's prompt cache alive through a long wait, by re-sending the last request with a one-token cap just before the cache entry expires (five minutes on Anthropic, unless supports_long_cache_retention asks for an hour). A refresh is a cache read of the prompt; the write it saves is usually ten times that. streaming (the default) does it while a turn is running — a slow tool, a permission prompt, a question — where the next request is certain. idle also does it for up to 30 minutes after a turn ends, where a reply is a guess, so a refresh is sent only on a conversation large enough to make the guess pay. off never does. Either way nothing is sent unless it is expected to save at least $0.05, never on a subscription plan, and its cost shows on /cost as cache warming. A project's config may turn this down and may not turn it up."
         },
         "default_mode": {
           "type": "string",
@@ -289,7 +289,7 @@
     },
     "launchers": {
       "type": "array",
-      "description": "Programs a key hands the terminal to — gh-dash, lazygit, anything that takes over a terminal and gives it back. Luxe keeps running underneath, a turn included, and redraws when the program exits; text the program writes to the file named by $LUXE_HANDOFF lands in the composer. Read from the global config only: a key that runs a program a repository named is arbitrary execution.",
+      "description": "Programs a key hands the terminal to — gh-dash, lazygit, anything that takes over a terminal and gives it back. luxe keeps running underneath, a turn included, and redraws when the program exits; text the program writes to the file named by $LUXE_HANDOFF lands in the composer. Read from the global config only: a key that runs a program a repository named is arbitrary execution.",
       "items": {
         "type": "object",
         "properties": {
@@ -319,7 +319,7 @@
     },
     "github": {
       "type": "object",
-      "description": "How Luxe keeps up with GitHub: the checked-out branch's pull request, and what /github lists. The refresh interval is read from the global config only — how often Luxe calls out on a timer is not a decision a repository you cloned makes; a project may add its own /github sections.",
+      "description": "How luxe keeps up with GitHub: the checked-out branch's pull request, and what /github lists. The refresh interval is read from the global config only — how often luxe calls out on a timer is not a decision a repository you cloned makes; a project may add its own /github sections.",
       "properties": {
         "refresh_secs": {
           "type": "integer",
@@ -345,12 +345,12 @@
     },
     "update": {
       "type": "object",
-      "description": "Whether Luxe checks for a newer release. Read from the global config only — whether Luxe reaches the network on your behalf is not a decision a repository you cloned makes.",
+      "description": "Whether luxe checks for a newer release. Read from the global config only — whether luxe reaches the network on your behalf is not a decision a repository you cloned makes.",
       "properties": {
         "check": {
           "type": "boolean",
           "default": true,
-          "description": "Look for a newer release, at most once a day, and mention it under the dashboard's footer. Luxe never updates itself; the notice names the command that matches how you installed it. The request sends nothing about you — no version, no platform, no identifier — and every failure is silent. Set false, or LUXE_UPDATE_CHECK=0, to turn it off."
+          "description": "Look for a newer release, at most once a day, and mention it under the dashboard's footer. luxe never updates itself; the notice names the command that matches how you installed it. The request sends nothing about you — no version, no platform, no identifier — and every failure is silent. Set false, or LUXE_UPDATE_CHECK=0, to turn it off."
         }
       },
       "additionalProperties": false

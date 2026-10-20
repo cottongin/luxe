@@ -20,7 +20,7 @@ fn write_schema() -> ToolSchema {
         name: "write".to_string(),
         description: "Write a whole file, creating parent directories as needed. Best for NEW \
                       files; for targeted changes to an existing file use `edit`. Overwriting an \
-                      existing file requires having `read` it in this Luxe run (and it not \
+                      existing file requires having `read` it in this luxe run (and it not \
                       having changed since) so you don't clobber content you never saw."
             .to_string(),
         parameters: json!({
@@ -79,7 +79,7 @@ impl WriteTool {
         }
         match tracker.status(&cx.session_id, full_path) {
             ReadStatus::Unseen => Err(ToolResultData::error(format!(
-                "Error: '{shown}' exists and has no read on record for this Luxe run \
+                "Error: '{shown}' exists and has no read on record for this luxe run \
                  ({READ_BEFORE_WRITE}), so overwriting it would be blind. \
                  The record is per process, so a resumed session starts empty \
                  even where the transcript shows an earlier read. Read it (or \

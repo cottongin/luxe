@@ -447,7 +447,7 @@ fn github_writes_need_the_flag_and_read_only_refuses_them_anyway() {
         ]
     };
     for (gate, needle) in [
-        (GithubWrites::NotEnabled, "start Luxe with --github-writes"),
+        (GithubWrites::NotEnabled, "start luxe with --github-writes"),
         (GithubWrites::ReadOnly, "read-only"),
     ] {
         for wire in writes() {

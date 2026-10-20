@@ -195,8 +195,9 @@ impl Engine {
         event_tx: &mpsc::Sender<Event>,
     ) {
         debug!(model = %model.r#ref, "switching active model");
-        if self.config.remember_runtime_state {
+        if let Some(project) = &self.config.remember_choices_in {
             crate::runtime_state::RuntimeState::remember_model(
+                project,
                 &model.r#ref.provider,
                 &model.r#ref.id,
             );
@@ -217,7 +218,7 @@ impl Engine {
         event_tx: &mpsc::Sender<Event>,
     ) {
         debug!(?level, "setting thinking level");
-        if self.config.remember_runtime_state {
+        if self.config.remember_choices_in.is_some() {
             crate::runtime_state::RuntimeState::remember_thinking(level);
         }
         *self.before_mode.lock().await = None;

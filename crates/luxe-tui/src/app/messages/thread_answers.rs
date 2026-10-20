@@ -60,7 +60,7 @@ pub(super) fn confirm(app: &mut App) {
         })
         .collect();
     if to_send.is_empty() {
-        app.status.flash_toast("Nothing to send: space resolves a thread, c writes a reply");
+        app.status.flash_toast("Nothing to send · space resolve · c reply");
         return;
     }
     let Some(review_id) = app.guided_review.as_ref().map(|review| review.id.clone()) else {

@@ -29,7 +29,7 @@ async fn a_last_turn_review_loads_the_turn_that_ran_and_refreshes_in_place() {
     std::fs::write(tmp_dir.join("test.txt"), "Hello, World!").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "test.txt"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {
@@ -41,7 +41,7 @@ async fn a_last_turn_review_loads_the_turn_that_ran_and_refreshes_in_place() {
             .success());
     }
 
-    // Luxe's own planning artifact, not the harness it happens to be developed with.
+    // luxe's own planning artifact, not the harness it happens to be developed with.
     std::fs::write(tmp_dir.join("PLAN.md"), "review plan evidence").unwrap();
 
     // Setup session store.
@@ -207,7 +207,7 @@ async fn p32_guided_review_refresh_persists_a_fresh_artifact_after_worktree_muta
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {
@@ -446,7 +446,7 @@ async fn guided_review_last_turn_loads_a_retained_baseline_after_restart() {
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {

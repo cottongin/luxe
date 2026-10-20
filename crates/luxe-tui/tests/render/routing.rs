@@ -133,7 +133,7 @@ fn test_route_key_dashboard_esc_stays_and_ctrl_c_quits() {
 ///
 /// Opening it does not change the view mode — the dashboard stays behind it on purpose — and the
 /// routing asked for the view mode. So the arrows walked the column *underneath* the overlay, a
-/// click reached the menu through it, and Esc quit Luxe instead of closing the list.
+/// click reached the menu through it, and Esc quit luxe instead of closing the list.
 #[test]
 fn the_project_context_list_takes_the_keys_from_the_dashboard_behind_it() {
     let mut app = seeded_app("nord", FixtureScenario::DashboardContextFiles).expect("the fixture");
@@ -154,7 +154,7 @@ fn the_project_context_list_takes_the_keys_from_the_dashboard_behind_it() {
     assert_eq!(selected(&app), 2, "j and ↓ walk the list; Tab is not its key");
     assert!(app.editor.current_input().is_empty(), "and the prompt underneath typed nothing");
 
-    // Esc puts the list away rather than quitting Luxe.
+    // Esc puts the list away rather than quitting luxe.
     let action = route_key(&mut app, &key(KeyCode::Esc));
     match action {
         RouteAction::Msg(message) => app.update(*message),
@@ -259,11 +259,10 @@ fn a_finished_login_walks_into_the_model_picker_inside_the_surface() {
     let screen: String = buffer.content.iter().map(|cell| cell.symbol()).collect();
     assert!(screen.contains("Select model"), "{screen}");
     assert!(screen.contains("GPT-5.6"), "{screen}");
-    // What the login had to say rides along as the picker's opening line rather than being lost
-    // with the screen that used to report it — including which model it left the session on, so
-    // the preselected row does not read as a choice nobody made.
+    // What the login had to say rides along as the picker's opening line, and with no model
+    // chosen for the reader, the line asks them to choose one.
     assert!(screen.contains("Signed in to OpenAI"), "{screen}");
-    assert!(screen.contains("Now on GPT-5.6"), "{screen}");
+    assert!(screen.contains("Choose a model to finish setting up."), "{screen}");
     // The count of models is not on it: they are the rows underneath.
     assert!(!screen.contains("47 models available"), "{screen}");
 }

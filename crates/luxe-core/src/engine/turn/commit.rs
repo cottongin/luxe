@@ -33,7 +33,7 @@ impl Engine {
     ///
     /// Every committed message is announced with `MessageCommitted`, the reader's own words too:
     /// a client joined to the session didn't type them, and the front-end that did reconciles the
-    /// copy it already shows. A message Luxe composed (review feedback, a draft's brief) has no
+    /// copy it already shows. A message luxe composed (review feedback, a draft's brief) has no
     /// such copy anywhere, so it's announced the same way.
     pub(super) async fn commit_user_message(
         &self,
@@ -142,7 +142,7 @@ impl Engine {
     /// Reports a provider call that came back with nothing, and says why the turn stops.
     ///
     /// A cancel is the user's own doing and the UI has already said so; anything else is the
-    /// model answering with silence, which looked exactly like Luxe hanging — the spinner
+    /// model answering with silence, which looked exactly like luxe hanging — the spinner
     /// stopped, no message appeared, and the next thing the reader saw was a `400` from the turn
     /// after it.
     pub(super) async fn report_empty_reply(&self, event_tx: &mpsc::Sender<Event>) -> StopReason {

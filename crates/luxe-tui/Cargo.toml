@@ -3,12 +3,12 @@ name = "luxe-tui"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Terminal UI for Luxe, built on ratatui: conversation, guided review, dashboard, and themes"
+description = "Terminal UI for luxe, built on ratatui: conversation, guided review, dashboard, and themes"
 repository.workspace = true
 homepage.workspace = true
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-core = { path = "../luxe-core", version = "0.1.4" }
 # `unstable-rendered-line-info` enables Paragraph::line_count, used for precise wrapping-aware
 # mouse hit-testing over word-wrapped surfaces (guide/dock/conversation clicks). It adds no crate;
 # the API is marked unstable upstream but is stable within our pinned minor (re-check on upgrade).

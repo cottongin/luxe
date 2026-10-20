@@ -22,8 +22,8 @@ async fn a_turn_end_notifies_only_while_the_terminal_is_in_the_background() {
     assert_eq!(
         *calls.lock().unwrap(),
         vec![
-            ("Luxe · widget".to_string(), "Turn finished".to_string()),
-            ("Luxe · widget".to_string(), "Turn failed: rate limited".to_string()),
+            ("luxe · widget".to_string(), "Turn finished".to_string()),
+            ("luxe · widget".to_string(), "Turn failed: rate limited".to_string()),
         ],
         "the focused turn end sent nothing"
     );

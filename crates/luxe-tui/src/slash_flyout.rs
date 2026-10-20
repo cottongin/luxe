@@ -276,6 +276,11 @@ impl SlashFlyoutState {
         self.nav.select(filtered_index);
     }
 
+    /// The cursor's row among the filtered items.
+    pub(crate) fn cursor(&self) -> usize {
+        self.nav.selected()
+    }
+
     /// Get the selected command (if any).
     pub fn selected_command(&self) -> Option<&Command> {
         if let Some(arguments) = self.arguments.as_ref() {
@@ -361,6 +366,7 @@ pub fn render_slash_flyout(
             divider: state.divider(),
             detail: Some(&detail),
             rows: None,
+            list: crate::mouse::OverlayList::Slash,
         },
     );
 }
@@ -406,6 +412,7 @@ fn render_arguments(
             divider: None,
             detail: None,
             rows: None,
+            list: crate::mouse::OverlayList::Slash,
         },
     );
 }

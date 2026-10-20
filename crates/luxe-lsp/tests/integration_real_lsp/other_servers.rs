@@ -32,7 +32,7 @@ async fn real_ts_diagnostics_and_symbols() {
     let diag = LspDiagnosticsTool::new(service);
     let cx = ctx(&dir);
 
-    // Which server answers depends on the host, and all three outcomes are Luxe working. A
+    // Which server answers depends on the host, and all three outcomes are luxe working. A
     // TypeScript 5.x tsserver pushes the type error; TypeScript 7's native LSP pushes nothing at
     // all and has to be *asked* for it; a host with neither gets a refusal naming the servers that
     // would not run. The one result that is a defect is a bare "No diagnostics", which says the
@@ -52,7 +52,7 @@ async fn real_ts_diagnostics_and_symbols() {
     });
     eprintln!("TS DIAG:\n{out}");
     if !out.contains("ERROR") {
-        eprintln!("no usable TypeScript server on this host, and Luxe said so — nothing to check");
+        eprintln!("no usable TypeScript server on this host, and luxe said so — nothing to check");
     }
 }
 
@@ -92,7 +92,7 @@ async fn real_pyright_diagnostics_and_symbols() {
     });
     eprintln!("PY DIAG:\n{reported}");
     if !reported.contains("ERROR") {
-        eprintln!("pyright cannot run on this host, and Luxe said so — skipping the rest");
+        eprintln!("pyright cannot run on this host, and luxe said so — skipping the rest");
         return;
     }
 
@@ -138,7 +138,7 @@ async fn real_gopls_diagnostics_and_symbols() {
     });
     eprintln!("GO DIAG:\n{reported}");
     if !reported.contains("ERROR") {
-        eprintln!("gopls cannot run on this host, and Luxe said so — skipping the rest");
+        eprintln!("gopls cannot run on this host, and luxe said so — skipping the rest");
         return;
     }
 
@@ -167,7 +167,7 @@ struct Case {
     ///
     /// Definition is asked from here rather than from the symbol's own name: servers disagree
     /// about answering "go to definition" when you are already standing on it (clangd returns
-    /// nothing, tsserver returns the definition), and that disagreement is not Luxe's to assert.
+    /// nothing, tsserver returns the definition), and that disagreement is not luxe's to assert.
     /// A call site is the question every server answers the same way — and it exercises the
     /// line/character path, which the `symbol` shorthand does not.
     call_site: (u32, u32),
@@ -177,10 +177,10 @@ struct Case {
 
 /// Drive one language's server through definition, references and hover.
 ///
-/// The contract asserted is Luxe's, not the server's: **navigate, or say why not.** A server that
+/// The contract asserted is luxe's, not the server's: **navigate, or say why not.** A server that
 /// cannot answer is a real situation — a `typescript-language-server` with no usable `typescript`
 /// to drive answers everything with nothing, and a version-manager shim resolves on `PATH` and
-/// then refuses to run at all — and the failure that matters is Luxe passing either off as "no
+/// then refuses to run at all — and the failure that matters is luxe passing either off as "no
 /// definition exists". Any of the three is a pass; a bare empty answer is not.
 async fn navigates(case: Case) {
     if !have(case.server) {
@@ -483,6 +483,6 @@ async fn real_svelte_diagnostics_land_on_the_component_line() {
             "the error belongs to line 3 of the component, not of the generated module:\n{out}"
         );
     } else {
-        eprintln!("no usable Svelte server on this host, and Luxe said so — nothing to check");
+        eprintln!("no usable Svelte server on this host, and luxe said so — nothing to check");
     }
 }

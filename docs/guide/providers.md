@@ -2,7 +2,7 @@
 title: "Models and providers"
 summary: "Sign in to a provider, choose a model and thinking level, and run local models."
 order: 9
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Sign in
@@ -69,7 +69,7 @@ used from other programs.
 
 GitHub Copilot serves Claude through Anthropic's Messages API, its newer GPT, Grok and MAI models
 only through its Responses API, and the rest through chat completions. Copilot says which model
-takes which, and Luxe sends each one where it belongs. Claude goes to Messages even though chat
+takes which, and luxe sends each one where it belongs. Claude goes to Messages even though chat
 completions would take it, because only Messages keeps its thinking, its effort level and the
 prompt cache for the whole conversation. The models offered are your plan's own, kept current each
 time the sign-in refreshes. Signing in turns on any model your plan offers that you have not been
@@ -93,8 +93,9 @@ A command runs each time a request needs the key.
 ## Choose a model
 
 `/model` opens the model picker: every model your providers can serve, configured providers first.
-Type to search. The session carries on with the new model, even across providers, and Luxe
-remembers your choice for next time.
+Type to search. The session carries on with the new model, even across providers, and luxe
+remembers your choice for next time, in this project and as your latest anywhere
+([which model a session starts on](agent.md#which-model-a-session-starts-on)).
 
 From the command line, `--model` takes a model ID, or `provider/id` to pick the provider too:
 
@@ -102,7 +103,7 @@ From the command line, `--model` takes a model ID, or `provider/id` to pick the 
 luxe --model anthropic/claude-opus-5
 ```
 
-To see what Luxe knows about a model, or list what you can use:
+To see what luxe knows about a model, or list what you can use:
 
 ```bash
 luxe models show anthropic/claude-opus-5   # context window, output limit, thinking levels, price
@@ -110,8 +111,8 @@ luxe models list --provider anthropic      # every model; * is active, + is conf
 luxe models refresh --force                # update the model catalog now
 ```
 
-Luxe ships with the [models.dev](https://models.dev) catalog built in and refreshes it in the
-background, so a model released after your copy of Luxe still has the right context window and
+luxe ships with the [models.dev](https://models.dev) catalog built in and refreshes it in the
+background, so a model released after your copy of luxe still has the right context window and
 price.
 
 ## Thinking
@@ -120,7 +121,7 @@ price.
 **Medium**, **High**, **XHigh** or **Ultra**. Levels the model does not support are grayed out.
 `--thinking high` sets it at launch.
 
-Luxe remembers the level per model, since `high` on a frontier model and on a small local one cost
+luxe remembers the level per model, since `high` on a frontier model and on a small local one cost
 very different amounts of time. To give a model its own starting level:
 
 ```json title="~/.config/luxe/models.json"
@@ -142,7 +143,7 @@ ChatGPT plan, the statusline shows how much of the plan is used, such as `12% we
 shows when it resets. On a Copilot plan it shows the month's allowance the same way, such as `19%
 monthly`.
 
-Luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
+luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
 for each request. A Copilot plan billed by the token spends its monthly allowance at those rates.
 
 A ChatGPT subscription serves its own set of models, different from OpenAI's API, and `/model`
@@ -166,7 +167,7 @@ For reasoning controls, chat templates and sampling settings on a local server, 
 
 ## Microsoft Foundry
 
-One Foundry resource and key serve three APIs, which Luxe treats as three providers. Signing in to
+One Foundry resource and key serve three APIs, which luxe treats as three providers. Signing in to
 one configures all three:
 
 ```bash
@@ -182,7 +183,7 @@ choose a model with the provider that serves it:
 | `foundry-anthropic` | Claude | `luxe --model foundry-anthropic/claude-sonnet-5` |
 | `foundry-completions` | DeepSeek, Grok, Llama, Mistral, Phi and Cohere | `luxe --model foundry-completions/deepseek-v4-pro` |
 
-`/model` lists what your resource has deployed, not every model Azure offers. Luxe asks the
+`/model` lists what your resource has deployed, not every model Azure offers. luxe asks the
 resource for its deployments when you sign in and again each time you open `/model`, and sorts them
 onto the right provider by the model each one runs. `luxe models refresh` asks too. If a resource
 cannot list its deployments, `/model` shows Azure's catalog marked `unverified`, and you can
@@ -193,8 +194,8 @@ Entra ID, see [Custom providers](custom-providers.md#keyless-sign-in-with-micros
 
 ## When a provider stalls
 
-Luxe waits 60 seconds for a provider to start answering, and 180 seconds between parts of a reply.
-If a provider is overloaded, rate limited or unreachable before it has sent anything, Luxe tries
+luxe waits 60 seconds for a provider to start answering, and 180 seconds between parts of a reply.
+If a provider is overloaded, rate limited or unreachable before it has sent anything, luxe tries
 again after 2, 4 and 8 seconds, showing `retrying (2/3)` above the composer. Once a reply has
 started, a failure ends the turn rather than paying for the reply twice. A bad key or a refused
 request is not retried.

@@ -14,7 +14,7 @@
 //!
 //! # Design
 //!
-//! Same policy as Pi's, checked against Luxe's own ledgers:
+//! Same policy as Pi's, checked against luxe's own ledgers:
 //!
 //! - **While a turn runs** the next request is certain, so a refresh pays whenever a read costs
 //!   less than the write it saves. Across 2,980 recorded Claude calls this rescued 12 of 14 waits

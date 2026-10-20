@@ -237,7 +237,7 @@ async fn new_session_reuses_an_empty_session_instead_of_orphaning_it() {
 
 /// A turn with no model chosen is refused, and the transcript is left alone.
 ///
-/// Luxe resolves no default: with nothing chosen the front-end hands the engine a model with an
+/// luxe resolves no default: with nothing chosen the front-end hands the engine a model with an
 /// empty id, and the gate at the top of every turn is what makes that safe. The provider is never
 /// reached, and the user's message is not committed — a refused turn must not leave a message in
 /// the history that would replay on every later request.

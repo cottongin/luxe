@@ -187,7 +187,7 @@ fn an_unconfigured_machine_has_no_models_to_choose_between() {
     let with_key = AgentSettings::resolve(std::path::PathBuf::from("."), Default::default());
     let catalog = build_menu(&with_key).catalog;
     std::env::remove_var("ANTHROPIC_API_KEY");
-    assert!(!catalog.is_empty(), "an ambient key is a provider Luxe can route to");
+    assert!(!catalog.is_empty(), "an ambient key is a provider luxe can route to");
     assert!(
         catalog.iter().all(|entry| entry.info.r#ref.provider == "anthropic"),
         "and only that provider's models: {:?}",

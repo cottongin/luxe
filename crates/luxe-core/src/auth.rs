@@ -189,7 +189,7 @@ pub enum LoginScope {
     /// Every configurable provider, with every method it offers.
     #[default]
     Any,
-    /// Providers whose subscription Luxe is allowed to sign in to.
+    /// Providers whose subscription luxe is allowed to sign in to.
     Subscription,
     /// Providers that take a key you already have.
     ApiKey,
@@ -360,8 +360,6 @@ pub struct LoginOutcome {
     /// A local server takes no credential, and "API key" would be a claim the file contradicts.
     pub kind: Option<CredentialKind>,
     pub account: Option<String>,
-    /// A model id worth defaulting to, when the flow learned one.
-    pub suggested_model: Option<String>,
     /// Factual summary lines about what now exists (e.g. "17 models available").
     pub notes: Vec<String>,
     /// Advice that only makes sense once the credential exists, shown apart from the summary.

@@ -15,13 +15,13 @@ that is wrong in the one direction that matters.
     scripts/glyph-survey.py                  # report coverage for the current vocabulary
     scripts/glyph-survey.py --candidates     # which of a wider palette every face has
     scripts/glyph-survey.py --check          # portable.txt still holds (CI)
-    scripts/glyph-survey.py --face FILE...   # does a face draw everything Luxe does, cleanly
+    scripts/glyph-survey.py --face FILE...   # does a face draw everything luxe does, cleanly
 
 U+2500-U+259F is not surveyed: terminals synthesize that range against the cell box, so the font is
 not in the path. Everything else has to be in every face on the panel.
 
 `--face` asks the opposite question, of a font you might *recommend* rather than one a reader
-already has: does it carry every character Luxe can put on screen at the nerd tier, and does each
+already has: does it carry every character luxe can put on screen at the nerd tier, and does each
 one stay inside its cell? The second half is the one a coverage count misses. The non-`Mono` cut of
 any Nerd Font has every icon and draws most of them twice the cell wide, and plain Iosevka has every
 character while `→ … —` print over their neighbor. The character set is read out of the TUI's
@@ -45,7 +45,7 @@ import unicodedata
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PORTABLE = ROOT / "crates" / "luxe-tui" / "src" / "glyphs" / "portable.txt"
 
-# Where `--face` reads what Luxe draws from.
+# Where `--face` reads what luxe draws from.
 DRAWING_SOURCES = (ROOT / "crates" / "luxe-tui" / "src", ROOT / "crates" / "luxe-cli" / "src")
 DRAWING_ASSETS = (
     ROOT / "web" / "src" / "assets" / "generated",
@@ -151,7 +151,7 @@ def parse_portable() -> list[int]:
     return listed
 
 
-# === What Luxe draws, for --face ===
+# === What luxe draws, for --face ===
 
 
 def rust_literals(src: str) -> tuple[list[tuple[int, int]], str]:
@@ -307,7 +307,7 @@ def braille(cp: int) -> bool:
 
 
 def survey_faces(paths: list[str]) -> int:
-    """Report each face against everything Luxe draws. Non-zero if any misses or spills anything."""
+    """Report each face against everything luxe draws. Non-zero if any misses or spills anything."""
     try:
         from fontTools.pens.boundsPen import BoundsPen
         from fontTools.ttLib import TTFont
@@ -322,7 +322,7 @@ def survey_faces(paths: list[str]) -> int:
     }
     classes["marks"] = [cp for cp in drawn if not any(cp in group for group in classes.values())]
     print(
-        f"Luxe draws {len(drawn)} non-ASCII characters: "
+        f"luxe draws {len(drawn)} non-ASCII characters: "
         + ", ".join(f"{len(group)} {name}" for name, group in classes.items())
         + "\n",
         file=sys.stderr,
@@ -375,7 +375,7 @@ def survey_faces(paths: list[str]) -> int:
         if absent - len(missing["braille"]) or spilled:
             failed = True
         else:
-            print("  draws everything Luxe does, each inside its cell")
+            print("  draws everything luxe does, each inside its cell")
         font.close()
     return 1 if failed else 0
 
@@ -394,7 +394,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="verify portable.txt against the panel")
     parser.add_argument("--candidates", action="store_true", help="survey the wider palette")
     parser.add_argument(
-        "--face", nargs="+", metavar="FILE", help="measure font files against everything Luxe draws"
+        "--face", nargs="+", metavar="FILE", help="measure font files against everything luxe draws"
     )
     args = parser.parse_args()
 

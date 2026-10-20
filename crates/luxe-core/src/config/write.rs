@@ -138,7 +138,7 @@ impl Config {
 }
 
 /// Edit the global config under [`JsonFile`]'s lock. Called from the UI thread; the wait for the
-/// lock is bounded (a few seconds), and only another Luxe writing the same file at that moment, or
+/// lock is bounded (a few seconds), and only another luxe writing the same file at that moment, or
 /// one that crashed holding the lock, makes it wait at all.
 fn edit_global(edit: impl FnOnce(&mut Map<String, Value>)) -> Result<PathBuf, ConfigWriteError> {
     let path = Config::global_path();

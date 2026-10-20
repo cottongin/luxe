@@ -25,7 +25,7 @@ pub(crate) struct FindingDraft {
     carried_fix: Option<String>,
     /// The real editor backing the comment.
     ///
-    /// This is the one place a reviewer writes prose, so it reuses Luxe's composer wholesale and
+    /// This is the one place a reviewer writes prose, so it reuses luxe's composer wholesale and
     /// behaves like every other text input: a cursor, arrow keys, word operations.
     editor: crate::editor::Editor,
     /// Why the last save was rejected, cleared by the next edit. Shown on screen, or `Ctrl+Enter`

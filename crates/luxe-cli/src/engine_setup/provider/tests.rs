@@ -7,7 +7,7 @@ fn the_catalog_decides_which_adapter_a_known_provider_uses() {
     assert_eq!(resolve_api("openai", None), ApiKind::OpenaiResponses);
     assert_eq!(resolve_api("openai-codex", None), ApiKind::OpenaiCodex);
     assert_eq!(resolve_api("groq", None), ApiKind::OpenaiCompletions);
-    // Luxe's historical default provider name is an alias of `openai`.
+    // luxe's historical default provider name is an alias of `openai`.
     assert_eq!(resolve_api("openai_compat", None), ApiKind::OpenaiResponses);
     // An unknown provider is assumed to speak the most common dialect.
     assert_eq!(resolve_api("some-proxy", None), ApiKind::OpenaiCompletions);
@@ -266,7 +266,7 @@ async fn the_launch_providers_command_key_runs_for_each_request() {
 }
 
 /// Launch and a `/model` switch find a provider's key by one chain: a sign-in first, then the
-/// provider's own variable, then the key its block names, and for a provider Luxe does not know,
+/// provider's own variable, then the key its block names, and for a provider luxe does not know,
 /// its block before `OPENAI_API_KEY`. So a configured key always beats a key meant for another
 /// provider, and which one goes out never depends on how the session reached the provider.
 #[test]
@@ -329,7 +329,7 @@ fn launch_and_a_model_switch_send_the_same_key() {
     );
 }
 
-/// Which key each kind of provider settles on with nothing stored: a provider Luxe does not know
+/// Which key each kind of provider settles on with nothing stored: a provider luxe does not know
 /// takes the key written for it before the `OPENAI_API_KEY` fallback, and one it knows takes its
 /// own variable first.
 #[test]

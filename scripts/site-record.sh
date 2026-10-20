@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Record a demo for the website by driving the real Luxe in a real terminal.
+# Record a demo for the website by driving the real luxe in a real terminal.
 #
 # These used to be scripted through the reducer with no terminal involved, which made them exactly
 # reproducible and exactly as much work as writing the app twice. This runs the shipped binary
@@ -19,8 +19,8 @@
 #   --cols N          terminal columns (default 92 — see below)
 #   --rows N          terminal rows (default 28)
 #   --font-size N     Ghostty font size (default 13)
-#   --theme NAME      Luxe theme (default luxe)
-#   --project DIR     where to run Luxe (default: a scratch copy of web/demo)
+#   --theme NAME      luxe theme (default luxe)
+#   --project DIR     where to run luxe (default: a scratch copy of web/demo)
 #   --project-src DIR the project template to copy
 #   --project-name N  what the scratch copy is called, which is the name every surface shows
 #   --max-idle SECS   cap on a gap between frames after editing (default 1.2)
@@ -36,7 +36,7 @@
 #   --model P/ID      which model answers (default: LUXE_RECORD_MODEL, else whatever is remembered)
 #   --thinking LEVEL  reasoning level for the take
 #   --glyphs STYLE    glyph fidelity: auto, nerd, nerd_wide, unicode, ascii
-#   --bin DIR         put DIR first on Luxe's PATH (relative to web/demo-scripts), for stand-ins
+#   --bin DIR         put DIR first on luxe's PATH (relative to web/demo-scripts), for stand-ins
 #
 # Both are how a demo gets a starting state without spending a turn on it: a changes-and-commit
 # demo needs a dirty tree, and paying a provider to manufacture one so the demo can then talk about
@@ -52,7 +52,7 @@
 # character on a phone, which is the same as not being there. 92 carries a two-pane review and
 # still reads at 390px wide.
 #
-# The keystrokes go into Luxe's pty, never to the compositor. `wtype` was the obvious way to drive
+# The keystrokes go into luxe's pty, never to the compositor. `wtype` was the obvious way to drive
 # a TUI and it works right up until focus moves, after which every remaining key — `Ctrl+C`
 # included — is typed into whatever window took it. `scripts/site-drive.py` writes to the pty
 # instead, which cannot reach another window and does not need the recording to hold focus.
@@ -190,7 +190,7 @@ drive_log="${work}/drive.log"
 
 # === The terminal ===
 
-# Ghostty wears the Luxe palette. The app paints nearly every cell itself, but not the ones it has
+# Ghostty wears the luxe palette. The app paints nearly every cell itself, but not the ones it has
 # not reached yet — and a demo whose first frame is somebody else's background color announces that
 # it was staged.
 theme_json="${repo_root}/crates/luxe-core/src/themes/${theme}.json"
@@ -242,7 +242,7 @@ if [[ -z "$project" ]]; then
 	# cannot proceed, so an agent asked to commit correctly stops and asks who it is — which is good
 	# behavior and a poor demo, and it is the recorder's doing rather than something to talk the
 	# model out of in the prompt.
-	git -C "$project" config user.name "Luxe"
+	git -C "$project" config user.name "luxe"
 	git -C "$project" config user.email "demo@luxe.dev"
 	git -C "$project" add -A
 	git -C "$project" commit --quiet -m "Initial commit"
@@ -256,7 +256,7 @@ if [[ -n "$setup_cmd" ]]; then
 	(cd "$project" && DEMO_SCRIPTS="${repo_root}/web/demo-scripts" eval "$setup_cmd")
 fi
 
-# === Luxe's own config ===
+# === luxe's own config ===
 
 # Copied from the real one so the credentials and the model are the ones being demonstrated, then
 # overridden where a demo needs a fixed answer. Never the real directory: a take must not be able
@@ -270,7 +270,7 @@ if [[ -d "$real_config" ]]; then
 	find "$real_config" -maxdepth 1 -name '*.json' ! -name 'auth.json' ! -name 'mcp.json' \
 		-exec cp {} "${config_home}/luxe/" \;
 	# Linked, not copied. An OAuth credential rotates: the provider hands back a new refresh token
-	# and invalidates the one just used, and Luxe writes it to whichever auth file it was given. A
+	# and invalidates the one just used, and luxe writes it to whichever auth file it was given. A
 	# copy in a scratch directory therefore takes the rotation with it when the directory is
 	# deleted, and every later take authenticates with a token the provider has already retired —
 	# which is a signed-out account after one recording, not a recording problem you notice at the
@@ -325,7 +325,7 @@ luxe_args=()
 [[ -n "$thinking" ]] && luxe_args+=(--thinking "$thinking")
 
 # A stand-in for a program the demo project has no real counterpart for, like `gh` for a repository
-# that doesn't exist. First on PATH, so Luxe and every command the model runs find it.
+# that doesn't exist. First on PATH, so luxe and every command the model runs find it.
 record_path="$PATH"
 if [[ -n "$bin_dir" ]]; then
 	[[ "$bin_dir" == /* ]] || bin_dir="${repo_root}/web/demo-scripts/${bin_dir}"
@@ -357,7 +357,7 @@ trap cleanup EXIT
 # rather than a convenience.
 #
 # A take does not need to be seen: the recording comes from the pty the driver owns, and a hidden
-# GTK window still answers the device queries Luxe asks. What an on-screen window *does* do is sit
+# GTK window still answers the device queries luxe asks. What an on-screen window *does* do is sit
 # in the way — it takes focus, it lands on whichever monitor the pointer last touched, and the
 # operator cannot use their machine without wondering whether they just spoiled a minute of
 # recording. `silent` keeps the workspace from being switched to.

@@ -62,10 +62,10 @@ impl ProviderAuth {
         changed
     }
 
-    /// Ask every Azure resource Luxe is set up for what it has deployed, answering whether any
+    /// Ask every Azure resource luxe is set up for what it has deployed, answering whether any
     /// recorded list moved.
     ///
-    /// Deployments change in a portal Luxe never sees, so the list is re-read rather than trusted
+    /// Deployments change in a portal luxe never sees, so the list is re-read rather than trusted
     /// from login. One request per resource, not per provider: the three Foundry providers share
     /// one. A resource that does not answer in time, refuses the key, or no longer has the route
     /// leaves its recorded list standing, and `"discover_deployments": false` on any of its

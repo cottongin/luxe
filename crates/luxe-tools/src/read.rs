@@ -259,7 +259,7 @@ impl ReadTool {
 /// `lines[start..end]` as a result, each line numbered, kept under [`READ_MAX_CHARS`] by cutting at
 /// a line boundary.
 ///
-/// Numbered because Luxe's other tools take line numbers as input (`lsp_navigation` positions,
+/// Numbered because luxe's other tools take line numbers as input (`lsp_navigation` positions,
 /// `debug` breakpoints, `read`'s own `offset`), and a line the agent has to count to is one it gets
 /// wrong. A result that stops early closes with the exact `offset` to continue from. The line cap
 /// cannot bound a minified file, one enormous line, so the character budget is counted as lines

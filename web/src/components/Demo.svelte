@@ -232,7 +232,7 @@
 
   /* The terminal's own background, not the site's raised surface.
 
-     Luxe paints a background into most of its cells rather than leaving them default, so a plate
+     luxe paints a background into most of its cells rather than leaving them default, so a plate
      in any other color splits the picture in two: painted cells become dark rectangles and
      unpainted ones show the plate through. It reads as a corrupted capture, and it is the reason
      these looked broken in a browser while the recording itself was clean. `--luxe-capture-bg` is

@@ -71,7 +71,7 @@ impl Sanitized {
         }
         if self.withheld {
             return Some(format!(
-                "{name}: left out of the prompt — it repeats link definitions more often than Luxe \
+                "{name}: left out of the prompt — it repeats link definitions more often than luxe \
                  can check for hidden text"
             ));
         }
@@ -132,7 +132,7 @@ const PLACEHOLDER: char = '\u{7f}';
 
 /// The whole text of a withheld file, so every caller passes the reason on rather than an empty
 /// string.
-const WITHHELD: &str = "[withheld: this file repeats link definitions more often than Luxe can \
+const WITHHELD: &str = "[withheld: this file repeats link definitions more often than luxe can \
                         check for hidden text]";
 
 /// Characters that put text on the page without putting it in front of anyone.
@@ -175,7 +175,7 @@ pub enum ContextScope {
     Global,
     /// The top of the checkout, or the project directory when there is none
     Project,
-    /// A folder below that, on the way down to where Luxe was launched
+    /// A folder below that, on the way down to where luxe was launched
     Folder,
 }
 
@@ -226,7 +226,7 @@ pub fn context_files(cwd: &std::path::Path) -> Vec<ContextFile> {
 
 /// Marks each file that repeats an earlier one, by identity first and then by text.
 ///
-/// Byte-identical text is the only overlap Luxe settles on its own. Two files that say *mostly*
+/// Byte-identical text is the only overlap luxe settles on its own. Two files that say *mostly*
 /// the same thing are two files someone wrote, and choosing between their sentences is the
 /// author's job.
 fn dedupe(found: impl Iterator<Item = (std::path::PathBuf, ContextScope)>) -> Vec<ContextFile> {
@@ -263,15 +263,15 @@ pub fn project_context_file(cwd: &std::path::Path) -> std::path::PathBuf {
     top.unwrap_or_else(|| cwd.to_path_buf()).join(INSTRUCTION_FILES[0])
 }
 
-/// The global instruction file Luxe creates when asked: `~/.config/luxe/agents.md`.
+/// The global instruction file luxe creates when asked: `~/.config/luxe/agents.md`.
 pub fn global_context_file() -> std::path::PathBuf {
     crate::user_dirs::luxe_config_dir().join("agents.md")
 }
 
-/// Every global instruction file Luxe reads, broadest first, whether or not it exists.
+/// Every global instruction file luxe reads, broadest first, whether or not it exists.
 ///
 /// `~/.agents/AGENTS.md` is the file a growing number of people keep for *every* agent they run,
-/// and Luxe's own sits after it so the Luxe-specific word lands later. Somebody who symlinked one to
+/// and luxe's own sits after it so the luxe-specific word lands later. Somebody who symlinked one to
 /// the other gets it once.
 pub fn global_context_files() -> Vec<std::path::PathBuf> {
     let shared = crate::user_dirs::home_dir().map(|home| home.join(".agents").join("AGENTS.md"));

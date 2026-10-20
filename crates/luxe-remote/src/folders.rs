@@ -1,7 +1,7 @@
 //! Folders — where a device can start a session.
 //!
-//! The folders Luxe is running in now, the ones herdr's panes are in, and the ones the bridge has
-//! seen Luxe running in before, remembered in a small file. Never a scan of the home folder: the
+//! The folders luxe is running in now, the ones herdr's panes are in, and the ones the bridge has
+//! seen luxe running in before, remembered in a small file. Never a scan of the home folder: the
 //! list is where you've already worked.
 
 use std::collections::HashMap;
@@ -40,7 +40,7 @@ struct Sighting {
     last_seen: u64,
 }
 
-/// The folders the bridge has seen Luxe running in.
+/// The folders the bridge has seen luxe running in.
 #[derive(Debug, Clone)]
 pub(crate) struct FolderBook {
     file: JsonFile,
@@ -52,12 +52,12 @@ impl FolderBook {
         Self { file: JsonFile::new(path, FileMode::OwnerOnly) }
     }
 
-    /// Where it lives unless told otherwise: Luxe's state folder, since it's a record of use.
+    /// Where it lives unless told otherwise: luxe's state folder, since it's a record of use.
     pub(crate) fn default_path() -> PathBuf {
         luxe_core::user_dirs::luxe_state_dir().join("remote-folders.json")
     }
 
-    /// Notes that Luxe is running in each of `running` now.
+    /// Notes that luxe is running in each of `running` now.
     pub(crate) fn saw(&self, running: &[String]) -> Result<(), FileError> {
         let now = now();
         let since = now.saturating_sub(RESIGHTING_SECS);

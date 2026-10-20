@@ -1,7 +1,7 @@
 //! Glyph state — the vocabulary and braille switch every glyph call reads, set once at startup.
 
-use super::detect::braille_available;
-use super::GlyphTier;
+use super::detect::{braille_available, brands_available};
+use super::{GlyphTier, Icon};
 use luxe_core::config::GlyphStyle;
 use std::sync::atomic::{AtomicU8, Ordering};
 
@@ -21,8 +21,30 @@ static BRAILLE: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::n
 /// and `/reload`. Setting the tier and forgetting the sweep is the mistake this exists to make
 /// impossible.
 pub fn resolve_vocabulary(preference: GlyphStyle) {
-    set_tier(GlyphTier::resolve(preference));
+    let tier = GlyphTier::resolve(preference);
+    set_tier(tier);
     set_braille(braille_available());
+    set_brands(matches!(tier, GlyphTier::Nerd | GlyphTier::NerdWide) && brands_available());
+}
+
+/// Brand marks newer than the rest of the vocabulary: OpenAI's and Claude's arrived in Nerd Fonts
+/// 3.5, Copilot's after 3.0. They stay out of the nerd-tier probe, so an older font keeps every
+/// other icon, and are drawn only when [`brands`] says a font on the machine has them.
+pub const RECENT_BRANDS: &[Icon] =
+    &[Icon::ProviderOpenAi, Icon::ProviderAnthropic, Icon::ProviderCopilot];
+
+/// Whether the [`RECENT_BRANDS`] may be drawn. Off by default for the same reason as [`BRAILLE`]:
+/// a test or a site asset draws the same on any machine.
+static BRANDS: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Whether the recent brand marks are drawn, rather than the mark each falls back to.
+pub fn brands() -> bool {
+    BRANDS.load(Ordering::Relaxed)
+}
+
+/// Turns the recent brand marks on or off. Exposed for tests and for the startup probe.
+pub fn set_brands(available: bool) {
+    BRANDS.store(available, Ordering::Relaxed);
 }
 
 /// Whether the spinner is currently drawing its braille sweep.

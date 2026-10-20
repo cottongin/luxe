@@ -1,6 +1,6 @@
 //! `luxe doctor` — is the tooling on this machine actually going to work?
 //!
-//! Luxe launches language servers and debug adapters; it does not install them, and it does not
+//! luxe launches language servers and debug adapters; it does not install them, and it does not
 //! bundle them: installation would mean owning each language's package manager and update policy.
 //! A broken or absent one can otherwise stay invisible until a tool call comes back empty.
 //!
@@ -63,7 +63,7 @@ async fn language_servers() {
     let configured: std::collections::HashSet<String> = user.keys().cloned().collect();
     for language in registry.merge_patches(user) {
         say(&format!(
-            "  FAIL  {language:<12} lsp-servers.json gives no `command`, and Luxe ships none"
+            "  FAIL  {language:<12} lsp-servers.json gives no `command`, and luxe ships none"
         ));
     }
     let mut languages: Vec<(&String, &ServerEntry)> = registry.iter().collect();

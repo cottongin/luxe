@@ -105,7 +105,7 @@ impl App {
             },
             ConfigFile {
                 name: "models.json",
-                detail: "Providers, models, and which one Luxe starts on",
+                detail: "Providers, models, and which one luxe starts on",
                 path: luxe_core::user_dirs::luxe_config_file("models.json"),
             },
             ConfigFile { name: "auth.json", detail: "Credentials — written 0600", path: auth },

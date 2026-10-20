@@ -85,7 +85,7 @@ impl ColorValue {
     }
 }
 
-/// Where the user's own themes live: `themes/` in Luxe's config directory.
+/// Where the user's own themes live: `themes/` in luxe's config directory.
 pub fn user_themes_dir() -> std::path::PathBuf {
     crate::user_dirs::luxe_config_dir().join("themes")
 }
@@ -115,7 +115,7 @@ crate::error_cause::from_cause!(ThemeError {
     std::io::Error => Io,
 });
 
-/// The built-in themes, embedded. Luxe's own leads: it is what a first launch resolves to.
+/// The built-in themes, embedded. luxe's own leads: it is what a first launch resolves to.
 ///
 /// The rest are community favorites, and Omarchy's dark themes, so a desktop running one gets the
 /// hand-checked version rather than one derived from its palette on the fly (see [`crate::omarchy`]).
@@ -291,7 +291,7 @@ impl Theme {
     pub fn schema_json() -> &'static str {
         r#"{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Luxe theme",
+  "title": "luxe theme",
   "type": "object",
   "required": ["name", "colors"],
   "properties": {
@@ -350,7 +350,7 @@ const STANDARD_COLORS: &[(&str, &str)] = &[
 
 /// Names a built-in used to go by, and the theme each one is now.
 ///
-/// `dark` was Catppuccin Mocha under a generic name, so it is `catppuccin`. Luxe is drawn for a
+/// `dark` was Catppuccin Mocha under a generic name, so it is `catppuccin`. luxe is drawn for a
 /// dark canvas, so a retired light theme maps to the dark one it was the counterpart of (a light
 /// theme of your own is one file in `themes/`). A config that still names one gets that theme
 /// rather than a warning and the default, and a theme file of any of these names is somebody's real

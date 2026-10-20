@@ -22,7 +22,7 @@ pub enum EngineError {
     ///
     /// The gate, rather than the courtesy: a front-end should ask before it submits, and this is
     /// what holds when one does not. See [`crate::provider::ModelRef::is_unset`].
-    #[error("no model selected — pick one with /model, or start Luxe with --model <provider/id>")]
+    #[error("no model selected — pick one with /model, or start luxe with --model <provider/id>")]
     NoModel,
 }
 
@@ -48,7 +48,7 @@ mod tests {
         let session = SessionError::Other("gone".into());
         let session_said = format!("session error: {session}");
         let no_model =
-            "no model selected — pick one with /model, or start Luxe with --model <provider/id>";
+            "no model selected — pick one with /model, or start luxe with --model <provider/id>";
         let cases: [(EngineError, String, bool); 5] = [
             (provider.into(), provider_said, false),
             (session.into(), session_said, false),

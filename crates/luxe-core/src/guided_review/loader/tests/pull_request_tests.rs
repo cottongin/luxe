@@ -11,7 +11,7 @@ fn git(dir: &Path, args: &[&str]) -> String {
 }
 
 fn identify(dir: &Path) {
-    git(dir, &["config", "user.name", "Luxe Tests"]);
+    git(dir, &["config", "user.name", "luxe Tests"]);
     git(dir, &["config", "user.email", "tests@luxe.local"]);
 }
 

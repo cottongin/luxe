@@ -107,7 +107,7 @@ pub(crate) fn engine_config(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,
@@ -235,7 +235,7 @@ async fn a_session_held_by_another_process_is_not_switched_to() {
         _ => None,
     })
     .await;
-    assert!(refusal.contains("open in another Luxe"), "{refusal}");
+    assert!(refusal.contains("open in another luxe"), "{refusal}");
     let claimed = std::fs::File::open(&my_lock).unwrap().try_lock().is_err();
     assert!(claimed, "the engine doesn't hold the session it's on");
     turn(&actions, &mut events, "still in my session").await;

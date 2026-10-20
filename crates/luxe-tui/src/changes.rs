@@ -380,7 +380,7 @@ impl ChangesView {
 
     /// The path one step from the visible file, wrapping at both ends.
     ///
-    /// Wraps because the list is short and circular movement is what every other picker in Luxe
+    /// Wraps because the list is short and circular movement is what every other picker in luxe
     /// does; stopping dead at the last file would read as a broken key. A visible file that has
     /// left the list — reverted while it was open — steps back *onto* the list rather than off it.
     pub(crate) fn step(&self, forward: bool) -> Option<String> {

@@ -32,7 +32,7 @@ pub enum McpTransport {
         /// Working directory for the process.
         cwd: Option<PathBuf>,
         /// Extra environment variables for the child process. Values support `${VAR}` and
-        /// `$env:VAR` interpolation against Luxe's own environment.
+        /// `$env:VAR` interpolation against luxe's own environment.
         #[serde(default)]
         env: std::collections::HashMap<String, String>,
     },
@@ -114,7 +114,7 @@ pub enum McpAuth {
     ///
     /// Spelled `oauth`, as every example in the docs writes it. `snake_case` alone made it
     /// `o_auth`, so a hand-written `"kind": "oauth"` failed to parse and took the whole file with it;
-    /// `o_auth` is still read, since that is what Luxe itself would have written.
+    /// `o_auth` is still read, since that is what luxe itself would have written.
     #[serde(rename = "oauth", alias = "o_auth")]
     OAuth(OAuthConfig),
 }
@@ -276,7 +276,7 @@ pub struct McpToolResult {
     pub error: Option<String>,
 }
 
-/// The MCP protocol version Luxe speaks, on both transports and the OAuth probe.
+/// The MCP protocol version luxe speaks, on both transports and the OAuth probe.
 pub const MCP_PROTOCOL_VERSION: &str = "2025-06-18";
 
 /// Expands `${VAR}` and `$env:VAR` from the environment, left to right, whichever marker comes

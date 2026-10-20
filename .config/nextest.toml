@@ -1,6 +1,6 @@
 # Nextest configuration — https://nexte.st/docs/configuration/
 #
-# The point of this file is a per-test timeout safety net. Luxe's test *execution* is fast
+# The point of this file is a per-test timeout safety net. luxe's test *execution* is fast
 # (~30s for the whole workspace once compiled), but a genuinely hung or runaway test — e.g. a
 # process-spawning integration test that never reaps its child, or the historical review-gate
 # fork bomb — could otherwise wedge the machine for many minutes. Nextest kills any test that

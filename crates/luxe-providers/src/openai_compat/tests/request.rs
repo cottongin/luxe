@@ -227,7 +227,7 @@ fn attribution_headers_go_only_where_they_were_asked_for() {
     let req = thinking_request(ModelInfo::default(), ThinkingLevel::Off);
     let named =
         request_headers(&CompatFlags { openrouter_headers: true, ..Default::default() }, &req);
-    assert_eq!(named, vec![("HTTP-Referer", LUXE_HOME), ("X-Title", "Luxe")]);
+    assert_eq!(named, vec![("HTTP-Referer", LUXE_HOME), ("X-Title", "luxe")]);
     assert!(request_headers(&CompatFlags::default(), &req).is_empty());
     assert!(
         !request_headers(&CompatFlags { copilot_headers: true, ..Default::default() }, &req)
@@ -290,7 +290,7 @@ fn qwen_formats_use_boolean_thinking_after_level_clamping() {
     assert_eq!(local_high["chat_template_kwargs"]["preserve_thinking"], true);
 }
 
-/// A template's thinking vocabulary is the template's, not Luxe's: Qwen3.8 takes a
+/// A template's thinking vocabulary is the template's, not luxe's: Qwen3.8 takes a
 /// `reasoning_effort` argument and can be told *not* to preserve thinking, neither of which
 /// the fixed two-key object could express.
 #[test]

@@ -77,7 +77,10 @@ impl Reading {
     fn prompt(&self, event: &Event) -> Option<Heard> {
         let (id, body) = match event {
             Event::PermissionRequested { id, tool, .. } => (id.as_str(), format!("Approve {tool}")),
-            Event::QuestionAsked { id, .. } => (id.as_str(), "Luxe has a question".to_string()),
+            // The agent asks, not the app: luxe is the title the notification already carries
+            Event::QuestionAsked { id, .. } => {
+                (id.as_str(), "The agent has a question for you".to_string())
+            }
             _ => return None,
         };
         Some(Heard::Prompt(id.to_string(), self.notice(body, true)))
@@ -102,7 +105,7 @@ impl Reading {
 
 /// Whether `event` shows a turn running. The engine says so with `TurnStarted`, which comes
 /// first; the message that opened the turn, or anything it streams, stands in for it from a
-/// session whose Luxe predates that event.
+/// session whose luxe predates that event.
 fn is_turn_sign(event: &Event) -> bool {
     match event {
         Event::TurnStarted

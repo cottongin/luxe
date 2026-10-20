@@ -226,7 +226,7 @@ fn the_text_tier_paints_nothing_and_admits_it() {
     assert!(!store.paint_row(&mut buf, (0, 0), &ImageKey::new("missing"), fit, 0, Color::Reset));
 }
 
-/// Ids are global to the terminal, so two Luxe windows must not hand out the same one from the
+/// Ids are global to the terminal, so two luxe windows must not hand out the same one from the
 /// first frame and quietly replace each other's images.
 #[test]
 fn image_ids_stay_inside_the_protocols_range() {

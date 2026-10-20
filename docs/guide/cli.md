@@ -68,7 +68,7 @@ luxe --headless -p "list the TODO comments in src/" --format text
 ```
 
 A headless run needs `-p` and a model: `--model`, `LUXE_MODEL`, your last choice or `default_model`
-in `models.json`. It refuses to start without either. It exits with status 1 when the turn fails or Luxe stops before the turn ends, so a
+in `models.json`. It refuses to start without either. It exits with status 1 when the turn fails or luxe stops before the turn ends, so a
 script can tell a failure from an answer without reading the output.
 
 ## Commands
@@ -80,15 +80,15 @@ script can tell a failure from an answer without reading the output.
 | `luxe auth status [provider]` | A credential's type, where it came from, and when it expires |
 | `luxe auth logout <provider>` | Remove a stored credential |
 | `luxe models list` | Models you can use. `--provider <id>` filters, `--configured` lists only the models `models.json` or `auth.json` names. |
-| `luxe models show <provider/id>` | What Luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
+| `luxe models show <provider/id>` | What luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
 | `luxe models refresh` | Refresh the model catalog. `--force` even if it is fresh. |
 | `luxe sessions list` | Sessions in this project, newest first |
-| `luxe join [id]` | Join a session another Luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the Luxe's process id; without one, it joins the session running in this folder. |
+| `luxe join [id]` | Join a session another luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the luxe's process id; without one, it joins the session running in this folder. |
 | `luxe join --list` | Sessions running on this machine that can be joined |
 | `luxe remote` | Serve this machine's sessions to your own phone or tablet. Listens on this machine only, for Tailscale Serve to carry to your devices, and lets in this machine's tailnet owner from a paired device. |
 | `luxe remote --port <n>` | The port it listens on (default 4519) |
 | `luxe remote --allow <login>` | Also let this tailnet login in, as Tailscale names it (`alex@github`). Repeatable. |
-| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside Luxe asks first. |
+| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside luxe asks first. |
 | `luxe remote pair` | Show a QR code and link that pair one phone or tablet. They work once, within ten minutes. |
 | `luxe remote devices` | The paired devices |
 | `luxe remote devices revoke <id>` | Unpair a device. Its open sessions close within a few seconds. |
@@ -105,7 +105,7 @@ script can tell a failure from an answer without reading the output.
 | `luxe loop fresh` | Reset the run's turn count; see [Autonomous runs](loop.md#start-a-run) |
 | `luxe docs [page]` | Read this guide, offline and for the installed version. `--search <words>` finds lines across every page. |
 | `luxe doctor` | Check which tools, language servers and debug adapters work |
-| `luxe update` | Update Luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
+| `luxe update` | Update luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
 | `luxe init` | Set up a theme, a provider, the tools and the start screen, and write them to `~/.config/luxe/config.json`. `--defaults` skips the questions, `--force` starts from an empty file; see [Editing](configuration.md#editing). |
 | `luxe wire <log>` | Summarize a `LUXE_WIRE_LOG` capture; see [Troubleshooting](troubleshooting.md#see-what-is-sent-to-the-model). `--tools` breaks the tool schemas' size down per tool. |
 

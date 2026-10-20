@@ -318,7 +318,7 @@ fn worktree_command(app: &mut App, arguments: Option<&str>) {
         ),
         (Some("remove"), Some(_), Some(root)) => {
             // Asked of git now, not read from the last snapshot, which may predate a file made
-            // outside Luxe
+            // outside luxe
             if app.send_action(Action::CheckWorktreeRemoval, "check the worktree") {
                 app.worktree_removal_check = Some(root);
             }

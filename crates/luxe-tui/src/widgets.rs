@@ -8,6 +8,7 @@ mod fit;
 mod gauge;
 mod language_glyph;
 mod panel;
+mod provider_glyph;
 mod scrollbar;
 mod slab;
 pub(crate) mod text_field;
@@ -28,7 +29,8 @@ pub use panel::{
     code_spans, footed_body, key_hint, key_hint_row, panel_block, panel_title, panel_title_width,
     render_footed, render_footer, split_footer, titled_panel, FOOTER_ROWS, PANEL_BORDER_TYPE,
 };
-pub use scrollbar::{drag_offset, scrollbar, steered_scrollbar};
+pub(crate) use provider_glyph::provider_icon;
+pub use scrollbar::{drag_offset, list_rows_width, list_scrollbar, scrollbar, steered_scrollbar};
 pub use slab::{
     badge, fade, idle_badge, ramp, selection_block, selection_row, selection_row_on, slab, Cap,
     Fade, FADE_CELLS, SELECTION_FRAME, SELECTION_INSET, SLAB_FRAME,

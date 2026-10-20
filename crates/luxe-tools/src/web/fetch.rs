@@ -3,13 +3,13 @@
 use super::*;
 
 /// Default polite user agent.
-pub(super) const UA_DEFAULT: &str = concat!("Luxe/", env!("CARGO_PKG_VERSION"));
+pub(super) const UA_DEFAULT: &str = concat!("luxe/", env!("CARGO_PKG_VERSION"));
 /// Browser-like user agent for the bot-protection-bypass fallback.
 pub(super) const UA_STEALTH: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 /// Whether `web_fetch` may read from the machine it runs on.
 ///
-/// It may. Luxe ships an unrestricted `bash`, so `curl http://127.0.0.1:4321` is already a tool call
+/// It may. luxe ships an unrestricted `bash`, so `curl http://127.0.0.1:4321` is already a tool call
 /// away — refusing the same origin here protects nothing and costs the ordinary case of reading your
 /// own dev server. The boundary that *is* real (private LAN, cloud metadata) is unaffected; see
 /// [`crate::ssrf`].

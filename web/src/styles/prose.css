@@ -136,6 +136,21 @@
 	color: var(--luxe-muted);
 }
 
+/* Phone screenshots, taken of the real app by its test harness: side by side at about a phone's
+   size, each on a plate, wrapping to one a row on a narrow screen. */
+.prose-body p:has(> img) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-4);
+	max-width: none;
+}
+
+.prose-body p > img {
+	width: min(100%, 17rem);
+	height: auto;
+	border: var(--border);
+}
+
 /* A config example names its file, as a tab on the block: where to paste it is half the example. */
 .prose-body .code-file {
 	margin-inline: 0;

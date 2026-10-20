@@ -2,7 +2,7 @@
 title: "How the agent works"
 summary: "How the agent writes to you, asks you questions, plans, and gets a second opinion."
 order: 11
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## How it writes
@@ -60,7 +60,7 @@ nor the tools, so it does not re-read the conversation at full price.
 
 In plan mode the agent asks its open questions one at a time, then writes the plan as one
 `## Phase N` section per phase, numbered from 0, which is the shape [`luxe loop`](loop.md) works
-through. When a turn writes the plan, Luxe asks what next:
+through. When a turn writes the plan, luxe asks what next:
 
 - **Build it here**, with the planning conversation still in context
 - **Build it in a fresh session**, starting from `PLAN.md` alone
@@ -113,10 +113,12 @@ In order, the first that is set:
 
 1. `--model` and `--thinking` on the command line
 2. `LUXE_MODEL` and `LUXE_PROVIDER` in the environment
-3. The model you last chose
-4. `default_model` in `models.json`
+3. The model you last chose in this project
+4. The model you last chose anywhere
+5. `default_model` in `models.json`
 
-Luxe never picks a model for you. With none of these set, sending a message opens the model picker,
+luxe never picks a model for you, and signing in doesn't either: the model picker opens at the top
+of the list for you to choose. With none of these set, sending a message opens the model picker,
 and `--headless` and the loop refuse to start. To always start from your configured default rather
 than your last choice:
 

@@ -34,7 +34,7 @@ pub enum EntryKind {
     /// What one cache-warming call cost ([`crate::cache_warming`]).
     ///
     /// A kind of its own rather than a [`EntryKind::Usage`] with a new source, because a source an
-    /// older Luxe can't parse fails that entry as corrupt and takes the whole session load with it,
+    /// older luxe can't parse fails that entry as corrupt and takes the whole session load with it,
     /// while an unknown *kind* degrades to [`EntryKind::Unknown`] and is skipped. Inert for context
     /// assembly, and counted under [`crate::usage::UsageSource::CacheWarm`] on resume.
     CacheWarm {
@@ -71,7 +71,7 @@ pub enum EntryKind {
         /// Where the worktree was, relative to the project
         path: String,
     },
-    /// An entry written by a newer Luxe than this one.
+    /// An entry written by a newer luxe than this one.
     ///
     /// A session log is append-only and shared across versions, so an unrecognized kind must not
     /// make the whole transcript unreadable. It is kept (never rewritten) so the parent chain —
@@ -98,7 +98,7 @@ pub struct Entry {
 /// Hand-written because the derive cannot deliver what [`EntryKind::Unknown`] promises.
 /// `#[serde(other)]` may only sit on a *unit* variant, and in an adjacently tagged enum serde will
 /// only match one when the content field is absent — so `{"kind":"future","data":{…}}`, which is
-/// what a newer Luxe actually writes, failed the whole load and took every earlier entry with it.
+/// what a newer luxe actually writes, failed the whole load and took every earlier entry with it.
 ///
 /// The retry below is what separates "a kind we have never heard of" from "a kind we know, written
 /// wrong". Every known variant carries fields, so stripping `data` and trying again can only

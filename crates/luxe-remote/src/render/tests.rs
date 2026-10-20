@@ -135,7 +135,7 @@ fn words_alone_say_nothing_is_attached() {
     assert_eq!(html, "<p class=\"words\">hi</p>");
 }
 
-/// The break this catches: a brief Luxe wrote shown whole, as a page of instructions in the
+/// The break this catches: a brief luxe wrote shown whole, as a page of instructions in the
 /// reader's colors.
 #[test]
 fn a_brief_shows_as_one_line() {

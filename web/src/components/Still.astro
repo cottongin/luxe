@@ -6,7 +6,7 @@
  * code it argues about, and a reader meeting that for the first time needs to stop on it — played
  * at demo speed it registers as motion rather than as information. So these come from the same
  * captures the demos do, cut with `scripts/cast-still.py`, and there is still one source of truth
- * for what Luxe looks like.
+ * for what luxe looks like.
  *
  * A recording bakes its colors in, and the site is drawn in the same theme it was recorded in.
  *
@@ -21,7 +21,7 @@ interface Props {
    * Where the picture comes from: a frame cut out of a recording (the default), or a fixture
    * `scripts/site-assets.sh` generates from the production view path.
    *
-   * Either way it is Luxe's own theme, so a fixture and a recording beside it are one product.
+   * Either way it is luxe's own theme, so a fixture and a recording beside it are one product.
    */
   from?: "captures" | "generated";
   /**
@@ -134,7 +134,7 @@ const capture = (basename: string, variant: string) => {
     position: relative;
   }
 
-  /* The terminal's own background, for the reason `Demo` documents at length: Luxe paints a
+  /* The terminal's own background, for the reason `Demo` documents at length: luxe paints a
      background into most cells, so a plate in any other color turns the painted ones into
      rectangles. Generated from the dark theme, and it does not follow the page's mode because the
      capture does not either. */

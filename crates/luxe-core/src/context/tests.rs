@@ -26,7 +26,7 @@ fn ctx() -> PromptContext {
     }
 }
 
-/// An agent that can run commands is told where Luxe's own guide is, so a question about Luxe
+/// An agent that can run commands is told where luxe's own guide is, so a question about luxe
 /// is answered from it; one that cannot run `luxe docs` is not told about it.
 #[test]
 fn the_prompt_points_at_luxes_own_guide() {
@@ -122,7 +122,7 @@ fn the_harness_names_no_tool_it_cannot_offer() {
 /// It is product, not taste. A model asked for something it cannot determine will reach for a
 /// plausible answer instead of admitting the gap, and a fabricated one is worse than a refusal
 /// precisely because nothing distinguishes it from a real one — so each clause here is a
-/// specific shape that failure takes, and losing any of them silently makes Luxe less
+/// specific shape that failure takes, and losing any of them silently makes luxe less
 /// trustworthy rather than merely less tidy.
 #[test]
 fn the_honesty_contract_is_always_on() {
@@ -285,7 +285,7 @@ fn no_live_work_state_reaches_the_cached_prefix() {
 /// It is product, not taste: "write a test" is an instruction a model already follows, and
 /// following only that is what produced the hollow suites this section exists to prevent. Each
 /// clause below is one of those failure shapes, so losing any of them silently is a
-/// regression in what Luxe writes rather than in how it reads.
+/// regression in what luxe writes rather than in how it reads.
 #[test]
 fn the_testing_contract_is_always_on() {
     {

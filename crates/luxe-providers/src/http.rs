@@ -1,7 +1,7 @@
 //! One HTTP client for the whole process.
 //!
 //! `reqwest::Client` owns a connection pool and a TLS configuration, so building one per request
-//! throws away keep-alive and pays a fresh handshake every turn. It also stops being free once Luxe
+//! throws away keep-alive and pays a fresh handshake every turn. It also stops being free once luxe
 //! registers an adapter per known provider: twenty pools for one active conversation.
 //!
 //! Cloning the handle is cheap and shares the pool, which is the intended usage.

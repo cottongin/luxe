@@ -43,7 +43,7 @@ pub(super) fn pull_request_failure(error: &PullRequestResolveError) -> GuidedRev
             GuidedReviewFailure::unavailable(format!("Could not run `gh`: {source}."))
         }
         GitHubError::Unreadable(_) => GuidedReviewFailure::unavailable(
-            "`gh` answered with something Luxe could not read. Updating the GitHub CLI may fix it.",
+            "`gh` answered with something luxe could not read. Updating the GitHub CLI may fix it.",
         ),
         GitHubError::RateLimited => GuidedReviewFailure::unavailable(
             "GitHub's rate limit for this account is spent. It refills within the hour.",

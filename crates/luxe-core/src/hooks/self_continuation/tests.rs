@@ -209,3 +209,24 @@ async fn test_self_continuation_hook_stopped_sentinel() {
     // STOP sentinel exists -> Continue.
     assert!(matches!(outcome, HookOutcome::Continue));
 }
+
+/// The notice is pinned as a literal, since the loop view reads it, and the parser reads it back.
+#[test]
+fn the_iteration_notice_reads_back() {
+    assert_eq!(iteration_notice(4, 1), "iteration 4 · phase 1");
+    assert_eq!(parse_iteration_notice("iteration 4 · phase 1"), Some((4, 1)));
+}
+
+/// Every other notice, a near miss included, is not an iteration.
+#[test]
+fn other_notices_are_not_iterations() {
+    for notice in [
+        "phase 0 accepted — now on phase 1",
+        "iteration 4",
+        "iteration x · phase 1",
+        "iteration 4 · phase one",
+        "",
+    ] {
+        assert_eq!(parse_iteration_notice(notice), None, "{notice}");
+    }
+}

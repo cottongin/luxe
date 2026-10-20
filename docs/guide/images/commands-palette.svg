@@ -10,7 +10,7 @@
     <rect x="10" y="88" width="10" height="22" fill="#242e25"/>
     <rect x="970" y="88" width="10" height="22" fill="#242e25"/>
     <rect x="10" y="110" width="10" height="22" fill="#242e25"/>
-    <rect x="40" y="110" width="440" height="22" fill="#2e2b27"/>
+    <rect x="40" y="110" width="430" height="22" fill="#2e2b27"/>
     <rect x="970" y="110" width="10" height="22" fill="#242e25"/>
     <rect x="10" y="154" width="10" height="22" fill="#242e25"/>
     <rect x="970" y="154" width="10" height="22" fill="#242e25"/>
@@ -232,15 +232,18 @@
     <path fill="#2e2b27" d="M998.75 88.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 121.00L25.00 110.00M25.00 121.00L25.00 132.00"/>
     <path fill="#2e2b27" d="M35.00 110.00h5.00v22.00h-5.00z"/>
-    <path fill="#2e2b27" d="M480.00 110.00h5.00v22.00h-5.00z"/>
+    <path fill="#2e2b27" d="M470.00 110.00h5.00v22.00h-5.00z"/>
+    <path fill="#ddc084" d="M485.00 110.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 121.00L495.00 110.00M495.00 121.00L495.00 132.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 121.00L965.00 110.00M965.00 121.00L965.00 132.00"/>
     <path fill="#ddc084" d="M995.00 110.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 143.00L25.00 132.00M25.00 143.00L25.00 154.00"/>
+    <path fill="#ddc084" d="M485.00 132.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 143.00L495.00 132.00M495.00 143.00L495.00 154.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 143.00L965.00 132.00M965.00 143.00L965.00 154.00"/>
     <path fill="#ddc084" d="M995.00 132.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 165.00L25.00 154.00M25.00 165.00L25.00 176.00"/>
+    <path fill="#ddc084" d="M485.00 154.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 165.00L495.00 154.00M495.00 165.00L495.00 176.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 165.00L965.00 154.00M965.00 165.00L965.00 176.00"/>
     <path fill="#ddc084" d="M995.00 154.00h5.00v22.00h-5.00z"/>
@@ -290,71 +293,87 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M455.00 187.00L460.00 187.00M455.00 187.00L450.00 187.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M465.00 187.00L470.00 187.00M465.00 187.00L460.00 187.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M475.00 187.00L480.00 187.00M475.00 187.00L470.00 187.00"/>
-    <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M485.00 187.00L490.00 187.00M485.00 187.00L480.00 187.00"/>
+    <path fill="#ddc084" d="M485.00 176.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 187.00L495.00 176.00M495.00 187.00L495.00 198.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 187.00L965.00 176.00M965.00 187.00L965.00 198.00"/>
     <path fill="#ddc084" d="M995.00 176.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 209.00L25.00 198.00M25.00 209.00L25.00 220.00"/>
+    <path fill="#ddc084" d="M485.00 198.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 209.00L495.00 198.00M495.00 209.00L495.00 220.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 209.00L965.00 198.00M965.00 209.00L965.00 220.00"/>
     <path fill="#ddc084" d="M995.00 198.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 231.00L25.00 220.00M25.00 231.00L25.00 242.00"/>
+    <path fill="#ddc084" d="M485.00 220.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 231.00L495.00 220.00M495.00 231.00L495.00 242.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 231.00L965.00 220.00M965.00 231.00L965.00 242.00"/>
     <path fill="#ddc084" d="M995.00 220.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 253.00L25.00 242.00M25.00 253.00L25.00 264.00"/>
+    <path fill="#ddc084" d="M485.00 242.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 253.00L495.00 242.00M495.00 253.00L495.00 264.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 253.00L965.00 242.00M965.00 253.00L965.00 264.00"/>
     <path fill="#ddc084" d="M995.00 242.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 275.00L25.00 264.00M25.00 275.00L25.00 286.00"/>
+    <path fill="#ddc084" d="M485.00 264.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 275.00L495.00 264.00M495.00 275.00L495.00 286.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 275.00L965.00 264.00M965.00 275.00L965.00 286.00"/>
     <path fill="#ddc084" d="M995.00 264.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 297.00L25.00 286.00M25.00 297.00L25.00 308.00"/>
+    <path fill="#ddc084" d="M485.00 286.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 297.00L495.00 286.00M495.00 297.00L495.00 308.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 297.00L965.00 286.00M965.00 297.00L965.00 308.00"/>
     <path fill="#ddc084" d="M995.00 286.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 319.00L25.00 308.00M25.00 319.00L25.00 330.00"/>
+    <path fill="#ddc084" d="M485.00 308.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 319.00L495.00 308.00M495.00 319.00L495.00 330.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 319.00L965.00 308.00M965.00 319.00L965.00 330.00"/>
     <path fill="#ddc084" d="M995.00 308.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 341.00L25.00 330.00M25.00 341.00L25.00 352.00"/>
+    <path fill="#2e2b27" d="M488.75 330.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 341.00L495.00 330.00M495.00 341.00L495.00 352.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 341.00L965.00 330.00M965.00 341.00L965.00 352.00"/>
     <path fill="#ddc084" d="M995.00 330.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 363.00L25.00 352.00M25.00 363.00L25.00 374.00"/>
+    <path fill="#2e2b27" d="M488.75 352.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 363.00L495.00 352.00M495.00 363.00L495.00 374.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 363.00L965.00 352.00M965.00 363.00L965.00 374.00"/>
     <path fill="#ddc084" d="M995.00 352.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 385.00L25.00 374.00M25.00 385.00L25.00 396.00"/>
+    <path fill="#2e2b27" d="M488.75 374.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 385.00L495.00 374.00M495.00 385.00L495.00 396.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 385.00L965.00 374.00M965.00 385.00L965.00 396.00"/>
     <path fill="#ddc084" d="M995.00 374.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 407.00L25.00 396.00M25.00 407.00L25.00 418.00"/>
+    <path fill="#2e2b27" d="M488.75 396.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 407.00L495.00 396.00M495.00 407.00L495.00 418.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 407.00L965.00 396.00M965.00 407.00L965.00 418.00"/>
     <path fill="#ddc084" d="M995.00 396.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 429.00L25.00 418.00M25.00 429.00L25.00 440.00"/>
+    <path fill="#2e2b27" d="M488.75 418.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 429.00L495.00 418.00M495.00 429.00L495.00 440.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 429.00L965.00 418.00M965.00 429.00L965.00 440.00"/>
     <path fill="#ddc084" d="M995.00 418.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 451.00L25.00 440.00M25.00 451.00L25.00 462.00"/>
+    <path fill="#2e2b27" d="M488.75 440.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 451.00L495.00 440.00M495.00 451.00L495.00 462.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 451.00L965.00 440.00M965.00 451.00L965.00 462.00"/>
     <path fill="#ddc084" d="M995.00 440.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 473.00L25.00 462.00M25.00 473.00L25.00 484.00"/>
+    <path fill="#2e2b27" d="M488.75 462.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 473.00L495.00 462.00M495.00 473.00L495.00 484.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 473.00L965.00 462.00M965.00 473.00L965.00 484.00"/>
     <path fill="#ddc084" d="M995.00 462.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 495.00L25.00 484.00M25.00 495.00L25.00 506.00"/>
+    <path fill="#2e2b27" d="M488.75 484.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 495.00L495.00 484.00M495.00 495.00L495.00 506.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 495.00L965.00 484.00M965.00 495.00L965.00 506.00"/>
     <path fill="#ddc084" d="M995.00 484.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 517.00L25.00 506.00M25.00 517.00L25.00 528.00"/>
+    <path fill="#2e2b27" d="M488.75 506.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 517.00L495.00 506.00M495.00 517.00L495.00 528.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 517.00L965.00 506.00M965.00 517.00L965.00 528.00"/>
     <path fill="#ddc084" d="M995.00 506.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 539.00L25.00 528.00M25.00 539.00L25.00 550.00"/>
+    <path fill="#2e2b27" d="M488.75 528.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M495.00 539.00L495.00 528.00M495.00 539.00L495.00 550.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M965.00 539.00L965.00 528.00M965.00 539.00L965.00 550.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 561.00L25.00 550.00M25.00 561.00L25.00 572.00"/>
@@ -661,26 +680,26 @@
   <text x="0" y="61.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#ddc084">  󰍉 </tspan><tspan fill="#e4dfd6" font-weight="700">Command palette</tspan><tspan>                                                                            </tspan><tspan>  </tspan><tspan> </tspan></text>
   <text x="0" y="83.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan fill="#ddc084" font-weight="700"> Search: </tspan><tspan>                                                                                    </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
   <text x="0" y="105.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>                                                                                             </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="127.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">❯ </tspan><tspan fill="#e4dfd6" font-weight="700">Session cost</tspan><tspan>  </tspan><tspan fill="#97938c">/cost</tspan><tspan>                      </tspan><tspan>  </tspan><tspan> </tspan><tspan fill="#e4dfd6" font-weight="700">Session cost</tspan><tspan>                                 </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="149.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Review changes</tspan><tspan>  </tspan><tspan fill="#97938c">/diff</tspan><tspan>             </tspan><tspan fill="#97938c">ctrl+g</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">/cost</tspan><tspan>                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="171.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Change model</tspan><tspan>  </tspan><tspan fill="#97938c">/model</tspan><tspan>                      </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="193.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>                                               </tspan><tspan> </tspan><tspan fill="#e4dfd6">What this session has cost, by model and by</tspan><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="215.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Ask again</tspan><tspan>                          </tspan><tspan fill="#97938c">alt+t</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#e4dfd6">kind of token.</tspan><tspan>                               </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="237.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Auto-approve tool asks</tspan><tspan>  </tspan><tspan fill="#97938c">/permissions</tspan><tspan>      </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Browse files by keyboard</tspan><tspan>          </tspan><tspan fill="#97938c">ctrl+t</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">On a subscription it shows the allowance</tspan><tspan>     </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Change theme</tspan><tspan>  </tspan><tspan fill="#97938c">/theme</tspan><tspan>                      </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">left rather than dollars.</tspan><tspan>                    </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="303.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Compact the conversation</tspan><tspan>  </tspan><tspan fill="#97938c">/compact</tspan><tspan>        </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Configuration</tspan><tspan>  </tspan><tspan fill="#97938c">/config</tspan><tspan>                    </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Context Dock</tspan><tspan>  </tspan><tspan fill="#97938c">/dock</tspan><tspan>                </tspan><tspan fill="#97938c">alt+d</tspan><tspan>  </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="369.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Context window</tspan><tspan>  </tspan><tspan fill="#97938c">/context</tspan><tspan>                  </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Copy message</tspan><tspan>                       </tspan><tspan fill="#97938c">alt+y</tspan><tspan>  </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Credentials</tspan><tspan>  </tspan><tspan fill="#97938c">/auth</tspan><tspan>                        </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Debug adapters</tspan><tspan>  </tspan><tspan fill="#97938c">/debug</tspan><tspan>                    </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Edit and resend</tspan><tspan>                    </tspan><tspan fill="#97938c">alt+e</tspan><tspan>  </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Full tool output</tspan><tspan>                  </tspan><tspan fill="#97938c">ctrl+o</tspan><tspan>  </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="501.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">GitHub</tspan><tspan>  </tspan><tspan fill="#97938c">/github</tspan><tspan>                           </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="523.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Help</tspan><tspan>  </tspan><tspan fill="#97938c">/help</tspan><tspan>                               </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
-  <text x="0" y="545.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Inline images</tspan><tspan>  </tspan><tspan fill="#97938c">/images</tspan><tspan>                    </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>   </tspan></text>
+  <text x="0" y="127.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">❯ </tspan><tspan fill="#e4dfd6" font-weight="700">Session cost</tspan><tspan>  </tspan><tspan fill="#97938c">/cost</tspan><tspan>                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#e4dfd6" font-weight="700">Session cost</tspan><tspan>                                 </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="149.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Review changes</tspan><tspan>  </tspan><tspan fill="#97938c">/diff</tspan><tspan>            </tspan><tspan fill="#97938c">ctrl+g</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">/cost</tspan><tspan>                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="171.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Change model</tspan><tspan>  </tspan><tspan fill="#97938c">/model</tspan><tspan>                     </tspan><tspan> </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="193.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>                                             </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#e4dfd6">What this session has cost, by model and by</tspan><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="215.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Ask again</tspan><tspan>                         </tspan><tspan fill="#97938c">alt+t</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#e4dfd6">kind of token.</tspan><tspan>                               </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="237.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Auto-approve tool asks</tspan><tspan>  </tspan><tspan fill="#97938c">/permissions</tspan><tspan>     </tspan><tspan> </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Browse files by keyboard</tspan><tspan>         </tspan><tspan fill="#97938c">ctrl+t</tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">On a subscription it shows the allowance</tspan><tspan>     </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Change theme</tspan><tspan>  </tspan><tspan fill="#97938c">/theme</tspan><tspan>                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">left rather than dollars.</tspan><tspan>                    </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="303.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Compact the conversation</tspan><tspan>  </tspan><tspan fill="#97938c">/compact</tspan><tspan>       </tspan><tspan> </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Configuration</tspan><tspan>  </tspan><tspan fill="#97938c">/config</tspan><tspan>                   </tspan><tspan> </tspan><tspan> </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Context Dock</tspan><tspan>  </tspan><tspan fill="#97938c">/dock</tspan><tspan>               </tspan><tspan fill="#97938c">alt+d</tspan><tspan>  </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="369.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Context window</tspan><tspan>  </tspan><tspan fill="#97938c">/context</tspan><tspan>                 </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Copy message</tspan><tspan>                      </tspan><tspan fill="#97938c">alt+y</tspan><tspan>  </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Credentials</tspan><tspan>  </tspan><tspan fill="#97938c">/auth</tspan><tspan>                       </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Debug adapters</tspan><tspan>  </tspan><tspan fill="#97938c">/debug</tspan><tspan>                   </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Edit and resend</tspan><tspan>                   </tspan><tspan fill="#97938c">alt+e</tspan><tspan>  </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Full tool output</tspan><tspan>                 </tspan><tspan fill="#97938c">ctrl+o</tspan><tspan>  </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="501.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">GitHub</tspan><tspan>  </tspan><tspan fill="#97938c">/github</tspan><tspan>                          </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="523.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Help</tspan><tspan>  </tspan><tspan fill="#97938c">/help</tspan><tspan>                              </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan></text>
+  <text x="0" y="545.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Inline images</tspan><tspan>  </tspan><tspan fill="#97938c">/images</tspan><tspan>                   </tspan><tspan>  </tspan><tspan>                                              </tspan><tspan> </tspan><tspan>   </tspan></text>
   <text x="0" y="567.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan>                                                                                             </tspan><tspan> </tspan><tspan>   </tspan></text>
   <text x="0" y="589.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>   </tspan><tspan> </tspan><tspan fill="#ddc084">enter</tspan><tspan fill="#e4dfd6"> run</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">↑/↓</tspan><tspan fill="#e4dfd6"> choose</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">esc</tspan><tspan fill="#e4dfd6"> close</tspan><tspan>                                                     </tspan><tspan fill="#97938c">1/41 </tspan><tspan>    </tspan></text>
   <text x="0" y="611.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan>                                                                                               </tspan><tspan>  </tspan><tspan> </tspan></text>

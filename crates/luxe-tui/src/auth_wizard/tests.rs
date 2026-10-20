@@ -193,7 +193,6 @@ fn a_finished_login_hands_the_outcome_back_and_ends_the_wizard() {
         provider_name: "OpenAI".into(),
         kind: Some(luxe_core::auth::CredentialKind::ApiKey),
         account: None,
-        suggested_model: None,
         notes: vec!["12 models available".into()],
         advice: Vec::new(),
     })));

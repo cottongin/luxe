@@ -1,9 +1,9 @@
 use super::*;
 use std::io::Write;
 
-/// Luxe's own crates are visible at `info`, and dependencies are not.
+/// luxe's own crates are visible at `info`, and dependencies are not.
 ///
-/// The break this catches is the one that shipped: with a bare `warn` default, nothing Luxe
+/// The break this catches is the one that shipped: with a bare `warn` default, nothing luxe
 /// logged at `info` was ever seen, so routine loop behavior drifted up to `warn!` just to be
 /// visible — an ordinary steer arrived labeled as a warning. Widening it to `info` for
 /// everything instead would swap that for a firehose, because `hyper` and `rustls` narrate every
@@ -46,7 +46,7 @@ fn the_default_filter_shows_luxe_at_info_and_nothing_else() {
     let seen = seen.lock().expect("not poisoned").clone();
     assert!(
         seen.contains(&"luxe_core@INFO".to_string()),
-        "Luxe's own routine logging must be visible: {seen:?}"
+        "luxe's own routine logging must be visible: {seen:?}"
     );
     assert!(!seen.contains(&"luxe_core@DEBUG".to_string()), "debug stays opt-in: {seen:?}");
     assert!(
@@ -153,7 +153,7 @@ fn self_ignore_hides_the_whole_directory_and_never_clobbers() {
 }
 
 /// A log holds what the agent read and ran, so a new one is readable by its owner only, and one an
-/// older Luxe left at the umask's default is tightened when it is next opened.
+/// older luxe left at the umask's default is tightened when it is next opened.
 #[cfg(unix)]
 #[test]
 fn a_log_file_is_owner_only() {

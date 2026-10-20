@@ -29,7 +29,7 @@
 # on the web through the CSS stack and in a terminal through fontconfig.
 #
 # **Why two mono faces.** JetBrains Mono is the one people already run, so it is what the site and
-# every capture are set in. It lacks six marks Luxe draws (`ℹ ↳ ↺ ⏸ ✔ ✖`), and a missing glyph on
+# every capture are set in. It lacks six marks luxe draws (`ℹ ↳ ↺ ⏸ ✔ ✖`), and a missing glyph on
 # the web is whatever the reader's system substitutes, at whatever width. Adwaita Mono has all six
 # on the same 0.6em cell, so those codepoints, and only those, come from it; the CSS stack names it
 # second and the browser falls through per glyph.
@@ -50,7 +50,7 @@ assets_dir="${repo_root}/web/src/assets/generated"
 # face installed. Both directories feed the subset.
 captures_dir="${repo_root}/web/src/assets/captures"
 # The guide's screenshots are drawn on the site too, and so is the guide's own text, which names
-# the symbols Luxe draws: set in a face that lacks them, a browser reaches for color emoji.
+# the symbols luxe draws: set in a face that lacks them, a browser reaches for color emoji.
 guide_images_dir="${repo_root}/docs/guide/images"
 guide_dir="${repo_root}/docs/guide"
 coverage_file="${out_dir}/coverage.txt"
@@ -191,7 +191,7 @@ subset() {
 	printf '  %-34s %6s\n' "$(basename "${dst}")" "$(stat -c%s "${dst}")"
 }
 
-# The terminal face. Regular and Bold are what Luxe's cells ask for; Italic is there because reasoning
+# The terminal face. Regular and Bold are what luxe's cells ask for; Italic is there because reasoning
 # and a few labels are set in it, and a synthesized slant of an upright mono reads as a rendering bug.
 pyftsubset_python="$(head -1 "$(command -v pyftsubset)" | sed 's/^#!//')"
 cmap() {

@@ -181,7 +181,7 @@ async fn base_target_resolves_a_local_merge_base_and_rejects_unsafe_input() {
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -240,7 +240,7 @@ async fn commit_target_records_first_parent_and_root_semantics() {
         "create initial commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -273,7 +273,7 @@ async fn commit_target_records_first_parent_and_root_semantics() {
         "create follow-up commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -315,7 +315,7 @@ async fn merge_commit_target_uses_only_its_first_parent() {
         "commit base",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -333,7 +333,7 @@ async fn merge_commit_target_uses_only_its_first_parent() {
         "commit feature",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -351,7 +351,7 @@ async fn merge_commit_target_uses_only_its_first_parent() {
         "commit main",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",
@@ -369,7 +369,7 @@ async fn merge_commit_target_uses_only_its_first_parent() {
         "merge feature",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "merge",
@@ -539,7 +539,7 @@ async fn commit(git: &LocalGit, message: &str) {
         "create commit",
         &[
             "-c",
-            "user.name=Luxe Tests",
+            "user.name=luxe Tests",
             "-c",
             "user.email=tests@luxe.invalid",
             "commit",

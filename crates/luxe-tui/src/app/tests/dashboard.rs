@@ -417,7 +417,7 @@ fn the_mode_command_on_the_start_screen_stays_on_it() {
     assert!(matches!(actions.as_slice(), [Action::SetMode(mode)] if mode == "plan"), "{actions:?}");
 }
 
-/// `/update` on the start screen leaves Luxe for the CLI's update, which needs the terminal, and
+/// `/update` on the start screen leaves luxe for the CLI's update, which needs the terminal, and
 /// starts no session on the way out.
 #[test]
 fn the_update_command_on_the_start_screen_leaves_to_update() {

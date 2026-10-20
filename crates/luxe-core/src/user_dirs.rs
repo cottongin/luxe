@@ -1,4 +1,4 @@
-//! user_dirs — where a user's Luxe files live, on each platform Luxe runs on.
+//! user_dirs — where a user's luxe files live, on each platform luxe runs on.
 //!
 //! Every user-level file resolves through here. Re-deriving a path from `$HOME` at each call site is
 //! how a platform gets forgotten: on Windows `HOME` is usually unset, which lands the file in the
@@ -7,7 +7,7 @@
 //! # What each platform gets
 //!
 //! - **Unix (Linux and macOS)** — the XDG variable when set, else `~/.config` and `~/.local/state`.
-//!   macOS gets XDG paths rather than `~/Library/Application Support` on purpose: Luxe is a terminal
+//!   macOS gets XDG paths rather than `~/Library/Application Support` on purpose: luxe is a terminal
 //!   program, its documentation says `~/.config/luxe`, and that is where a developer looks first.
 //! - **Windows** — `%APPDATA%` for configuration and `%LOCALAPPDATA%` for state, which is the split
 //!   the platform intends (roaming settings, machine-local scratch). An XDG variable still wins if
@@ -50,9 +50,9 @@ pub fn state_dir() -> PathBuf {
         .unwrap_or_else(|| PathBuf::from(".").join(".local").join("state"))
 }
 
-/// Luxe's own configuration directory: `$LUXE_CONFIG_DIR`, else `luxe` under [`config_dir`].
+/// luxe's own configuration directory: `$LUXE_CONFIG_DIR`, else `luxe` under [`config_dir`].
 ///
-/// Every user-level file Luxe keeps resolves through here, so the variable moves all of them
+/// Every user-level file luxe keeps resolves through here, so the variable moves all of them
 /// together, which is what the guide promises.
 pub fn luxe_config_dir() -> PathBuf {
     luxe_config_home().unwrap_or_else(|| config_dir().join("luxe"))
@@ -64,13 +64,13 @@ pub fn luxe_config_home() -> Option<PathBuf> {
     luxe_dir("LUXE_CONFIG_DIR", config_home(), env)
 }
 
-/// Luxe's own state directory: `$LUXE_STATE_DIR`, else `luxe` under [`state_dir`]. The state
+/// luxe's own state directory: `$LUXE_STATE_DIR`, else `luxe` under [`state_dir`]. The state
 /// record, logs and MCP tokens all live here.
 pub fn luxe_state_dir() -> PathBuf {
     luxe_dir("LUXE_STATE_DIR", None, env).unwrap_or_else(|| state_dir().join("luxe"))
 }
 
-/// Where `name` in Luxe's config directory is read and written: there, or where an older build
+/// Where `name` in luxe's config directory is read and written: there, or where an older build
 /// left it.
 ///
 /// Builds before [`luxe_config_dir`] had one owner resolved `auth.json` and `models.json`
@@ -100,12 +100,12 @@ fn resolve_file(path: PathBuf, legacy: Option<PathBuf>) -> PathBuf {
 /// Where builds before [`luxe_config_dir`] had one owner kept `auth.json` and `models.json`:
 /// `$XDG_CONFIG_HOME/luxe`, else `$HOME/.config/luxe`, never `%APPDATA%`. `None` under
 /// `LUXE_CONFIG_DIR`, which they read the same way, and with no `HOME`, where they fell back to a
-/// `.config` under whatever directory Luxe started in, which is not theirs to read.
+/// `.config` under whatever directory luxe started in, which is not theirs to read.
 fn legacy_luxe_config_dir() -> Option<PathBuf> {
     legacy_config(env)
 }
 
-/// Where a running Luxe leaves the way in to its session: `$LUXE_RUNTIME_DIR`, else `luxe` under a
+/// Where a running luxe leaves the way in to its session: `$LUXE_RUNTIME_DIR`, else `luxe` under a
 /// folder only this user can open.
 ///
 /// That is `$XDG_RUNTIME_DIR` on Linux and `$TMPDIR` on macOS, both private to the user. Linux's
@@ -129,7 +129,7 @@ fn runtime_in(var: impl Fn(&str) -> Option<String>, macos: bool) -> Option<PathB
     Some(PathBuf::from(private?).join("luxe"))
 }
 
-/// Luxe's own cache directory, `luxe` under [`cache_dir`].
+/// luxe's own cache directory, `luxe` under [`cache_dir`].
 pub fn luxe_cache_dir() -> PathBuf {
     cache_dir().join("luxe")
 }
@@ -146,7 +146,7 @@ pub fn home_dir() -> Option<PathBuf> {
     std::env::home_dir()
 }
 
-/// A user-facing rendering of where one of Luxe's config files lives.
+/// A user-facing rendering of where one of luxe's config files lives.
 ///
 /// For the messages that tell someone to go and edit a file: a literal `~/.config/luxe/…` sends a
 /// Windows user to a directory that does not exist. Home is collapsed to `~` where it applies.

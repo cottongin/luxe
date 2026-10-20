@@ -6,7 +6,7 @@
 //! This module answers that second question with one `git diff`, parsed by the review's own
 //! [`parse_unified_diff`] into the review's own [`ReviewFile`], and nothing kept afterwards.
 //!
-//! Reusing the review's content model is the point: there is one diff data model in Luxe, so the
+//! Reusing the review's content model is the point: there is one diff data model in luxe, so the
 //! Changes pane and the review cannot disagree about what a hunk is, and escalating from one to
 //! the other shows the same lines. What this does *not* share is the capture: no private index
 //! snapshot, no stability re-read, no artifact on disk, no chaptering. A glance is allowed to be
@@ -110,7 +110,7 @@ pub enum FileDiffFailure {
     #[error("this file is not text, so there are no lines to show")]
     NotText,
     /// Git produced a diff the review parser rejected.
-    #[error("git produced a diff Luxe could not read: {0}")]
+    #[error("git produced a diff luxe could not read: {0}")]
     Unreadable(String),
 }
 
@@ -228,7 +228,7 @@ async fn capture_loose(
     requested: &str,
     baseline: Option<&ExternalBaseline>,
 ) -> Result<FileDiff, FileDiffFailure> {
-    // A baseline of `Unretained` and no record at all are the same answer to the reader: Luxe
+    // A baseline of `Unretained` and no record at all are the same answer to the reader: luxe
     // cannot say what this file used to hold, so it will not pretend to.
     let Some(baseline @ (ExternalBaseline::Absent | ExternalBaseline::Text { .. })) = baseline
     else {

@@ -43,8 +43,8 @@ test("an answer to an earlier question is ignored", () => {
   assert.equal(models.listing.value.state, "asking");
 });
 
-// The break this catches: an older Luxe's refusal ignored, so the sheet says it's listing forever
-test("a Luxe that doesn't know the question is told apart", () => {
+// The break this catches: an older luxe's refusal ignored, so the sheet says it's listing forever
+test("a luxe that doesn't know the question is told apart", () => {
   const { models } = asked();
   models.apply({ kind: "action_rejected", content: { kind: "list_models", reason: "unknown kind" } });
   assert.equal(models.listing.value.state, "unsupported");

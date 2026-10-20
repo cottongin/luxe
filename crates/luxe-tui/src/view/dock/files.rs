@@ -45,7 +45,7 @@ pub(super) fn files_row_cap(available_height: usize, reserved: usize) -> usize {
 /// reader loses a review they were about to open — the counts and the markers all disappear at
 /// once, with nothing left saying there was anything to see.
 ///
-/// The turn's own baseline outlives the commit (Luxe retains the before and after content on disk,
+/// The turn's own baseline outlives the commit (luxe retains the before and after content on disk,
 /// not a Git range), so the way in is still open; only the sign of it was missing.
 fn committed_notice(app: &App) -> Option<Vec<Line<'static>>> {
     if !app.worktree_emptied || app.review.last_turn.is_none() {

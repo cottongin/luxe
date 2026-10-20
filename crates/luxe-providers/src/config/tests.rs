@@ -273,7 +273,7 @@ fn an_entry_without_modalities_still_parses() {
     assert_eq!(config.models["lmstudio/local"].thinking, None, "and no starting level");
 }
 
-/// A model's starting reasoning level parses by its Luxe name, and an unknown one fails the
+/// A model's starting reasoning level parses by its luxe name, and an unknown one fails the
 /// entry rather than being read as some neighboring level.
 #[test]
 fn a_model_can_declare_the_level_a_session_starts_at() {
@@ -326,7 +326,7 @@ fn a_model_compat_block_parses_as_the_keys_that_were_written() {
 }
 
 /// A published sampling recipe is written as JSON and carried as JSON — no key is modelled,
-/// because the servers Luxe doesn't model are exactly the reason the field exists.
+/// because the servers luxe doesn't model are exactly the reason the field exists.
 #[test]
 fn sampling_params_parse_as_free_form_json_at_both_layers() {
     let json = r#"{
@@ -363,7 +363,7 @@ fn create_openai_compat_provider() {
     assert_eq!(provider.name(), "openai_compat");
 }
 
-/// A config written for an older Luxe keeps loading: retired flags are simply ignored, and the
+/// A config written for an older luxe keeps loading: retired flags are simply ignored, and the
 /// ones that are still real are honored.
 #[test]
 fn compat_flags_anthropic() {

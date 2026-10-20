@@ -26,7 +26,7 @@ fn extract(text: &str) -> Result<Option<RemediationReport>, RemediationReportErr
 
 fn statuses(text: &str) -> Vec<(String, RemediationStatus)> {
     extract(text)
-        .expect("a report Luxe can use")
+        .expect("a report luxe can use")
         .expect("a report")
         .findings
         .into_iter()

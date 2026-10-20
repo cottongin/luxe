@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Drive a real Luxe session from a script, and record what the terminal saw.
+"""Drive a real luxe session from a script, and record what the terminal saw.
 
 Run *inside* a terminal, with the app under a pseudo-terminal this process owns:
 
@@ -12,7 +12,7 @@ desktop is to synthesize key events with `wtype`, and it works until focus moves
 every remaining keystroke, `Ctrl+C` included, is typed into whatever window took it. Writing to the
 pty cannot reach another window at all, and it does not need the recording to hold focus.
 
-**The relay is transparent both ways.** Luxe asks the terminal what it can do — cursor position,
+**The relay is transparent both ways.** luxe asks the terminal what it can do — cursor position,
 device attributes, the glyph probe — and a driver that answers none of those hangs on the first
 question. So the app's output goes to our stdout (the real terminal, which answers) and the real
 terminal's replies go back into the pty. Only the outbound half is recorded; the terminal's answers
@@ -121,7 +121,7 @@ LEGACY = {
     **dict(zip(("f1", "f2", "f3", "f4"), ("\x1bOP", "\x1bOQ", "\x1bOR", "\x1bOS"))),
 }
 
-# The same keys as Unicode codepoints, for the CSI-u form. Luxe negotiates the Kitty keyboard
+# The same keys as Unicode codepoints, for the CSI-u form. luxe negotiates the Kitty keyboard
 # protocol, so a chord the legacy encoding cannot spell — `Ctrl+Esc`, which is how a turn is
 # interrupted — has a representation here rather than being unreachable.
 CSI_U_CODE = {
@@ -267,7 +267,7 @@ class Session:
         self._screen = pyte.Screen(cols, rows)
         self._stream = pyte.Stream(self._screen)
         # Incremental, and that matters. A read returns whatever bytes happened to be available, so
-        # a multi-byte character — every box-drawing rule and every Nerd Font glyph Luxe draws — can
+        # a multi-byte character — every box-drawing rule and every Nerd Font glyph luxe draws — can
         # be split across two of them. Decoding each read on its own turns both halves into U+FFFD,
         # which is how stray `�` diamonds ended up scattered through otherwise good takes. This
         # holds the incomplete tail until the rest of it arrives.
