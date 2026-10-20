@@ -243,8 +243,13 @@ fn matrix() -> String {
 ///
 /// The break this catches: grouping or reordering the overlays changing which one an input
 /// reaches. Set `LUXE_OVERLAY_MATRIX` to a path to write the current table there.
+///
+/// A click can choose a theme, which is written to the global config, so the test has a config
+/// home of its own; without one it rewrites the developer's real theme.
 #[tokio::test]
 async fn every_pair_of_overlays_answers_as_recorded() {
+    let home = tempfile::tempdir().expect("temp dir");
+    let _config_home = crate::test_env::TempConfigHome::at(home.path());
     let actual = matrix();
     if let Ok(path) = std::env::var("LUXE_OVERLAY_MATRIX") {
         std::fs::write(path, &actual).expect("write the matrix");

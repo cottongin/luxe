@@ -173,6 +173,25 @@ pub fn list_directory(
     Ok(DirectoryListing { path: normalized(relative), entries, omitted })
 }
 
+/// Whether an ignore file hides `folder`, or any folder on the way down to it from `top`.
+///
+/// Asked one level at a time, the way a listing sees it, so a rule in any `.gitignore` along the
+/// way counts. Anything outside `top` reads as ignored.
+pub(crate) fn is_ignored(top: &Path, folder: &Path) -> bool {
+    let Ok(relative) = folder.strip_prefix(top) else {
+        return true;
+    };
+    let mut parent = top.to_path_buf();
+    for part in relative.components() {
+        let name = part.as_os_str();
+        if !walk(&parent, true).any(|entry| entry.depth() == 1 && entry.file_name() == name) {
+            return true;
+        }
+        parent.push(part);
+    }
+    false
+}
+
 /// One level of `folder`, honoring the ignore files when `ignoring`, never `.git`.
 fn walk(folder: &Path, ignoring: bool) -> impl Iterator<Item = ignore::DirEntry> {
     ignore::WalkBuilder::new(folder)

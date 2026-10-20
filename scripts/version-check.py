@@ -5,7 +5,8 @@ Compares the workspace version against a base ref, normally the pull request's t
 
 - a change to what reaches crates.io (anything under `crates/`, `Cargo.toml`, `Cargo.lock`) on top
   of a released version has to raise it, and by exactly one semver step, so a typo cannot skip a
-  release. A version is released once a `v<version>` tag marks it. Until then it already names the
+  release. A version is released once a `v<version>` tag marks it, locally or, in a development
+  checkout, on its `public` remote (the public repository). Until then it already names the
   release this change will ship in, so no bump is owed; it may still move, but only to another
   single step past the last release, as when a breaking change turns a pending patch into a minor;
 - the version never goes down, shipped change or not;
@@ -31,6 +32,8 @@ SEMVER = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 SHIPPED_FILES = {"Cargo.toml", "Cargo.lock"}
+# A development checkout names the public repository this, and its tags are the releases
+RELEASE_REMOTE = "public"
 DEPENDENCY_TABLES = ("dependencies", "dev-dependencies", "build-dependencies")
 
 
@@ -130,9 +133,39 @@ def problems(base_ref: str) -> list[str]:
 
 
 def released() -> list[str]:
-    """Every version a `v<version>` tag marks."""
-    tags = git("tag", "--list", "v*").split()
-    return [tag[1:] for tag in tags if SEMVER.match(tag[1:])]
+    """Every version a `v<version>` tag marks, here or on the release remote."""
+    tags = set(git("tag", "--list", "v*").split()) | set(release_remote_tags())
+    return sorted(tag[1:] for tag in tags if SEMVER.match(tag[1:]))
+
+
+def release_remote_tags() -> list[str]:
+    """The release remote's `v*` tags, read without fetching; none when it isn't set up.
+
+    A development checkout never sees the public repository's tags on its own, so a release made
+    there would look unreleased here, and work would pile up under a version that already shipped.
+    Offline, the local tags are all there is, and the check says so rather than failing.
+    """
+    if RELEASE_REMOTE not in git("remote").split():
+        return []
+    listing = subprocess.run(
+        ["git", "ls-remote", "--tags", "--refs", RELEASE_REMOTE, "v*"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if listing.returncode != 0:
+        reason = listing.stderr.strip()
+        warning = f"warning: could not read `{RELEASE_REMOTE}`'s tags, so only local ones count"
+        print(f"version-check: {warning}: {reason}", file=sys.stderr)
+        return []
+    return tags_in_listing(listing.stdout)
+
+
+def tags_in_listing(listing: str) -> list[str]:
+    """The tag names in `git ls-remote --tags --refs` output."""
+    prefix = "refs/tags/"
+    refs = (line.split("\t", 1)[-1] for line in listing.splitlines())
+    return [ref[len(prefix) :] for ref in refs if ref.startswith(prefix)]
 
 
 def shipped_problem(base: str, head: str, released: list[str]) -> str | None:

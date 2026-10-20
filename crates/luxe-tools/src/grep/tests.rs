@@ -76,6 +76,18 @@ fn the_native_search_honors_ignores_and_reports_ripgrep_shaped_rows() {
     assert!(native_search(cwd, &search("no_such_text")).expect("valid").is_empty());
 }
 
+/// A glob that starts with `!` leaves out what it names and searches the rest.
+///
+/// The break this catches: `!` taken literally, so an exclude glob matched no file and the
+/// search came back empty.
+#[test]
+fn an_exclude_glob_searches_everything_else() {
+    let dir = repo_with_build_output();
+    let excluding = Search { glob: Some("!target/**"), all: true, ..search("needle") };
+    let rows = native_search(dir.path(), &excluding).expect("a valid regex");
+    assert_eq!(rows, vec!["src/main.rs:1:let needle = 1;"]);
+}
+
 /// Context lines use `-` where a match uses `:`, the way ripgrep prints them, so a reader (and
 /// the model) can tell the answer from its surroundings.
 #[test]

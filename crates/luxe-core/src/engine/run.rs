@@ -143,15 +143,9 @@ impl Engine {
                     )
                     .await;
                 }
-                Action::LoadFileDiff { request_id, path } => {
-                    self.handle_load_file_diff(request_id, path, &event_tx);
-                }
-                Action::ListDirectory { request_id, path, include_ignored } => {
-                    self.handle_list_directory(request_id, path, include_ignored, &event_tx);
-                }
-                Action::ReadProjectFile { request_id, path } => {
-                    self.handle_read_project_file(request_id, path, &event_tx);
-                }
+                Action::LoadFileDiff { .. }
+                | Action::ListDirectory { .. }
+                | Action::ReadProjectFile { .. } => self.handle_project_read(action, &event_tx),
                 Action::RefreshGuidedReview { request_id, review_id, expected_revision } => {
                     self.handle_refresh_guided_review(
                         request_id,
@@ -186,7 +180,8 @@ impl Engine {
                 }
                 Action::EditReview { .. }
                 | Action::RecordReviewProgress { .. }
-                | Action::RecordReviewSeen { .. } => self.forward_to_review_desk(action),
+                | Action::RecordReviewSeen { .. }
+                | Action::ShowOpenReview { .. } => self.forward_to_review_desk(action),
                 Action::CommitReviewChapters {
                     request_id,
                     review_id,

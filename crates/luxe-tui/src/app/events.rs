@@ -5,11 +5,11 @@
 //! off to the module that owns its domain.
 
 use super::{App, ConvoBlock};
-use luxe_core::config::NotificationEvent;
 use luxe_core::event::Event;
 
 mod compaction;
 mod github;
+mod prompts;
 mod review;
 mod transcript;
 mod turn;
@@ -65,38 +65,34 @@ pub(super) fn reduce(app: &mut App, event: Event) {
         Event::LastTurnAvailable { session_id, turn_id } => {
             app.review.last_turn = Some((session_id, turn_id));
         }
+        Event::TurnStarted => turn::turn_started(app),
         Event::TurnEnded { .. } => turn::turn_ended(app),
         Event::PlanWritten { path } => app.plan_written = Some(path),
-        Event::ReviewStarted { model } => app.push_convo(ConvoBlock::System(format!(
-            "A reviewer on {model} is reading the uncommitted changes in a fresh context. Its \
-             findings will show here."
-        ))),
+        Event::ReviewStarted { model } => {
+            app.push_convo(ConvoBlock::System(turn::review_started(&model)));
+        }
         Event::ReviewFinished { verdict, findings } => {
             app.push_convo(ConvoBlock::System(turn::review_summary(verdict, &findings)));
         }
         // The running turn took it in: retire the tray row. The transcript copy arrives (or has
         // already arrived) as the committed user entry the engine appended for it.
         Event::SteeringDelivered { .. } => app.retire_steering(),
-        // A notice is informational and the turn keeps running, so it lands in the transcript
-        // without touching streaming/turn state.
-        // On the dashboard there is no conversation to put it in — and whichever row the reader
-        // picks loads a session, which replaces the transcript. So it waits.
+        // A notice leaves the turn running, so it lands in the transcript without touching turn
+        // state. The dashboard has no conversation to put it in, and whichever row the reader
+        // picks loads a session that replaces the transcript, so there it waits.
         Event::Notice(msg) => match app.dashboard.is_some() {
             true => app.startup_notices.push(msg),
             false => app.push_convo(ConvoBlock::System(msg)),
         },
+        Event::GuestsChanged(guests) => app.status.guests = guests,
         Event::Error(msg) => turn::failed(app, msg),
         Event::ToolStarted { name, .. } => turn::tool_started(app, name),
         Event::ToolProgress { .. } => {}
         // Over before its batch commits, so the clock beside it stops now rather than when the
         // last call of the message does
-        Event::ToolCompleted { .. } => {
-            app.status.active_tool = None;
-            app.status.tool_started = None;
-        }
+        Event::ToolCompleted { .. } => app.status.tool_finished(),
         Event::ToolEnded { call_id, .. } => {
-            app.status.active_tool = None;
-            app.status.tool_started = None;
+            app.status.tool_finished();
             if app.pull_request_pushes.remove(&call_id) {
                 app.pull_request_link_pending = true;
             }
@@ -105,7 +101,7 @@ pub(super) fn reduce(app: &mut App, event: Event) {
         Event::ContextUsage { used_tokens, context_window } if context_window > 0 => {
             app.status.context_window = context_window;
             app.status.context_pct =
-                (used_tokens as f32 / context_window as f32 * 100.0).min(100.0);
+                crate::statusline::context_percent(used_tokens, context_window);
         }
         Event::TurnUsage {
             prompt_tokens, completion_tokens, cost_usd, cache_read_tokens, ..
@@ -117,35 +113,20 @@ pub(super) fn reduce(app: &mut App, event: Event) {
         Event::ContextComposition(report) => app.push_convo(ConvoBlock::Context(report)),
         // Compaction rewrites what the model can see and spends a provider call doing it. Saying
         // so is the difference between "the agent forgot" and "the conversation was summarized".
-        Event::CompactionStarted { .. } => compaction::started(app),
+        Event::CompactionStarted { tokens_before } => compaction::started(app, tokens_before),
         Event::CompactionDone { tokens_before, tokens_after } => {
             compaction::done(app, tokens_before, tokens_after);
         }
-        Event::CompactionStopped => compaction::ended(app),
+        Event::CompactionStopped => compaction::stopped(app),
         Event::WorkspaceUpdated(snapshot) => workspace_updated(app, *snapshot),
         Event::ToolActivityUpdated(activity) => app.apply_tool_activity(*activity),
         Event::PermissionRequested { id, tool, summary, always_patterns, .. } => {
-            // The prompt is a question to the user; nothing above it should still be arriving.
-            app.reveal_catch_up();
-            // The turn stops until someone answers, which is the moment most worth hearing about
-            let body = turn::permission_body(&tool, &summary);
-            turn::alert(app, NotificationEvent::Permission, &body);
-            app.overlays.permission = Some(
-                crate::permission_prompt::PermissionPromptState::new(
-                    id,
-                    tool,
-                    summary,
-                    always_patterns,
-                )
-                .opened(app.frame_now()),
-            );
+            prompts::permission_requested(app, id, tool, summary, always_patterns);
         }
         Event::QuestionAsked { id, prompt, options, multi, .. } => {
-            app.reveal_catch_up();
-            turn::alert(app, NotificationEvent::Question, &format!("Question: {prompt}"));
-            app.overlays.question =
-                Some(crate::question_prompt::QuestionPromptState::new(id, prompt, options, multi));
+            prompts::question_asked(app, id, prompt, options, multi);
         }
+        Event::PromptClosed { id } => prompts::prompt_closed(app, &id),
         Event::GuidedReviewLoading { request_id, .. }
             if app.active_guided_review_request.as_ref() != Some(&request_id) =>
         {

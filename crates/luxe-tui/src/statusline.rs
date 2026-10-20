@@ -18,6 +18,7 @@
 
 mod activity;
 mod layout;
+pub mod plain;
 mod segments;
 
 use crate::app::App;
@@ -319,6 +320,11 @@ fn palette(theme: &ThemeStyles) -> Palette {
         thinking_xhigh: theme.thinking_xhigh.fg.or(theme.accent_secondary.fg).unwrap_or(text),
         thinking_ultra: theme.thinking_ultra.fg.or(theme.accent_secondary.fg).unwrap_or(text),
     }
+}
+
+/// How full a window of `window` tokens is with `used` in it, as a percentage capped at 100.
+pub(crate) fn context_percent(used: u32, window: u32) -> f32 {
+    (used as f32 / window as f32 * 100.0).min(100.0)
 }
 
 pub(crate) fn compact_number(value: u64) -> String {

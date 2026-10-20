@@ -52,10 +52,10 @@ impl Engine {
     async fn estimated_context_tokens(&self, leaf: &EntryId) -> u64 {
         let sid = self.current_session_id().await;
         let Ok(store) = self.config.session_store.read() else { return 0 };
-        store
-            .active_path(&sid, leaf)
-            .map(|entries| crate::compaction::context_tokens(&entries))
-            .unwrap_or(0)
+        crate::session::with_active_path(&**store, &sid, leaf, |entries| {
+            crate::compaction::context_tokens(entries)
+        })
+        .unwrap_or(0)
     }
 
     /// Whether the last measured occupancy is comfortably under the threshold.
@@ -345,10 +345,10 @@ impl Engine {
 
         // What the cut actually bought, measured over the path it produced rather than predicted.
         // A client watching for this is watching for the one thing compaction is for.
-        let tokens_after = self
-            .sessions()
-            .active_path(&sid, &compacted)
-            .map(|path| crate::compaction::context_tokens(&path))
+        let tokens_after =
+            crate::session::with_active_path(&**self.sessions(), &sid, &compacted, |path| {
+                crate::compaction::context_tokens(path)
+            })
             .unwrap_or_default();
         // What drafts carried of a conversation went with the transcript
         self.sent_digests.lock().await.forget();

@@ -1,6 +1,7 @@
 //! App construction — building an app from its config and the machine it runs on.
 
 use super::*;
+use crate::statusline_state::StatuslineState;
 
 impl App {
     /// Create a new app with the given engine channel, keymap, and UI config.
@@ -47,8 +48,6 @@ impl App {
         let mouse_enabled = config.mouse.unwrap_or(true);
         let mut dock = DockState::new(config.dock.mode());
         dock.position = config.dock.position();
-        let statusline_state =
-            crate::statusline_state::StatuslineState::new(config.statusline.visibility());
         // Seed the review's diff presentation from config; `w` and `Ctrl+B` move it at runtime.
         let mut guided_review_workspace = GuidedReviewWorkspace::default();
         guided_review_workspace.word_wrap = config.diff.word_wrap();
@@ -70,6 +69,7 @@ impl App {
             review: ReviewMirror::default(),
             streaming: false,
             keymap,
+            statusline_state: StatuslineState::new(config.statusline.visibility()),
             config,
             mouse_enabled,
             hit: std::cell::RefCell::default(),
@@ -82,7 +82,6 @@ impl App {
             files: crate::files::FilesTree::default(),
             external_seen: std::collections::HashMap::new(),
             external_folds: std::collections::HashMap::new(),
-            statusline_state,
             workspace_layout: WorkspaceLayout::Standard,
             theme_styles,
             themes,
@@ -125,6 +124,7 @@ impl App {
             terminal_focused: None,
             headless: false, // Will be set by main_loop based on CLI args.
             edit_resend_mode: false,
+            own_commit_pending: false,
             interrupt_sent_at: None,
             said_to_choose_a_model: false,
             never_sent: HashSet::new(),

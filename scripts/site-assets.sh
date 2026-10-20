@@ -113,6 +113,8 @@ GUIDE_SHOTS=(
 	"chat-plan-ready:100:26:loop-plan-ready"
 )
 guide_dir="${repo_root}/docs/guide/images"
+# The phone app's wordmark, from the same art. The app has no build step, so it ships the file
+app_dir="${repo_root}/crates/luxe-remote/app/generated"
 
 # Luxe's own theme, the one the site is set in. The colors are baked into each file rather than left
 # as custom properties, so a capture stays correct wherever it is embedded — a README, someone's
@@ -145,8 +147,9 @@ shiki() { cargo run --quiet --release -p luxe-tui --example shiki_theme -- "$@";
 wordmark_gif() { cargo run --quiet --release -p luxe-tui --example wordmark_gif -- "$@"; }
 
 generate() {
-	local target="$1" guide_target="$2"
-	mkdir -p "${target}" "${guide_target}"
+	local target="$1" guide_target="$2" app_target="$3"
+	mkdir -p "${target}" "${guide_target}" "${app_target}"
+	wordmark app >"${app_target}/wordmark.svg"
 
 	wordmark wordmark >"${target}/wordmark.svg"
 	wordmark mark >"${target}/mark.svg"
@@ -199,8 +202,9 @@ cargo build --quiet --release -p luxe-tui --features fixture \
 if [[ "${check}" == true ]]; then
 	scratch="$(mktemp -d)"
 	trap 'rm -rf "${scratch}"' EXIT
-	generate "${scratch}/site" "${scratch}/guide"
-	if diff -ru "${out_dir}" "${scratch}/site" && diff -ru "${guide_dir}" "${scratch}/guide"; then
+	generate "${scratch}/site" "${scratch}/guide" "${scratch}/app"
+	if diff -ru "${out_dir}" "${scratch}/site" && diff -ru "${guide_dir}" "${scratch}/guide" &&
+		diff -ru "${app_dir}" "${scratch}/app"; then
 		echo "site assets are up to date"
 	else
 		echo >&2
@@ -210,7 +214,7 @@ if [[ "${check}" == true ]]; then
 	exit 0
 fi
 
-generate "${out_dir}" "${guide_dir}"
+generate "${out_dir}" "${guide_dir}" "${app_dir}"
 
 printf '%s\n' "wrote $(find "${out_dir}" -type f | wc -l) files to ${out_dir}"
 du -sh "${out_dir}" | cut -f1 | xargs -I{} echo "total {} on disk, and they gzip to about a tenth of that"

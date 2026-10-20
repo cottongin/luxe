@@ -7,7 +7,7 @@
 //! entities. Code is left alone: a fenced block or an inline span that shows HTML means to show it.
 
 /// `body` with its HTML reduced to markdown, outside code.
-pub(super) fn readable(body: &str) -> String {
+pub fn readable(body: &str) -> String {
     if !body.contains('<') && !body.contains('&') {
         return body.to_string();
     }

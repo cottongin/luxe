@@ -116,13 +116,7 @@ impl LocalGit {
         let snapshot = self
             .capture_turn_snapshot(TurnBaselineId::from_session_turn(session_id, turn_id), policy)
             .await?;
-        let artifact = snapshot.artifact;
-        let to_persist = artifact.clone();
-        let project_root = self.repo_path.clone();
-        tokio::task::spawn_blocking(move || to_persist.persist(&project_root))
-            .await
-            .map_err(|_| GuidedReviewError::TurnBaselinePersistenceTask)??;
-        Ok(artifact)
+        self.persist_turn_snapshot(snapshot.artifact).await
     }
 
     /// Captures and retains the complete workspace immediately after a turn without changing Git state.
@@ -138,13 +132,21 @@ impl LocalGit {
                 policy,
             )
             .await?;
-        let artifact = snapshot.artifact;
-        let to_persist = artifact.clone();
+        self.persist_turn_snapshot(snapshot.artifact).await
+    }
+
+    /// Writes a snapshot off the runtime and hands it back. Moved rather than cloned, since a
+    /// snapshot holds every file in the workspace and a copy doubled what a turn held at once.
+    async fn persist_turn_snapshot(
+        &self,
+        artifact: TurnBaselineArtifact,
+    ) -> Result<TurnBaselineArtifact, GuidedReviewError> {
         let project_root = self.repo_path.clone();
-        tokio::task::spawn_blocking(move || to_persist.persist(&project_root))
-            .await
-            .map_err(|_| GuidedReviewError::TurnBaselinePersistenceTask)??;
-        Ok(artifact)
+        let persisted =
+            tokio::task::spawn_blocking(move || artifact.persist(&project_root).map(|_| artifact))
+                .await
+                .map_err(|_| GuidedReviewError::TurnBaselinePersistenceTask)??;
+        Ok(persisted)
     }
 }
 

@@ -129,7 +129,6 @@ mod tests {
             exclude_domains: vec!["reddit.com".to_string()],
             recency: Some(crate::web::Recency::Year),
             include_content: true,
-            ..Default::default()
         });
         assert_eq!(body["query"], "tokio");
         assert_eq!(body["max_results"], 3);

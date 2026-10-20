@@ -153,6 +153,28 @@ pub(crate) fn build_menu(settings: &AgentSettings) -> ModelMenu {
     ModelMenu { catalog: entries, active }
 }
 
+/// The models a client of the protocol can switch to: the `/model` menu in its order, leaving out
+/// rows only guessed for an endpoint that hasn't said what it serves.
+pub(crate) fn choices(settings: &AgentSettings) -> Vec<luxe_core::event::ModelChoice> {
+    offered(&build_menu(settings).catalog)
+}
+
+fn offered(menu: &[ModelEntry]) -> Vec<luxe_core::event::ModelChoice> {
+    menu.iter().filter(|entry| !entry.unverified).map(|entry| choice(&entry.info)).collect()
+}
+
+/// `info` as a client offers it, with the thinking levels it honors as they are, not clamped.
+fn choice(info: &ModelInfo) -> luxe_core::event::ModelChoice {
+    let levels = luxe_core::provider::ThinkingLevel::ALL.iter().copied();
+    let honored = levels.filter(|level| info.effective_thinking_level(*level) == *level);
+    luxe_core::event::ModelChoice {
+        provider: info.r#ref.provider.clone(),
+        model: info.r#ref.id.clone(),
+        name: info.display().to_string(),
+        thinking_levels: honored.collect(),
+    }
+}
+
 /// Whether a provider needs no credential at all — a server on this machine.
 ///
 /// Naming one on the command line is the whole statement of intent: there is no key to check, so

@@ -12,8 +12,8 @@ mod types;
 pub use action::Action;
 pub use events::Event;
 pub use types::{
-    EngineState, GuidedReviewFailure, GuidedReviewFailureKind, ModelRef, RequestedReviewVerdict,
-    SessionMessage, StopReason,
+    EngineState, GuidedReviewFailure, GuidedReviewFailureKind, ModelChoice, ModelRef, OpenReview,
+    RequestedReviewVerdict, SessionMessage, StopReason,
 };
 
 /// Version of the `Action`/`Event` wire protocol, announced in [`Event::Ready`].

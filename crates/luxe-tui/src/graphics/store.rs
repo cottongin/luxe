@@ -62,6 +62,8 @@ pub struct ImageStore {
     clock: u64,
     next_id: u32,
     total_source_bytes: usize,
+    /// Bumped whenever something a layout reads changes: see [`Self::layout_revision`]
+    layout_revision: u64,
 }
 
 impl Default for ImageStore {
@@ -84,7 +86,18 @@ impl ImageStore {
             // drawing images in the same window — and a collision silently replaces *their* image.
             next_id: seed_id(),
             total_source_bytes: 0,
+            layout_revision: 0,
         }
+    }
+
+    /// Counts the changes to what laying an image out reads: the sources, the tier and the cell
+    /// size.
+    ///
+    /// The transcript keys an image's laid-out rows on it, so they are reused until one of those
+    /// changes rather than rebuilt every frame. What is prepared for painting isn't counted:
+    /// painting prepares on sight.
+    pub fn layout_revision(&self) -> u64 {
+        self.layout_revision
     }
 
     /// The fidelity this store is drawing at.
@@ -98,6 +111,7 @@ impl ImageStore {
             return;
         }
         self.tier = tier;
+        self.layout_revision += 1;
         self.release_prepared();
     }
 
@@ -107,6 +121,7 @@ impl ImageStore {
             return;
         }
         self.cell = cell;
+        self.layout_revision += 1;
         self.release_prepared();
     }
 
@@ -132,6 +147,7 @@ impl ImageStore {
             return false;
         }
         self.clock += 1;
+        self.layout_revision += 1;
         self.total_source_bytes += bytes.len();
         self.sources.insert(
             key,
@@ -258,6 +274,7 @@ impl ImageStore {
         self.release_all();
         self.sources.clear();
         self.total_source_bytes = 0;
+        self.layout_revision += 1;
     }
 
     /// Ensures `key` is prepared at `fit`, re-preparing when the size changed.
@@ -318,6 +335,7 @@ impl ImageStore {
     fn drop_source(&mut self, key: &ImageKey) {
         if let Some(source) = self.sources.remove(key) {
             self.total_source_bytes = self.total_source_bytes.saturating_sub(source.bytes.len());
+            self.layout_revision += 1;
         }
     }
 

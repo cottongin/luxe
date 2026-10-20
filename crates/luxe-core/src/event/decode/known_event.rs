@@ -79,8 +79,13 @@ pub(super) enum KnownEvent {
         messages: Vec<SessionMessage>,
     },
     StateChanged(EngineState),
+    TurnStarted,
     TurnEnded {
         reason: StopReason,
+    },
+    ModelsListed {
+        request_id: String,
+        models: Vec<super::super::ModelChoice>,
     },
     LastTurnAvailable {
         session_id: String,
@@ -121,6 +126,7 @@ pub(super) enum KnownEvent {
     },
     Error(String),
     Notice(String),
+    GuestsChanged(Vec<String>),
     PlanWritten {
         path: String,
     },
@@ -327,6 +333,7 @@ pub(super) enum KnownEvent {
     ReviewSessionRestored {
         session: Box<ReviewSession>,
     },
+    OpenReviewShown(Box<super::super::OpenReview>),
     ReviewSessionSaved {
         request_id: ReviewSessionSaveRequestId,
         session: Box<ReviewSession>,
@@ -360,6 +367,9 @@ pub(super) enum KnownEvent {
         options: Vec<crate::question::QuestionOption>,
         #[serde(default)]
         multi: bool,
+    },
+    PromptClosed {
+        id: String,
     },
     Ready {
         protocol_version: u32,

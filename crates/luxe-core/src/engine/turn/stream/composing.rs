@@ -57,9 +57,11 @@ pub(super) fn composes(id: &str, name: &str) -> bool {
 /// What a front-end has already been told about a call the model is still writing.
 #[derive(Default)]
 pub(super) struct Composed {
-    /// Whether the subject has been sent. It cannot improve, and a header that rewrote itself as
-    /// more arrived would read as a glitch rather than as progress.
-    named: bool,
+    /// The subject last sent. A later member can improve it: `bash` is named by its command until
+    /// the `description` written after it arrives, and the card has to carry that before it runs,
+    /// since dispatch brings no arguments with it. Members only count once whole, so it changes a
+    /// handful of times at most, never character by character.
+    named: Option<String>,
     /// Bytes and lines of the payload last sent, so a body that has not grown is not resent. Both,
     /// because the text is capped and stops growing while the line count it reports does not.
     sent: (usize, usize),
@@ -84,24 +86,53 @@ impl Composed {
         name: &str,
         arguments: &str,
     ) -> Option<ComposingFrame> {
-        let cwd = crate::ToolContext::working_dir; // asked only when a frame is built
-        let subject = if self.named { None } else { describe_partial_call(name, arguments, cwd()) };
-        // The subject is worth interrupting the cadence for — it is one small string, sent once,
-        // and it is what turns a bare spinner into a card. The body waits its turn.
         let due = self.at.is_none_or(|at| now.duration_since(at) >= COMPOSING_FRAME);
-        let body = due
-            .then(|| partial_card_body(name, arguments, cwd()))
-            .flatten()
-            .filter(|body| (body.text.len(), body.total_lines) > self.sent);
+        // The first subject is worth interrupting the cadence for: it is what turns a bare spinner
+        // into a card. A better one waits its turn with the body, since finding it means parsing
+        // the whole argument, and on every fragment of a long `write` that adds up.
+        let frame = self.frame(name, arguments, self.named.is_none() || due, due)?;
+        self.at = Some(now);
+        Some(frame)
+    }
 
+    /// Whatever the cadence held back, for a call the model has finished writing.
+    ///
+    /// Sent before the call is handed over to run, because nothing after that brings its
+    /// arguments: a `bash` whose `description` closed inside the last window would otherwise run
+    /// under its command until the message commits, after the call is over.
+    pub(super) fn last_frame(&mut self, name: &str, arguments: &str) -> Option<ComposingFrame> {
+        self.frame(name, arguments, true, true)
+    }
+
+    /// The subject and body that changed since they were last sent, looking only where asked.
+    fn frame(
+        &mut self,
+        name: &str,
+        arguments: &str,
+        rename: bool,
+        refill: bool,
+    ) -> Option<ComposingFrame> {
+        let subject = rename.then(|| self.new_subject(name, arguments)).flatten();
+        let body = refill.then(|| self.grown_body(name, arguments)).flatten();
         if subject.is_none() && body.is_none() {
             return None;
         }
-        self.named |= subject.is_some();
+        if let Some(subject) = &subject {
+            self.named = Some(subject.clone());
+        }
         if let Some(body) = &body {
             self.sent = (body.text.len(), body.total_lines);
         }
-        self.at = Some(now);
         Some(ComposingFrame { subject, body })
+    }
+
+    fn new_subject(&self, name: &str, arguments: &str) -> Option<String> {
+        describe_partial_call(name, arguments, crate::ToolContext::working_dir())
+            .filter(|subject| self.named.as_ref() != Some(subject))
+    }
+
+    fn grown_body(&self, name: &str, arguments: &str) -> Option<crate::activity::ToolCardBody> {
+        partial_card_body(name, arguments, crate::ToolContext::working_dir())
+            .filter(|body| (body.text.len(), body.total_lines) > self.sent)
     }
 }

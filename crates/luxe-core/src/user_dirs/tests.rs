@@ -23,6 +23,21 @@ fn a_luxe_variable_names_the_directory_itself() {
     assert_eq!(dir(&other, None), None, "nowhere named, nowhere to look");
 }
 
+/// The runtime folder is one only this user can open: Linux's runtime directory, macOS's temp
+/// directory, and never Linux's `$TMPDIR`, which is usually the shared `/tmp`.
+#[test]
+#[cfg(unix)]
+fn the_runtime_folder_is_private_to_the_user() {
+    let linux = [("XDG_RUNTIME_DIR", "/run/user/1000"), ("TMPDIR", "/tmp")];
+    let runtime = |pairs: &[(&str, &str)], macos| runtime_in(env_of(pairs), macos);
+    assert_eq!(runtime(&linux, false), Some(PathBuf::from("/run/user/1000/luxe")));
+    assert_eq!(runtime(&[("TMPDIR", "/tmp")], false), None, "the shared /tmp is never it");
+    let mac = [("TMPDIR", "/var/folders/x/T/"), ("XDG_RUNTIME_DIR", "/elsewhere")];
+    assert_eq!(runtime(&mac, true), Some(PathBuf::from("/var/folders/x/T/luxe")));
+    let named = [("LUXE_RUNTIME_DIR", "/chosen"), ("XDG_RUNTIME_DIR", "/run/user/1000")];
+    assert_eq!(runtime(&named, false), Some(PathBuf::from("/chosen")), "the Luxe variable wins");
+}
+
 /// The old resolver: the XDG variable, then `HOME`, never the Windows folders, and nothing to
 /// take over when `LUXE_CONFIG_DIR` was in charge then too, or when there was no home.
 #[test]

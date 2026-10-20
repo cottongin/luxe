@@ -79,12 +79,10 @@ const { from, to } = Astro.props;
     heading.style.removeProperty("min-height");
   }
 
-  function arm(el: HTMLElement) {
-    const heading = (el.closest("h1, h2, h3") as HTMLElement | null) ?? el;
+  // Where the words sit in the heading finished and before, leaving them set to before. The
+  // finished height is held, so a revision that wraps differently can't move what's under it.
+  function measure(el: HTMLElement, heading: HTMLElement) {
     const vis = el.querySelector<HTMLElement>(".refine__vis")!;
-
-    // Measured finished, then set back to the old words, so a revision that wraps differently
-    // cannot move the paragraph under the heading while it plays.
     const top = () => el.getBoundingClientRect().top - heading.getBoundingClientRect().top;
     vis.dataset.text = el.dataset.to ?? "";
     el.dataset.state = "done";
@@ -93,13 +91,28 @@ const { from, to } = Astro.props;
     const finalTop = top();
     vis.dataset.text = el.dataset.from ?? "";
     el.dataset.state = "pending";
+    return { finalTop, pendingTop: top() };
+  }
 
-    // The old words break where the finished heading will, or the line reflows mid-gesture: a
-    // longer revision that wraps gets its line break up front, and a shorter one that fits on the
-    // line holds the old words there too, overhanging by a few letters for a second or two.
-    const pendingTop = top();
+  // The old words break where the finished heading will, or the line reflows mid-gesture: a
+  // longer revision that wraps gets its line break up front, and a shorter one that fits on the
+  // line holds the old words there too, overhanging by a few letters for a second or two. Run
+  // again on a resize before it plays, so the break is never a stale one.
+  function layOut(el: HTMLElement, heading: HTMLElement) {
+    el.classList.remove("refine--break");
+    heading.classList.remove("refine-hold");
+    heading.style.removeProperty("min-height");
+    const { finalTop, pendingTop } = measure(el, heading);
     if (finalTop > pendingTop + 1) el.classList.add("refine--break");
     else if (pendingTop > finalTop + 1) heading.classList.add("refine-hold");
+  }
+
+  function arm(el: HTMLElement) {
+    const heading = (el.closest("h1, h2, h3") as HTMLElement | null) ?? el;
+    layOut(el, heading);
+    addEventListener("resize", () => {
+      if (el.dataset.state === "pending") layOut(el, heading);
+    });
 
     const watcher = new IntersectionObserver(
       ([entry]) => {
@@ -113,8 +126,19 @@ const { from, to } = Astro.props;
     watcher.observe(el);
   }
 
-  if (!calm.matches) {
-    document.querySelectorAll<HTMLElement>("[data-refine]").forEach(arm);
+  // The heading's own face, upright and italic, loaded before anything is measured. The fallback
+  // is wider, so measured in it a heading that fits on one line seems to wrap, takes a forced
+  // break, and loses it when the revision ends: the heading jumps from two lines to one.
+  function faceLoads(el: HTMLElement): Promise<unknown>[] {
+    const family = getComputedStyle(el).fontFamily;
+    return [`1em ${family}`, `italic 1em ${family}`].map((font) => document.fonts.load(font));
+  }
+
+  const refines = [...document.querySelectorAll<HTMLElement>("[data-refine]")];
+  if (!calm.matches && refines.length > 0) {
+    Promise.all(refines.flatMap(faceLoads))
+      .catch(() => {}) // a face that won't load is drawn in the fallback, so measure in that
+      .then(() => refines.forEach(arm));
   }
 </script>
 

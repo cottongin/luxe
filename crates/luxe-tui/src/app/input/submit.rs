@@ -233,7 +233,10 @@ fn send_user_turn(
         app.never_sent.extend(message);
         app.push_convo(ConvoBlock::System("[engine unavailable — channel closed]".to_string()));
         app.status.state = AppState::Idle;
-    } else if starts_new_turn {
+        return;
+    }
+    app.own_commit_pending = true;
+    if starts_new_turn {
         app.review.last_turn = None;
     }
 }
@@ -241,7 +244,13 @@ fn send_user_turn(
 /// Routes a submission made while a turn is running: steer it into the turn, or hold it for one
 /// of its own. Either way it is pinned above the composer rather than dropped into the
 /// transcript, so the UI never claims a message started work it hasn't started.
-fn deliver_mid_turn(app: &mut App, submission: PendingSubmission) {
+///
+/// A message with images always waits: steering carries text alone, so steering one would deliver
+/// its words and drop its images.
+fn deliver_mid_turn(app: &mut App, mut submission: PendingSubmission) {
+    if !submission.images.is_empty() {
+        submission.delivery = MidTurnDelivery::Queue;
+    }
     if submission.delivery == MidTurnDelivery::Steer {
         let content = submission.content.clone();
         if !app.send_action(Action::SteerTurn { content }, "steer the turn") {

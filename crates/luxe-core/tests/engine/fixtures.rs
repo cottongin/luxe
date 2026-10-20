@@ -212,11 +212,22 @@ pub(crate) fn review_engine_config(
     project_root: &std::path::Path,
     session_id: SessionId,
 ) -> EngineConfig {
-    let store = JsonlSessionStore::new(project_root.to_path_buf());
     EngineConfig {
         guided_review_project_root: Some(project_root.to_path_buf()),
-        ..base_config(store, session_id, Arc::new(GuideManifestProvider::default()))
+        ..base_config(
+            project_store(project_root),
+            session_id,
+            Arc::new(GuideManifestProvider::default()),
+        )
     }
+}
+
+/// The session store a project keeps under `.luxe`, as Luxe does, where Guided Review never looks.
+///
+/// Anywhere else in the project, the sessions are untracked files a review reads, and on Windows
+/// an open session's claim locks its `.lock` file against that read, so the review never loads.
+pub(crate) fn project_store(project_root: &std::path::Path) -> JsonlSessionStore {
+    JsonlSessionStore::new(project_root.join(".luxe").join("sessions"))
 }
 
 /// The first event `wanted` picks out of `events`, within the wait.

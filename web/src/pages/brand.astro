@@ -1,97 +1,179 @@
 ---
 import Base from "../layouts/Base.astro";
-import Wordmark from "../components/Wordmark.astro";
-import wordmarkSvg from "../assets/generated/wordmark.svg?url";
-import markSvg from "../assets/generated/mark.svg?url";
 import tileSvg from "../assets/generated/tile.svg?url";
+import { catalog, logos, screenshots, screenshotHref, token } from "../lib/press";
+
+const repository = "https://github.com/evanwhittaker/luxe";
+
+const facts = [
+  { term: "Name", detail: "Luxe" },
+  { term: "Command", detail: "luxe", code: true },
+  { term: "What it is", detail: "A coding agent for the terminal" },
+  { term: "Platforms", detail: "Linux, macOS and Windows" },
+  { term: "Written in", detail: "Rust" },
+  { term: "License", detail: "MIT or Apache 2.0" },
+  { term: "Website", detail: "luxe.dev", href: "https://luxe.dev" },
+  { term: "Source", detail: "github.com/evanwhittaker/luxe", href: repository },
+];
 
 const files = [
-  { href: wordmarkSvg, name: "wordmark.svg", note: "the logotype, one path per letter" },
-  { href: markSvg, name: "mark.svg", note: "the L alone, cropped to its ink" },
-  { href: tileSvg, name: "tile.svg", note: "the tile — favicons, avatars" },
+  ...logos.map((logo) => ({ ...logo, href: `/press/${logo.file}` })),
+  // On the light plate, or its dark square vanishes into the dark one
+  { file: "tile.svg", name: "Tile", use: "The app icon and favicon.", light: true, href: tileSvg },
 ];
+
+const colors = [
+  { name: "Brass", value: token("accent") },
+  { name: "Background", value: token("background") },
+  { name: "Text", value: token("text") },
+  { name: "Muted", value: token("muted") },
+];
+
+// Darkest to brightest, the order the letters are shaded in
+const ramp = [1, 2, 3, 4, 5].map((step) => token(`wordmark-${step}`));
 ---
 
-<Base title="Brand — Luxe" description="The Luxe logotype, where it came from, and how to use it.">
+<Base title="Press kit — Luxe" description="Logos, screenshots, colors and facts for writing about Luxe.">
   <div class="page">
     <section class="section section--head">
-      <p class="eyebrow">Brand</p>
-      <h1>One drawing.</h1>
-      <div class="prose">
-        <p>
-          The logotype is not a font and not a traced image. It's a grid of terminal cells — three
-          glyphs, the two half blocks and the full block — and those cells are the only copy that
-          exists. The vector on this page is generated from them.
-        </p>
-        <p>
-          Those three were chosen, not settled for. Every terminal with built-in box drawing
-          synthesizes that range against the cell box rather than scaling a font outline into it, so
-          the mark lands identically whether you have a patched font or the plainest monospace your
-          distribution shipped. An earlier version cut its corners with the Powerline triangles and
-          looked better on the terminals that draw those correctly — which is not all of them, and a
-          mark that needs a fallback is the wrong mark to open with. There is no setting for it:
-          one mark, everywhere, is the point.
-        </p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="stage plate">
-        <div class="stage__inner">
-          <Wordmark shine class="stage__mark" />
-        </div>
-      </div>
-      <p class="muted stage__note">
-        The light crossing it is the same one the terminal draws: 1.6 seconds to cross, then five
-        seconds of rest. A shine that repeats promptly stops reading as light and starts reading as
-        a strobe.
+      <p class="eyebrow">Press kit</p>
+      <h1>Logos, screenshots and facts.</h1>
+      <p class="lede">
+        Everything you need to write about Luxe or show it in a video or talk. Free to use in
+        coverage of Luxe.
       </p>
     </section>
 
     <section class="section">
-      <h2>Files.</h2>
-      <ul class="files">
+      <h2>About Luxe</h2>
+      <div class="about">
+        <div class="about__text">
+          <p>
+            Luxe is a coding agent that runs in your terminal. It writes code with you, then walks
+            you through what it changed, one chapter at a time, so you can review the work before it
+            ships.
+          </p>
+          <p>
+            It works with more than {catalog.models} models from over {catalog.providers} providers,
+            local ones included. It picks up GitHub issues, opens pull requests and posts reviews.
+            Luxe is free, open source, and collects no telemetry.
+          </p>
+        </div>
+        <dl class="facts">
+          {
+            facts.map(({ term, detail, code, href }) => (
+              <div class="facts__row">
+                <dt>{term}</dt>
+                <dd>
+                  {href ? <a href={href}>{detail}</a> : code ? <code>{detail}</code> : detail}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Logos</h2>
+      <ul class="grid grid--logos">
         {
-          files.map(({ href, name, note }) => (
-            <li class="file">
-              <a class="file__link" href={href} download>
-                <code>{name}</code>
-              </a>
-              <span class="muted">{note}</span>
+          files.map(({ name, use, light, href, file }) => (
+            <li class="card">
+              <div class:list={["card__preview", { "card__preview--light": light }]}>
+                <img src={href} alt={name} class="card__logo" />
+              </div>
+              <div class="card__body">
+                <h3 class="card__name">{name}</h3>
+                <p class="card__use">{use}</p>
+                <a class="card__download" href={href} download={file}>Download SVG</a>
+              </div>
             </li>
           ))
         }
       </ul>
-      <p class="muted">
-        Each letter takes its color from <code>--luxe-wordmark-1</code> through
-        <code>-4</code>, falling back to <code>currentColor</code>. Set them, or set nothing and let
-        it inherit.
-      </p>
     </section>
 
-    <section class="section section--last">
-      <h2>Please, and please don't.</h2>
+    <section class="section">
+      <h2>Colors</h2>
+      <ul class="swatches">
+        {
+          colors.map(({ name, value }) => (
+            <li class="swatch">
+              <span class="swatch__chip" style={`background: ${value}`} />
+              <span class="swatch__name">{name}</span>
+              <code class="swatch__value">{value}</code>
+            </li>
+          ))
+        }
+      </ul>
+      <h3 class="ramp__head">The wordmark's shades</h3>
+      <p class="ramp__note">
+        The letters are shaded in five steps of brass, from dark to the accent. For matching the logo,
+        not for type or backgrounds.
+      </p>
+      <ul class="ramp">
+        {
+          ramp.map((value) => (
+            <li class="ramp__step">
+              <span class="ramp__chip" style={`background: ${value}`} />
+              <code class="swatch__value">{value}</code>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Screenshots</h2>
+      <ul class="grid grid--shots">
+        {
+          screenshots.map((shot) => (
+            <li class="card">
+              <div class="card__preview card__preview--shot">
+                <img src={screenshotHref(shot)} alt={shot.caption} loading="lazy" />
+              </div>
+              <div class="card__body">
+                <h3 class="card__name">{shot.title}</h3>
+                <p class="card__use">{shot.caption}</p>
+                <a class="card__download" href={screenshotHref(shot)} download>Download PNG</a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Using the logo</h2>
       <div class="rules">
-        <div class="rule">
-          <p class="rule__head">Please</p>
+        <div>
+          <h3 class="rules__head">Do</h3>
           <ul>
-            <li>Use the brass ramp, or one flat color, or <code>currentColor</code>.</li>
-            <li>Give it room — at least the height of the <code>l</code> on every side.</li>
-            <li>Use the tile where the wordmark would fall below about 100px wide.</li>
-            <li>Keep the full stop. It is part of the drawing, and it sets the tone.</li>
-            <li>Call it <b>Luxe</b> in prose and <code>luxe</code> in a command.</li>
+            <li>Use the files on this page as they are.</li>
+            <li>Leave space around the logo, at least the height of the <b>l</b>.</li>
+            <li>Use the mark or the tile where the wordmark would be under 100px wide.</li>
+            <li>Write the name as <b>Luxe</b>, and the command as <code>luxe</code>.</li>
           </ul>
         </div>
-        <div class="rule">
-          <p class="rule__head">Please don't</p>
+        <div>
+          <h3 class="rules__head">Don't</h3>
           <ul>
-            <li>Set it in a typeface. It is drawn on a cell grid; no font has these letterforms.</li>
-            <li>Add an outline, a shadow, or a gradient sweep of your own.</li>
-            <li>Stretch it. The 1:2.2 cell aspect is the proportion it is recognized at.</li>
-            <li>Capitalize it. The mark is <b>luxe.</b> and the product is <b>Luxe</b> — never LUXE.</li>
+            <li>Recreate the logo in a font. It's drawn on a grid of terminal cells.</li>
+            <li>Stretch it, outline it, add shadows, or use colors other than these.</li>
+            <li>Write the name in all caps.</li>
+            <li>Suggest that Luxe endorses you or your product.</li>
           </ul>
         </div>
       </div>
+    </section>
+
+    <section class="section section--last">
+      <h2>Contact</h2>
+      <p>
+        Questions, or need something that isn't here? <a href={`${repository}/issues`}>Open an issue
+        on GitHub</a>.
+      </p>
     </section>
   </div>
 </Base>
@@ -101,75 +183,233 @@ const files = [
     border-top: 0;
     padding-top: var(--space-6);
   }
+
   .section--last {
     border-bottom: 0;
   }
 
-  .prose {
-    max-width: var(--measure);
+  .lede {
     margin-top: var(--space-4);
   }
 
-  .stage__inner {
+  h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-5);
+  }
+
+  /* The summary and the facts side by side, tops aligned, one column once there's no room */
+  .about {
     display: grid;
-    place-items: center;
-    padding: var(--space-7) var(--space-5);
+    grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr);
+    gap: var(--space-5) var(--space-6);
+    align-items: start;
   }
 
-  .stage :global(.stage__mark) {
-    width: min(100%, 34rem);
+  .about__text p:first-child {
+    margin-top: 0;
   }
 
-  .stage__note {
+  .facts {
+    margin: 0;
     font-size: var(--step--1);
-    margin-top: var(--space-3);
-    max-width: var(--measure);
   }
 
-  .files {
+  .facts__row {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--luxe-border-muted);
+  }
+
+  .facts__row:first-child {
+    padding-top: 0;
+  }
+
+  .facts dt {
+    color: var(--luxe-muted);
+  }
+
+  .facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .grid {
     list-style: none;
     padding: 0;
-    margin: var(--space-4) 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .grid--logos {
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  }
+
+  .grid--shots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--luxe-border-muted);
+  }
+
+  /* One shape for every preview, the picture fitted inside it, so a row of cards lines up. The
+     overflow drops the content-sized minimum `aspect-ratio` keeps, which let a tall logo stretch
+     its box */
+  .card__preview {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    padding: var(--space-5);
+    background: var(--luxe-background);
+    border-bottom: 1px solid var(--luxe-border-muted);
+  }
+
+  .card__preview--light {
+    background: var(--luxe-text);
+  }
+
+  .card__preview--shot {
+    padding: var(--space-3);
+    background: var(--luxe-capture-bg);
+  }
+
+  .card__preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* The wordmarks are wide and the mark and tile tall; a narrower box keeps the wordmarks from
+     filling their card edge to edge */
+  .card__logo {
+    padding-inline: 10%;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    font-size: var(--step--1);
+  }
+
+  .card__name {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    margin: 0;
+  }
+
+  .card__use {
+    margin: 0;
+    color: var(--luxe-muted);
+  }
+
+  /* Pinned to the bottom, so a row of cards lines its links up whatever the text above runs to */
+  .card__download {
+    margin-top: auto;
+    padding-top: var(--space-2);
+  }
+
+  .swatches {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: var(--space-5);
+  }
+
+  .swatch {
+    display: grid;
+    gap: var(--space-1);
+    font-size: var(--step--1);
+  }
+
+  .swatch__chip {
+    display: block;
+    aspect-ratio: 3 / 2;
+    border: 1px solid var(--luxe-border-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .swatch__value {
+    color: var(--luxe-muted);
+  }
+
+  .ramp__head {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    margin: var(--space-6) 0 var(--space-2);
+  }
+
+  .ramp__note {
+    margin: 0 0 var(--space-4);
+    max-width: var(--measure);
+    color: var(--luxe-muted);
+    font-size: var(--step--1);
+  }
+
+  /* Chips touching, so the five read as one ramp rather than five more brand colors */
+  .ramp {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-width: 40rem;
+    font-size: var(--step--1);
+  }
+
+  .ramp__step {
     display: grid;
     gap: var(--space-2);
   }
 
-  .file {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-3);
-    flex-wrap: wrap;
-    font-size: var(--step--1);
-    padding-block: 0.5rem;
-    border-bottom: 1px solid var(--luxe-border-muted);
-  }
-
-  .file__link {
-    text-decoration: none;
+  .ramp__chip {
+    display: block;
+    height: 3rem;
   }
 
   .rules {
     display: grid;
-    gap: var(--space-5);
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-    margin-top: var(--space-4);
+    gap: var(--space-5) var(--space-6);
   }
 
-  .rule__head {
-    font-family: var(--font-display);
-    font-size: var(--step-1);
+  .rules__head {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    letter-spacing: 0;
     color: var(--luxe-accent);
-    margin-bottom: var(--space-2);
+    margin: 0 0 var(--space-3);
   }
 
-  .rule ul {
+  .rules ul {
     margin: 0;
     padding-left: 1.1em;
-    font-size: var(--step--1);
-    color: var(--luxe-muted);
   }
 
-  .rule li {
+  .rules li {
     margin-bottom: var(--space-2);
+  }
+
+  @media (max-width: 68rem) {
+    .about {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .grid--shots {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

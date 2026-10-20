@@ -197,6 +197,46 @@ pub fn chapter_needs_review(budget: &ReviewBudget, chapter: &ReviewChapter) -> b
     budget.chapter(&chapter.id).needs_review > 0
 }
 
+/// The one reason every item in `chapter` is accounted for: `None` when anything in it needs the
+/// reviewer, or when different things vouch for different items.
+pub fn shared_reason(budget: &ReviewBudget, chapter: &ReviewChapter) -> Option<Accounted> {
+    let mut reason: Option<Accounted> = None;
+    for item in &chapter.items {
+        let ItemVerdict::Accounted(accounted) = budget.verdict(item) else {
+            return None;
+        };
+        match &reason {
+            Some(seen) if *seen != accounted => return None,
+            _ => reason = Some(accounted),
+        }
+    }
+    reason
+}
+
+/// What one chapter asks of the reader, for a front end that has the chapters but not the lines
+/// the budget is decided from.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub struct ChapterReading {
+    /// The chapter it's about
+    pub chapter_id: ChapterId,
+    /// Items still on the reviewer's list
+    pub needs_review: usize,
+    /// The label of [`shared_reason`], when there is one
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+}
+
+/// What every chapter of `review` asks of the reader, from the budget the terminal reads.
+pub fn chapter_readings(review: &GuidedReview) -> Vec<ChapterReading> {
+    let budget = review_budget(review, &super::review_flags(review));
+    let reading = |chapter: &ReviewChapter| ChapterReading {
+        chapter_id: chapter.id.clone(),
+        needs_review: budget.chapter(&chapter.id).needs_review,
+        reason: shared_reason(&budget, chapter).map(|reason| reason.label()),
+    };
+    review.chapters.iter().map(reading).collect()
+}
+
 fn hunk_verdict(
     hunk: &ReviewHunk,
     file: &ReviewFile,

@@ -11,8 +11,8 @@ use crate::theme::styles::ThemeStyles;
 use ratatui::style::Style;
 use std::borrow::Cow;
 
-/// The icon beside a mode's name.
-pub(crate) fn icon(mode: &str) -> Icon {
+/// The icon beside a mode's name, here and on the phone app's mode button.
+pub fn icon(mode: &str) -> Icon {
     match mode {
         luxe_core::mode::PLAN => Icon::ModePlan,
         _ => Icon::ModeBuild,

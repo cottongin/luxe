@@ -1,5 +1,6 @@
 use super::*;
-use crate::app::{ConversationItem, ConvoBlock};
+use crate::app::{App, ConversationItem, ConvoBlock, ToolItem};
+use crate::graphics::{CellSize, ImageKey, ImageOrigin};
 
 fn signature(first: usize, revision: BlockRevision) -> UnitSignature {
     UnitSignature {
@@ -12,6 +13,7 @@ fn signature(first: usize, revision: BlockRevision) -> UnitSignature {
         selected: false,
         never_sent: false,
         expanded: false,
+        images: None,
     }
 }
 
@@ -121,7 +123,7 @@ fn a_changed_item_invalidates_only_itself() {
     assert_eq!(text, ["a", "b", "b2"]);
 }
 
-/// A unit that redraws by itself — a spinner, an image, a row the reveal is still typing —
+/// A unit that redraws by itself — a spinner, a row the reveal is still typing —
 /// must never be served from the cache, however unchanged its signature looks.
 #[test]
 fn a_self_animating_unit_is_never_reused() {
@@ -175,6 +177,79 @@ fn a_shortened_transcript_drops_the_rows_it_lost() {
     assert_eq!(layout.rows().len(), 1, "the popped item's row is gone");
 }
 
+/// An app with nothing in its transcript, and `key` in its image store.
+fn app_holding(key: &ImageKey) -> App {
+    let (tx, _rx) = tokio::sync::mpsc::channel(4);
+    let config = luxe_core::config::Config::default();
+    let mut app = App::new(tx, luxe_core::keymap::KeyMap::defaults(), config);
+    let mut png = std::io::Cursor::new(Vec::new());
+    image::DynamicImage::new_rgba8(32, 16).write_to(&mut png, image::ImageFormat::Png).unwrap();
+    let origin = ImageOrigin { label: "screenshot".into(), path: None };
+    assert!(app.images.insert(key.clone(), png.into_inner(), origin));
+    app
+}
+
+/// An app whose transcript is one finished screenshot call, its image in the store.
+fn app_with_screenshot() -> App {
+    let key = ImageKey::tool_result("s", "call-shot", 1);
+    let mut app = app_holding(&key);
+    let mut shot = luxe_core::ToolActivity::running("s", "call-shot", "screenshot", "url", 1);
+    shot.state = luxe_core::ToolActivityState::Succeeded;
+    let card =
+        ToolItem { activity: shot, expanded: false, details_toggled: false, waited_on_user_ms: 0 };
+    app.push_convo(ConvoBlock::Tool(Box::new(card)));
+    app.tool_images.insert(("s".into(), "call-shot".into()), vec![key]);
+    app
+}
+
+/// An app whose transcript is one attached image.
+fn app_with_attached_image() -> App {
+    let key = ImageKey::new("attached");
+    let mut app = app_holding(&key);
+    app.push_convo(ConvoBlock::Image { key, width: 32, height: 16 });
+    app
+}
+
+/// One frame's layout of `app`'s transcript, as the rows' shared lines.
+fn lay_out_frame(layout: &mut TranscriptLayout, app: &mut App) -> Vec<Rc<Line<'static>>> {
+    super::layout::lay_out_transcript(
+        layout,
+        app,
+        super::super::conversation_canvas_widths(120),
+        40,
+    );
+    layout.rows().iter().map(|row| Rc::clone(&row.line)).collect()
+}
+
+/// The break this catches: a card carrying an image rebuilt every frame, which in a session with a
+/// hundred screenshots lays out a hundred cards a frame wherever they sit; or kept after the store
+/// changes under it, drawing rows sized for the old geometry.
+#[test]
+fn an_image_card_is_reused_until_the_image_store_changes() {
+    assert_reused_until_the_store_changes(app_with_screenshot());
+}
+
+/// The break this catches: an attached image left out of the store's revision, so its rows
+/// outlive a change of cell size or a cleared store.
+#[test]
+fn an_attached_image_is_reused_until_the_image_store_changes() {
+    assert_reused_until_the_store_changes(app_with_attached_image());
+}
+
+/// `app`'s only item is laid out once across unchanged frames, and again once the store moves.
+fn assert_reused_until_the_store_changes(mut app: App) {
+    let mut layout = TranscriptLayout::default();
+    let first = lay_out_frame(&mut layout, &mut app);
+    let second = lay_out_frame(&mut layout, &mut app);
+    assert!(!first.is_empty(), "the card draws");
+    let reused = first.iter().zip(&second).all(|(a, b)| Rc::ptr_eq(a, b));
+    assert!(reused && first.len() == second.len(), "an unchanged frame reuses the card");
+
+    app.images.set_cell_size(CellSize { width: 7, height: 15 });
+    let third = lay_out_frame(&mut layout, &mut app);
+    assert!(!Rc::ptr_eq(&second[0], &third[0]), "a store change lays it out again");
+}
+
 /// Every field of the signature has to be part of the comparison, or the cache serves a stale
 /// row the moment that one thing changes on its own. Flipping each in turn is the cheap way to
 /// keep a future field from being added to the struct and forgotten in the equality.
@@ -182,7 +257,7 @@ fn a_shortened_transcript_drops_the_rows_it_lost() {
 fn every_field_of_the_signature_is_part_of_the_comparison() {
     let base = signature(3, BlockRevision::for_test(1));
     type Mutation = (&'static str, fn(&mut UnitSignature));
-    let mutations: [Mutation; 9] = [
+    let mutations: [Mutation; 10] = [
         ("first", |s| s.first += 1),
         ("len", |s| s.len += 1),
         ("revision", |s| s.revision = BlockRevision::for_test(2)),
@@ -192,6 +267,7 @@ fn every_field_of_the_signature_is_part_of_the_comparison() {
         ("selected", |s| s.selected = !s.selected),
         ("never_sent", |s| s.never_sent = !s.never_sent),
         ("expanded", |s| s.expanded = !s.expanded),
+        ("images", |s| s.images = Some(1)),
     ];
     for (field, mutate) in mutations {
         let mut changed = base;

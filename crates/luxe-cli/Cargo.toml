@@ -3,7 +3,7 @@ name = "luxe-cli"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "A terminal coding agent: streaming chat, tools, guided diff review, and LSP/DAP code intelligence"
+description = "A beautiful coding agent for your terminal."
 repository.workspace = true
 homepage.workspace = true
 readme = "../../README.md"
@@ -18,22 +18,29 @@ name = "luxe"
 path = "src/main.rs"
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.2" }
-luxe-providers = { path = "../luxe-providers", version = "0.1.2" }
-luxe-tools = { path = "../luxe-tools", version = "0.1.2" }
-luxe-lsp = { path = "../luxe-lsp", version = "0.1.2" }
-luxe-dap = { path = "../luxe-dap", version = "0.1.2" }
-luxe-mcp = { path = "../luxe-mcp", version = "0.1.2" }
-luxe-tui = { path = "../luxe-tui", version = "0.1.2" }
+luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-providers = { path = "../luxe-providers", version = "0.1.3" }
+luxe-tools = { path = "../luxe-tools", version = "0.1.3" }
+luxe-lsp = { path = "../luxe-lsp", version = "0.1.3" }
+luxe-dap = { path = "../luxe-dap", version = "0.1.3" }
+luxe-mcp = { path = "../luxe-mcp", version = "0.1.3" }
+luxe-tui = { path = "../luxe-tui", version = "0.1.3" }
+luxe-remote = { path = "../luxe-remote", version = "0.1.3", optional = true }
+# The pairing QR in the terminal. Without its defaults it is the encoder and text renderer alone,
+# with no dependencies.
+qrcode = { version = "0.14", default-features = false, optional = true }
 anyhow = { workspace = true }
 clap = { workspace = true }
 shlex = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-tokio = { workspace = true }
+# `signal`: `luxe remote` runs until Ctrl-C, and stops serving cleanly when it comes
+tokio = { workspace = true, features = ["signal"] }
 uuid = { workspace = true }
 secrecy = { workspace = true }
 serde_json = { workspace = true }
+# A joiner's transcript is encoded from the shared snapshot through a borrowed copy of its shape
+serde = { workspace = true }
 async-trait = { workspace = true }
 # One request, for the update notice: a public release manifest, carrying nothing about the user.
 # See `luxe_core::update` for why that constraint is load-bearing rather than a nicety.
@@ -49,10 +56,12 @@ semver = { workspace = true }
 tempfile = "3"
 # The guide check: what Luxe would silently ignore in a config example
 serde_ignored = "0.1"
-serde = { workspace = true }
 
 [features]
-default = ["clipboard-images"]
+default = ["clipboard-images", "remote"]
+# `luxe remote`, the only server in Luxe. A packager can leave it out to ship a Luxe with no
+# server code at all.
+remote = ["dep:luxe-remote", "dep:qrcode"]
 clipboard = ["luxe-tui/clipboard"]
 clipboard-images = ["luxe-tui/clipboard-images"]
 

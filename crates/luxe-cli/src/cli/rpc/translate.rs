@@ -39,6 +39,8 @@ pub(crate) struct Policy {
     pub(crate) github_writes: GithubWrites,
     /// The `/github` sections a bare `list_github` runs: the user's configured ones
     pub(crate) github_sections: Vec<luxe_core::config::GithubSection>,
+    /// Whether the client joined a session a terminal runs, rather than starting its own
+    pub(crate) joined: bool,
 }
 
 /// Whether a client may publish to GitHub, and if not, why not.
@@ -95,16 +97,71 @@ pub(crate) trait ModelResolver {
     /// same contract `--model` has always had, and it is what makes a local or proxied model
     /// usable without an entry in anyone's catalog.
     fn resolve(&self, provider: &str, id: &str) -> luxe_core::ModelInfo;
+
+    /// The models a client can switch to, configured ones first, for `list_models`.
+    fn choices(&self) -> Vec<luxe_core::event::ModelChoice>;
 }
 
 /// The real catalog: configured models first, models.dev filling the gaps, defaults under that.
-pub(crate) struct CatalogResolver;
+///
+/// Holds the launch's settings because which providers can be reached depends on them: a key
+/// passed on the command line reaches a provider nothing else configures.
+pub(crate) struct CatalogResolver {
+    pub(crate) settings: crate::engine_setup::AgentSettings,
+}
 
 impl ModelResolver for CatalogResolver {
     fn resolve(&self, provider: &str, id: &str) -> luxe_core::ModelInfo {
         let config = crate::engine_setup::load_luxe_config();
         crate::model_catalog::resolve_model(&config, provider, id).0
     }
+
+    fn choices(&self) -> Vec<luxe_core::event::ModelChoice> {
+        crate::model_catalog::choices(&self.settings)
+    }
+}
+
+/// Why the client's policy refuses `wire`, before it means anything to the engine.
+fn policy_refusal(wire: &WireAction, policy: &Policy) -> Option<String> {
+    let kind = wire.kind();
+    if wire.writes_to_github() {
+        if let Some(reason) = policy.github_writes.refusal(kind) {
+            return Some(reason);
+        }
+    }
+    if wire.writes_the_repository() && policy.github_writes == GithubWrites::ReadOnly {
+        return Some(format!("{kind} writes to the repository, and this session is read-only"));
+    }
+    session_refusal(wire, policy)
+}
+
+/// Why `wire` is refused for the client's place in the session: the one that started it, or one
+/// that joined.
+fn session_refusal(wire: &WireAction, policy: &Policy) -> Option<String> {
+    let kind = wire.kind();
+    // A joined client's introduction is kept by the share layer, so one that gets here started
+    // the session
+    if matches!(wire, WireAction::Introduce { .. }) {
+        return Some(format!("{kind} is for a client that joined a running session"));
+    }
+    // The protocol answers it from the catalog before translating (`rpc::parse_action`)
+    if matches!(wire, WireAction::ListModels { .. }) {
+        return Some(format!("{kind} is answered by the protocol, not the engine"));
+    }
+    let switches = matches!(wire, WireAction::NewSession | WireAction::LoadSession(_));
+    if policy.joined && switches {
+        let reason = "would switch the session the terminal is showing: switch it there, or start \
+                      another Luxe";
+        return Some(format!("{kind} {reason}"));
+    }
+    None
+}
+
+/// Review progress carrying only the walked chapters, which is all the wire sends.
+fn walked(
+    walked_chapter_ids: Vec<luxe_core::guided_review::ChapterId>,
+) -> luxe_core::guided_review::ReviewProgress {
+    luxe_core::guided_review::ReviewProgress { walked_chapter_ids, ..Default::default() }
 }
 
 /// Translate one wire action into the engine action it stands for.
@@ -116,15 +173,8 @@ pub(crate) fn to_engine_action(
     models: &dyn ModelResolver,
     policy: &Policy,
 ) -> Result<Action, Rejected> {
-    if wire.writes_to_github() {
-        if let Some(reason) = policy.github_writes.refusal(wire.kind()) {
-            return Err(Rejected { kind: Some(wire.kind().to_string()), reason });
-        }
-    }
-    if wire.writes_the_repository() && policy.github_writes == GithubWrites::ReadOnly {
-        let kind = wire.kind();
-        let reason = format!("{kind} writes to the repository, and this session is read-only");
-        return Err(Rejected { kind: Some(kind.to_string()), reason });
+    if let Some(reason) = policy_refusal(&wire, policy) {
+        return Err(Rejected { kind: Some(wire.kind().to_string()), reason });
     }
     Ok(match wire {
         WireAction::SubmitUserMessage { text, images } => {
@@ -159,15 +209,10 @@ pub(crate) fn to_engine_action(
             Action::EditReview { request_id, review_id, edit }
         }
         WireAction::RecordReviewProgress { review_id, walked_chapter_ids } => {
-            Action::RecordReviewProgress {
-                review_id,
-                progress: luxe_core::guided_review::ReviewProgress {
-                    walked_chapter_ids,
-                    ..Default::default()
-                },
-            }
+            Action::RecordReviewProgress { review_id, progress: walked(walked_chapter_ids) }
         }
         WireAction::RecordReviewSeen { review_id } => Action::RecordReviewSeen { review_id },
+        WireAction::ShowOpenReview { request_id } => Action::ShowOpenReview { request_id },
         WireAction::RefreshGuidedReview { request_id, review_id, revision_id } => {
             Action::RefreshGuidedReview { request_id, review_id, expected_revision: revision_id }
         }

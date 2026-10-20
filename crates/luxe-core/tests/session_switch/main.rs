@@ -209,6 +209,45 @@ async fn lifecycle_hooks_follow_the_session_the_engine_is_on() {
     assert_eq!(after.last(), Some(&HookPoint::SessionEnd), "{after:?}");
 }
 
+/// The engine holds the session it's on, and won't switch to one another process holds.
+///
+/// The break this catches: loading a session without claiming it, so two Luxes append to one log
+/// and a resume shows only one of their conversations.
+#[tokio::test]
+async fn a_session_held_by_another_process_is_not_switched_to() {
+    let project = tempfile::tempdir().unwrap();
+    let mut store = JsonlSessionStore::new(project.path().join("sessions"));
+    let mine = store.create("/tmp/a").unwrap();
+    let theirs = store.create("/tmp/b").unwrap();
+    let lock = |id: &SessionId| store.session_path(id).unwrap().with_extension("lock");
+    let (my_lock, their_lock) = (lock(&mine), lock(&theirs));
+    let other_process = std::fs::File::create(&their_lock).unwrap();
+    other_process.try_lock().unwrap();
+    let (actions, mut events, task) =
+        Engine::spawn_task(engine_config(store, mine.clone(), project.path()));
+
+    actions.send(Action::LoadSession(theirs.to_string())).await.unwrap();
+    let refusal = first(&mut events, "the refusal", |event| match event {
+        Event::Error(message) => Some(message),
+        Event::SessionLoaded { session_id, .. } if session_id == theirs.0 => {
+            panic!("switched to a session another process holds")
+        }
+        _ => None,
+    })
+    .await;
+    assert!(refusal.contains("open in another Luxe"), "{refusal}");
+    let claimed = std::fs::File::open(&my_lock).unwrap().try_lock().is_err();
+    assert!(claimed, "the engine doesn't hold the session it's on");
+    turn(&actions, &mut events, "still in my session").await;
+
+    actions.send(Action::Close).await.unwrap();
+    let drained = tokio::spawn(async move { while events.recv().await.is_some() {} });
+    tokio::time::timeout(WAIT, task).await.expect("the engine stops").unwrap();
+    drained.abort();
+    let theirs_log = std::fs::read_to_string(their_lock.with_extension("jsonl")).unwrap();
+    assert!(!theirs_log.contains("still in my session"), "wrote into the held session");
+}
+
 /// Reopening the session the engine is already on is not a switch: no hook hears of it.
 #[tokio::test]
 async fn reloading_the_same_session_starts_nothing_new() {

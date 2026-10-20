@@ -118,9 +118,11 @@ export default defineConfig({
 	site: "https://luxe.dev",
 	integrations: [
 		svelte(),
-		// The social card is a page so it can be rendered from the real design system; it is not a
-		// document, and offering it to a search engine would be a small lie about what the site has.
-		sitemap({ filter: (page) => !page.includes("/social-card") }),
+		// The social card and the press screenshots are pages so they can be rendered from the real
+		// design system; they're not documents, so a search engine isn't offered them.
+		sitemap({
+			filter: (page) => !page.includes("/social-card") && !page.includes("/press-shots"),
+		}),
 	],
 	output: "static",
 	// Astro 7 flipped the default to 'jsx', which strips whitespace between inline elements the way

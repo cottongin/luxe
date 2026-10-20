@@ -37,16 +37,24 @@ pub(crate) const RESUME_BRIEFING: &str = "## Resuming\n";
 /// Those are only ever added after what the reader sent, so the first block is theirs whatever it
 /// starts with: a pasted hook log is still a message.
 pub fn readers_words(content: &[crate::message::ContentBlock]) -> Vec<(usize, String)> {
+    readers_texts(content.iter().map(|block| match block {
+        crate::message::ContentBlock::Text(text) => Some(text.as_str()),
+        _ => None,
+    }))
+}
+
+/// [`readers_words`] over each block's text, `None` for a block without any: for a front end that
+/// has a message only as it arrived on the wire, an image's bytes left behind.
+pub fn readers_texts<'a>(
+    blocks: impl IntoIterator<Item = Option<&'a str>>,
+) -> Vec<(usize, String)> {
     let for_the_model = |text: &str| {
         let ours = [HOOK_CONTEXT, BRANCH_NOTE, RESUME_BRIEFING];
         crate::mode::note(text).is_some() || ours.iter().any(|opener| text.starts_with(opener))
     };
-    let text = content.iter().enumerate().filter_map(|(index, block)| match block {
-        crate::message::ContentBlock::Text(text) => Some((index, text)),
-        _ => None,
-    });
+    let text = blocks.into_iter().enumerate().filter_map(|(index, text)| Some((index, text?)));
     text.filter(|(index, text)| *index == 0 || !for_the_model(text))
-        .map(|(index, text)| (index, text.clone()))
+        .map(|(index, text)| (index, text.to_string()))
         .collect()
 }
 

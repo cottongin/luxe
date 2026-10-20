@@ -9,20 +9,27 @@
 //! terminal (the TUI owns the screen), so that holds without any special care here — and
 //! `rpc_stdout_carries_only_protocol_frames` keeps it holding.
 
+mod frame;
 mod translate;
 
+use frame::write_frame;
+pub(super) use frame::{Opening, SharedTranscript};
 use luxe_core::engine::Action;
 use luxe_core::event::Action as WireAction;
 use luxe_core::Event;
-use tokio::io::{AsyncBufReadExt, AsyncRead, AsyncWrite, AsyncWriteExt, BufReader};
+use tokio::io::{AsyncBufReadExt, AsyncRead, AsyncWrite, BufReader};
 use tokio::sync::mpsc;
-use translate::{to_engine_action, CatalogResolver, GithubWrites, ModelResolver, Policy, Rejected};
+use translate::{to_engine_action, Rejected};
+pub(super) use translate::{CatalogResolver, GithubWrites, ModelResolver, Policy};
 
 /// Depth of the channel carrying locally-generated frames (rejections) to the single writer.
 ///
 /// Small on purpose: it holds refusals, and a client producing enough bad lines to fill it is
 /// already being told so.
 const LOCAL_FRAME_BUFFER: usize = 32;
+
+/// The catalog a session's clients resolve and list models through, shared by every one of them.
+pub(super) type Models = std::sync::Arc<dyn ModelResolver + Send + Sync>;
 
 /// Run the RPC front-end against stdio until the client closes the stream or stdin ends.
 ///
@@ -44,6 +51,7 @@ pub(crate) async fn run_rpc(
     let policy = Policy {
         github_writes: GithubWrites::for_launch(github_writes, mode),
         github_sections: luxe_core::config::Config::load(&settings.state_root).github.sections(),
+        joined: false,
     };
     let handle = crate::engine_setup::build_engine(
         &settings,
@@ -63,6 +71,9 @@ pub(crate) async fn run_rpc(
         },
         crate::workspace_runtime::pull_request_watch(&settings.work_root),
     );
+    // Shared like a terminal's, which is how a phone reaches a session the bridge started
+    let (events, _sharing) =
+        super::share::share(events, handle.actions.clone(), &settings, &handle.session_id.0);
 
     let ready = Event::Ready {
         protocol_version: luxe_core::PROTOCOL_VERSION,
@@ -82,12 +93,12 @@ pub(crate) async fn run_rpc(
     }
 
     serve(
-        ready,
+        ready.into(),
         events,
         handle.actions,
         tokio::fs::File::from_std(input),
         tokio::io::stdout(),
-        &CatalogResolver,
+        std::sync::Arc::new(CatalogResolver { settings: settings.clone() }),
         policy,
     )
     .await?;
@@ -100,21 +111,25 @@ pub(crate) async fn run_rpc(
 /// Generic over the streams so the protocol — handshake, framing, translation, refusal, shutdown —
 /// is exercised end to end in tests without a real stdin, a real terminal, or a live provider.
 /// `run_rpc` is this function with stdio and the real catalog plugged in.
-async fn serve<R, W>(
-    ready: Event,
+///
+/// A client that joined a terminal's session (`policy.joined`) never closes the engine: its
+/// hangup or `close` ends its own connection, and the terminal carries on.
+pub(super) async fn serve<R, W>(
+    opening: Opening,
     mut events: mpsc::Receiver<Event>,
     engine_tx: mpsc::Sender<Action>,
     input: R,
     mut output: W,
-    models: &'static (dyn ModelResolver + Sync),
+    models: Models,
     policy: Policy,
 ) -> anyhow::Result<()>
 where
     R: AsyncRead + Unpin + Send + 'static,
     W: AsyncWrite + Unpin,
 {
-    if !emit(&mut output, &ready).await? {
-        engine_tx.send(Action::Close).await.ok();
+    let joined = policy.joined;
+    if !emit_opening(&mut output, opening).await? {
+        close_unless_joined(&engine_tx, joined).await;
         return Ok(());
     }
 
@@ -131,6 +146,8 @@ where
     // ordered against each other: `select!` takes whichever is ready. Nothing needs them to be — a
     // refusal is about the client's own input, not about engine state — and pretending otherwise
     // would mean holding one stream up for the other.
+    //
+    // A joined client's reader ending *is* the end of its session, since the engine outlives it.
     let mut refusals_open = true;
     loop {
         let frame = tokio::select! {
@@ -140,6 +157,7 @@ where
             },
             refusal = local_rx.recv(), if refusals_open => match refusal {
                 Some(refusal) => refusal,
+                None if joined => break,
                 None => {
                     refusals_open = false;
                     continue;
@@ -163,19 +181,26 @@ where
 
     reader.abort();
     // The engine may already be gone (the client sent `close`); saying so twice is harmless.
-    engine_tx.send(Action::Close).await.ok();
+    close_unless_joined(&engine_tx, joined).await;
     Ok(())
+}
+
+/// Close the engine as a client leaves, unless the client only joined it.
+async fn close_unless_joined(engine_tx: &mpsc::Sender<Action>, joined: bool) {
+    if !joined {
+        engine_tx.send(Action::Close).await.ok();
+    }
 }
 
 /// Read wire actions until EOF, forwarding what translates and refusing what does not.
 ///
 /// EOF means the client is gone, so the engine is told to close rather than left running behind a
-/// stream nobody is reading.
+/// stream nobody is reading. A joined client's EOF or `close` only ends the read.
 async fn read_actions<R>(
     input: R,
     engine_tx: mpsc::Sender<Action>,
     local_tx: mpsc::Sender<Event>,
-    models: &'static (dyn ModelResolver + Sync),
+    models: Models,
     policy: Policy,
 ) where
     R: AsyncRead + Unpin,
@@ -193,18 +218,26 @@ async fn read_actions<R>(
         if line.trim().is_empty() {
             continue;
         }
-        let action = match parse_action(&line, models, &policy) {
-            Ok(action) => action,
+        let reply = match parse_action(&line, &*models, &policy) {
+            Ok(Inbound::Engine(action)) => Ok(*action),
+            Ok(Inbound::Answer(answer)) => Err(answer),
             Err(rejected) => {
-                let refusal =
-                    Event::ActionRejected { kind: rejected.kind, reason: rejected.reason };
-                if local_tx.send(refusal).await.is_err() {
+                Err(Event::ActionRejected { kind: rejected.kind, reason: rejected.reason })
+            }
+        };
+        let action = match reply {
+            Ok(action) => action,
+            Err(reply) => {
+                if local_tx.send(reply).await.is_err() {
                     break;
                 }
                 continue;
             }
         };
         let closing = matches!(action, Action::Close);
+        if closing && policy.joined {
+            break;
+        }
         if engine_tx.send(action).await.is_err() {
             break;
         }
@@ -212,7 +245,7 @@ async fn read_actions<R>(
             break;
         }
     }
-    engine_tx.send(Action::Close).await.ok();
+    close_unless_joined(&engine_tx, policy.joined).await;
 }
 
 /// Parse and translate one inbound line.
@@ -221,9 +254,9 @@ async fn read_actions<R>(
 /// is testable without any IO at all.
 fn parse_action(
     line: &str,
-    models: &(dyn ModelResolver + Sync),
+    models: &(dyn ModelResolver + Send + Sync),
     policy: &Policy,
-) -> Result<Action, Rejected> {
+) -> Result<Inbound, Rejected> {
     // Read the envelope before the payload, so a frame that names itself and then fails to
     // deserialize is still refused *by name*. Reporting `kind: null` for a `steer_turn` missing its
     // text sends the client looking through every frame it wrote instead of the one that was wrong.
@@ -232,15 +265,49 @@ fn parse_action(
     let kind = raw.get("kind").and_then(serde_json::Value::as_str).map(str::to_string);
     let wire: WireAction = serde_json::from_value(raw)
         .map_err(|error| Rejected { kind, reason: error.to_string() })?;
-    to_engine_action(wire, models, policy)
+    if let WireAction::ListModels { request_id } = wire {
+        return Ok(Inbound::Answer(Event::ModelsListed { request_id, models: models.choices() }));
+    }
+    to_engine_action(wire, models, policy).map(|action| Inbound::Engine(Box::new(action)))
+}
+
+/// What one inbound line comes to.
+#[derive(Debug)]
+enum Inbound {
+    /// An action for the engine
+    Engine(Box<Action>),
+    /// An answer for this client alone, which the engine has no part in
+    Answer(Event),
 }
 
 /// Write one frame, reporting `false` once the client has stopped reading.
 ///
 /// A hangup is how a session ends when the other end is `head` or a closed editor pane, so it
 /// resolves to a clean exit rather than an error written to a pipe nobody is holding.
-async fn emit<W: AsyncWrite + Unpin>(out: &mut W, event: &Event) -> anyhow::Result<bool> {
-    match write_frame(out, event).await {
+/// Send `ready` and any transcript, saying whether the client is still there.
+///
+/// Takes the opening by value so the transcript is let go once sent: held for the connection, it
+/// would pin a superseded copy of every message, and each commit would copy the snapshot's whole
+/// list to append to it.
+async fn emit_opening<W: AsyncWrite + Unpin>(
+    out: &mut W,
+    opening: Opening,
+) -> anyhow::Result<bool> {
+    if !emit(out, &opening.ready).await? {
+        return Ok(false);
+    }
+    match opening.transcript {
+        Some(transcript) => emit(out, &transcript).await,
+        None => Ok(true),
+    }
+}
+
+async fn emit<W, F>(out: &mut W, frame: &F) -> anyhow::Result<bool>
+where
+    W: AsyncWrite + Unpin,
+    F: serde::Serialize + ?Sized,
+{
+    match write_frame(out, frame).await {
         Ok(()) => Ok(true),
         Err(error)
             if matches!(
@@ -253,24 +320,6 @@ async fn emit<W: AsyncWrite + Unpin>(out: &mut W, event: &Event) -> anyhow::Resu
         }
         Err(error) => Err(error.into()),
     }
-}
-
-/// Write one frame and flush it, so a streaming client sees tokens as they arrive.
-///
-/// A frame that cannot serialize is logged and dropped rather than ending the session: losing one
-/// event is recoverable for a client, and a dead stream is not.
-async fn write_frame<W: AsyncWrite + Unpin>(out: &mut W, event: &Event) -> std::io::Result<()> {
-    let line = match serde_json::to_string(event) {
-        Ok(line) => line,
-        Err(error) => {
-            tracing::warn!(%error, "rpc: dropping an event that would not serialize");
-            return Ok(());
-        }
-    };
-    out.write_all(line.as_bytes()).await?;
-    out.write_all(b"\n").await?;
-    out.flush().await?;
-    Ok(())
 }
 
 #[cfg(test)]

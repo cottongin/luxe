@@ -110,6 +110,11 @@
       "default": true,
       "description": "When Luxe runs in a herdr pane, report whether it is working, idle or waiting on you, so herdr's sidebar, notifications and `herdr agent wait` follow it. On by default; nothing is sent outside herdr."
     },
+    "joinable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Let another front-end on this machine join a running session, such as `luxe join` or the `luxe remote` bridge. It goes through a socket (a named pipe on Windows) only your user account can open, and commands the agent runs are turned away. On by default; false turns it off, as does LUXE_JOINABLE=0. A project's config can turn it off but not back on."
+    },
     "diff": {
       "type": "object",
       "description": "How every surface draws a diff: the edit/write tool card, the preview beside the conversation, and Guided Review. One setting, because the three differ only in how much room they have.",

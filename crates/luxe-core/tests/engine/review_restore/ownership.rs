@@ -8,7 +8,7 @@ use luxe_core::engine::{Action, Engine};
 use luxe_core::event::Event;
 use luxe_core::guided_review::{FindingAnchor, FindingSeverity, ReviewLoadRequestId, ReviewTarget};
 use luxe_core::provider::{CompletionRequest, Provider, ProviderError, ProviderEvent, StopReason};
-use luxe_core::session::{JsonlSessionStore, SessionStore};
+use luxe_core::session::SessionStore;
 
 use crate::fixtures::*;
 
@@ -39,9 +39,8 @@ async fn the_engine_owns_a_review_from_comment_to_report_and_through_a_restart()
             .success());
     }
     std::fs::write(project_root.join("tracked.rs"), "fn changed() {}\n").unwrap();
-    let session_id = JsonlSessionStore::new(project_root.to_path_buf())
-        .create(&project_root.display().to_string())
-        .unwrap();
+    let session_id =
+        project_store(project_root).create(&project_root.display().to_string()).unwrap();
 
     let (actions, mut events) =
         Engine::spawn(review_engine_config(project_root, session_id.clone()));
@@ -163,9 +162,8 @@ async fn a_comment_saved_just_before_close_is_on_disk_when_the_engine_stops() {
             .success());
     }
     std::fs::write(project_root.join("tracked.rs"), "fn changed() {}\n").unwrap();
-    let session_id = JsonlSessionStore::new(project_root.to_path_buf())
-        .create(&project_root.display().to_string())
-        .unwrap();
+    let session_id =
+        project_store(project_root).create(&project_root.display().to_string()).unwrap();
 
     let (actions, mut events, task) =
         Engine::spawn_task(review_engine_config(project_root, session_id));
@@ -264,9 +262,8 @@ async fn closing_does_not_wait_for_a_guide_being_written() {
             .success());
     }
     std::fs::write(project_root.join("tracked.rs"), "fn changed() {}\n").unwrap();
-    let session_id = JsonlSessionStore::new(project_root.to_path_buf())
-        .create(&project_root.display().to_string())
-        .unwrap();
+    let session_id =
+        project_store(project_root).create(&project_root.display().to_string()).unwrap();
     let mut config = review_engine_config(project_root, session_id);
     config.provider = Arc::new(UntilCancelled);
     config.model = luxe_core::provider::ModelInfo {

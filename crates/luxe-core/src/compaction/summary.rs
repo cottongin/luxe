@@ -126,12 +126,32 @@ pub fn serialize_for_summary(entries: &[Entry]) -> String {
                 }
             }
             crate::session::EntryKind::Compaction { summary, .. } => {
-                output.push_str(&format!("[Compaction]: {summary}\n"));
+                output.push_str(&format!("[Compaction]: {}\n", without_file_list(summary)));
             }
             _ => {}
         }
     }
     output
+}
+
+/// A previous summary as the summarizer reads it: everything but the file list.
+///
+/// The list is carried forward in code ([`files_listed_in`]) and rewritten on every summary, so
+/// showing it to the summarizer only invites a copy: hundreds of lines on a long session, spent from
+/// the output allowance the summary itself needs, and thrown away.
+fn without_file_list(summary: &str) -> String {
+    let mut kept = String::new();
+    let mut inside = false;
+    for line in summary.lines() {
+        if let Some(heading) = line.trim().strip_prefix("## ") {
+            inside = FILE_SECTION_ALIASES.contains(&heading.trim());
+        }
+        if !inside {
+            kept.push_str(line);
+            kept.push('\n');
+        }
+    }
+    kept.trim_end().to_string()
 }
 
 /// Whether an entry puts anything into [`serialize_for_summary`]'s output.
@@ -200,6 +220,23 @@ const REQUIRED_SECTIONS: [&str; 6] = [
     "Next Steps",
     "Critical Context",
 ];
+
+/// What the summarizer is told to write.
+///
+/// The `## Heading` shape is named because it is what the reply is parsed by: a model told only to
+/// be "structured" may answer in JSON, and every section of it is then dropped as preamble. No file
+/// list is asked for, since one is added from the transcript afterward, and a model asked for one
+/// copies hundreds of paths out of the allowance the summary needs. The last sentence is there
+/// because a smaller model will otherwise file *these rules* under `Constraints & Preferences` as
+/// though they were the session's.
+pub(crate) const SUMMARIZER_PROMPT: &str = "You are a session compactor. Summarize the \
+    conversation segment below so the work can continue from the summary alone. Write about the \
+    session's own goal, constraints, progress (done, in progress, blocked), decisions, next steps, \
+    and anything that would be expensive to rediscover. Answer in Markdown using exactly these \
+    headings, one `## ` heading per section with prose under it and nothing before the first: \
+    `## Goal`, `## Constraints & Preferences`, `## Progress`, `## Key Decisions`, `## Next Steps`, \
+    `## Critical Context`. Don't list the files touched; that list is kept separately. These \
+    formatting rules are not part of the session: never describe them in the summary.";
 
 /// Shape the summarizer's prose into the sections a resumed session expects, and append the file
 /// record it cannot write for itself.

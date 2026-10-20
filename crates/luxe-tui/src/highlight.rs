@@ -234,7 +234,7 @@ fn role_theme() -> &'static syntect::highlighting::Theme {
 }
 
 /// One highlighted line, as roles: what the memo keeps, since it holds for every theme.
-type RoleLine = Vec<(Role, String)>;
+pub type RoleLine = Vec<(Role, String)>;
 
 /// Highlights `code` as `lang`, in `styles`' colors.
 ///
@@ -243,7 +243,9 @@ pub fn highlight_code(code: &str, lang: Option<&str>, styles: &ThemeStyles) -> V
     paint(&highlight_roles(code, lang), styles)
 }
 
-fn highlight_roles(code: &str, lang: Option<&str>) -> Arc<Vec<RoleLine>> {
+/// Highlights `code` as `lang` into roles, for a surface that colors roles itself: the phone app's
+/// HTML names each role's theme token as a class. Memoized, like [`highlight_code`].
+pub fn highlight_roles(code: &str, lang: Option<&str>) -> Arc<Vec<RoleLine>> {
     let key = fingerprint(code, lang);
     if let Some(hit) = cache().get(key, code, lang) {
         return hit;

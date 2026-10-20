@@ -1,0 +1,216 @@
+/* The dock (plan and changed files) and the diff sheet, colored as the TUI's dock colors them */
+
+.dock {
+  display: none;
+  padding: 0 1.5ch 1lh;
+  background: var(--luxe-tool-bg, #1a1815);
+}
+
+.dock-toggle {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  color: var(--luxe-muted, #97938c);
+}
+
+.dock-toggle .icon {
+  width: 1.1lh;
+  height: 1.1lh;
+}
+
+.dock-toggle.on {
+  color: var(--luxe-accent, #ddc084);
+}
+
+/* the icon's rail sits on the dock's side */
+:root[data-dock-side="right"] .dock-toggle .icon {
+  transform: scaleX(-1);
+}
+
+/* in the phone's project panel, at the rail's indent */
+.dock-tab {
+  padding: 0 1.5ch 1lh;
+}
+
+.dock-empty {
+  margin-top: 1lh !important;
+}
+
+/* Wide enough for both: the dock is a rail beside the conversation, on the side the TUI's config
+   puts it. An open iPhone Duo (951 by 669 points) and an iPad qualify; a phone on its side is too
+   short for a rail. layout.js's WIDE is this same query */
+@media (min-width: 50rem) and (min-height: 30rem) {
+  #app:has(> .dock.shown) {
+    padding-left: 24rem;
+  }
+
+  :root[data-dock-side="right"] #app:has(> .dock.shown) {
+    padding-left: 0;
+    padding-right: 24rem;
+  }
+
+  /* the rail takes the inset on its side too, so its content lines up with the conversation's.
+     On a phone the dock is the project panel's Dock tab, so only here does it show by itself */
+  .dock.shown {
+    display: block;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: calc(24rem + env(safe-area-inset-left));
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: env(safe-area-inset-top) 1.5ch calc(env(safe-area-inset-bottom) + 1lh)
+      calc(1.5ch + env(safe-area-inset-left));
+    border-right: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+
+  :root[data-dock-side="right"] .dock.shown {
+    inset: 0 0 0 auto;
+    width: calc(24rem + env(safe-area-inset-right));
+    padding-right: calc(1.5ch + env(safe-area-inset-right));
+    padding-left: 1.5ch;
+    border-right: none;
+    border-left: 1px solid var(--luxe-border-muted, #2e2b27);
+  }
+}
+
+.dock-section p,
+.dock-section ol,
+.dock-section ul {
+  margin: 0;
+}
+
+/* what a heading sums up rides muted beside its badge, as on the TUI's rail */
+.dock-head {
+  margin-top: 1lh !important;
+  color: var(--luxe-muted, #97938c);
+}
+
+.dock-sub {
+  color: var(--luxe-muted, #97938c);
+}
+
+.todos,
+.changes {
+  padding: 0;
+  list-style: none;
+}
+
+/* A long plan scrolls in a box of its own, the TUI's budget of 8 todos and 4 wrapped lines, so
+   the changes stay close below; dock.js keeps the work in hand in view. Positioned, so each todo's
+   offset is measured from the list */
+.todos {
+  position: relative;
+  max-height: 12lh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* A wrapped subject hangs under its own first word, past the mark */
+.todo {
+  padding-left: 2ch;
+  text-indent: -2ch;
+}
+
+.todo-completed { color: var(--luxe-success, #81caa0); }
+.todo-completed .todo-subject { text-decoration: line-through; }
+.todo-in-progress { font-weight: bold; }
+.todo-blocked { color: var(--luxe-warning, #faaa51); }
+.todo-pending { color: var(--luxe-muted, #97938c); }
+
+.change {
+  display: flex;
+  width: 100%;
+  gap: 1ch;
+  padding: 0.25lh 0;
+  text-align: left;
+}
+
+.change-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-added, .change-untracked { color: var(--luxe-success, #81caa0); }
+.change-modified { color: var(--luxe-warning, #faaa51); }
+.change-deleted { color: var(--luxe-error, #e68485); }
+.change-renamed { color: var(--luxe-info, #85c7d7); }
+.add { color: var(--luxe-success, #81caa0); }
+.del { color: var(--luxe-error, #e68485); }
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  overflow-y: auto;
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: var(--luxe-background, #12100e);
+}
+
+.close {
+  color: var(--luxe-text, #e4dfd6);
+}
+
+.sheet-body {
+  padding: 1lh 0;
+}
+
+.diff-note {
+  padding: 0 1ch;
+  color: var(--luxe-muted, #97938c);
+}
+
+.retry {
+  color: var(--luxe-accent, #ddc084);
+  text-decoration: underline;
+}
+
+/* Lines keep their columns and scroll sideways together; each tint runs the width of the widest */
+.diff {
+  overflow-x: auto;
+}
+
+.hunk {
+  width: max-content;
+  min-width: 100%;
+  margin-bottom: 1lh;
+}
+
+.hunk-head {
+  margin: 0;
+  padding: 0 1ch;
+  color: var(--luxe-info, #85c7d7);
+}
+
+.dl {
+  display: flex;
+  margin: 0;
+  white-space: pre;
+  tab-size: 4;
+}
+
+.dl code {
+  font: inherit;
+  padding-right: 1ch;
+}
+
+.ln {
+  flex: none;
+  width: 5ch;
+  padding-right: 1ch;
+  text-align: right;
+  color: var(--luxe-muted, #97938c);
+}
+
+.sign {
+  flex: none;
+  width: 2ch;
+}
+
+.dl-addition { background: var(--luxe-diff-add-bg, #1d2a20); }
+.dl-addition .sign { color: var(--luxe-success, #81caa0); }
+.dl-deletion { background: var(--luxe-diff-del-bg, #2d1d1d); }
+.dl-deletion .sign { color: var(--luxe-error, #e68485); }
+.dl-note { padding-left: 13ch; color: var(--luxe-muted, #97938c); }

@@ -11,6 +11,7 @@
 //! `MarkdownVoice`.
 
 mod fence;
+pub mod html;
 mod layout;
 mod line;
 mod table;

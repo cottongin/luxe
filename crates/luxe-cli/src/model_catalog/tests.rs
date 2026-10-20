@@ -223,3 +223,44 @@ fn an_unconfigured_machine_has_no_models_to_choose_between() {
     );
     drop(dir);
 }
+
+/// A choice names the model as `select_model` takes it, and offers the levels it honors as they
+/// are: only `off` for a model that doesn't reason, and nothing it would quietly clamp.
+///
+/// The break this catches: offering every level for every model, so a phone sets `ultra` and the
+/// engine silently runs `high`; or sending the display name where `select_model` wants the id.
+#[test]
+fn a_choice_offers_only_the_levels_its_model_honors() {
+    use luxe_core::provider::ThinkingLevel::{High, Low, Medium, Minimal, Off};
+    let mut info = ModelInfo {
+        r#ref: luxe_core::provider::ModelRef::new("anthropic", "claude-sonnet-5"),
+        display_name: Some("Claude Sonnet 5".into()),
+        reasoning: false,
+        ..Default::default()
+    };
+    let plain = choice(&info);
+    assert_eq!((plain.provider.as_str(), plain.model.as_str()), ("anthropic", "claude-sonnet-5"));
+    assert_eq!(plain.name, "Claude Sonnet 5");
+    assert_eq!(plain.thinking_levels, [Off]);
+    info.reasoning = true;
+    assert_eq!(choice(&info).thinking_levels, [Off, Minimal, Low, Medium, High]);
+}
+
+/// A row only guessed for an endpoint that hasn't said what it serves isn't offered.
+///
+/// The break this catches: a phone offering an Azure resource deployments it doesn't have, which
+/// fail on the first turn.
+#[test]
+fn a_guessed_row_isnt_offered() {
+    let entry = |id: &str, unverified: bool| ModelEntry {
+        info: ModelInfo {
+            r#ref: luxe_core::provider::ModelRef::new("azure", id),
+            ..Default::default()
+        },
+        label: id.into(),
+        configured: false,
+        unverified,
+    };
+    let offered = offered(&[entry("served", false), entry("guessed", true)]);
+    assert_eq!(offered.iter().map(|choice| choice.model.as_str()).collect::<Vec<_>>(), ["served"]);
+}

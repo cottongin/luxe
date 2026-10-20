@@ -83,25 +83,58 @@ pub fn language_hue(
     icon: Icon,
     styles: &crate::theme::styles::ThemeStyles,
 ) -> ratatui::style::Style {
+    match language_hue_role(icon) {
+        LanguageHue::Warning => styles.warning,
+        LanguageHue::Info => styles.info,
+        LanguageHue::Success => styles.success,
+        LanguageHue::Error => styles.error,
+        LanguageHue::ThinkingUltra => styles.thinking_ultra,
+        LanguageHue::Text => styles.text,
+        LanguageHue::Muted => styles.muted,
+    }
+}
+
+/// The theme role a language's mark is colored by, for a surface that colors by role rather than
+/// by a terminal's style: the phone app, whose stylesheet has a variable for each.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LanguageHue {
+    /// The theme's warning hue
+    Warning,
+    /// The theme's info hue
+    Info,
+    /// The theme's success hue
+    Success,
+    /// The theme's error hue
+    Error,
+    /// The deepest thinking level's hue
+    ThinkingUltra,
+    /// Body text
+    Text,
+    /// Muted text, for a mark with no known hue
+    Muted,
+}
+
+/// The role [`language_hue`] colors `icon` by.
+pub fn language_hue_role(icon: Icon) -> LanguageHue {
     match icon {
-        Icon::LangRust | Icon::LangSwift | Icon::LangZig => styles.warning,
-        Icon::LangPython | Icon::LangJavaScript | Icon::LangJson => styles.warning,
+        Icon::LangRust | Icon::LangSwift | Icon::LangZig => LanguageHue::Warning,
+        Icon::LangPython | Icon::LangJavaScript | Icon::LangJson => LanguageHue::Warning,
         Icon::LangTypeScript
         | Icon::LangGo
         | Icon::LangC
         | Icon::LangLua
         | Icon::LangCss
         | Icon::LangNix
-        | Icon::LangDocker => styles.info,
-        Icon::LangShell => styles.success,
+        | Icon::LangDocker => LanguageHue::Info,
+        Icon::LangShell => LanguageHue::Success,
         Icon::LangRuby | Icon::LangJava | Icon::LangHtml | Icon::LangSvelte | Icon::LangToml => {
-            styles.error
+            LanguageHue::Error
         }
         Icon::LangCpp | Icon::LangPhp | Icon::LangKotlin | Icon::LangHaskell => {
-            styles.thinking_ultra
+            LanguageHue::ThinkingUltra
         }
-        Icon::LangMarkdown => styles.text,
-        _ => styles.muted,
+        Icon::LangMarkdown => LanguageHue::Text,
+        _ => LanguageHue::Muted,
     }
 }
 

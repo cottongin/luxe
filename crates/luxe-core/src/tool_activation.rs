@@ -14,6 +14,7 @@
 //! [`restore_after_compaction`] covers the one moment an in-place load could be lost: a summary that
 //! replaces the call it hung on.
 
+use std::borrow::Borrow;
 use std::collections::{BTreeSet, HashMap};
 
 use crate::message::{ContentBlock, Message, Role, ToolOutput};
@@ -68,8 +69,8 @@ pub fn activated_tools<'a>(messages: impl IntoIterator<Item = &'a Message>) -> B
 ///
 /// Reads the whole path, including what a compaction replaced, because a tool loaded before the
 /// summary is still loaded after it ([`restore_after_compaction`] sees to that on the wire).
-pub fn activated_in(entries: &[Entry]) -> BTreeSet<String> {
-    activated_tools(entries.iter().filter_map(|entry| match &entry.kind {
+pub fn activated_in<E: Borrow<Entry>>(entries: &[E]) -> BTreeSet<String> {
+    activated_tools(entries.iter().filter_map(|entry| match &entry.borrow().kind {
         EntryKind::Message(message) => Some(message),
         _ => None,
     }))
@@ -90,7 +91,8 @@ pub fn activated_in(entries: &[Entry]) -> BTreeSet<String> {
 /// the summaries whenever there are any: the newest last, behind any older one a newer cut left on
 /// the kept side. The exchange goes behind the newest. Does nothing without a compaction or
 /// without activations.
-pub fn restore_after_compaction(entries: &[Entry], messages: &mut Vec<Message>) {
+pub fn restore_after_compaction<E: Borrow<Entry>>(entries: &[E], messages: &mut Vec<Message>) {
+    let entries: Vec<&Entry> = entries.iter().map(Borrow::borrow).collect();
     let Some(cut) =
         entries.iter().rposition(|entry| matches!(entry.kind, EntryKind::Compaction { .. }))
     else {

@@ -62,6 +62,8 @@ pub(crate) enum DeskCommand {
     RecordProgress { review_id: ReviewId, progress: ReviewProgress },
     /// Remember what the walked chapters covered, so the next review leads with what is new.
     RecordSeen { review_id: ReviewId },
+    /// A front end asked for the open review, answered under its `request_id`.
+    Show { request_id: ReviewLoadRequestId },
     /// A submission crossed into its turn.
     Dispatched(SubmissionId),
     /// A question's turn answered. Held for the completion it always precedes.
@@ -261,6 +263,7 @@ impl ReviewDesk {
                     |session: &mut _| mark_posted(session, &finding_ids, &comment, outcome);
                 self.lifecycle("mark posted", posted).await
             }
+            DeskCommand::Show { request_id } => vec![self.shown(request_id)],
             DeskCommand::Snapshot(reply) => {
                 let open = self.review.clone().zip(self.bound());
                 let _ = reply.send(open);
@@ -276,6 +279,15 @@ impl ReviewDesk {
                 self.lifecycle("mark threads answered", answered).await
             }
         }
+    }
+
+    /// The open review and its session as the desk holds them, or neither.
+    fn shown(&self, request_id: ReviewLoadRequestId) -> Effect {
+        let (review, session) = self.review.clone().zip(self.bound()).unzip();
+        let reading = review.as_ref().map(crate::guided_review::chapter_readings);
+        let reading = reading.unwrap_or_default();
+        let open = crate::event::OpenReview { request_id, review, session, reading };
+        Effect::Event(Event::OpenReviewShown(Box::new(open)))
     }
 
     /// Puts the Guide's chapters on the held review, when it is still the revision they describe.

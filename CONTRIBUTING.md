@@ -295,6 +295,47 @@ cd web && npm run build && npm run check
 cd web && npm run deploy                 # needs `wrangler login` once
 ```
 
+## The phone app
+
+`luxe remote`'s app is plain HTML, CSS and ES modules in `crates/luxe-remote/app/`, with nothing
+built. A debug build reads that folder from disk, so run `cargo run -p luxe-cli -- remote` and
+reload. Preact, htm and Signals are vendored byte for byte, and a test holds them to
+`app/vendor/manifest.json`:
+
+```bash
+scripts/remote-vendor.sh                 # fetch the pinned versions again (needs npm)
+scripts/remote-fonts.sh                  # subset the fonts again (after site-fonts.sh)
+```
+
+Colors come from `/theme.css`, the active theme read through `luxe_core::theme::css`, the same
+mapping the website's theme CSS uses. Each `var(--luxe-*)` in the app's stylesheet keeps a fallback
+for a theme that leaves a color to the terminal. `app/generated/wordmark.svg` comes from the TUI's
+art through `scripts/site-assets.sh`, which checks it with the website's assets.
+
+The transcript is a pure fold of the session's frames (`app/transcript.js`), tested with Node's
+own runner against a session recorded through the bridge (`app-tests/fixtures/turn.jsonl`). The
+tests resolve imports through `index.html`'s import map, so they run the vendored files the phone
+runs. The app's types are JSDoc, checked by `tsc` in strict mode; the tests get a looser config.
+`tsc` reads expressions inside a template but not the props `htm` hands a component, so a
+component's `@param` is what it promises, not something checked at the call. The end-to-end test
+starts a session against a mock model, a bridge and a pairing, then drives a whole turn in WebKit,
+permission and diff included. CI runs all three in its `phone app` job:
+
+```bash
+cd crates/luxe-remote/app-tests
+npm ci                                   # TypeScript, Playwright, and the vendored libraries' types
+npm run check                            # tsc
+npm test                                 # unit tests
+cargo build -p luxe-cli && npm run e2e   # end to end; LUXE_BIN picks another luxe
+```
+
+Every iOS browser is WebKit, so check the app there. Playwright's WebKit build wants Ubuntu's ICU,
+libxml2 and flite, which a rolling distro doesn't have. Without root, unpack those three `.deb`s
+from the Ubuntu archive into the `minibrowser-wpe/sys/lib` of a copy of
+`~/.cache/ms-playwright/webkit-*`, and point `PLAYWRIGHT_BROWSERS_PATH` at the copy. A screenshot
+adds a `<style>` of Playwright's own, which the app's policy refuses and the console reports; the
+page never had it.
+
 ## Versioning
 
 One version for the whole workspace (`[workspace.package]` in `Cargo.toml`), following semver, and
@@ -310,6 +351,15 @@ changes to the site, the guide or CI owe nothing.
 ```bash
 python3 scripts/version-check.py origin/main    # what the pull request check runs
 python3 scripts/version_check_test.py           # the check's own tests
+```
+
+The tags live in the public repository. A checkout that isn't a clone of it (a private development
+repository, a fork) names it as the `public` remote, and the check reads its tags from there, so a
+release made since your last fetch still counts:
+
+```bash
+git remote add public https://github.com/evanwhittaker/luxe.git
+git remote set-url --push public DISABLED-use-a-pull-request
 ```
 
 Below 1.0, a minor bump may break config, flags or the `--rpc` protocol; a patch never does.

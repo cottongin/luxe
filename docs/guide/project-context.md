@@ -28,6 +28,15 @@ session repeats that same text, which is what lets the provider reuse its cache.
 the agent in the next session: `/new`, or resuming one. If you switch Git branches mid-session, the
 agent is told with your next message.
 
+### Folders the agent works in
+
+An `AGENTS.md` in a folder below the repository's top, but not on the way to where you started,
+joins when the agent first opens, writes or searches a path in that folder. It's added to that
+tool result, once, and Luxe shows **Following** and the file's path. The system prompt doesn't
+change, so the cache holds. Ignored folders, such as `node_modules`, are skipped. If a rewind or a
+compaction drops the file, it joins again the next time the agent goes there.
+`LUXE_NESTED_INSTRUCTIONS=0` turns this off.
+
 **Project context** lists every file a turn reads, and says whose rules each one carries:
 **global**, **project** or **folder** context. Type `context` on the start screen and open it.
 `enter` opens a file in your editor, or creates one from a template. The template's guidance is in

@@ -1,0 +1,43 @@
+---
+/**
+ * The press kit's screenshots, laid out to be photographed by `scripts/press-shots.mjs`.
+ *
+ * Drawn by the same `Still` the home page uses, so a downloaded PNG is the picture on the site.
+ * Kept out of the sitemap and the navigation, like the social card.
+ */
+import "../assets/generated/tokens.css";
+import "../styles/grain.css";
+import "../styles/base.css";
+import Still from "../components/Still.astro";
+import { screenshots } from "../lib/press";
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>Luxe — press screenshots</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body class="shots">
+    {
+      screenshots.map((shot) => (
+        <div class="shots__one" data-shot={shot.name}>
+          <Still name={shot.name} from={shot.from} caption={shot.caption} width={120} />
+        </div>
+      ))
+    }
+
+    <style is:global>
+      body.shots {
+        margin: 0;
+        padding: 24px;
+        display: grid;
+        gap: 48px;
+      }
+
+      .shots__one .still__caption {
+        display: none;
+      }
+    </style>
+  </body>
+</html>

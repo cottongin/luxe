@@ -326,16 +326,23 @@ fn test_status_model_cost_none_when_price_unknown() {
     assert_eq!(status.cost_usd, None);
 }
 
+/// The turn timer reads at every scale a turn reaches, the way a tool card does.
+///
+/// The break this catches: minutes as a clock (`1:23`) with no hours, so a two-hour turn read
+/// `125:03` above the composer while the tool card beside it said `2h 05m`.
 #[test]
-fn test_status_model_format_elapsed() {
-    // Zero duration.
-    let formatted = StatusModel::format_elapsed(std::time::Duration::ZERO);
-    assert!(formatted.contains("0s"), "zero elapsed should show 0s");
-
-    // Whole seconds. This counts up on a running turn, so a tenths digit is a number moving ten
-    // times a second beside a spinner already saying the same thing.
-    assert_eq!(StatusModel::format_elapsed(std::time::Duration::from_millis(3_140)), "3s");
-    assert_eq!(StatusModel::format_elapsed(std::time::Duration::from_secs(83)), "1m 23s");
+fn the_turn_timer_reads_at_every_scale() {
+    use crate::statusline::format_elapsed_compact as timer;
+    use std::time::Duration;
+    assert_eq!(timer(Duration::ZERO), "0s");
+    // Whole seconds: a tenths digit moves ten times a second beside a bar already moving
+    assert_eq!(timer(Duration::from_millis(3_140)), "3s");
+    assert_eq!(timer(Duration::from_secs(59)), "59s");
+    assert_eq!(timer(Duration::from_secs(60)), "1m 00s");
+    assert_eq!(timer(Duration::from_secs(83)), "1m 23s");
+    assert_eq!(timer(Duration::from_secs(3_599)), "59m 59s");
+    assert_eq!(timer(Duration::from_secs(3_600)), "1h 00m");
+    assert_eq!(timer(Duration::from_secs(7_503)), "2h 05m");
 }
 
 #[test]
@@ -394,6 +401,42 @@ async fn turn_reports_keep_a_compaction_on_show_until_the_turn_ends() {
     assert!(matches!(app.status.state, AppState::Compacting), "{:?}", app.status.state);
     engine_reports_streaming(&mut app, false);
     assert!(matches!(app.status.state, AppState::Idle), "{:?}", app.status.state);
+}
+
+/// The transcript's notices, in order.
+fn system_lines(app: &App) -> Vec<String> {
+    let notices = app.convo.iter().filter_map(|item| match item.block() {
+        ConvoBlock::System(text) => Some(text.clone()),
+        _ => None,
+    });
+    notices.collect()
+}
+
+/// A compaction is in the transcript from the moment it starts, and its line becomes the result.
+///
+/// The break this catches: a minute of summary with nothing in the conversation to say so (the
+/// row above the composer has no label), or a second line added beside the first when it's done.
+#[tokio::test]
+async fn a_compaction_is_written_down_as_it_starts_and_settled_when_done() {
+    let mut app = idle_app();
+    app.update(Msg::Engine(Event::CompactionStarted { tokens_before: 579_400 }));
+    assert_eq!(system_lines(&app), ["Compacting the conversation — 579.4k of context…"]);
+    app.update(Msg::Engine(Event::CompactionDone { tokens_before: 579_400, tokens_after: 28_700 }));
+    let done = "Compacted the conversation — 579.4k → 28.7k of context.";
+    assert_eq!(system_lines(&app), [done]);
+}
+
+/// A compaction that ends without a summary says so on the line that announced it.
+///
+/// The break this catches: "Compacting the conversation…" left standing after a cancel or a
+/// failure, reading as a summary still under way.
+#[tokio::test]
+async fn a_stopped_compaction_settles_its_line() {
+    let mut app = idle_app();
+    app.update(Msg::Engine(Event::CompactionStarted { tokens_before: 190_000 }));
+    app.update(Msg::Engine(Event::Notice("between".into())));
+    app.update(Msg::Engine(Event::CompactionStopped));
+    assert_eq!(system_lines(&app), ["Compaction stopped.", "between"]);
 }
 
 pub(super) fn type_into(app: &mut App, text: &str) {

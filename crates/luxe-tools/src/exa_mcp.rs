@@ -6,11 +6,10 @@
 //! `EXA_API_KEY` still wins, since an explicit choice outranks the fallback, but having none does
 //! not mean having no web search.
 //!
-//! The endpoint also carries the whole feature set worth having: several query variations in one
-//! call, domain include/exclude, a published-after date, and extracted highlights. That last one is
-//! the point. Returning titles and snippets forces the model into one `web_fetch` per result — a
-//! research question becomes six round-trips. Returning the passages *with* the results answers it
-//! in one.
+//! The endpoint also carries the whole feature set worth having: domain include/exclude, a
+//! published-after date, and extracted highlights. That last one is the point. Returning titles
+//! and snippets forces the model into one `web_fetch` per result — a research question becomes six
+//! round-trips. Returning the passages *with* the results answers it in one.
 
 use serde::Deserialize;
 
@@ -98,9 +97,8 @@ impl SearchBackend for ExaMcpBackend {
         self.search_with(query, n, options).await
     }
 
-    /// Exa's advanced tool takes every phrasing as one call, which is the whole reason it is the
-    /// default: one round-trip covers the angles a caller would otherwise pay for separately.
-    fn batches_queries(&self) -> bool {
+    /// The keyless endpoint turns away even two searches at once.
+    fn one_phrasing_at_a_time(&self) -> bool {
         true
     }
 }
@@ -113,9 +111,6 @@ fn build_arguments(query: &str, n: usize, options: &SearchOptions) -> serde_json
         "type": "auto",
     });
     let map = arguments.as_object_mut().expect("object literal");
-    if !options.also.is_empty() {
-        map.insert("additionalQueries".into(), serde_json::json!(options.also));
-    }
     if !options.include_domains.is_empty() {
         map.insert("includeDomains".into(), serde_json::json!(options.include_domains));
     }
@@ -147,6 +142,16 @@ struct RpcResult {
     content: Vec<RpcContent>,
     #[serde(default, rename = "isError")]
     is_error: bool,
+    #[serde(default, rename = "_meta")]
+    meta: RpcMeta,
+}
+
+/// Flags the endpoint sets beside a result.
+#[derive(Debug, Default, Deserialize)]
+struct RpcMeta {
+    /// Set on the reply to a search over the keyless limit, which carries a notice, not results
+    #[serde(default, rename = "ai.exa/rateLimited")]
+    rate_limited: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -173,6 +178,11 @@ fn parse_response(body: &str, n: usize) -> Result<Vec<SearchHit>, WebError> {
     let result = envelope
         .result
         .ok_or_else(|| WebError::Backend("exa mcp returned no result".to_string()))?;
+    if result.meta.rate_limited {
+        return Err(WebError::Backend(
+            "exa's free search is rate limited; try again shortly, or set EXA_API_KEY".to_string(),
+        ));
+    }
     if result.is_error {
         let detail = result.content.first().map(|c| c.text.as_str()).unwrap_or("unknown error");
         return Err(WebError::Backend(format!("exa mcp: {detail}")));
@@ -291,150 +301,4 @@ fn flush(hits: &mut [SearchHit], snippet: &mut String) {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    /// The exact shape the live endpoint returned during development.
-    const SAMPLE: &str = "event: message\n\
-        data: {\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Title: select in tokio - Rust\\nURL: https://docs.rs/tokio/latest/tokio/macro.select.html\\nPublished: N/A\\nAuthor: N/A\\nHighlights:\\n## Cancellation safety\\n...\\nCancellation safety describes what happens when a future is dropped.\\nTitle: Second Result\\nURL: https://example.com/two\\nHighlights:\\nSomething else entirely.\"}]}}\n";
-
-    #[test]
-    fn an_sse_framed_response_parses_into_hits_with_content() {
-        let hits = parse_response(SAMPLE, 10).expect("parses");
-        assert_eq!(hits.len(), 2);
-        assert_eq!(hits[0].title, "select in tokio - Rust");
-        assert_eq!(hits[0].url, "https://docs.rs/tokio/latest/tokio/macro.select.html");
-        assert!(
-            hits[0].snippet.contains("Cancellation safety describes"),
-            "the extracted passage rides along, so no follow-up fetch is needed: {:?}",
-            hits[0].snippet
-        );
-        assert!(!hits[0].snippet.contains("N/A"), "metadata noise is dropped");
-        assert_eq!(hits[1].url, "https://example.com/two");
-    }
-
-    #[test]
-    fn the_result_count_is_honored() {
-        assert_eq!(parse_response(SAMPLE, 1).expect("parses").len(), 1);
-    }
-
-    #[test]
-    fn a_bare_json_body_parses_too() {
-        let bare =
-            r#"{"result":{"content":[{"type":"text","text":"Title: A\nURL: https://a.test"}]}}"#;
-        assert_eq!(parse_response(bare, 5).expect("parses")[0].url, "https://a.test");
-    }
-
-    #[test]
-    fn an_rpc_error_surfaces_instead_of_an_empty_result() {
-        let body = r#"{"error":{"code":-32602,"message":"bad arguments"}}"#;
-        let error = parse_response(body, 5).expect_err("must not look like zero results");
-        assert!(error.to_string().contains("bad arguments"), "{error}");
-    }
-
-    #[test]
-    fn a_tool_level_error_surfaces_too() {
-        let body =
-            r#"{"result":{"isError":true,"content":[{"type":"text","text":"rate limited"}]}}"#;
-        let error = parse_response(body, 5).expect_err("isError must not be silently empty");
-        assert!(error.to_string().contains("rate limited"), "{error}");
-    }
-
-    #[test]
-    fn garbage_is_an_error_not_a_panic() {
-        assert!(parse_response("not json at all", 5).is_err());
-        assert!(parse_response("", 5).is_err());
-    }
-
-    #[test]
-    fn options_map_onto_exas_argument_names() {
-        let options = SearchOptions {
-            also: vec!["second phrasing".into()],
-            include_domains: vec!["arxiv.org".into()],
-            exclude_domains: vec!["spam.example".into()],
-            recency: Some(crate::web::Recency::Month),
-            include_content: true,
-        };
-        let args = build_arguments("tokio cancellation", 7, &options);
-
-        assert_eq!(args["query"], "tokio cancellation");
-        assert_eq!(args["numResults"], 7);
-        assert_eq!(args["additionalQueries"][0], "second phrasing");
-        assert_eq!(args["includeDomains"][0], "arxiv.org");
-        assert_eq!(args["excludeDomains"][0], "spam.example");
-        assert_eq!(args["startPublishedDate"].as_str().expect("a date").len(), 10);
-        assert_eq!(args["enableHighlights"], true);
-    }
-
-    #[test]
-    fn defaults_stay_off_the_wire_and_the_count_is_clamped() {
-        let args = build_arguments("q", 999, &SearchOptions::default());
-        assert_eq!(args["numResults"], 25, "clamped to Exa's practical ceiling");
-        for absent in [
-            "additionalQueries",
-            "includeDomains",
-            "excludeDomains",
-            "startPublishedDate",
-            "enableHighlights",
-        ] {
-            assert!(args.get(absent).is_none(), "{absent} must not be sent by default");
-        }
-    }
-
-    /// The advanced tool answers with a JSON envelope, not the basic tool's prose. Parsing only the
-    /// prose form meant every advanced search reported "No results" while the endpoint was
-    /// returning perfectly good ones.
-    #[test]
-    fn the_advanced_tools_json_envelope_parses() {
-        let inner = serde_json::json!({
-            "requestId": "abc",
-            "results": [
-                {
-                    "id": "https://tokio.rs/x",
-                    "url": "https://tokio.rs/x",
-                    "title": "Select | Tokio",
-                    "text": "Select | Tokio\n\n# Select\n\nSo far...",
-                    "highlights": ["Futures can implement Drop to clean up.", "oneshot is cancel safe."],
-                    "publishedDate": "2026-03-18T00:00:00.000Z"
-                },
-                { "url": "", "title": "dropped: no url" }
-            ]
-        })
-        .to_string();
-        let body = serde_json::json!({
-            "result": { "content": [{ "type": "text", "text": inner }] }
-        })
-        .to_string();
-
-        let hits = parse_response(&body, 10).expect("parses");
-        assert_eq!(hits.len(), 1, "a result with no url is not a result");
-        assert_eq!(hits[0].title, "Select | Tokio");
-        assert_eq!(hits[0].url, "https://tokio.rs/x");
-        assert!(hits[0].snippet.contains("cancel safe"), "highlights lead: {:?}", hits[0].snippet);
-        assert!(!hits[0].snippet.contains('\n'), "whitespace is collapsed");
-    }
-
-    #[test]
-    fn a_result_without_highlights_falls_back_to_its_text() {
-        let inner = serde_json::json!({
-            "results": [{ "url": "https://a.test", "title": "A", "text": "  body   text here  " }]
-        })
-        .to_string();
-        let body = serde_json::json!({ "result": { "content": [{ "text": inner }] } }).to_string();
-        let hits = parse_response(&body, 5).expect("parses");
-        assert_eq!(hits[0].snippet, "body text here");
-    }
-
-    #[test]
-    fn a_long_snippet_is_clipped() {
-        let long = "word ".repeat(400);
-        let inner = serde_json::json!({
-            "results": [{ "url": "https://a.test", "title": "A", "text": long }]
-        })
-        .to_string();
-        let body = serde_json::json!({ "result": { "content": [{ "text": inner }] } }).to_string();
-        let hits = parse_response(&body, 5).expect("parses");
-        assert!(hits[0].snippet.chars().count() <= SNIPPET_CHARS + 1, "clipped");
-        assert!(hits[0].snippet.ends_with('…'));
-    }
-}
+mod tests;

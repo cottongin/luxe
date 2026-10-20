@@ -16,18 +16,7 @@ impl Engine {
         pass: IterationPass,
     ) -> Result<CompletionRequest, EngineError> {
         let sid = self.current_session_id().await;
-        let entries = self.sessions().active_path(&sid, leaf)?;
-        // The path holds every entry ever written, including the ones a compaction replaced — it
-        // is append-only, so the summary is a new entry rather than a deletion. `context_messages`
-        // applies that cut. Reasoning blocks stay in the history verbatim; each provider adapter
-        // decides how to replay them (Anthropic must resend signed thinking during a tool-use
-        // turn; the OpenAI paths drop it). Stripping here would break Anthropic's requirement.
-        let mut messages = crate::compaction::context_messages(&entries);
-        // A summary that replaced an `activate_tools` call would unload the tool it loaded on any
-        // adapter that loads tools in place, so the outgoing copy restates it right after the
-        // summary. Before the scrub and the pairing repair, which then see an ordinary pair.
-        crate::tool_activation::restore_after_compaction(&entries, &mut messages);
-        let activated = crate::tool_activation::activated_in(&entries);
+        let (mut messages, activated) = self.outgoing_transcript(&sid, leaf)?;
         // Two shapes a transcript can reach here in that no provider will take, both of them a
         // hard 400 that replays on every later request — so they end the session rather than just
         // the turn. Fixed on this copy only, in the order that leaves the result valid: drop what
@@ -67,20 +56,20 @@ impl Engine {
         // is, because eliding rewrites the middle of the transcript and re-bills everything after
         // it as a cache write — worth paying for runway, never worth paying for tidiness.
         let settings = &self.config.compaction_settings;
-        crate::compaction::prune_tool_outputs(
-            &mut messages,
-            settings,
-            crate::compaction::ContextPressure::measure(
-                &entries,
-                system.as_deref(),
-                &tools,
-                crate::compaction::usable_context_window(
-                    u64::from(model.context_window),
-                    model.max_tokens,
-                    settings.reserve_tokens,
-                ),
-            ),
+        let usable = crate::compaction::usable_context_window(
+            u64::from(model.context_window),
+            model.max_tokens,
+            settings.reserve_tokens,
         );
+        let (pressure, prompt_tokens) =
+            crate::session::with_active_path(&**self.sessions(), &sid, leaf, |entries| {
+                let system = system.as_deref();
+                (
+                    crate::compaction::ContextPressure::measure(entries, system, &tools, usable),
+                    crate::compaction::prompt_tokens(entries, system, &tools),
+                )
+            })?;
+        crate::compaction::prune_tool_outputs(&mut messages, settings, pressure);
         // What this request spends before a word of conversation. Recorded here because this is
         // the only place the system prompt and the resolved tool block exist together, and
         // compaction needs it to know how much window the kept tail is really sharing.
@@ -93,7 +82,7 @@ impl Engine {
         // endpoint and a silent truncation everywhere else.
         let max_tokens = crate::compaction::clamp_max_tokens_to_context(
             model.context_window,
-            crate::compaction::prompt_tokens(&entries, system.as_deref(), &tools),
+            prompt_tokens,
             model.max_tokens,
         );
         Ok(CompletionRequest {
@@ -112,6 +101,29 @@ impl Engine {
                 .map_or(0, |_| self.shared_prompt_len()),
             system,
         })
+    }
+
+    /// The conversation a request carries, and the deferred tools it has loaded.
+    ///
+    /// Borrows the path rather than cloning it: it holds every entry ever written, including the
+    /// ones a compaction replaced (it is append-only, so the summary is a new entry rather than a
+    /// deletion), and only what `context_messages` keeps after that cut is copied. Reasoning blocks
+    /// stay verbatim; each provider adapter decides how to replay them (Anthropic must resend
+    /// signed thinking during a tool-use turn; the OpenAI paths drop it).
+    fn outgoing_transcript(
+        &self,
+        sid: &SessionId,
+        leaf: &EntryId,
+    ) -> Result<(Vec<Message>, std::collections::BTreeSet<String>), EngineError> {
+        let read = crate::session::with_active_path(&**self.sessions(), sid, leaf, |entries| {
+            let mut messages = crate::compaction::context_messages(entries);
+            // A summary that replaced an `activate_tools` call would unload the tool it loaded on
+            // an adapter that loads tools in place, so the outgoing copy restates it right after
+            // the summary. Before the scrub and the pairing repair, which then see an ordinary pair.
+            crate::tool_activation::restore_after_compaction(entries, &mut messages);
+            (messages, crate::tool_activation::activated_in(entries))
+        })?;
+        Ok(read)
     }
 
     /// Opens the provider stream for one iteration, making room and trying once more when the

@@ -219,18 +219,15 @@ impl ThemeStyles {
 
     /// How full the context window reads at `percent`: body text, then warning, then error.
     ///
-    /// One ramp, two surfaces. The rail prints the number in a telemetry row and the statusline
-    /// prints it in a slab, and they had drifted — one went default-to-warning at 75 while the other
-    /// went green-to-warning at 70, so the same session read as "fine" in one place and "filling" in
-    /// the other. Low is body text rather than a color, because a window with room left is not news;
-    /// the hue is spent on the point where the next long turn compacts.
+    /// One ramp for every surface that prints the number (the rail, the statusline, the phone
+    /// app), so a session never reads as "fine" in one place and "filling" in another. Low is body
+    /// text rather than a color, because a window with room left is not news; the hue is spent on
+    /// the point where the next long turn compacts.
     pub fn context_fill(&self, percent: f32) -> Style {
-        if percent >= CONTEXT_ERROR_PCT {
-            self.error
-        } else if percent >= CONTEXT_WARNING_PCT {
-            self.warning
-        } else {
-            self.text
+        match ContextFill::at(percent) {
+            ContextFill::Full => self.error,
+            ContextFill::Filling => self.warning,
+            ContextFill::Roomy => self.text,
         }
     }
 
@@ -465,6 +462,30 @@ const CARD_TINT: f32 = 0.09;
 /// to compete with them takes legibility and gives back nothing. It sits where the span is still
 /// obviously located at a glance but the marks read first.
 const DIFF_EMPHASIS_TINT: f32 = 0.20;
+
+/// How full a context window reads, on the ramp [`ThemeStyles::context_fill`] colors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ContextFill {
+    /// Room left, which is not news
+    Roomy,
+    /// Past the warning mark
+    Filling,
+    /// Near the point where the next long turn compacts
+    Full,
+}
+
+impl ContextFill {
+    /// Where `percent` sits on the ramp.
+    pub(crate) fn at(percent: f32) -> Self {
+        if percent >= CONTEXT_ERROR_PCT {
+            Self::Full
+        } else if percent >= CONTEXT_WARNING_PCT {
+            Self::Filling
+        } else {
+            Self::Roomy
+        }
+    }
+}
 
 /// Context occupancy at which the reading turns warning-colored.
 const CONTEXT_WARNING_PCT: f32 = 75.0;

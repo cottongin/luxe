@@ -3,6 +3,23 @@
 use super::*;
 
 impl Engine {
+    /// Starts whichever project read `action` asks for. Each is synchronous and spawns, so the
+    /// loop can take it mid-turn too.
+    pub(crate) fn handle_project_read(&self, action: Action, event_tx: &mpsc::Sender<Event>) {
+        match action {
+            Action::LoadFileDiff { request_id, path } => {
+                self.handle_load_file_diff(request_id, path, event_tx);
+            }
+            Action::ListDirectory { request_id, path, include_ignored } => {
+                self.handle_list_directory(request_id, path, include_ignored, event_tx);
+            }
+            Action::ReadProjectFile { request_id, path } => {
+                self.handle_read_project_file(request_id, path, event_tx);
+            }
+            other => debug!(?other, "not a project read"),
+        }
+    }
+
     /// Captures one file's change and reports it, without touching review state.
     ///
     /// Detached rather than awaited: a glance must never make the runtime wait on git, and the

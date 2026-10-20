@@ -8,8 +8,12 @@ mod commands;
 mod docs_command;
 mod doctor_command;
 pub(crate) mod headless;
+mod join_command;
 mod models_command;
+#[cfg(feature = "remote")]
+mod remote_command;
 mod rpc;
+mod share;
 mod tui;
 pub(crate) mod update_command;
 mod wire_command;
@@ -22,6 +26,7 @@ use auth_command::run_auth_command;
 use commands::{run_loop_command, run_mcp_command, run_sessions_command};
 use doctor_command::run_doctor_command;
 use headless::run_headless;
+use join_command::run_join_command;
 use models_command::run_models_command;
 use tui::run_tui;
 use wire_command::run_wire_command;
@@ -107,9 +112,7 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
         match cmd {
             SubCommand::Auth(auth_args) => return run_auth_command(auth_args.command).await,
             SubCommand::Init(init_args) => return crate::init::run_init(init_args, settings).await,
-            SubCommand::Loop(loop_args) => {
-                return run_loop_command(loop_args.command, settings).await;
-            }
+            SubCommand::Loop(looping) => return run_loop_command(looping.command, settings).await,
             SubCommand::Mcp(mcp_args) => return run_mcp_command(mcp_args.command, &settings).await,
             SubCommand::Models(models_args) => {
                 return run_models_command(models_args.command, settings).await
@@ -118,6 +121,9 @@ pub(crate) async fn run(mut args: Args) -> anyhow::Result<()> {
                 return run_sessions_command(sessions_args.command, settings).await
             }
             SubCommand::Doctor => return run_doctor_command(settings).await,
+            SubCommand::Join(join) => return run_join_command(join, &settings.work_root).await,
+            #[cfg(feature = "remote")]
+            SubCommand::Remote(remote) => return remote_command::run_remote_command(remote).await,
             SubCommand::Wire(wire_args) => return run_wire_command(wire_args),
             SubCommand::Docs(_) | SubCommand::Update(_) => {
                 unreachable!("`luxe docs` and `luxe update` return before a project is entered")

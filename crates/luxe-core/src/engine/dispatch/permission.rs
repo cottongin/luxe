@@ -182,6 +182,8 @@ impl Engine {
             }
         };
         tracing::info!(?reply, waited_ms = asked.elapsed().as_millis(), "permission prompt closed");
+        // Every front-end showing it takes it down, whichever one answered
+        let _ = event_tx.send(Event::PromptClosed { id: id.as_str().to_string() }).await;
 
         self.config
             .hook_registry

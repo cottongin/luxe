@@ -1,0 +1,483 @@
+/* What you answer and write with: the prompt card and the composer, kept at the foot of the screen
+   the way the TUI keeps them under the transcript. Fields are the page's size; `viewport.js` keeps
+   iOS from zooming into one under 16px. */
+
+.controls {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  /* The body pads for the home indicator; this takes that padding over so nothing shows under it */
+  margin-bottom: calc(-1 * env(safe-area-inset-bottom));
+  padding: 0.5lh 1ch calc(0.5lh + env(safe-area-inset-bottom));
+  background: var(--luxe-background, #12100e);
+  border-top: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+/* The picker over one panel: any photos, the box across the whole width, then a foot of buttons
+   with the steering line between them. The buttons are drawn at --button, in scale with the box,
+   and answer taps across --tap, Apple's 44 points */
+.composer {
+  --button: 1.9lh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5lh;
+}
+
+.composer-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--luxe-user-msg-bg, #201e1a);
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+.composer-panel:focus-within {
+  border-color: var(--luxe-accent, #ddc084);
+}
+
+.composer textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  padding: 0.5lh 1.5ch 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: var(--cell);
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.composer-tools {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  padding: 0.25lh;
+}
+
+/* Boxes and controls round their corners as the TUI's panels do; filled blocks in the transcript
+   stay square, as filled cells are in a terminal */
+.composer-panel,
+.send,
+.stop,
+.attach,
+.own-answer button,
+.other-folder button,
+.notifications button,
+.pair-link button,
+.photo img,
+.unattach,
+.picker,
+.options button,
+.models button,
+.prompt,
+.choice,
+.own-answer input,
+.other-folder input,
+.pair-link input {
+  border-radius: var(--corner);
+}
+
+.own-answer input:focus,
+.other-folder input:focus,
+.pair-link input:focus {
+  outline: none;
+  border-color: var(--luxe-accent, #ddc084);
+}
+
+.composer-actions {
+  display: flex;
+  gap: 1ch;
+  margin-inline-start: auto;
+}
+
+.icon {
+  display: block;
+  width: 1.3lh;
+  height: 1.3lh;
+}
+
+.send,
+.stop,
+.attach {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--button);
+  height: var(--button);
+}
+
+.composer-tools .icon {
+  width: 1.1lh;
+  height: 1.1lh;
+}
+
+/* a pad past the drawn button, so a tap a little off it still lands */
+.stop::after {
+  content: "";
+  position: absolute;
+  inset: calc((var(--button) - var(--tap)) / 2);
+}
+
+/* Send and photo draw only their icons, so each box can be the whole tap area; the negative
+   margin keeps them to the drawn buttons' height in the row */
+.send,
+.attach {
+  width: var(--tap);
+  height: var(--tap);
+  margin-block: calc((var(--button) - var(--tap)) / 2);
+}
+
+.send {
+  color: var(--luxe-accent, #ddc084);
+}
+
+.send:disabled {
+  opacity: 0.4;
+}
+
+.stop {
+  color: var(--luxe-error, #e68485);
+  border: 1px solid currentColor;
+  box-sizing: border-box;
+}
+
+.own-answer button,
+.other-folder button,
+.notifications button,
+.pair-link button {
+  padding: 0.25lh 1.5ch;
+  font-weight: bold;
+}
+
+.own-answer button,
+.other-folder button,
+.notifications button,
+.pair-link button {
+  color: var(--luxe-background, #12100e);
+  background: var(--luxe-accent, #ddc084);
+}
+
+/* turning something off is the lesser action, so it doesn't shout */
+.notifications button.quiet {
+  color: var(--luxe-muted, #97938c);
+  background: none;
+  border: 1px solid currentColor;
+}
+
+.own-answer button:disabled,
+.other-folder button:disabled,
+.notifications button:disabled,
+.pair-link button:disabled {
+  opacity: 0.4;
+}
+
+/* The file input is the control, so the camera and the library open from one tap on the icon.
+   Clipped, since WebKit draws a file input's hit area wider than its box, over the box beside it. */
+.attach {
+  position: relative;
+  overflow: hidden;
+  color: var(--luxe-accent, #ddc084);
+}
+
+.attach.off {
+  opacity: 0.4;
+}
+
+.attach input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1ch;
+  padding: 0.5lh 1.5ch 0;
+}
+
+.photo {
+  position: relative;
+  margin: 0;
+}
+
+.photo img {
+  display: block;
+  height: 4lh;
+}
+
+.unattach {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.2lh;
+  color: var(--luxe-text, #e4dfd6);
+  background: var(--luxe-background, #12100e);
+}
+
+.unattach .icon {
+  width: 1lh;
+  height: 1lh;
+}
+
+/* Suggestions over the box, as the TUI's flyout sits over its composer */
+.picker {
+  max-height: 10lh;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+.picker li.dim {
+  padding: 0.4lh 1.5ch;
+}
+
+.picker button {
+  width: 100%;
+  padding: 0.4lh 1.5ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker button:active {
+  background: var(--luxe-user-msg-bg, #201e1a);
+}
+
+.picker .name {
+  color: var(--luxe-accent, #ddc084);
+}
+
+.steering {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--luxe-muted, #97938c);
+}
+
+.withdraw {
+  margin-inline-start: 1ch;
+  color: var(--luxe-accent, #ddc084);
+  text-decoration: underline;
+}
+
+/* The status line, the TUI's bar's right-hand side, in one row: the mode, then the facts in the
+   bar's order. On a phone the cost waits in the details sheet and the model's name gives way
+   first. */
+
+.status-line {
+  display: flex;
+  gap: 2ch;
+  align-items: baseline;
+  margin-top: 0.5lh;
+  white-space: nowrap;
+  color: var(--luxe-muted, #97938c);
+}
+
+.mode {
+  flex: none;
+  color: var(--luxe-accent, #ddc084);
+}
+
+.mode-plan {
+  color: var(--luxe-accent-secondary, #d2a5cd);
+}
+
+.status-line .segments {
+  display: flex;
+  flex: 1;
+  gap: 2ch;
+  justify-content: flex-end;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.seg {
+  flex: none;
+}
+
+.seg-model {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--luxe-text, #e4dfd6);
+  font-weight: bold;
+}
+
+@media (max-width: 40rem) {
+  .status-line .seg-cost {
+    display: none;
+  }
+}
+
+/* The details sheet: each choice a button, the current one in the accent */
+.details section {
+  padding: 0 1ch 1lh;
+}
+
+.details .section-head {
+  margin: 0 0 0.5lh;
+}
+
+.details h3 {
+  margin: 0.5lh 0;
+  font-size: inherit;
+  font-weight: normal;
+  color: var(--luxe-muted, #97938c);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1ch;
+}
+
+.models {
+  display: grid;
+  gap: 0.5lh;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.options button,
+.models button {
+  padding: 0.5lh 1.5ch;
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+.models button {
+  display: flex;
+  justify-content: space-between;
+  gap: 2ch;
+  width: 100%;
+}
+
+.options button[aria-pressed="true"],
+.models button[aria-pressed="true"] {
+  color: var(--luxe-accent, #ddc084);
+  border-color: currentColor;
+}
+
+.readings {
+  display: grid;
+  gap: 0.25lh;
+  margin: 0;
+}
+
+/* the sheet has its own pickers for these */
+.readings .seg-model,
+.readings .seg-thinking {
+  display: none;
+}
+
+.close .icon {
+  width: 1lh;
+  height: 1lh;
+}
+
+.tone-warning {
+  color: var(--luxe-warning, #faaa51);
+}
+
+.tone-error {
+  color: var(--luxe-error, #e68485);
+}
+
+/* The prompt card, styled as the TUI's: plain chrome, with only the action in question in the
+   warning color */
+
+.prompt {
+  margin-bottom: 0.5lh;
+  padding: 0.5lh 1ch;
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.prompt p {
+  margin: 0 0 0.5lh;
+}
+
+.prompt-title {
+  font-weight: bold;
+}
+
+.prompt-summary {
+  color: var(--luxe-warning, #faaa51);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35lh 1ch;
+}
+
+.choice:active:not(:disabled),
+.choice.picked {
+  background: var(--luxe-user-msg-bg, #201e1a);
+}
+
+.choice:disabled {
+  opacity: 0.5;
+}
+
+.choice-label {
+  color: var(--luxe-text, #e4dfd6);
+}
+
+.choice.reject .choice-label {
+  color: var(--luxe-error, #e68485);
+}
+
+.choice-hint {
+  color: var(--luxe-muted, #97938c);
+}
+
+.recommended,
+.check {
+  color: var(--luxe-accent, #ddc084);
+  white-space: pre;
+}
+
+.own-answer,
+.other-folder,
+.pair-link {
+  display: flex;
+  gap: 1ch;
+  margin-top: 0.5lh;
+}
+
+.own-answer input,
+.other-folder input,
+.pair-link input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25lh 1ch;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: var(--cell);
+  color: inherit;
+  background: var(--luxe-user-msg-bg, #201e1a);
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+.dismiss {
+  margin-top: 0.5lh;
+  color: var(--luxe-muted, #97938c);
+  text-decoration: underline;
+}

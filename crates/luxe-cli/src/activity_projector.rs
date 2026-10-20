@@ -68,16 +68,17 @@ impl ToolActivityProjector {
                 self.composing(call_id, name, subject.as_deref(), body.as_ref())
             }
             Event::ToolStarted { call_id, name } => {
-                self.started(call_id, name).into_iter().collect()
+                self.started(call_id, name).into_iter().chain(self.fit_writing()).collect()
             }
             Event::ToolProgress { call_id, chunk } => {
                 self.progressed(call_id, chunk).into_iter().collect()
             }
             Event::ToolCompleted { call_id, is_error, output } => {
-                self.settle(call_id, *is_error, Some(bounded_display(output))).into_iter().collect()
+                let settled = self.settle(call_id, *is_error, Some(bounded_display(output)));
+                settled.into_iter().chain(self.fit_writing()).collect()
             }
             Event::ToolEnded { call_id, is_error } => {
-                self.ended(call_id, *is_error).into_iter().collect()
+                self.ended(call_id, *is_error).into_iter().chain(self.fit_writing()).collect()
             }
             _ => Vec::new(),
         }
@@ -95,6 +96,35 @@ impl ToolActivityProjector {
         Some(open.clone())
     }
 
+    /// How the card of a call still being written should read: waiting while another call runs,
+    /// since that one is the busy card and this one can't run before it, and working otherwise.
+    fn writing_state(&self, call_id: &str) -> ToolActivityState {
+        let running = self
+            .calls
+            .iter()
+            .any(|(id, open)| id != call_id && open.state == ToolActivityState::Running);
+        if running {
+            ToolActivityState::Queued
+        } else {
+            ToolActivityState::Composing
+        }
+    }
+
+    /// Moves the card of the call being written between waiting and working as a call ahead of
+    /// it starts or stops.
+    fn fit_writing(&mut self) -> Option<ToolActivity> {
+        let call_id = self.writing.clone()?;
+        let state = self.writing_state(&call_id);
+        let open = self.calls.get_mut(&call_id)?;
+        let unsent = matches!(open.state, ToolActivityState::Composing | ToolActivityState::Queued);
+        if !unsent || open.state == state {
+            return None;
+        }
+        open.revision += 1;
+        open.state = state;
+        Some(open.clone())
+    }
+
     /// Opens (or fills in) the card for the call the model is writing right now.
     ///
     /// `Composing` is a *working* state — the model is producing this call as the reader watches,
@@ -105,7 +135,9 @@ impl ToolActivityProjector {
     /// written; whichever came before it has been written in full and is merely waiting its turn.
     /// Saying that is what keeps exactly one card looking busy — two spinning `bash` cards read as
     /// two shells at once, and a paused mark on all of them put a stopped sign over a card that
-    /// was visibly filling in.
+    /// was visibly filling in. An earlier call can run while this one is written, though, and then
+    /// that one is the busy card: this one opens `Queued`, since it can't run before it either,
+    /// and [`Self::fit_writing`] puts it back to work if the model is still writing it.
     ///
     /// What it does not yet have is a batch position — the message has not committed, so how many
     /// calls it asked for is not known — or a body, whose payload is the argument still arriving.
@@ -126,10 +158,17 @@ impl ToolActivityProjector {
         }
 
         let label = subject.map(bounded_display).unwrap_or_default();
+        let state = self.writing_state(call_id);
         match self.calls.get_mut(call_id) {
             // The call growing under the card that is already drawing it: the subject arriving, or
-            // another few lines of the payload. Said twice, neither is worth a revision.
-            Some(open) if open.state == ToolActivityState::Composing => {
+            // another few lines of the payload. Said twice, neither is worth a revision. Queued
+            // here is a card held behind a running call, since only the call being written composes.
+            Some(open)
+                if matches!(
+                    open.state,
+                    ToolActivityState::Composing | ToolActivityState::Queued
+                ) =>
+            {
                 let renamed = !label.is_empty() && open.label != label;
                 let grew = body.is_some_and(|body| open.card_body.as_ref() != Some(body));
                 if renamed || grew {
@@ -150,6 +189,7 @@ impl ToolActivityProjector {
                 let mut activity =
                     ToolActivity::composing(session_id, call_id, name, label, now_ms());
                 activity.card_body = body.cloned();
+                activity.state = state;
                 self.calls.insert(call_id.to_owned(), activity.clone());
                 updates.push(activity);
             }

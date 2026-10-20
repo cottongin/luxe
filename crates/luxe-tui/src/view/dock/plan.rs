@@ -169,13 +169,12 @@ pub(super) fn todo_lines(
     app: &App,
 ) -> Vec<Line<'static>> {
     let styles = &app.theme_styles;
-    let (glyph, style) = match item.status {
-        TodoSummaryStatus::Completed => (crate::glyphs::Mark::Yes.glyph(), styles.success),
-        TodoSummaryStatus::InProgress => {
-            (crate::glyphs::Mark::Underway.glyph(), styles.text.add_modifier(Modifier::BOLD))
-        }
-        TodoSummaryStatus::Blocked => (crate::glyphs::Mark::Halted.glyph(), styles.warning),
-        TodoSummaryStatus::Pending => ("○", styles.muted),
+    let glyph = crate::marks::todo(item.status, crate::glyphs::tier());
+    let style = match item.status {
+        TodoSummaryStatus::Completed => styles.success,
+        TodoSummaryStatus::InProgress => styles.text.add_modifier(Modifier::BOLD),
+        TodoSummaryStatus::Blocked => styles.warning,
+        TodoSummaryStatus::Pending => styles.muted,
     };
     let subject_style = match item.status {
         TodoSummaryStatus::Completed => style.add_modifier(Modifier::CROSSED_OUT),

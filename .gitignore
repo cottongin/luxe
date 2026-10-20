@@ -38,6 +38,9 @@ web/node_modules/
 web/dist/
 # Wrangler's dev-server scratch: caches, a shim worker, and its source maps.
 web/.wrangler/
+
+# The phone app's type checker, test libraries and browser driver
+crates/luxe-remote/app-tests/node_modules/
 web/.astro/
 
 # cargo-mutants scratch output

@@ -14,18 +14,9 @@ import flagshipMobile from "../assets/captures/flagship.mobile.cast?url";
 import mention from "../assets/captures/mention.cast?url";
 import mentionMobile from "../assets/captures/mention.mobile.cast?url";
 
-import counted from "../assets/generated/facts.json";
+import { catalog } from "../lib/press";
 
-/**
- * The catalog's size, rounded down to a figure nobody has to keep current.
- *
- * Derived from `facts.json`, which `scripts/site-assets.sh` counts from the models.dev snapshot, so
- * it moves when the snapshot does and never needs a hand edit. Rounded because the point is the
- * breadth, and "8,279" invites a reader to check the last digit.
- */
-const atLeast = (n: number, step: number) => (Math.floor(n / step) * step).toLocaleString("en-US");
-const models = atLeast(counted.models, 1000);
-const providers = atLeast(counted.providers, 100);
+const { models, providers } = catalog;
 
 /**
  * Recording sizes, so a caption and its cast cannot drift apart.
@@ -39,11 +30,11 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
 ---
 
 <Base
-  title="Luxe — an agentic coding harness"
+  title="luxe."
   description="A terminal coding agent with real developer tooling, reviews you can actually read, and nothing sent anywhere you didn't ask."
   heroMark
 >
-  {/* The opening assembles itself: the words alone, centered, until "Refined" has finished
+  {/* The opening assembles itself: the words alone, centered, until "better" has finished
       refining; then they slide left and the demo rises from the bottom right to sit beside them.
       `data-hero` is what the driver script looks for. */}
   <section class="hero" data-hero>
@@ -58,9 +49,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
       </div>
 
       <h1 class="hero__line">
-        Built to help you do the work.
-        <br />
-        <em class="hero__refine">Refined<span aria-hidden="true">Refined</span></em> to help you enjoy it.
+        A <em class="hero__refine">better<span aria-hidden="true">better</span></em> way to build.
       </h1>
 
       <p class="lede hero__lede">
@@ -808,8 +797,8 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
     }
   }
 
-  /* "Built to help you do the work." is about 9.7em wide, so 10cqi keeps each line on one line in
-     any column, a hair under the type's cap at a laptop's width */
+  /* "A better way to build." is about 7.5em wide, so 10cqi keeps it on one line in any column, and
+     the type's cap sets it at a laptop's width */
   .hero__line {
     font-size: min(var(--step-4), 10cqi);
     margin-bottom: var(--space-4);
@@ -845,15 +834,15 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
    *
    * A background behind the text cannot invert it, and light text on the accent is unreadable — so
    * the highlight is the same word again, drawn in the selection's own colors, clipped to whatever
-   * has been "selected" so far. `steps(7)` for seven characters: the selection arrives a letter at a
+   * has been "selected" so far. `steps(6)` for six characters: the selection arrives a letter at a
    * time, the way a drag does, rather than the whole word blinking on at once.
    *
    * Right to left because that is how the gesture reads as deliberate — the cursor lands past the
    * end of the word and pulls back across it.
    *
    * A real element rather than `::after`, because several screen readers announce generated
-   * content and this one sits inside the `h1`: the page's own heading would have read "Built for
-   * agents. Refined Refined for humans." */
+   * content and this one sits inside the `h1`: the page's own heading would have read "A better
+   * better way to build." */
   .hero__refine span {
     position: absolute;
     inset: 0;
@@ -862,10 +851,10 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
     color: var(--luxe-background);
     clip-path: inset(0 0 0 100%);
     /* Not selectable and not clickable: it is a picture of a selection sitting on top of the real
-       word, and letting a reader drag through it would hand them "RefinedRefined". */
+       word, and letting a reader drag through it would hand them "betterbetter". */
     user-select: none;
     pointer-events: none;
-    animation: select 3100ms steps(7, end) 3500ms both;
+    animation: select 3100ms steps(6, end) 3500ms both;
   }
 
   /* The swap happens *under* the highlight, on purpose.

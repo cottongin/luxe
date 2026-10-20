@@ -330,6 +330,14 @@ pub enum Action {
         /// The review it is for
         review_id: ReviewId,
     },
+    /// Answers with the open review and its session, whoever opened it, as `OpenReviewShown`.
+    ///
+    /// How a second front end joins the review on screen rather than loading its own, which would
+    /// replace it: a load always makes a new review.
+    ShowOpenReview {
+        /// Correlates the answer
+        request_id: ReviewLoadRequestId,
+    },
     /// Holds one stored review-feedback submission for its turn.
     ///
     /// Sent by the review desk once the submission is stored, never by a front end, which sends
@@ -396,4 +404,17 @@ pub enum Action {
     Retry,
     /// Re-run the assistant turn for the current last user message (new branch).
     Regenerate,
+}
+
+impl Action {
+    /// Whether the review desk takes this as it comes, mid-turn or not: a send that never waits.
+    pub(crate) fn goes_to_review_desk(&self) -> bool {
+        matches!(
+            self,
+            Self::EditReview { .. }
+                | Self::RecordReviewProgress { .. }
+                | Self::RecordReviewSeen { .. }
+                | Self::ShowOpenReview { .. }
+        )
+    }
 }

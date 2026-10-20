@@ -43,6 +43,7 @@
 
 mod hidden;
 mod link_comments;
+pub(crate) mod nested;
 
 /// Instruction text with the unreviewable parts removed, and what came out.
 #[derive(Debug, Clone, PartialEq, Eq)]

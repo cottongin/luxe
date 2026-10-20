@@ -297,11 +297,11 @@ fn detect_git_branch(cwd: &std::path::Path) -> Option<crate::context::GitStatus>
 const MAX_CONTEXT_FILE_CHARS: usize = 24_000;
 
 /// One instruction file, as the prompt will carry it.
-struct Injected {
+pub(super) struct Injected {
     /// The text that goes into the prompt.
-    text: String,
+    pub(super) text: String,
     /// What the person who owns the file should know about it, if anything.
-    notice: Option<String>,
+    pub(super) notice: Option<String>,
     /// Whether the ceiling cut it, which `/context` reports as its own finding.
     truncated: bool,
 }
@@ -312,7 +312,7 @@ struct Injected {
 /// working from half a file without knowing it is the failure worth preventing. The **user** gets
 /// the returned notice, because they are the only one who can fix it — silent truncation is how a
 /// document grows to 43,000 characters with nobody noticing that a third of it never arrived.
-fn read_context_file(path: &std::path::Path) -> Option<Injected> {
+pub(super) fn read_context_file(path: &std::path::Path) -> Option<Injected> {
     let content = std::fs::read_to_string(path).ok()?;
     let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
 

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luxe</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/180.png">
+<meta name="apple-mobile-web-app-title" content="Luxe">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/app/style.css">
+<link rel="stylesheet" href="/app/markdown.css">
+<link rel="stylesheet" href="/app/controls.css">
+<link rel="stylesheet" href="/app/dock.css">
+<link rel="stylesheet" href="/app/panel.css">
+<link rel="stylesheet" href="/app/github.css">
+<link rel="stylesheet" href="/app/review.css">
+<link rel="stylesheet" href="/app/lines.css">
+<link rel="stylesheet" href="/app/peek.css">
+<script type="importmap">
+{
+  "imports": {
+    "preact": "/app/vendor/preact.mjs",
+    "preact/hooks": "/app/vendor/hooks.mjs",
+    "htm": "/app/vendor/htm.mjs",
+    "@preact/signals-core": "/app/vendor/signals-core.mjs",
+    "@preact/signals": "/app/vendor/signals.mjs"
+  }
+}
+</script>
+<script type="module" src="/app/main.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>

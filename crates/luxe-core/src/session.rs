@@ -10,7 +10,7 @@
 
 use std::collections::HashMap;
 use std::fs;
-use std::io::{self, BufRead, Write};
+use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::SystemTime;
 
@@ -20,10 +20,12 @@ use uuid::Uuid;
 use crate::event::ModelRef;
 use crate::message::Message;
 
+mod claim;
 mod entry;
 mod jsonl;
 mod links;
 
+pub use claim::SessionClaim;
 pub use entry::{latest_leaf, Entry, EntryKind};
 pub use jsonl::JsonlSessionStore;
 pub use links::{linked_pull_requests, session_for_pull_request, session_issue, session_worktree};
@@ -87,6 +89,8 @@ pub enum SessionError {
     NotFound(SessionId),
     #[error("entry not found: {0}")]
     EntryNotFound(EntryId),
+    #[error("session {0} is open in another Luxe")]
+    OpenElsewhere(SessionId),
     #[error("{0}")]
     Other(String),
 }
@@ -114,6 +118,19 @@ pub trait SessionStore: Send + Sync {
 
     /// Walk from leaf to root and reverse — this is resume.
     fn active_path(&self, session: &SessionId, leaf: &EntryId) -> Result<Vec<Entry>, SessionError>;
+
+    /// Lends the entries from the root to `leaf` to `visit`, borrowed rather than cloned.
+    ///
+    /// [`Self::active_path`] clones every entry on the path, tool output and the history a
+    /// compaction replaced included, which on a long session is tens of megabytes a call. A caller
+    /// that keeps a part of it borrows instead, through [`with_active_path`]. `visit` runs once,
+    /// and may run under the store's lock, so it must not block.
+    fn visit_active_path(
+        &self,
+        session: &SessionId,
+        leaf: &EntryId,
+        visit: &mut dyn FnMut(&[&Entry]),
+    ) -> Result<(), SessionError>;
 
     /// Append a compaction summary as the session's new leaf, returning its id.
     ///
@@ -155,6 +172,31 @@ pub trait SessionStore: Send + Sync {
     ///
     /// Returns `(SessionId, mtime)` pairs so the dashboard can display age and sort consistently.
     fn recent_sessions(&self, limit: usize) -> Vec<(SessionId, SystemTime)>;
+
+    /// Claim `session` for this process to write, so a second Luxe can't write it at once.
+    ///
+    /// [`SessionError::OpenElsewhere`] when another process holds it. A store other processes
+    /// can't reach, like one in memory, has nothing to guard and returns `None`.
+    fn claim(&self, session: &SessionId) -> Result<Option<SessionClaim>, SessionError> {
+        let _ = session;
+        Ok(None)
+    }
+}
+
+/// What `read` makes of the active path to `leaf`, borrowing the entries rather than cloning
+/// them: [`SessionStore::visit_active_path`] with a return value.
+pub fn with_active_path<T>(
+    store: &(impl SessionStore + ?Sized),
+    session: &SessionId,
+    leaf: &EntryId,
+    read: impl FnOnce(&[&Entry]) -> T,
+) -> Result<T, SessionError> {
+    let mut read = Some(read);
+    let mut result = None;
+    store.visit_active_path(session, leaf, &mut |path| {
+        result = read.take().map(|read| read(path));
+    })?;
+    result.ok_or_else(|| SessionError::Other("the session store never lent the path".to_string()))
 }
 
 #[cfg(test)]

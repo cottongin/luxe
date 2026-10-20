@@ -5,6 +5,7 @@ use super::CompactionSettings;
 use crate::message::{ContentBlock, Message, ToolOutput};
 use crate::provider::ToolSchema;
 use crate::session::Entry;
+use std::borrow::Borrow;
 use tracing::{debug, warn};
 
 /// Estimate the token count for a set of entries.
@@ -15,8 +16,8 @@ use tracing::{debug, warn};
 ///
 /// Still only an estimate. Where the provider has told us the real occupancy, prefer that:
 /// [`ContextBudget::observed_tokens`] and [`last_observed_context_tokens`].
-pub fn estimate_tokens(entries: &[Entry]) -> u64 {
-    entries.iter().map(entry_to_token_estimate).sum()
+pub fn estimate_tokens<E: Borrow<Entry>>(entries: &[E]) -> u64 {
+    entries.iter().map(|entry| entry_to_token_estimate(entry.borrow())).sum()
 }
 
 /// Estimate the tokens a provider-facing message list occupies.
@@ -100,15 +101,15 @@ fn block_token_estimate(block: &ContentBlock) -> u64 {
 ///
 /// Returns `None` when the transcript has nothing measured to offer, and the caller falls back to
 /// [`estimate_tokens`].
-pub fn last_observed_context_tokens(entries: &[Entry]) -> Option<u64> {
+pub fn last_observed_context_tokens<E: Borrow<Entry>>(entries: &[E]) -> Option<u64> {
     last_observed_measurement(entries).map(|(_, occupancy)| occupancy)
 }
 
 /// [`last_observed_context_tokens`], plus where in the transcript it was measured, so a caller can
 /// estimate only what has been appended since.
-fn last_observed_measurement(entries: &[Entry]) -> Option<(usize, u64)> {
+fn last_observed_measurement<E: Borrow<Entry>>(entries: &[E]) -> Option<(usize, u64)> {
     for (index, entry) in entries.iter().enumerate().rev() {
-        match &entry.kind {
+        match &entry.borrow().kind {
             crate::session::EntryKind::Compaction { .. } => return None,
             crate::session::EntryKind::Usage { source, totals, .. }
                 if *source == crate::usage::UsageSource::Agent && totals.calls == 1 =>
@@ -130,7 +131,11 @@ fn last_observed_measurement(entries: &[Entry]) -> Option<(usize, u64)> {
 /// schemas, plus an estimate of the entries appended since. With nothing measured (a fresh session,
 /// or one whose last usage predates a compaction) it estimates [`context_entries`] plus the prefix:
 /// what a compaction replaced is not sent, so it is not counted.
-pub fn prompt_tokens(entries: &[Entry], system: Option<&str>, tools: &[ToolSchema]) -> u64 {
+pub fn prompt_tokens<E: Borrow<Entry>>(
+    entries: &[E],
+    system: Option<&str>,
+    tools: &[ToolSchema],
+) -> u64 {
     match last_observed_measurement(entries) {
         // The measurement already includes the prefix that call was sent with.
         Some((index, observed)) => observed + estimate_tokens(&entries[index + 1..]),
@@ -140,7 +145,7 @@ pub fn prompt_tokens(entries: &[Entry], system: Option<&str>, tools: &[ToolSchem
 
 /// Estimated tokens for the conversation a request would carry — [`estimate_tokens`] over
 /// [`context_entries`].
-pub fn context_tokens(entries: &[Entry]) -> u64 {
+pub fn context_tokens<E: Borrow<Entry>>(entries: &[E]) -> u64 {
     context_entries(entries).into_iter().map(entry_to_token_estimate).sum()
 }
 
@@ -217,11 +222,12 @@ pub fn clamp_max_tokens_to_context(
 
 /// Output allowance for one summary, before the model's limit and the window cut it down.
 ///
-/// Room for the seven sections over a whole window's worth of transcript *and* for the reasoning a
-/// model that always thinks spends first: that comes out of the same allowance, and a summary that
-/// hits the ceiling is refused whole, so a tight one fails every time on exactly the long sessions
-/// that need it.
-pub(crate) const SUMMARY_MAX_TOKENS: u32 = 16_384;
+/// Room for the six sections over a whole window's worth of transcript *and* for the reasoning a
+/// model that always thinks spends first, even asked not to: that comes out of the same allowance,
+/// and a summary that hits the ceiling is refused whole, so a tight one fails every time on exactly
+/// the long sessions that need it. Generous because only what's written is billed, while a refused
+/// summary has already paid for reading the whole window.
+pub(crate) const SUMMARY_MAX_TOKENS: u32 = 32_768;
 
 /// What one summary request may ask for: [`SUMMARY_MAX_TOKENS`], within `model`'s own output limit
 /// (0 for unknown) and what `prompt_tokens` leaves of its window.

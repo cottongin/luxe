@@ -1,0 +1,57 @@
+[package]
+name = "luxe-remote"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "The bridge that lets your own phone or tablet drive Luxe sessions running on this machine"
+repository.workspace = true
+homepage.workspace = true
+# The app's checks run from the repository, with npm; nothing in them builds the crate
+exclude = ["app-tests/"]
+
+# Allowed edges: depends on luxe-core only, like the TUI. It is a front end over the published
+# protocol: each phone connection joins a session through core's local endpoint, and nothing here
+# reaches a provider or a tool directly.
+#
+# Network I/O lives here. It answers on the loopback interface only: Tailscale Serve is what puts
+# it on the tailnet, and does the TLS for it. The one call it makes, Web Push, goes out through
+# reqwest and the workspace's rustls.
+
+[dependencies]
+luxe-core = { path = "../luxe-core", version = "0.1.3" }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+# HTTP and WebSocket only: no TLS, no HTTP/2, no form or query parsing until something needs it.
+axum = { version = "0.8", default-features = false, features = ["http1", "ws", "json", "tokio"] }
+# Pairing: invitations and device credentials are random, and stored only as digests. The same
+# versions core's OAuth loopback uses, so nothing new is linked.
+getrandom = "0.4"
+sha2 = "0.11"
+base64 = { workspace = true }
+base16ct = { version = "1", features = ["alloc"] }
+# Web Push: the P-256, HKDF and AES-GCM it needs, from the copy rustls already links
+ring = "0.17"
+# Web Push's one outbound call, to the push service a device subscribed through
+reqwest = { workspace = true }
+# The phone app, `app/`, in the binary. A debug build reads the folder from disk instead, so
+# editing the app takes a reload, not a rebuild.
+rust-embed = { version = "8.13", default-features = false }
+
+# Windows always embeds the app. A debug build's disk lookup compares against the folder's path as
+# canonicalized at build time, so a binary built on Linux and run under wine finds no file.
+[target.'cfg(windows)'.dependencies]
+rust-embed = { version = "8.13", default-features = false, features = ["debug-embed"] }
+
+[dev-dependencies]
+tempfile = "3"
+# A paused clock, for the waits notifications are held for
+tokio = { workspace = true, features = ["test-util"] }
+# The version axum's `ws` already links, so the tests add no second copy
+tokio-tungstenite = "0.29"
+futures = { workspace = true }
+
+[lints]
+workspace = true

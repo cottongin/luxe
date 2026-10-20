@@ -1,0 +1,479 @@
+/* The app is set like the terminal: one monospace face, one line height, widths in `ch`. Colors
+   come from `/theme.css`, the active theme; each fallback is Luxe's own, for a theme whose token
+   is the terminal's default color, which a page can't know. Rendered text is `markdown.css`. */
+
+@font-face {
+  font-family: "Luxe Mono";
+  src: url("fonts/jetbrains-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Luxe Mono";
+  src: url("fonts/jetbrains-mono-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Luxe Mono";
+  src: url("fonts/jetbrains-mono-italic.woff2") format("woff2");
+  font-style: italic;
+  font-display: swap;
+}
+
+/* A separate family, so the browser takes from it only what the first face lacks */
+@font-face {
+  font-family: "Luxe Mono Marks";
+  src: url("fonts/adwaita-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Luxe Mono Marks";
+  src: url("fonts/adwaita-mono-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --cell: 1.4;
+  /* the terminal's rounded box corner, an arc half a cell wide (luxe-tui's PANEL_BORDER_TYPE) */
+  --corner: 0.5ch;
+  /* the least a finger is given to hit, Apple's 44 points */
+  --tap: 2.4lh;
+}
+
+body {
+  margin: 0;
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: var(--luxe-background, #12100e);
+  color: var(--luxe-text, #e4dfd6);
+  font: 13px / var(--cell) "Luxe Mono", "Luxe Mono Marks", ui-monospace, monospace;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: start;
+}
+
+/* Buttons keep Luxe's square shape: no browser's rounded tap blob or focus ring, which hug a lone
+   icon into a circle. A press or a keyboard's focus marks the button's own box instead */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:is(button, a):focus-visible {
+  outline: 1px solid var(--luxe-accent, #ddc084);
+  outline-offset: 1px;
+}
+
+/* An icon on its own is a square a finger can hit, drawn into the bar without making it taller.
+   A press fills a smaller square inside it, so the fill stays within the bar */
+:is(.close, .panel-button, .dock-toggle) {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: var(--tap);
+  block-size: var(--tap);
+  margin-block: calc((1lh - var(--tap)) / 2);
+  padding: 0.35lh;
+  background-clip: content-box;
+  border-radius: var(--corner);
+}
+
+:is(.close, .panel-button, .dock-toggle):active {
+  background-color: var(--luxe-selected-bg, #2c2925);
+}
+
+pre,
+code {
+  font: inherit;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* At least a screen tall, so the composer sits at the foot of a session with nothing in it yet */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - env(safe-area-inset-bottom));
+}
+
+main {
+  flex: 1;
+  padding: 1lh 1ch;
+}
+
+.bar {
+  position: sticky;
+  top: 0;
+  /* over the phone's dock page, whose button it holds */
+  z-index: 3;
+  display: flex;
+  gap: 1ch;
+  align-items: baseline;
+  padding: calc(env(safe-area-inset-top) + 0.5lh) 1ch 0.5lh;
+  background: var(--luxe-background, #12100e);
+  border-bottom: 1px solid var(--luxe-border-muted, #2e2b27);
+}
+
+.bar .title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* which computer this app reaches, beside the wordmark: one phone can have an app for each */
+.bar .wordmark:has(+ .machine) {
+  margin-inline-end: 0;
+}
+
+.bar .machine {
+  align-self: center;
+  margin-inline: 1ch auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--luxe-muted, #97938c);
+}
+
+.back {
+  color: var(--luxe-accent, #ddc084);
+  padding-inline-end: 1ch;
+}
+
+.bar .new {
+  align-self: center;
+  color: var(--luxe-accent, #ddc084);
+  font-weight: bold;
+  text-decoration: none;
+  padding: 0.25lh 1ch;
+  border: 1px solid var(--luxe-border-muted, #2e2b27);
+  border-radius: var(--corner);
+}
+
+/* The logotype, lit like the terminal's: each letter swings between the accent and the accent cut
+   back toward the canvas by the depth the generated file carries */
+.wordmark {
+  --wordmark-lit: var(--luxe-accent, #ddc084);
+  --wordmark-dim: color-mix(
+    in srgb,
+    var(--luxe-background, #12100e) calc(var(--drift-depth) * 100%),
+    var(--wordmark-lit)
+  );
+  align-self: center;
+  height: 2lh;
+  margin-inline-end: auto;
+}
+
+/* The terminal's `DRIFT_TICKS` of its 33ms tick. Each letter's `--phase` is a negative share of
+   it, so every letter is mid-swing on the first frame rather than the whole mark pulsing once */
+.wordmark path {
+  fill: var(--wordmark-lit);
+  animation: wordmark-drift 6.996s linear infinite;
+  animation-delay: calc(var(--phase, 0) * 6.996s);
+}
+
+/* Held where it would be, each letter at its own point of the swing */
+@media (prefers-reduced-motion: reduce) {
+  .wordmark path {
+    animation-play-state: paused;
+  }
+}
+
+/* The terminal's raised cosine, sampled every eighth of a turn as the website does: an easing curve
+   reads as letters taking turns fading rather than one light moving over metal */
+@keyframes wordmark-drift {
+  0%,
+  100% {
+    fill: var(--wordmark-lit);
+  }
+  12.5%,
+  87.5% {
+    fill: color-mix(in oklab, var(--wordmark-dim) 15%, var(--wordmark-lit));
+  }
+  25%,
+  75% {
+    fill: color-mix(in oklab, var(--wordmark-dim) 50%, var(--wordmark-lit));
+  }
+  37.5%,
+  62.5% {
+    fill: color-mix(in oklab, var(--wordmark-dim) 85%, var(--wordmark-lit));
+  }
+  50% {
+    fill: var(--wordmark-dim);
+  }
+}
+
+.title {
+  color: var(--luxe-accent, #ddc084);
+  font-weight: bold;
+}
+
+.dim {
+  color: var(--luxe-muted, #97938c);
+}
+
+/* The TUI's heading badge: the word cut into a slab two cells in and one after, then three cells
+   stepping a quarter of the way each into the canvas. The depth is the section's own, by the TUI's
+   stops: PROJECT and MODEL the accent itself with the canvas as ink, the work in flight (PLAN,
+   FILES) receded 40% into the canvas and SESSION 70%, both inked in body text. An idle badge is
+   a switch's face that isn't showing. A flat statusline style draws bold accent words, as the
+   TUI's rail does */
+.badge {
+  --canvas: var(--luxe-background, #12100e);
+  --slab: var(--luxe-accent, #ddc084);
+  display: inline-block;
+  padding: 0 4ch 0 2ch;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--canvas);
+  background: linear-gradient(to right,
+    var(--slab) calc(100% - 3ch),
+    color-mix(in srgb, var(--canvas) 25%, var(--slab)) calc(100% - 3ch) calc(100% - 2ch),
+    color-mix(in srgb, var(--canvas) 50%, var(--slab)) calc(100% - 2ch) calc(100% - 1ch),
+    color-mix(in srgb, var(--canvas) 75%, var(--slab)) calc(100% - 1ch));
+}
+
+.badge.raised,
+.badge.recessed {
+  color: var(--luxe-text, #e4dfd6);
+}
+
+.badge.raised {
+  --slab: color-mix(in srgb, var(--luxe-accent, #ddc084) 60%, var(--canvas));
+}
+
+.badge.recessed {
+  --slab: color-mix(in srgb, var(--luxe-accent, #ddc084) 30%, var(--canvas));
+}
+
+.badge.idle {
+  --slab: color-mix(in srgb, var(--luxe-muted, #97938c) 22%, var(--canvas));
+  font-weight: normal;
+  color: var(--luxe-muted, #97938c);
+}
+
+:root[data-headings="flat"] .badge {
+  padding: 0;
+  background: none;
+  color: var(--luxe-accent, #ddc084);
+}
+
+:root[data-headings="flat"] .badge.idle {
+  color: var(--luxe-muted, #97938c);
+}
+
+.problem {
+  color: var(--luxe-error, #e68485);
+}
+
+.notice {
+  color: var(--luxe-muted, #97938c);
+}
+
+/* The session list */
+
+.sessions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.session {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5lh 1ch;
+  margin-block-end: 1lh;
+  background: var(--luxe-tool-call-bg, #201e1a);
+}
+
+.session .name {
+  color: var(--luxe-accent, #ddc084);
+  font-weight: bold;
+}
+
+.session .path {
+  overflow-wrap: anywhere;
+}
+
+.folder {
+  width: 100%;
+}
+
+.folder:disabled {
+  opacity: 0.6;
+}
+
+h2 {
+  margin: 1lh 0 0.5lh;
+  font-size: inherit;
+  color: var(--luxe-muted, #97938c);
+}
+
+/* How the connection stands; the word says it, the color only helps */
+
+.connection {
+  color: var(--luxe-muted, #97938c);
+}
+
+.connection::before {
+  content: "● ";
+}
+
+.connection.live {
+  color: var(--luxe-success, #81caa0);
+}
+
+.connection.reconnecting {
+  color: var(--luxe-warning, #faaa51);
+}
+
+.connection.unpaired {
+  color: var(--luxe-error, #e68485);
+}
+
+/* The transcript: one blank row between items, as in the terminal */
+
+.item {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-block-end: 1lh;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 3lh;
+}
+
+/* A long session's history waits above the latest items until it's asked for */
+.earlier {
+  display: block;
+  width: 100%;
+  min-height: var(--tap);
+  margin-block-end: 1lh;
+  color: var(--luxe-accent, #ddc084);
+  padding-inline: 1ch;
+}
+
+/* Your words on a band; a brief Luxe wrote to the agent, as one muted line */
+.user-message .words,
+.user-message.plain {
+  display: block;
+  margin: 0;
+  padding: 1lh 1ch;
+  background: var(--luxe-user-msg-bg, #201e1a);
+  color: var(--luxe-accent, #ddc084);
+}
+
+.user-message .words + .words {
+  margin-block-start: 1lh;
+}
+
+.user-message .brief,
+.user-message .attached {
+  margin: 0;
+  padding-inline: 1ch;
+  color: var(--luxe-muted, #97938c);
+}
+
+.user-message .chip {
+  color: var(--luxe-info, #85c7d7);
+}
+
+.reply {
+  padding-inline: 1ch;
+}
+
+/* Reasoning stays three rows until it's tapped open */
+.thinking {
+  padding-inline: 1ch;
+  font-style: italic;
+  color: var(--luxe-thinking-text, #97938c);
+  max-height: 3lh;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.thinking.open {
+  max-height: none;
+}
+
+.tool {
+  padding: 0.5lh 1ch;
+  background: var(--luxe-tool-call-bg, #201e1a);
+}
+
+.tool-head {
+  list-style: none;
+}
+
+.tool-head::-webkit-details-marker {
+  display: none;
+}
+
+/* The glyph and the name are one label in the TUI, in the call's color */
+.tool-glyph,
+.tool-name {
+  font-weight: bold;
+  color: var(--luxe-muted, #97938c);
+}
+
+.tool-glyph {
+  margin-inline-end: 1ch;
+}
+
+.tool-label {
+  margin-inline: 1ch;
+}
+
+.tool-time {
+  color: var(--luxe-muted, #97938c);
+}
+
+.tool-body {
+  display: block;
+  padding-inline-start: 3ch;
+  color: var(--luxe-tool-output, #e4dfd6);
+  white-space: pre-wrap;
+}
+
+.tool-output {
+  margin-block-start: 0.5lh;
+  padding-block-start: 0.5lh;
+  border-top: 1px solid var(--luxe-border-muted, #2e2b27);
+  color: var(--luxe-tool-output, #e4dfd6);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.running :is(.tool-glyph, .tool-name) {
+  color: var(--luxe-accent, #ddc084);
+}
+
+.succeeded :is(.tool-glyph, .tool-name) {
+  color: var(--luxe-success, #81caa0);
+}
+
+.failed :is(.tool-glyph, .tool-name, .tool-time) {
+  color: var(--luxe-error, #e68485);
+}
+
+.interrupted :is(.tool-glyph, .tool-name),
+.cancelled :is(.tool-glyph, .tool-name) {
+  color: var(--luxe-warning, #faaa51);
+}

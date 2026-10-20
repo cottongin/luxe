@@ -66,6 +66,7 @@ pub(super) async fn run_tui(
             events: engine_rx,
             closer,
             session_id,
+            claim: _claim,
         } = start_engine(&settings).await?;
         let event_rx = crate::workspace_runtime::bridge(
             engine_rx,
@@ -75,6 +76,8 @@ pub(super) async fn run_tui(
             },
             crate::workspace_runtime::pull_request_watch(&settings.work_root),
         );
+        let (event_rx, _sharing) =
+            super::share::share(event_rx, engine_tx.clone(), &settings, &session_id.0);
         let exit = main_loop::run(
             event_rx,
             engine_tx.clone(),
@@ -180,7 +183,13 @@ impl Next<'_> {
                 // Another of your sessions, in its own worktree when it has one
                 shutdown_workspace_services().await;
                 let mut next = self.fresh(ResumeMode::Session(launch.session.clone()));
-                match enter_session_worktree(&launch.session, &mut next).await {
+                let state_root = &self.settings.state_root;
+                let entered =
+                    match crate::engine_setup::open_elsewhere_now(state_root, &launch.session) {
+                        Some(why) => Err(anyhow::anyhow!(why)),
+                        None => enter_session_worktree(&launch.session, &mut next).await,
+                    };
+                match entered {
                     Ok(()) => *self.settings = next,
                     Err(error) => self.carry_on(
                         session_id,

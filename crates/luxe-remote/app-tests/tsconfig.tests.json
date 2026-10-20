@@ -1,0 +1,11 @@
+{
+  // The tests, checked against the app's types: a call with the wrong shape fails here, while a
+  // fixture or a callback needs no annotation, since an assertion already catches what a null
+  // check would.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "strict": false
+  },
+  "include": ["../app/*.js", "*.mjs", "e2e/*.mjs"]
+}

@@ -4,7 +4,7 @@
 //! command behavior stays separate from key precedence.
 
 use super::conversation::first_code_block;
-use super::{App, AppState, ConvoBlock};
+use super::{App, ConvoBlock};
 #[cfg(test)]
 use luxe_core::config::Config;
 use luxe_core::engine::Action;
@@ -336,8 +336,7 @@ pub(super) fn dispatch_action(app: &mut App, action: UiAction) -> bool {
                 let question = app.convo[index].block().clone();
                 app.push_convo(question);
             }
-            app.status.state = AppState::Streaming;
-            app.status.on_turn_start();
+            app.begin_own_turn();
             true
         }
         UiAction::Regenerate => {
@@ -349,8 +348,7 @@ pub(super) fn dispatch_action(app: &mut App, action: UiAction) -> bool {
                 return true;
             }
             app.drop_transcript_from(index + 1);
-            app.status.state = AppState::Streaming;
-            app.status.on_turn_start();
+            app.begin_own_turn();
             true
         }
         UiAction::EditResend => {

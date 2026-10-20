@@ -78,6 +78,9 @@ pub struct Config {
     /// Report the agent's state to herdr when Luxe runs in one of its panes. `None` = use default
     /// (on).
     pub herdr: Option<bool>,
+    /// Let another front-end on this machine join a running session. `None` = use default (on).
+    /// Only this user can connect, and a project file can turn it off but not back on.
+    pub joinable: Option<bool>,
     /// Statusline module order and visibility
     pub statusline: StatuslineConfig,
     /// Conversation canvas and tool-detail preferences
@@ -186,6 +189,15 @@ impl Config {
     /// Whether the agent's state is reported to herdr when Luxe runs inside it (default: yes).
     pub fn herdr(&self) -> bool {
         self.herdr.unwrap_or(true)
+    }
+
+    /// Whether a running session can be joined from another front-end on this machine (default:
+    /// yes). `LUXE_JOINABLE=0` turns it off for one launch.
+    pub fn joinable(&self) -> bool {
+        let opted_out = std::env::var("LUXE_JOINABLE").is_ok_and(|value| {
+            matches!(value.trim().to_ascii_lowercase().as_str(), "0" | "false" | "no" | "off")
+        });
+        !opted_out && self.joinable.unwrap_or(true)
     }
 
     /// Resolves the active theme name, falling back to the current desktop theme when known.

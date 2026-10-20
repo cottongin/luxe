@@ -53,19 +53,13 @@ pub enum Event {
     /// A call can run while the model is still writing the next one, so its result exists well
     /// before the batch's results are committed and `ToolEnded` follows. This is what lets a card
     /// settle the moment its own call does instead of when the last of the batch does. Optional for
-    /// a client: one that ignores it settles the card on `ToolEnded`, as before. `output` is the
-    /// result's text, already redacted. Args: `{call_id, is_error, output}`.
+    /// a client: one that ignores it settles the card on `ToolEnded`. `output` is the result's
+    /// text, already redacted. Args: `{call_id, is_error, output}`.
     ToolCompleted { call_id: String, is_error: bool, output: String },
     /// Tool finished (success or error).
     ToolEnded { call_id: String, is_error: bool },
-    /// A full assistant message was committed to the session.
-    MessageCommitted {
-        /// Session which owns the persisted entry.
-        session_id: String,
-        /// Persisted entry which owns this message.
-        entry_id: EntryId,
-        message: Message,
-    },
+    /// A full message, from any role, was committed to the session.
+    MessageCommitted { session_id: String, entry_id: EntryId, message: Message },
     /// A validated remediation report was extracted after its assistant transcript entry committed.
     RemediationReported {
         /// Persisted assistant entry that carried the named report block.
@@ -74,10 +68,7 @@ pub enum Event {
         report: RemediationReport,
     },
     /// A queued feedback item crossed the engine boundary and can no longer be cancelled.
-    ReviewFeedbackTurnDispatched {
-        /// Immutable feedback submission whose agent turn is about to begin.
-        submission_id: SubmissionId,
-    },
+    ReviewFeedbackTurnDispatched { submission_id: SubmissionId },
     /// A feedback turn failed before the engine could produce a terminal agent response.
     ReviewFeedbackTurnFailed {
         /// Persisted feedback submission whose turn failed.
@@ -94,10 +85,7 @@ pub enum Event {
         answer: String,
     },
     /// A feedback turn reached its terminal assistant response and may be marked complete.
-    ReviewFeedbackTurnCompleted {
-        /// Persisted feedback submission whose turn completed.
-        submission_id: SubmissionId,
-    },
+    ReviewFeedbackTurnCompleted { submission_id: SubmissionId },
     /// A resumed session was loaded with its active-path transcript.
     SessionLoaded {
         session_id: String,
@@ -106,8 +94,15 @@ pub enum Event {
     },
     /// Engine state snapshot changed.
     StateChanged(EngineState),
+    /// A turn began, whichever client asked for it. Sent before anything else of the turn, the
+    /// user's message included, and always followed by `TurnEnded`, so a client that didn't start
+    /// the turn needn't guess from its first sign.
+    TurnStarted,
     /// The in-flight turn ended.
     TurnEnded { reason: StopReason },
+    /// The models this client can switch to, configured ones first, each with the thinking levels
+    /// it honors, answering the `list_models` with this `request_id`.
+    ModelsListed { request_id: String, models: Vec<super::ModelChoice> },
     /// A complete retained baseline is available for the latest agent turn.
     LastTurnAvailable {
         /// Session which owns the persisted baseline.
@@ -125,9 +120,8 @@ pub enum Event {
     ContextUsage { used_tokens: u32, context_window: u32 },
     /// Token counts + cost for **one provider call**, as it completes.
     ///
-    /// Per call, not per turn: a turn that calls tools makes many, and each reports its own usage.
-    /// Anything that wants a running total should read [`Event::SessionUsage`] rather than trying
-    /// to reduce this stream — the engine already did the arithmetic.
+    /// Per call, not per turn: a turn that calls tools makes many, each reporting its own usage.
+    /// For a running total read [`Event::SessionUsage`], which the engine already summed.
     TurnUsage {
         prompt_tokens: u64,
         completion_tokens: u64,
@@ -164,6 +158,8 @@ pub enum Event {
     Error(String),
     /// An informational message for the user. Unlike [`Event::Error`] it does not end the turn.
     Notice(String),
+    /// Who's joined this session now, by name, for the terminal to show; sent as one comes or goes.
+    GuestsChanged(Vec<String>),
     /// Plan mode wrote one of its plan files. Args: `path`, project-relative.
     ///
     /// What a front-end offers the plan's next step on, once the turn that wrote it ends.
@@ -195,9 +191,8 @@ pub enum Event {
     },
     /// A richer Guide replaced the structural chapters a review opened with.
     ///
-    /// Chaptering is advisory and can involve several model passes, so it must never hold the diff
-    /// hostage: the review opens immediately with deterministic sections and upgrades in place when
-    /// (and only when) the pinned revision it describes is still the one on screen.
+    /// Chaptering is advisory and may take several model passes, so the review opens at once with
+    /// deterministic sections and upgrades in place only while its pinned revision is on screen.
     GuidedReviewGuideUpdated {
         /// Correlates this Guide with the request whose review it describes.
         request_id: ReviewLoadRequestId,
@@ -511,19 +506,18 @@ pub enum Event {
         /// Why not.
         error: crate::project_files::ProjectFileFailure,
     },
-    /// The feedback session bound to the review just loaded, which always follows
-    /// [`Event::GuidedReviewLoaded`]: carried over a refresh and moved onto its new source,
-    /// restored from disk after a restart, or new. Also sent when another writer's copy replaced
-    /// this one.
+    /// The session bound to the review just loaded, always after [`Event::GuidedReviewLoaded`]:
+    /// carried over a refresh onto its new source, restored after a restart, or new. Also sent when
+    /// another writer's copy replaced this one.
     ReviewSessionRestored {
         /// Complete authoritative state, as the review desk holds it.
         session: Box<ReviewSession>,
     },
-    /// The open review's feedback session changed and was stored.
-    ///
-    /// Every change arrives this way, whoever made it: an `EditReview`, answered under its
-    /// `request_id`, or something Luxe did itself (a turn dispatched, a report recorded, a review
-    /// posted), under a fresh one.
+    /// The answer to `show_open_review`. Boxed: it carries a whole review.
+    OpenReviewShown(Box<super::types::OpenReview>),
+    /// The open review's feedback session changed and was stored. Every change arrives this way,
+    /// whoever made it: an `EditReview`, answered under its `request_id`, or something Luxe did
+    /// itself (a turn dispatched, a report recorded, a review posted), under a fresh one.
     ReviewSessionSaved {
         /// The edit this answers, or a fresh id for a change Luxe made itself.
         request_id: ReviewSessionSaveRequestId,
@@ -585,11 +579,10 @@ pub enum Event {
         /// Whether multiple options may be selected.
         multi: bool,
     },
-    /// First frame of an RPC stream: which protocol the peer is speaking, and to what.
-    ///
-    /// Emitted by `luxe --rpc` before anything else, so a client checks one integer and refuses a
-    /// build it cannot speak to. Additive changes do not move `protocol_version`; removing or
-    /// retagging anything does. `docs/guide/rpc.md`.
+    /// A prompt stopped waiting, answered by any front-end or cancelled; the others take it down.
+    PromptClosed { id: String },
+    /// First frame of an RPC stream, from `luxe --rpc` or a joined session: protocol and session.
+    /// Additive changes do not move `protocol_version`; removing or retagging anything does.
     Ready {
         /// Wire protocol version — [`crate::PROTOCOL_VERSION`].
         protocol_version: u32,

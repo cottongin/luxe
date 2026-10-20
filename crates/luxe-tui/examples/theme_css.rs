@@ -19,6 +19,7 @@
 //! cargo run -p luxe-tui --example theme_css -- --json > web/src/assets/generated/themes.json
 //! ```
 
+use luxe_core::theme::css::{css_name, custom_properties};
 use luxe_core::theme::{ColorValue, ThemeRegistry};
 use luxe_tui::widgets::Wordmark;
 use std::collections::HashMap;
@@ -73,7 +74,7 @@ fn catalog(registry: &ThemeRegistry) -> String {
         for token in EXPORTED {
             if let Some(hex) = hex(theme.get(*token)) {
                 let separator = if first { "" } else { "," };
-                let _ = write!(out, "{separator}\n    \"{}\": \"{hex}\"", kebab(token));
+                let _ = write!(out, "{separator}\n    \"{}\": \"{hex}\"", css_name(token));
                 first = false;
             }
         }
@@ -109,12 +110,7 @@ fn stylesheet(dark: &HashMap<String, ColorValue>) -> String {
 
 /// One theme's custom properties, wordmark ramp included.
 fn block(theme: &HashMap<String, ColorValue>, dark: bool) -> String {
-    let mut out = String::new();
-    for token in EXPORTED {
-        if let Some(hex) = hex(theme.get(*token)) {
-            let _ = writeln!(out, "  --luxe-{}: {hex};", kebab(token));
-        }
-    }
+    let mut out = custom_properties(theme, EXPORTED.iter().copied());
 
     // The wordmark's steps, taken from the renderer rather than a table copied out of it — a second
     // copy of a rule is a rule that drifts. A still is the frame at `STILL_TICK`, which is exactly
@@ -157,22 +153,6 @@ fn blend(base: (u8, u8, u8), target: (u8, u8, u8), amount: f32) -> (u8, u8, u8) 
     (mix(base.0, target.0), mix(base.1, target.1), mix(base.2, target.2))
 }
 
-/// `accentSecondary` reads as `--luxe-accent-secondary` on the web side.
-fn kebab(token: &str) -> String {
-    let mut out = String::new();
-    for (index, character) in token.char_indices() {
-        if character.is_ascii_uppercase() {
-            if index > 0 {
-                out.push('-');
-            }
-            out.push(character.to_ascii_lowercase());
-        } else {
-            out.push(character);
-        }
-    }
-    out
-}
-
 fn rgb(value: Option<&ColorValue>) -> Option<(u8, u8, u8)> {
     match value? {
         ColorValue::Rgb(red, green, blue) => Some((*red, *green, *blue)),
@@ -181,7 +161,7 @@ fn rgb(value: Option<&ColorValue>) -> Option<(u8, u8, u8)> {
 }
 
 fn hex(value: Option<&ColorValue>) -> Option<String> {
-    rgb(value).map(to_hex)
+    value.and_then(luxe_core::theme::css::hex)
 }
 
 fn to_hex((red, green, blue): (u8, u8, u8)) -> String {
@@ -241,14 +221,6 @@ mod tests {
             ladder.windows(2).all(|pair| pair[1] > pair[0]),
             "the ramp runs dim to bright on a dark canvas: {ladder:?}"
         );
-    }
-
-    /// Token names arrive in the shape a stylesheet expects.
-    #[test]
-    fn token_names_become_kebab_case() {
-        assert_eq!(kebab("accentSecondary"), "accent-secondary");
-        assert_eq!(kebab("background"), "background");
-        assert_eq!(kebab("borderMuted"), "border-muted");
     }
 
     /// The document has the one theme and says it is generated, so nobody edits it by hand.

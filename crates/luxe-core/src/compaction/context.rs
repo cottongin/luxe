@@ -2,6 +2,7 @@
 
 use crate::message::Message;
 use crate::session::Entry;
+use std::borrow::Borrow;
 
 /// How a compaction summary introduces itself to the model.
 ///
@@ -26,15 +27,16 @@ const SUMMARY_SUFFIX: &str = "\n</summary>";
 /// what it summarized. That one reads first: it covers history older than the newest summary and
 /// everything kept after it. A `first_kept` that isn't on the path (a hand-edited or partially
 /// written log) degrades to summary-plus-everything-after rather than dropping the conversation.
-pub fn context_entries(entries: &[Entry]) -> Vec<&Entry> {
+pub fn context_entries<E: Borrow<Entry>>(entries: &[E]) -> Vec<&Entry> {
+    let entries: Vec<&Entry> = entries.iter().map(Borrow::borrow).collect();
     let Some(cut) = entries
         .iter()
         .rposition(|entry| matches!(entry.kind, crate::session::EntryKind::Compaction { .. }))
     else {
-        return entries.iter().collect();
+        return entries;
     };
     let crate::session::EntryKind::Compaction { first_kept, .. } = &entries[cut].kind else {
-        return entries.iter().collect();
+        return entries;
     };
 
     let kept_from = entries[..cut].iter().position(|entry| entry.id == *first_kept);
@@ -45,10 +47,10 @@ pub fn context_entries(entries: &[Entry]) -> Vec<&Entry> {
     // what it stands for.
     let is_summary =
         |entry: &&Entry| matches!(entry.kind, crate::session::EntryKind::Compaction { .. });
-    context.extend(kept.iter().filter(is_summary));
-    context.push(&entries[cut]);
-    context.extend(kept.iter().filter(|entry| !is_summary(entry)));
-    context.extend(entries[cut + 1..].iter());
+    context.extend(kept.iter().copied().filter(is_summary));
+    context.push(entries[cut]);
+    context.extend(kept.iter().copied().filter(|entry| !is_summary(entry)));
+    context.extend(entries[cut + 1..].iter().copied());
     context
 }
 
@@ -57,7 +59,7 @@ pub fn context_entries(entries: &[Entry]) -> Vec<&Entry> {
 ///
 /// The one place a transcript becomes a request, so the cut cannot be applied in some callers and
 /// forgotten in others.
-pub fn context_messages(entries: &[Entry]) -> Vec<Message> {
+pub fn context_messages<E: Borrow<Entry>>(entries: &[E]) -> Vec<Message> {
     context_entries(entries)
         .into_iter()
         .filter_map(|entry| match &entry.kind {

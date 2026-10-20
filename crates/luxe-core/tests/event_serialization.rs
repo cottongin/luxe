@@ -118,6 +118,31 @@ fn the_frames_a_client_cannot_work_without_are_pinned() {
             r#"{"kind":"compaction_started","content":{"tokens_before":180000}}"#,
         ),
         (Event::CompactionStopped, r#"{"kind":"compaction_stopped"}"#),
+        (Event::TurnStarted, r#"{"kind":"turn_started"}"#),
+        (
+            Event::OpenReviewShown(Box::new(luxe_core::event::OpenReview {
+                request_id: request_id("review-load:1"),
+                review: None,
+                session: None,
+                reading: Vec::new(),
+            })),
+            r#"{"kind":"open_review_shown","content":{"request_id":"review-load:1","review":null,"session":null,"reading":[]}}"#,
+        ),
+        (
+            Event::ModelsListed {
+                request_id: "models:1".into(),
+                models: vec![luxe_core::event::ModelChoice {
+                    provider: "anthropic".into(),
+                    model: "claude-sonnet-5".into(),
+                    name: "Claude Sonnet 5".into(),
+                    thinking_levels: vec![
+                        luxe_core::provider::ThinkingLevel::Off,
+                        luxe_core::provider::ThinkingLevel::High,
+                    ],
+                }],
+            },
+            r#"{"kind":"models_listed","content":{"request_id":"models:1","models":[{"provider":"anthropic","model":"claude-sonnet-5","name":"Claude Sonnet 5","thinking_levels":["off","high"]}]}}"#,
+        ),
         (
             Event::PermissionRequested {
                 id: request_id("perm:1"),
@@ -142,6 +167,10 @@ fn the_frames_a_client_cannot_work_without_are_pinned() {
                 multi: false,
             },
             r#"{"kind":"question_asked","content":{"id":"ask:1","session_id":"session-1","prompt":"Which database?","options":[{"label":"postgres","description":"Relational, boring, correct","recommended":true}],"multi":false}}"#,
+        ),
+        (
+            Event::PromptClosed { id: "perm:1".into() },
+            r#"{"kind":"prompt_closed","content":{"id":"perm:1"}}"#,
         ),
         (
             Event::TokenDelta { block: 0, delta: "hello".into() },
@@ -561,7 +590,9 @@ fn every_known_event_roundtrips() {
             }],
         },
         Event::StateChanged(EngineState::default()),
+        Event::TurnStarted,
         Event::TurnEnded { reason: StopReason::EndTurn },
+        Event::ModelsListed { request_id: "models:1".into(), models: Vec::new() },
         Event::LastTurnAvailable { session_id: "session-1".into(), turn_id: "turn-1".into() },
         Event::CompactionStarted { tokens_before: 2_000 },
         Event::CompactionDone { tokens_before: 2_000, tokens_after: 1_000 },

@@ -70,6 +70,9 @@ pub(super) enum KnownAction {
     RecordReviewSeen {
         review_id: ReviewId,
     },
+    ShowOpenReview {
+        request_id: ReviewLoadRequestId,
+    },
     RefreshGuidedReview {
         request_id: ReviewLoadRequestId,
         review_id: ReviewId,
@@ -158,6 +161,9 @@ pub(super) enum KnownAction {
         request_id: crate::file_diff::FileDiffRequestId,
         path: String,
     },
+    ListModels {
+        request_id: String,
+    },
     ListDirectory {
         request_id: crate::project_files::ListingRequestId,
         #[serde(default)]
@@ -185,6 +191,13 @@ pub(super) enum KnownAction {
     },
     Restack {
         request_id: crate::restack::RestackId,
+    },
+    Introduce {
+        name: String,
+        #[serde(default)]
+        watch_only: bool,
+        #[serde(default)]
+        yours: bool,
     },
     Close,
 }

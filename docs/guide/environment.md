@@ -54,6 +54,7 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_SIZE_CHECK` | `1` | `0` stops telling the agent when an edit takes a file past 500 lines or a function past 20 |
 | `LUXE_DEBUG_NUDGE` | `1` | `0` stops suggesting the debugger after repeated test failures |
 | `LUXE_PLAN_NUDGE` | `1` | `0` stops reminding the agent to update its checklist |
+| `LUXE_NESTED_INSTRUCTIONS` | `1` | `0` stops reading the [`AGENTS.md` of folders](project-context.md#folders-the-agent-works-in) the agent works in |
 | `LUXE_LAZY_TOOLS` | `1` | `0` sends every tool's description with every request |
 | `LUXE_CORE_TOOLS` | | The tools sent with every request, comma-separated; the rest load when needed |
 | `LUXE_DAP_STOP_TIMEOUT_SECS` | `30` | How long the debugger waits for a program to stop |
@@ -70,6 +71,8 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_FILE_MANAGER`, then `FILE_MANAGER` | The file manager `O` in the dock's file tree opens a folder in. Without either, the first of yazi, lf, ranger and nnn that is installed, then your desktop's own. |
 | `LUXE_HERDR` | `0` stops reporting state to [Herdr](recipes.md#run-luxe-in-herdr) |
 | `LUXE_UPDATE_CHECK` | `0` turns off the update check |
+| `LUXE_JOINABLE` | `0` stops other programs [joining](configuration.md#joining-a-session) this run's session |
+| `LUXE_RUNTIME_DIR` | Where a running Luxe keeps the socket and record that let a program join it, instead of `luxe` in `$XDG_RUNTIME_DIR` on Linux or `$TMPDIR` on macOS, or `run` in the state folder |
 
 ## Diagnostics
 

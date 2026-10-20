@@ -18,6 +18,14 @@ impl App {
             .count()
     }
 
+    /// A turn this front-end asked for is under way, re-sending a message already on screen, so
+    /// its commit adopts that copy rather than adding a second.
+    pub(crate) fn begin_own_turn(&mut self) {
+        self.own_commit_pending = true;
+        self.status.state = AppState::Streaming;
+        self.status.on_turn_start();
+    }
+
     /// Records a submission that could not be delivered at all, so it still shows up in the
     /// transcript instead of vanishing along with the failure.
     pub fn record_unsent_submission(&mut self, submission: PendingSubmission) {
@@ -132,6 +140,7 @@ impl App {
         // It is a real turn now, so it reads as one: the message joins the transcript ahead of
         // the output it is about to produce.
         self.land_submission(message, false);
+        self.own_commit_pending = true;
         self.review.last_turn = None;
         true
     }

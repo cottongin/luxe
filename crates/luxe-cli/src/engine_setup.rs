@@ -23,7 +23,9 @@ mod spend;
 #[cfg(test)]
 pub(crate) mod test_env;
 use session::attach_session;
-pub(crate) use session::{resumed_session, IssueBinding, ResumeMode, WorktreeBinding};
+pub(crate) use session::{
+    open_elsewhere_now, resumed_session, IssueBinding, ResumeMode, WorktreeBinding,
+};
 pub(crate) use settings::{AgentSettings, CliOverrides};
 pub(crate) use spend::LoopSpendSink;
 mod tooling_summary;
@@ -57,6 +59,9 @@ pub(crate) struct EngineHandle {
     pub(crate) session_id: luxe_core::SessionId,
     /// How a front-end that is exiting lets the engine finish first.
     pub(crate) closer: EngineCloser,
+    /// The claim on the session taken before the engine existed, so nobody else can take it
+    /// before the engine claims it too; dropping it leaves the engine's own
+    pub(crate) claim: Option<luxe_core::session::SessionClaim>,
 }
 
 /// What an idle engine needs to wind down with no `SessionEnd` hooks to wait on.
@@ -126,7 +131,7 @@ pub(crate) async fn build_engine(
     let todo_root = prepare_state_dirs(settings).await?;
 
     let mut store = open_session_store(&settings.state_root);
-    let session_id = attach_session(settings, &mut store)?;
+    let (session_id, claim) = attach_session(settings, &mut store)?;
 
     let model = settings.launch_model();
 
@@ -218,7 +223,7 @@ pub(crate) async fn build_engine(
             .map_err(|error| anyhow::anyhow!("engine channel closed: {error}"))?;
     }
 
-    Ok(EngineHandle { actions, events, session_id: attached, closer })
+    Ok(EngineHandle { actions, events, session_id: attached, closer, claim })
 }
 
 /// Makes the directories a session writes into, and answers where its checklists go.

@@ -1,0 +1,28 @@
+/* Line picks: a line's number is what a tap picks, and is left out of the phone's own selection
+   so copying code copies only the code. Picked rows wear the selection's surface over their diff
+   tint, as the TUI tints its picked rows, and the Ask bar keeps to the foot of the pane */
+
+[data-line] > .ln {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.dl.picked,
+.fl.picked {
+  background: var(--luxe-selected-bg, #2c2925);
+}
+
+.picked > .ln {
+  color: var(--luxe-accent, #ddc084);
+}
+
+.line-ask {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5lh 1.5ch calc(0.5lh + env(safe-area-inset-bottom));
+  background: var(--luxe-background, #12100e);
+  border-top: 1px solid var(--luxe-border-muted, #2e2b27);
+}

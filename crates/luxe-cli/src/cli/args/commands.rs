@@ -13,6 +13,12 @@ pub(crate) enum SubCommand {
     Doctor,
     /// Set Luxe up: a theme, a provider, the tools and the start screen.
     Init(InitArgs),
+    /// Join a session another Luxe on this machine is running, speaking the `--rpc` protocol on
+    /// stdin and stdout.
+    Join(JoinArgs),
+    /// Serve your sessions to your own phone or tablet, through Tailscale.
+    #[cfg(feature = "remote")]
+    Remote(RemoteArgs),
     /// Run the agent through a phased plan on its own.
     Loop(LoopArgs),
     /// Add, list and sign in to MCP servers.
@@ -137,6 +143,70 @@ pub(crate) struct InitArgs {
     /// Write a config that chooses nothing, without asking, so every default applies.
     #[arg(long)]
     pub(crate) defaults: bool,
+}
+
+/// Join arguments.
+#[derive(Parser, Debug)]
+pub(crate) struct JoinArgs {
+    /// The session: its id or the start of it, or the process id of the Luxe running it. Omit
+    /// it to join the one running in this folder.
+    pub(crate) target: Option<String>,
+    /// List the sessions running on this machine that can be joined, and exit.
+    #[arg(long, conflicts_with = "target")]
+    pub(crate) list: bool,
+}
+
+/// Remote arguments.
+#[cfg(feature = "remote")]
+#[derive(Parser, Debug)]
+pub(crate) struct RemoteArgs {
+    #[command(subcommand)]
+    pub(crate) command: Option<RemoteCommand>,
+    /// The port to listen on, on this machine only.
+    #[arg(long, default_value_t = 4519, global = true)]
+    pub(crate) port: u16,
+    /// Also let this tailnet login in, besides this machine's owner (repeatable).
+    #[arg(long = "allow", value_name = "LOGIN", global = true)]
+    pub(crate) allow: Vec<String>,
+}
+
+/// Remote subcommand — pair and manage your devices.
+#[cfg(feature = "remote")]
+#[derive(Subcommand, Debug)]
+pub(crate) enum RemoteCommand {
+    /// Check Tailscale, publish the bridge on your tailnet, start it at login, and pair a device.
+    Setup,
+    /// Show a QR code and link that pair one phone or tablet, good for ten minutes.
+    Pair,
+    /// List the paired devices.
+    Devices {
+        #[command(subcommand)]
+        command: Option<DevicesCommand>,
+    },
+    /// Manage the user service that runs the bridge at login.
+    Service {
+        #[command(subcommand)]
+        command: ServiceCommand,
+    },
+}
+
+/// Service subcommand.
+#[cfg(feature = "remote")]
+#[derive(Subcommand, Debug)]
+pub(crate) enum ServiceCommand {
+    /// Stop the service and stop it starting at login.
+    Remove,
+}
+
+/// Devices subcommand.
+#[cfg(feature = "remote")]
+#[derive(Subcommand, Debug)]
+pub(crate) enum DevicesCommand {
+    /// Unpair a device and close its open sessions.
+    Revoke {
+        /// The device's id, from `luxe remote devices`
+        id: String,
+    },
 }
 
 /// Sessions arguments.

@@ -1,0 +1,233 @@
+/* Rendered text: the host's HTML (`luxe_tui::markdown::html`) set the way the terminal sets it.
+   One blank row between blocks, headings in weight and color rather than size, `•` and numbers
+   hanging in the margin, a `>` before each block of a quote, rules of box characters. */
+
+.md {
+  white-space: normal;
+}
+
+.md :is(p, ul, ol, blockquote, figure, .table, h1, h2, h3, h4, h5, h6, hr) {
+  margin: 0 0 1lh;
+}
+
+.md > :last-child,
+.md li > :last-child,
+.md blockquote > :last-child {
+  margin-block-end: 0;
+}
+
+.md :is(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit;
+  font-weight: bold;
+  color: var(--luxe-md-heading, #ddc084);
+}
+
+.md code {
+  color: var(--luxe-md-code, #faaa51);
+}
+
+.md :is(h1, h2, h3, h4, h5, h6) code {
+  color: inherit;
+}
+
+.md :is(a, .link) {
+  color: var(--luxe-md-link, #85c7d7);
+  text-decoration: underline;
+}
+
+.md .url {
+  color: var(--luxe-md-link-url, #97938c);
+  overflow-wrap: anywhere;
+}
+
+.md :is(ul, ol) {
+  list-style: none;
+  padding-inline-start: 2ch;
+}
+
+.md ol {
+  padding-inline-start: 3ch;
+}
+
+.md li {
+  position: relative;
+}
+
+.md li :is(ul, ol) {
+  margin: 0;
+}
+
+.md ul > li::before,
+.md ol > li::before {
+  position: absolute;
+  right: 100%;
+  white-space: pre;
+}
+
+.md ul > li::before {
+  content: "• ";
+}
+
+.md ol > li::before {
+  content: counter(list-item) ". ";
+}
+
+.md blockquote {
+  padding-inline-start: 2ch;
+}
+
+.md blockquote > * {
+  position: relative;
+}
+
+.md blockquote > :not(.alert-label)::before {
+  content: ">";
+  position: absolute;
+  left: -2ch;
+  color: var(--luxe-md-quote, #97938c);
+  font-style: italic;
+}
+
+.md .alert-label {
+  margin: 0;
+  margin-inline-start: -2ch;
+  font-weight: bold;
+}
+
+.md .alert-label::before {
+  content: "> ";
+  color: var(--luxe-md-quote, #97938c);
+  font-weight: normal;
+}
+
+.md .note .alert-label { color: var(--luxe-info, #85c7d7); }
+.md .tip .alert-label { color: var(--luxe-success, #81caa0); }
+.md .important .alert-label { color: var(--luxe-accent, #ddc084); }
+.md .warning .alert-label { color: var(--luxe-warning, #faaa51); }
+.md .caution .alert-label { color: var(--luxe-error, #e68485); }
+
+/* Rules are box characters cut to the width, as the terminal fills a row */
+.md hr,
+.md .fence::after,
+.md .fence .fill::before {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.md hr {
+  border: 0;
+  height: 1lh;
+  color: var(--luxe-muted, #97938c);
+  font-weight: bold;
+}
+
+.md hr::before {
+  content: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+}
+
+.md .fence {
+  margin-inline: 0;
+  color: var(--luxe-border, #201e1a);
+}
+
+.md .fence figcaption {
+  display: flex;
+  white-space: nowrap;
+}
+
+.md .fence .fill {
+  flex: 1;
+  min-width: 1ch;
+  overflow: hidden;
+}
+
+.md .fence .fill::before,
+.md .fence::after {
+  content: "────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────";
+}
+
+.md .fence::after {
+  display: block;
+}
+
+.md .fence .lang::before {
+  content: "─ ";
+  color: var(--luxe-border, #201e1a);
+}
+
+.md .fence :is(.lang, .copy) {
+  color: var(--luxe-muted, #97938c);
+  padding-inline-end: 1ch;
+}
+
+.md .fence .copy {
+  padding-inline: 1ch 0;
+  cursor: pointer;
+}
+
+.md .fence .copy::after {
+  content: " ─";
+  color: var(--luxe-border, #201e1a);
+}
+
+.md .fence .copy.copied {
+  color: var(--luxe-success, #81caa0);
+}
+
+.md .fence .copy.copy-failed {
+  color: var(--luxe-error, #e68485);
+}
+
+.md .fence pre {
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--luxe-text, #e4dfd6);
+}
+
+.md .fence code {
+  color: inherit;
+}
+
+.md .table {
+  overflow-x: auto;
+}
+
+.md table {
+  border-collapse: collapse;
+}
+
+.md :is(th, td) {
+  padding: 0 1ch;
+  border: 1px solid var(--luxe-border, #201e1a);
+  text-align: start;
+}
+
+.md :is(th, td).right { text-align: end; }
+.md :is(th, td).center { text-align: center; }
+
+/* Reasoning spends weight, not color, and keeps code's hue only inline */
+.md.reasoning :is(h1, h2, h3, h4, h5, h6, a, .link, .url, .alert-label) {
+  color: inherit;
+}
+
+.md.reasoning .fence pre {
+  color: inherit;
+}
+
+/* Highlighted code: each role is its theme token, as `luxe_tui::highlight::Role::token` says */
+.t-text { color: var(--luxe-text, #e4dfd6); }
+.t-muted { color: var(--luxe-muted, #97938c); }
+.t-accent { color: var(--luxe-accent, #ddc084); }
+.t-accent-secondary { color: var(--luxe-accent-secondary, #d2a5cd); }
+.t-info { color: var(--luxe-info, #85c7d7); }
+.t-success { color: var(--luxe-success, #81caa0); }
+.t-warning { color: var(--luxe-warning, #faaa51); }
+.t-error { color: var(--luxe-error, #e68485); }
+.t-thinking-ultra { color: var(--luxe-thinking-ultra, #e790b7); }
+.t-md-heading { color: var(--luxe-md-heading, #ddc084); }
+.t-md-link { color: var(--luxe-md-link, #85c7d7); }
+.t-md-link-url { color: var(--luxe-md-link-url, #97938c); }
+.t-md-quote { color: var(--luxe-md-quote, #97938c); }
+.t-md-code { color: var(--luxe-md-code, #faaa51); }
+.b { font-weight: bold; }
+.i { font-style: italic; }

@@ -119,6 +119,46 @@ fn active_path_reconstructs_conversation() {
     fs::remove_dir_all(root).ok();
 }
 
+/// The break this catches: lending the whole log, or the walk unreversed, rather than the branch
+/// from the root to the leaf, which a request built from it would send as the conversation.
+#[test]
+fn with_active_path_lends_only_the_branch_to_the_leaf() {
+    let root = temp_root();
+    let mut store = JsonlSessionStore::new(&root);
+    store.set_project_hash("test-project");
+    let session = store.create("/tmp/test").unwrap();
+    let header = store.load(&session).unwrap()[0].id.clone();
+    let question = Message::user("q");
+    let user = store.append(&session, Some(header.clone()), EntryKind::Message(question)).unwrap();
+    let other = EntryKind::Message(Message::assistant("other"));
+    store.append(&session, Some(user.clone()), other).unwrap();
+    let kept = EntryKind::Message(Message::assistant("kept"));
+    let leaf = store.append(&session, Some(user.clone()), kept).unwrap();
+
+    let lent = with_active_path(&store, &session, &leaf, |path| {
+        path.iter().map(|entry| entry.id.clone()).collect::<Vec<_>>()
+    });
+
+    assert_eq!(lent.unwrap(), vec![header, user, leaf]);
+    fs::remove_dir_all(root).ok();
+}
+
+/// The break this catches: a leaf the log lacks lending a shortened path instead of failing, so a
+/// request would go out without the conversation behind it.
+#[test]
+fn with_active_path_refuses_a_leaf_the_log_lacks() {
+    let root = temp_root();
+    let mut store = JsonlSessionStore::new(&root);
+    store.set_project_hash("test-project");
+    let session = store.create("/tmp/test").unwrap();
+    let missing = EntryId::new();
+
+    let lent = with_active_path(&store, &session, &missing, |path| path.len());
+
+    assert!(matches!(&lent, Err(SessionError::EntryNotFound(id)) if *id == missing), "{lent:?}");
+    fs::remove_dir_all(root).ok();
+}
+
 #[test]
 fn branching_two_children() {
     let root = temp_root();

@@ -42,7 +42,8 @@ mod untracked;
 
 pub use attention::{review_attention, review_flags, AttentionKind, AttentionSignal};
 pub use budget::{
-    chapter_needs_review, review_budget, Accounted, ChapterBudget, ItemVerdict, ReviewBudget,
+    chapter_needs_review, chapter_readings, review_budget, shared_reason, Accounted, ChapterBudget,
+    ChapterReading, ItemVerdict, ReviewBudget,
 };
 pub use chaptering::{
     fallback_chapters, fallback_groups, source_items, validate_chapter_coverage,
@@ -140,6 +141,7 @@ pub use source_store::{
     SOURCE_PAYLOAD_FILE,
 };
 pub use thread_findings::{thread_findings, ThreadAnswer, ThreadAnswerResult, ThreadReply};
+pub(crate) use turn_baseline::{prune_turn_baselines, UNREFERENCED_BASELINE_AGE};
 pub use turn_baseline::{
     TurnBaselineArtifact, TurnBaselineExclusion, TurnBaselineFile, TurnBaselineManifest,
     TurnBaselineManifestError, TurnBaselineStoreError, TURN_BASELINE_CACHE_RELATIVE_DIR,

@@ -93,8 +93,8 @@ fn card_icon<'a>(
         // The tool running and the model writing the call are both work in progress, and
         // the card says so the same way for each — a spinner over a card that is visibly
         // filling in, and a queued mark only over one that genuinely is not moving. A
-        // model writes a message's calls in order and the engine runs them in order, so
-        // exactly one card spins at a time.
+        // model writes a message's calls in order and the engine runs them in order, and a
+        // call written while another runs arrives queued, so exactly one card spins at a time.
         // Except the call that is waiting on the reader. A spinner says the agent is busy, and
         // over a question it is waiting on you to answer it only adds pressure; the call's
         // own glyph, in the same running color, says it is open without hurrying anyone
@@ -238,15 +238,10 @@ pub(in crate::view) const BODY_INDENT: &str = "   ";
 /// the corner of the eye — which is what a spinner is for, and this is not the spinner. Nobody
 /// acts on the tenth of a second a call took; they act on whether it was one second or forty.
 pub(super) fn format_tool_duration(elapsed_ms: u64) -> String {
-    const SECOND: u64 = 1_000;
-    const MINUTE: u64 = 60 * SECOND;
-    const HOUR: u64 = 60 * MINUTE;
     match elapsed_ms {
         0 => "<1ms".to_string(),
-        ms if ms < SECOND => format!("{ms}ms"),
-        ms if ms < MINUTE => format!("{}s", ms / SECOND),
-        ms if ms < HOUR => format!("{}m {:02}s", ms / MINUTE, (ms % MINUTE) / SECOND),
-        ms => format!("{}h {:02}m", ms / HOUR, (ms % HOUR) / MINUTE),
+        ms if ms < 1_000 => format!("{ms}ms"),
+        ms => crate::statusline::format_elapsed_compact(std::time::Duration::from_millis(ms)),
     }
 }
 

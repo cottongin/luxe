@@ -86,6 +86,13 @@ fn git(root: &std::path::Path, arguments: &[&str]) {
     assert!(Command::new("git").args(arguments).current_dir(root).status().unwrap().success());
 }
 
+/// Where the repository keeps its sessions: under `.luxe`, as Luxe does, where Guided Review never
+/// looks. Anywhere else they are untracked files a review reads, and on Windows an open session's
+/// claim locks its `.lock` file against that read, so the review never loads.
+fn sessions_root(root: &std::path::Path) -> std::path::PathBuf {
+    root.join(".luxe").join("sessions")
+}
+
 /// A repository with one committed file, changed in the working tree.
 fn changed_repository() -> tempfile::TempDir {
     let dir = tempfile::tempdir().unwrap();
@@ -131,7 +138,7 @@ async fn guide_costs(
 async fn the_guide_runs_on_the_model_the_session_switched_to() {
     let repository = changed_repository();
     let root = repository.path();
-    let mut store = JsonlSessionStore::new(root.join("sessions"));
+    let mut store = JsonlSessionStore::new(sessions_root(root));
     let session = store.create("/tmp/a").unwrap();
     let asked = Arc::new(Mutex::new(Vec::new()));
     let mut config = engine_config(store, session, root);
@@ -191,7 +198,7 @@ async fn the_guide_runs_on_the_model_the_session_switched_to() {
 async fn late_guide_spend_settles_to_the_session_that_asked() {
     let repository = changed_repository();
     let root = repository.path();
-    let mut store = JsonlSessionStore::new(root.join("sessions"));
+    let mut store = JsonlSessionStore::new(sessions_root(root));
     let asking = store.create("/tmp/a").unwrap();
     let other = store.create("/tmp/b").unwrap();
     let asked = Arc::new(Mutex::new(Vec::new()));
@@ -243,7 +250,7 @@ async fn late_guide_spend_settles_to_the_session_that_asked() {
         assert!(!matches!(event, Event::TurnUsage { .. }), "published to the wrong session");
     }
     let usage_in = |session: &SessionId| {
-        let entries = JsonlSessionStore::new(root.join("sessions")).load(session).unwrap();
+        let entries = JsonlSessionStore::new(sessions_root(root)).load(session).unwrap();
         entries
             .iter()
             .filter(|entry| {
@@ -266,7 +273,7 @@ async fn late_guide_spend_settles_to_the_session_that_asked() {
 async fn late_guide_spend_joins_its_session_when_it_is_open_again() {
     let repository = changed_repository();
     let root = repository.path();
-    let mut store = JsonlSessionStore::new(root.join("sessions"));
+    let mut store = JsonlSessionStore::new(sessions_root(root));
     let asking = store.create("/tmp/a").unwrap();
     let other = store.create("/tmp/b").unwrap();
     let asked = Arc::new(Mutex::new(Vec::new()));
@@ -332,7 +339,7 @@ async fn late_guide_spend_joins_its_session_when_it_is_open_again() {
 
     let totals = totals.expect("a session total");
     assert_eq!(review_tokens(totals), Some(1_000_000), "and still counted after the turn");
-    let store = JsonlSessionStore::new(root.join("sessions"));
+    let store = JsonlSessionStore::new(sessions_root(root));
     let entries = store.load(&asking).unwrap();
     let leaf = luxe_core::session::latest_leaf(&entries).unwrap();
     let path = store.active_path(&asking, &leaf).unwrap();

@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Check shipped prose against `docs/brand/voice.md`.
 
-Taste that cannot be asserted drifts. This asserts the one part of the voice that a machine can
-actually judge: the words the rule bans outright. Everything else in that document — evidence with
-claims, naming the trade-off, sentence variance — is a human's call, and pretending otherwise would
-produce a checker nobody trusts.
+This checks the part of the voice a machine can judge: banned words and British spellings. The rest
+of that document (plain words, labels over sentences, where wordplay belongs) is a person's call.
 
 Two severities, because they are different promises:
 
@@ -13,7 +11,7 @@ Two severities, because they are different promises:
            Reported, never fatal.
 
 Code is not prose: fenced blocks and inline spans are skipped, so a banned word inside a command is
-a command. `docs/brand/voice.md` is skipped entirely — it quotes every one of these on purpose.
+a command.
 
     python3 scripts/voice-check.py            # everything shipped
     python3 scripts/voice-check.py --review   # include the judgement calls
@@ -120,8 +118,7 @@ BRITISH = {
     "spelt": "spelled",
 }
 
-# Text we did not write, plus this file — which contains every banned spelling by definition, the
-# same reason `docs/brand/voice.md` is skipped above. Lockfiles are resolver output and can name a
+# Text we did not write, plus this file, which contains every banned spelling by definition. Lockfiles are resolver output and can name a
 # real package `@img/color`; upstream license grants keep whatever spelling they shipped with. The
 # GitHub fixtures are GitHub's own answers, saved verbatim, with strangers' titles in them.
 SPELLING_SKIP = (
@@ -149,7 +146,6 @@ SPELLING_SKIP_EXT = (
 # Prose that ships. The planning docs and the journal are development-only and write for a different
 # reader; holding them to the product's voice would be a category error.
 INCLUDE = ["README.md", "docs/guide/*.md", "web/src/**/*.astro", "web/src/**/*.svelte"]
-SKIP = {"docs/brand/voice.md"}
 
 
 def prose(text: str) -> str:
@@ -236,14 +232,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    paths = sorted(
-        {
-            p
-            for pattern in INCLUDE
-            for p in ROOT.glob(pattern)
-            if str(p.relative_to(ROOT)) not in SKIP
-        }
-    )
+    paths = sorted({p for pattern in INCLUDE for p in ROOT.glob(pattern)})
 
     banned = [f for p in paths for f in findings(p, BANNED, CASE_SENSITIVE)]
     print(f"voice check \u2014 {len(paths)} files")

@@ -89,6 +89,9 @@ async fn interactive_question_emits_event_and_awaits_the_brokered_answer() {
     assert!(!result.is_error);
     let ContentBlock::Text(text) = &result.content[0] else { panic!("expected text") };
     assert!(text.contains("The user answered: Rust"), "got: {text}");
+    // Any other front-end showing the question is told to take it down
+    let closed = event_rx.recv().await;
+    assert_eq!(closed, Some(Event::PromptClosed { id: id.as_str().to_string() }));
 }
 
 /// A multi-select answer reaches the model as a list, and comes back off the text as the same

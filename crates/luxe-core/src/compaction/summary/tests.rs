@@ -137,6 +137,66 @@ fn an_earlier_compaction_summary_reaches_the_summarizer() {
     assert!(serialized.starts_with("[Compaction]: ## Goal"), "{serialized}");
 }
 
+/// The summarizer is asked for every section a summary carries, and for no file list.
+///
+/// The break this catches: the prompt asking for `## Files` again, which spends the summary's
+/// allowance on a list that's replaced anyway, or naming fewer sections than the summary is filed
+/// under, which leaves the missing ones empty on every compaction.
+#[test]
+fn the_summarizer_is_asked_for_every_section_but_the_files() {
+    for section in REQUIRED_SECTIONS {
+        assert!(SUMMARIZER_PROMPT.contains(&format!("`## {section}`")), "{section} not asked for");
+    }
+    for files in FILE_SECTION_ALIASES {
+        assert!(!SUMMARIZER_PROMPT.contains(&format!("## {files}")), "{files} asked for");
+    }
+}
+
+fn earlier_summary(summary: &str) -> String {
+    serialize_for_summary(&[Entry {
+        id: EntryId::new(),
+        parent_id: None,
+        ts: 0,
+        kind: EntryKind::Compaction {
+            summary: summary.to_string(),
+            first_kept: EntryId::new(),
+            tokens_before: 90_000,
+        },
+    }])
+}
+
+/// The summarizer reads an earlier summary's prose but not its file list, which code carries.
+///
+/// The break this catches: showing the list again, which a summarizer copies out path by path,
+/// hundreds of them on a long session, until the summary stops short and the compaction fails.
+#[test]
+fn an_earlier_summarys_file_list_is_kept_from_the_summarizer() {
+    let read = earlier_summary("## Goal\n\nShip it.\n\n## Files\n\n- src/listed.rs\n");
+    assert!(read.contains("Ship it."), "{read}");
+    assert!(!read.contains("src/listed.rs"), "{read}");
+}
+
+/// A section after the file list still reaches the summarizer.
+///
+/// The break this catches: dropping everything from the first file heading on, which loses any
+/// section a summary wrote after its list.
+#[test]
+fn a_section_after_the_file_list_still_reaches_the_summarizer() {
+    let read = earlier_summary("## Files\n\n- src/listed.rs\n\n## Next Steps\n\nRun the gate.");
+    assert!(read.contains("Run the gate."), "{read}");
+}
+
+/// The two file headings older builds wrote are kept from the summarizer too.
+///
+/// The break this catches: matching only today's heading, so a session compacted by an older build
+/// shows its whole list once more and copies it into the next summary.
+#[test]
+fn an_older_summarys_file_lists_are_kept_from_the_summarizer() {
+    let read =
+        earlier_summary("## Read Files\n\n- src/old.rs\n\n## Modified Files\n\n- src/older.rs");
+    assert!(!read.contains("src/old"), "{read}");
+}
+
 /// The crash this cap used to be: slicing byte 1997 of a block whose 1997th byte is the middle
 /// of a character panics, in the middle of a compaction the user never asked for.
 #[test]
