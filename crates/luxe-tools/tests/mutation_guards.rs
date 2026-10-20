@@ -138,7 +138,7 @@ async fn a_rejection_explains_that_the_read_record_is_per_process() {
         .run(json!({ "path": "f.txt", "edits": [{ "oldText": "hello", "newText": "hi" }] }), &cx)
         .await;
     let message = text(&rejected);
-    assert!(message.contains("this Luxe run"), "names the scope: {message}");
+    assert!(message.contains("this luxe run"), "names the scope: {message}");
     assert!(message.contains("resumed session"), "names the resume case: {message}");
     assert!(message.contains("nothing was written"), "says the file is untouched: {message}");
 

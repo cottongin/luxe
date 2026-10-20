@@ -1,7 +1,7 @@
-//! Briefs — the messages Luxe writes to the agent itself, told apart from the reader's own.
+//! Briefs — the messages luxe writes to the agent itself, told apart from the reader's own.
 //!
 //! A draft, a question from a review and a batch of review comments each reach the agent as a
-//! user message Luxe composed: the instructions, the evidence, the IDs a report has to echo. The
+//! user message luxe composed: the instructions, the evidence, the IDs a report has to echo. The
 //! transcript is the reader's conversation, and a page of plumbing in their own colors reads as
 //! something they said. So a front-end shows one line saying what happened instead — or, for a
 //! question from a review, just the question, since those words *are* the reader's — and the
@@ -90,7 +90,7 @@ const FINDING_ID: &str = "  Finding ID: ";
 const EVIDENCE: &str = "  Evidence: ";
 const REVIEWER: &str = "  Reviewer: ";
 /// The lines that follow a comment's body; none of them is the reader's question.
-const AFTER_BODY: [&str; 4] = ["  Source: ", "  Proposed fix: ", "  Agent: ", "  Luxe: "];
+const AFTER_BODY: [&str; 4] = ["  Source: ", "  Proposed fix: ", "  Agent: ", "  luxe: "];
 /// How review feedback closes.
 const CLOSING: &str = "Do not rewrite unrelated code.";
 
@@ -158,7 +158,7 @@ pub fn review_questions(text: &str) -> Vec<ReviewQuestion> {
 /// How a draft's fence opens, its newline included.
 const DRAFT_FENCE: &str = "```luxe-draft\n";
 
-/// An answer as the reader sees it: without what the agent wrote for Luxe to read.
+/// An answer as the reader sees it: without what the agent wrote for luxe to read.
 ///
 /// A fix's remediation report goes, since the review shows it comment by comment, and the prose
 /// around it stays. An answer carrying a draft goes whole: the draft opens in the card or composer

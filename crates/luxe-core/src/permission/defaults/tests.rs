@@ -171,7 +171,7 @@ fn photographing_the_screen_asks_and_rendering_a_page_does_not() {
     assert_eq!(
         evaluate("screenshot", "http://localhost:3000", &rules),
         Some(PermissionAction::Allow),
-        "a page Luxe was asked to render is the mode visual work wants, and stays frictionless"
+        "a page luxe was asked to render is the mode visual work wants, and stays frictionless"
     );
 }
 

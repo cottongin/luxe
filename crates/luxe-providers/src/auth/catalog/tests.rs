@@ -75,46 +75,10 @@ fn models_dev_ids_exist_in_the_embedded_snapshot() {
     }
 }
 
-/// A preference list of ids nothing recognizes is worse than no list: it would hand a new user a
-/// model their account can't serve. At least one entry must still exist upstream.
-///
-/// The leading id is the one a new account actually gets, so it is held to the stricter bar: a
-/// dead first choice is a silent demotion to the runner-up on every fresh install.
-#[test]
-fn preferred_models_still_exist_in_the_embedded_snapshot() {
-    let snapshot = crate::catalog::snapshot();
-    for descriptor in CATALOG {
-        if descriptor.preferred_models.is_empty() {
-            continue;
-        }
-        let models_dev = crate::catalog::alias::models_dev_provider(&descriptor.id, None);
-        let known = |id: &str| {
-            snapshot.model(models_dev, id).is_some()
-                || crate::catalog::alias::normalize_model_id(id)
-                    .is_some_and(|base| snapshot.model(models_dev, base).is_some())
-        };
-        let live = descriptor.preferred_models.iter().filter(|id| known(id)).count();
-        assert!(
-            live > 0,
-            "{}: none of its preferred models {:?} exist under models.dev '{models_dev}' \
-                 — refresh the list or the snapshot",
-            descriptor.id,
-            descriptor.preferred_models
-        );
-        let first = descriptor.preferred_models[0];
-        assert!(
-            known(first),
-            "{}: its first-choice model '{first}' is gone from models.dev '{models_dev}', so \
-                 every new account silently falls through to the next entry — promote a live id",
-            descriptor.id
-        );
-    }
-}
-
 /// A served rule is a promise: an explicit id the metadata catalog doesn't know would show up
 /// as a model with no context window, and a prefix nothing matches would empty the picker.
 #[test]
-fn served_rules_match_real_models_and_cover_the_preferred_ones() {
+fn served_rules_match_real_models() {
     let snapshot = crate::catalog::snapshot();
     for descriptor in CATALOG {
         if descriptor.served_models == ServedModels::Catalog {
@@ -147,14 +111,6 @@ fn served_rules_match_real_models_and_cover_the_preferred_ones() {
                     );
                 }
             }
-        }
-        // Defaulting to a model the backend refuses is the bug this pairing prevents.
-        for preferred in descriptor.preferred_models {
-            assert!(
-                descriptor.served_models.serves(preferred),
-                "{}: prefers '{preferred}', which it does not serve",
-                descriptor.id
-            );
         }
     }
 }
@@ -194,7 +150,7 @@ fn the_three_foundry_surfaces_partition_the_azure_catalog() {
         assert!(count >= 5, "{} serves only {count} models", surface.id);
     }
 
-    // The split is the publisher, so a deployment name Luxe has never heard of still lands on
+    // The split is the publisher, so a deployment name luxe has never heard of still lands on
     // the OpenAI-shaped surface rather than nowhere.
     let served_by = |id: &str| -> Vec<&str> {
         surfaces

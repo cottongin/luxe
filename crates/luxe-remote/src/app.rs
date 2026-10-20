@@ -33,8 +33,8 @@ const HTML_TAG: &str = "<html lang=\"en\">";
 
 /// The page's title as written, and the home screen name iOS suggests; a named bridge puts the
 /// computer in both.
-const PAGE_TITLE: &str = "<title>Luxe</title>";
-const HOME_SCREEN_TITLE: &str = "name=\"apple-mobile-web-app-title\" content=\"Luxe\"";
+const PAGE_TITLE: &str = "<title>luxe</title>";
+const HOME_SCREEN_TITLE: &str = "name=\"apple-mobile-web-app-title\" content=\"luxe\"";
 
 /// What the page takes from your own config: a project's can't reach here.
 #[derive(Default)]
@@ -80,7 +80,7 @@ fn themed_page(page: &str, look: &PageLook) -> String {
 
 /// The page named for the computer `machine`: its title, the name iOS suggests when it's added to
 /// the home screen, and a `luxe-machine` meta the app reads to say which computer it reaches.
-/// Unnamed, it stays plain Luxe.
+/// Unnamed, it stays plain luxe.
 fn named_page(page: &str, machine: Option<&str>) -> String {
     let Some(machine) = machine else {
         return page.to_owned();

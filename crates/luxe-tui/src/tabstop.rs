@@ -1,4 +1,4 @@
-//! Tab stops — how wide a tab is, everywhere Luxe draws one.
+//! Tab stops — how wide a tab is, everywhere luxe draws one.
 //!
 //! A tab is the one character the two halves of a render disagree about. `unicode-width` scores it
 //! zero, ratatui's buffer drops it, and the terminal would advance the cursor to its own stop if it
@@ -12,7 +12,7 @@
 
 use unicode_width::UnicodeWidthChar;
 
-/// Cells a tab advances to, everywhere Luxe draws one.
+/// Cells a tab advances to, everywhere luxe draws one.
 ///
 /// Four rather than eight because a diff already spends cells on two line-number columns and a
 /// sign, and a Go or Make file indented four levels at eight cells apiece has nothing left for the

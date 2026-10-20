@@ -186,7 +186,7 @@ fn the_skills_tab_says_what_its_empty_means() {
         state
     };
     let none = drawn(&open(Vec::new()));
-    assert!(none.contains("No skills yet: one is a folder holding a SKILL.md"), "{none}");
+    assert!(none.contains("No skills found · add <name>/SKILL.md"), "{none}");
     let bare = luxe_core::skills::SkillDoc {
         name: "tidy".into(),
         description: String::new(),
@@ -196,7 +196,7 @@ fn the_skills_tab_says_what_its_empty_means() {
     assert_eq!(state.selected_candidate().unwrap().detail, None, "no description, no detail");
     state.set_query("zzzq");
     let unmatched = drawn(&state);
-    assert!(unmatched.contains("No matching skills") && !unmatched.contains("No skills yet"));
+    assert!(unmatched.contains("No matching skills") && !unmatched.contains("No skills found"));
 }
 
 fn server(id: &str, tools: Option<&[&str]>, signed_in: Option<bool>) -> luxe_core::McpServerStatus {
@@ -387,7 +387,7 @@ fn an_empty_tab_says_so_in_the_middle() {
         first_list_row + crate::picker::TABBED_ROWS - 1 - said[said.len() - 1],
     );
     assert!(above.abs_diff(below) <= 1, "centered down: {above} above, {below} below");
-    assert!(rows.iter().any(|row| row.contains("No skills yet")), "{rows:#?}");
+    assert!(rows.iter().any(|row| row.contains("No skills found")), "{rows:#?}");
 }
 
 /// A match lights where it landed: a skill's name or its description, a GitHub row's title or

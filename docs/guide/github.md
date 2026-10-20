@@ -2,11 +2,11 @@
 title: "Git and GitHub"
 summary: "Worktrees, issues, opening and merging pull requests, review threads, and stacks."
 order: 7
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Everything that talks to GitHub goes through the GitHub CLI, `gh`, signed in with your own account
-(`gh auth login`). Without it, the rest of Luxe works and these features say why they cannot.
+(`gh auth login`). Without it, the rest of luxe works and these features say why they cannot.
 
 ## Work in a worktree
 
@@ -35,7 +35,7 @@ worktree stays out of `git status`.
 luxe --issue 123
 ```
 
-Luxe reads issue #123, makes a worktree on a branch named for it (`123-short-title`), and starts a
+luxe reads issue #123, makes a worktree on a branch named for it (`123-short-title`), and starts a
 session there. The issue and its latest comments go to the agent with your first message, so "fix
 it" is enough. They are treated as the reporter's words to weigh, not as instructions.
 
@@ -52,13 +52,13 @@ luxe --from-pr 142   # resume the session already working on it
 A plain `git push` from the worktree updates the pull request, including one from a fork. A fork's
 branch that has to be renamed here, such as its `main` checked out as `mara/main`, gets a remote of
 its own (`mara-push-main`) for that push, so pushes from the fork's other branches are not
-redirected. Luxe refuses a pull request that is merged or closed, that your account cannot push to,
+redirected. luxe refuses a pull request that is merged or closed, that your account cannot push to,
 or whose author turned off edits by maintainers.
 
 ## Open a pull request
 
 Review the work with [Guided Review](guided-review.md), finish (`alt+enter`), and choose **Open pull
-request**. Luxe drafts the title and description from the review, with `Closes #123` when the
+request**. luxe drafts the title and description from the review, with `Closes #123` when the
 session started from an issue.
 
 ![The pull request, drafted from the review](images/quickstart-pull-request.svg)
@@ -116,7 +116,7 @@ you can see a match before you search for it.
 
 ![Editing a search in /github](images/github-search.svg)
 
-A changed tab is marked with `*` and keeps your search until you close Luxe. `x` puts back the
+A changed tab is marked with `*` and keeps your search until you close luxe. `x` puts back the
 tab's own search, and so does running an empty search.
 
 The tabs always stay in this repository. A `repo:`, `org:` or `user:` you type is ignored.
@@ -208,9 +208,9 @@ After the bottom pull request is squash-merged, keep its branch until `/stack` h
 one. Deleting it through the API, with `gh pr merge --delete-branch`, makes GitHub close the pull
 requests based on it.
 
-## How often Luxe checks GitHub
+## How often luxe checks GitHub
 
-Luxe reads the pull request after anything that could change it, such as a push or `/pr`, and on
+luxe reads the pull request after anything that could change it, such as a push or `/pr`, and on
 an interval otherwise: every 15 seconds while checks run, every minute once things settle, and every
 five minutes when the terminal has been in the background for a while. Each read costs one point
 of the 5,000 an hour your `gh` sign-in allows.

@@ -133,7 +133,7 @@ impl Engine {
     /// on the way in is an estimate — char/4 for anything not yet measured, a tokenizer we do not
     /// have for the rest — so a prompt can clear the threshold and still be rejected, and a
     /// mid-turn tool result large enough to do it arrives *after* the last check. Failing there
-    /// ends the turn on the one error whose remedy Luxe already implements.
+    /// ends the turn on the one error whose remedy luxe already implements.
     ///
     /// The retry summarizes on the provider's authority rather than the threshold's: the window is
     /// full because the endpoint says so, whatever the local arithmetic believed. Once only, and

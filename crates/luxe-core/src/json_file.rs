@@ -2,10 +2,10 @@
 //!
 //! The provider credential store, the config and permissions writers and the MCP token store all
 //! edit a file a human owns, which sets the rules: never lose a key we don't understand, never
-//! leave a half-written file behind, and never race another Luxe process (a token refresh in one
+//! leave a half-written file behind, and never race another luxe process (a token refresh in one
 //! and a `/login` in another).
 //!
-//! The lock is a directory. `create_dir` is atomic everywhere Luxe runs and needs no dependency; a
+//! The lock is a directory. `create_dir` is atomic everywhere luxe runs and needs no dependency; a
 //! lock older than `LOCK_STALE` is assumed to belong to a killed process and is broken, because
 //! refusing to ever write again is the worse failure.
 
@@ -88,7 +88,7 @@ impl JsonFile {
 
     /// Parse as a JSON object, treating an absent, empty, or malformed file as "nothing yet".
     ///
-    /// Reads are forgiving on purpose: a syntax error in a config file must not stop Luxe from
+    /// Reads are forgiving on purpose: a syntax error in a config file must not stop luxe from
     /// starting, only from writing.
     pub fn read(&self) -> Option<Map<String, Value>> {
         let text = std::fs::read_to_string(&self.path).ok()?;
@@ -124,7 +124,7 @@ impl JsonFile {
         Ok(outcome)
     }
 
-    /// [`Self::modify`] for a file Luxe writes for itself, where one that does not parse is moved
+    /// [`Self::modify`] for a file luxe writes for itself, where one that does not parse is moved
     /// aside rather than refused: to `<name>.bad`, or `<name>.bad-<millis>` when that is taken, so an
     /// earlier one survives. The move happens under the lock, so two writers meeting the same broken
     /// file cannot set each other's work aside. Returns where the broken file went.

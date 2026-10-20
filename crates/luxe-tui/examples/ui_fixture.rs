@@ -25,7 +25,7 @@ fn main() -> Result<()> {
     }
     let mut app = seeded_app(&theme, scenario).map_err(anyhow::Error::msg)?;
     // `LUXE_FIXTURE_DESKTOP=<name>` paints the frame in an Omarchy theme from this machine, turned
-    // into Luxe's the way a session following the desktop does, so a theme no built-in matches can
+    // into luxe's the way a session following the desktop does, so a theme no built-in matches can
     // be judged without applying it
     if let Ok(name) = env::var("LUXE_FIXTURE_DESKTOP") {
         app.theme_styles = desktop_styles(&name)?;
@@ -42,7 +42,7 @@ fn main() -> Result<()> {
     }
     let scenario_name = scenario.name();
 
-    execute!(io::stdout(), SetTitle(format!("Luxe fixture: {scenario_name}")))?;
+    execute!(io::stdout(), SetTitle(format!("luxe fixture: {scenario_name}")))?;
     let mut terminal = terminal::init()?;
     let result = run(&mut terminal, &mut app);
     terminal::restore()?;
@@ -400,7 +400,7 @@ fn desktop_styles(name: &str) -> Result<luxe_tui::theme::styles::ThemeStyles> {
     let desktop = luxe_core::omarchy::DesktopTheme { name: name.to_owned(), dir };
     let registry = luxe_core::theme::ThemeRegistry::new().with_desktop(Some(&desktop));
     let Some(resolved) = registry.resolve(luxe_core::omarchy::DESKTOP_THEME) else {
-        bail!("{name} has no colors Luxe can read")
+        bail!("{name} has no colors luxe can read")
     };
     Ok(luxe_tui::theme::styles::ThemeStyles::from_resolved(&resolved, name))
 }

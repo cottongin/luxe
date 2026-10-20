@@ -5,7 +5,7 @@ use super::*;
 #[test]
 fn schema_is_valid_json() {
     let schema: serde_json::Value = serde_json::from_str(Config::schema_json()).unwrap();
-    assert_eq!(schema["title"], "Luxe config");
+    assert_eq!(schema["title"], "luxe config");
     assert!(schema.get("properties").is_some());
     assert!(schema["properties"].get("$schema").is_some());
     assert!(schema["properties"].get("notifications").is_some());

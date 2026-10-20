@@ -2,7 +2,7 @@
 //!
 //! Exa hosts a public MCP endpoint that answers `tools/call` over JSON-RPC with no credential.
 //! That is what makes search a *default capability* rather than a setup step: a user installs
-//! Luxe and the model can research immediately. A configured `BRAVE_API_KEY`/`TAVILY_API_KEY`/
+//! luxe and the model can research immediately. A configured `BRAVE_API_KEY`/`TAVILY_API_KEY`/
 //! `EXA_API_KEY` still wins, since an explicit choice outranks the fallback, but having none does
 //! not mean having no web search.
 //!
@@ -21,7 +21,7 @@ const MCP_URL: &str = "https://mcp.exa.ai/mcp";
 /// The MCP tool that exposes filters, extra queries, and highlight extraction.
 const ADVANCED_TOOL: &str = "web_search_advanced_exa";
 
-/// Identifies Luxe to Exa, so the endpoint's operators can see who its traffic is.
+/// Identifies luxe to Exa, so the endpoint's operators can see who its traffic is.
 const SOURCE_HEADER: &str = "luxe";
 
 /// Longest highlight payload requested per result. Enough to answer from, short enough that ten
@@ -103,7 +103,7 @@ impl SearchBackend for ExaMcpBackend {
     }
 }
 
-/// Map Luxe's options onto Exa's argument names.
+/// Map luxe's options onto Exa's argument names.
 fn build_arguments(query: &str, n: usize, options: &SearchOptions) -> serde_json::Value {
     let mut arguments = serde_json::json!({
         "query": query,

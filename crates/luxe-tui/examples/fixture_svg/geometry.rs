@@ -123,7 +123,7 @@ fn block_element(block: &Block, x: f64, y: f64, fill: &str) -> String {
 
 /// Which cell edges a box-drawing glyph reaches, and whether its corner is rounded.
 ///
-/// `(up, right, down, left)`. Only the light set: it is what Luxe draws with, and a heavy or double
+/// `(up, right, down, left)`. Only the light set: it is what luxe draws with, and a heavy or double
 /// rule would need its own stroke width rather than a flag here.
 type Arms = (bool, bool, bool, bool);
 

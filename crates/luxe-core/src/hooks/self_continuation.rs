@@ -273,10 +273,22 @@ impl Hook for SelfContinuationHook {
         info!(iteration, "continuing the loop");
         debug!(%steer, "self-continuation steer");
         // The one marker that makes a run readable from outside: where it is, each time it moves.
-        cx.notify(format!("iteration {iteration} · phase {}", state.current_phase));
+        cx.notify(iteration_notice(iteration, state.current_phase));
 
         HookOutcome::ContinueLoop { message: steer }
     }
+}
+
+/// The notice that opens each iteration: `iteration 4 · phase 1`.
+pub fn iteration_notice(iteration: u64, phase: u32) -> String {
+    format!("iteration {iteration} · phase {phase}")
+}
+
+/// The iteration and phase an [`iteration_notice`] names, or `None` for any other notice. Beside
+/// the writer so a front-end drawing the run's structure never guesses at the wording.
+pub fn parse_iteration_notice(notice: &str) -> Option<(u64, u32)> {
+    let (iteration, phase) = notice.strip_prefix("iteration ")?.split_once(" · phase ")?;
+    Some((iteration.parse().ok()?, phase.parse().ok()?))
 }
 
 #[cfg(test)]

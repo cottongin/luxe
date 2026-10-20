@@ -1,4 +1,4 @@
-//! models.dev `api.json` schema — the subset Luxe actually uses.
+//! models.dev `api.json` schema — the subset luxe actually uses.
 //!
 //! The wire shape is `{ providerId: { models: { modelId: {…} } } }`. Unknown fields are ignored
 //! on the way in and omitted on the way out, so the same types parse the live API, the on-disk
@@ -33,7 +33,7 @@ pub struct Provider {
 /// Parse models one at a time, dropping any that don't fit the schema.
 ///
 /// models.dev is community-maintained and occasionally ships an entry with, say, a `null` inside
-/// a string array. Strict parsing would turn that into "Luxe knows nothing about any model" —
+/// a string array. Strict parsing would turn that into "luxe knows nothing about any model" —
 /// the exact failure this whole module exists to prevent. Losing one entry is a far better trade.
 fn lenient_models<'de, D: Deserializer<'de>>(
     deserializer: D,

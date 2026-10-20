@@ -1,4 +1,4 @@
-//! The login engine — [`ProviderAuth`], Luxe's [`AuthService`].
+//! The login engine — [`ProviderAuth`], luxe's [`AuthService`].
 //!
 //! One implementation drives every surface: `luxe auth login`, the TUI's `/login` wizard, and the
 //! credential-less first-run path all call the same three methods. The front-end only supplies an
@@ -28,9 +28,7 @@ use super::deployments;
 use super::source::RequestAuth;
 use super::store::AuthStore;
 use crate::config::{resolve_key, ApiKey};
-use models::{
-    describe_models, normalize_base_url, pick_model, verify_credential, warn_if_sent_in_the_clear,
-};
+use models::{describe_models, normalize_base_url, verify_credential, warn_if_sent_in_the_clear};
 use refresh::discover_with_key;
 
 mod custom;
@@ -45,16 +43,15 @@ struct Key {
     resolved: String,
 }
 
-/// What verification learned: a default to suggest, what to tell the user, and what the resource
-/// has deployed when it said.
+/// What verification learned: what to tell the user, and what the resource has deployed when it
+/// said.
 #[derive(Default)]
 struct Checked<'a> {
-    suggested_model: Option<String>,
     notes: Vec<String>,
     discovered: Option<Vec<(&'a str, deployments::Served)>>,
 }
 
-/// Luxe's [`AuthService`]: catalog + credential store + the OAuth flows.
+/// luxe's [`AuthService`]: catalog + credential store + the OAuth flows.
 #[derive(Debug, Clone)]
 pub struct ProviderAuth {
     store: AuthStore,
@@ -128,7 +125,6 @@ impl ProviderAuth {
             provider_name: descriptor.name.to_string(),
             kind: Some(CredentialKind::ApiKey),
             account: None,
-            suggested_model: checked.suggested_model,
             notes: checked.notes,
             advice: descriptor.after_login.map(str::to_string).into_iter().collect(),
         })
@@ -157,9 +153,6 @@ impl ProviderAuth {
             _ => None,
         };
         if let Some(split) = &discovered {
-            let own = split.iter().find(|(id, _)| *id == &*descriptor.id);
-            checked.suggested_model =
-                own.and_then(|(_, served)| pick_model(descriptor, &served.models));
             checked.notes.extend(deployments::describe(split));
         }
         // A provider with no model list can't answer for itself; where it shares a resource with
@@ -178,7 +171,6 @@ impl ProviderAuth {
                     .map(|root| checker.endpoint_for(root))
                     .or_else(|| checker.base_url.map(str::to_string));
                 let models = verify_credential(checker, endpoint.as_deref(), &auth).await?;
-                checked.suggested_model = pick_model(descriptor, &models);
                 checked.notes.extend(describe_models(&models));
             }
         }
@@ -205,7 +197,7 @@ impl ProviderAuth {
             notes.push(format!("{} is configured with the same key", sibling.name));
         }
         self.persist(&descriptor.id, credential)?;
-        self.record_config(descriptor, resource_root, checked.suggested_model.as_deref())?;
+        self.record_config(descriptor, resource_root)?;
         for (id, served) in checked.discovered.iter().flatten() {
             self.config
                 .set_deployments(id, served)
@@ -234,14 +226,13 @@ impl ProviderAuth {
         let mut notes = Vec::new();
         let available =
             credential.as_oauth().map(|oauth| oauth.available_models.clone()).unwrap_or_default();
-        let mut suggested_model = pick_model(descriptor, &available);
         if let Some(note) = describe_models(&available) {
             notes.push(note);
         }
 
         // OpenRouter's flow mints an API key; the others hand back a token pair. Either way the
         // provider is only really configured once we can list its models.
-        if suggested_model.is_none() && self.verify {
+        if available.is_empty() && self.verify {
             interaction.notify(AuthEvent::Progress { message: "Checking access…".to_string() });
             let auth = match &credential {
                 Credential::OAuth(oauth) => {
@@ -258,7 +249,6 @@ impl ProviderAuth {
             let endpoint =
                 auth.base_url.clone().or_else(|| descriptor.base_url.map(str::to_string));
             if let Ok(models) = verify_credential(descriptor, endpoint.as_deref(), &auth).await {
-                suggested_model = pick_model(descriptor, &models);
                 if let Some(note) = describe_models(&models) {
                     notes.push(note);
                 }
@@ -267,13 +257,12 @@ impl ProviderAuth {
 
         let account = credential.as_oauth().and_then(|oauth| oauth.account.clone());
         self.persist(&descriptor.id, &credential)?;
-        self.record_config(descriptor, None, suggested_model.as_deref())?;
+        self.record_config(descriptor, None)?;
         Ok(LoginOutcome {
             provider_id: descriptor.id.to_string(),
             provider_name: descriptor.name.to_string(),
             kind: Some(credential.kind()),
             account,
-            suggested_model,
             notes,
             // Advice that only makes sense now that the credential exists.
             advice: descriptor.after_login.map(str::to_string).into_iter().collect(),
@@ -314,11 +303,10 @@ impl ProviderAuth {
             )));
         }
 
-        let suggested_model = models.first().cloned();
         // Recorded even when it is the default, because the block is the only durable record that
         // this server was connected at all — a keyless provider leaves nothing in `auth.json`, so
         // without it the machine reports itself unconfigured on the next launch.
-        self.record_config(descriptor, Some(&base_url), suggested_model.as_deref())?;
+        self.record_config(descriptor, Some(&base_url))?;
         // And what it serves, which the catalog cannot answer for a machine it has never seen.
         self.config
             .set_served_models(&descriptor.id, &models)
@@ -328,22 +316,20 @@ impl ProviderAuth {
             provider_name: descriptor.name.to_string(),
             kind: None,
             account: None,
-            suggested_model,
             notes: describe_models(&models).into_iter().collect(),
             advice: descriptor.after_login.map(str::to_string).into_iter().collect(),
         })
     }
 
-    /// Persist what the runtime needs to reach this provider next launch, and point Luxe at it.
+    /// Persist what the runtime needs to reach this provider next launch, and point luxe at it.
     fn record_config(
         &self,
         descriptor: &ProviderDescriptor,
         resource_root: Option<&str>,
-        model: Option<&str>,
     ) -> Result<(), AuthError> {
         self.record_provider(descriptor, resource_root)?;
         self.config
-            .set_defaults(&descriptor.id, model)
+            .set_default_provider(&descriptor.id)
             .map_err(|error| AuthError::Storage(error.to_string()))
     }
 

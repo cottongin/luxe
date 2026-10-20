@@ -30,7 +30,7 @@ fn a_ceiling_of_zero_forbids_every_nested_luxe() {
 }
 
 /// The load-bearing half: a child has to *see* a deeper number, or the guard counts to one
-/// forever and never fires. Nothing recognizes that a spawned command is Luxe — an argv cannot
+/// forever and never fires. Nothing recognizes that a spawned command is luxe — an argv cannot
 /// tell you that — so inheritance is the entire mechanism.
 ///
 /// Mutates the process environment, which is sound here because nextest gives each test its

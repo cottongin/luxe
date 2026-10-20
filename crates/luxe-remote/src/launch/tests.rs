@@ -24,7 +24,7 @@ fn a_tilde_is_the_home_folder() {
 
 /// A relative path is refused rather than resolved against wherever the bridge happens to run.
 ///
-/// The break this catches: dropping the full-path check, so `app` starts Luxe in the service's
+/// The break this catches: dropping the full-path check, so `app` starts luxe in the service's
 /// working folder, which nobody chose.
 #[test]
 fn a_relative_path_is_refused() {
@@ -52,7 +52,7 @@ fn only_a_folder_that_exists_is_accepted() {
 ///
 /// The break this catches, one per session in the list: answering with a session that was already
 /// running there (1), or one that started elsewhere at the same moment (2). The last one is found
-/// because a Luxe started in a repository's subfolder shares the repository's root.
+/// because a luxe started in a repository's subfolder shares the repository's root.
 #[test]
 fn the_new_session_is_the_one_that_appeared_where_it_was_asked_for() {
     let root = tempfile::tempdir().unwrap();

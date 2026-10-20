@@ -1,6 +1,6 @@
 //! fixture_svg — a production render, exported as vector.
 //!
-//! The site needs pictures of Luxe, and a screenshot is the worst way to get one: it is a raster at
+//! The site needs pictures of luxe, and a screenshot is the worst way to get one: it is a raster at
 //! somebody's DPI, its text cannot be selected or searched, it weighs ten times what it should, and
 //! it puts a terminal and a font in the pipeline where neither belongs. The render is already a
 //! grid of glyphs and colors, so it can be drawn directly.

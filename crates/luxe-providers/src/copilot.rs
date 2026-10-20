@@ -5,7 +5,7 @@
 //! the /chat/completions endpoint". Its own `/models` lists each model's `supported_endpoints`, so
 //! the routing comes from there rather than from a table that rots or a guess at the id: each model
 //! goes to the richest protocol it takes (Messages, then Responses, then chat completions), and one
-//! Luxe knows nothing about stays on chat completions. The same list says which `reasoning_effort`
+//! luxe knows nothing about stays on chat completions. The same list says which `reasoning_effort`
 //! values each model accepts, which Copilot enforces.
 //!
 //! Claude takes chat completions too, but that door costs it two things: Copilot hands its thinking
@@ -32,7 +32,7 @@ use crate::auth::{AuthSource, RequestAuth};
 
 /// How long a fetched list is trusted before it is fetched again.
 const FRESH_FOR: Duration = Duration::from_secs(60 * 60);
-/// How soon a model the list does not name may send Luxe back to ask, as it may be new.
+/// How soon a model the list does not name may send luxe back to ask, as it may be new.
 const RECHECK_UNKNOWN_AFTER: Duration = Duration::from_secs(5 * 60);
 /// How long the list may take before a request goes ahead without it.
 const FETCH_TIMEOUT: Duration = Duration::from_secs(10);
@@ -59,7 +59,7 @@ pub enum Route {
 /// The account's models and the route each takes, as last fetched.
 #[derive(Debug)]
 struct Catalog {
-    /// When Luxe last asked, whether or not the answer arrived
+    /// When luxe last asked, whether or not the answer arrived
     asked: Instant,
     routes: HashMap<String, Route>,
     /// The `reasoning_effort` values each model takes, for the models that list any

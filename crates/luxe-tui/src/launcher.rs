@@ -1,11 +1,11 @@
 //! Launcher — a key that hands the terminal to another program and takes it back.
 //!
-//! gh-dash, lazygit, anything that takes over a terminal. Luxe gives the terminal up whole — the
+//! gh-dash, lazygit, anything that takes over a terminal. luxe gives the terminal up whole — the
 //! alternate screen, raw mode, mouse, the keyboard protocol — and stops reading it, so every key is
 //! the program's; the engine keeps running underneath, a turn included, and what it reports is
-//! applied without drawing. When the program exits, Luxe takes the terminal back and redraws it.
+//! applied without drawing. When the program exits, luxe takes the terminal back and redraws it.
 //! Text the program writes to the file `$LUXE_HANDOFF` names lands in the composer, which is how a
-//! gh-dash command sends `#123 look at this` into Luxe.
+//! gh-dash command sends `#123 look at this` into luxe.
 
 use crossterm::event::{EventStream, KeyEvent};
 use luxe_core::config::Launcher;

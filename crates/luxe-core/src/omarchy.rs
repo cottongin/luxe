@@ -1,13 +1,13 @@
-//! omarchy — the desktop's theme, read where Omarchy keeps it and turned into one of Luxe's.
+//! omarchy — the desktop's theme, read where Omarchy keeps it and turned into one of luxe's.
 //!
 //! [Omarchy](https://omarchy.org) themes a whole desktop from one file, `colors.toml`, and every app
-//! it themes gets its colors from there. Luxe follows it three ways, most specific first:
+//! it themes gets its colors from there. luxe follows it three ways, most specific first:
 //!
 //! - A `luxe.json` in the applied theme — shipped by the theme, or rendered by a
 //!   `~/.config/omarchy/themed/luxe.json.tpl` template — is used as it is. That is the theme
 //!   author's own answer, so nothing here second-guesses it.
 //! - A built-in theme of the same name, when it is the same kind of theme: Omarchy's `rose-pine` is
-//!   Rosé Pine Dawn, which is light, and Luxe's is the dark main variant, so a shared name is not
+//!   Rosé Pine Dawn, which is light, and luxe's is the dark main variant, so a shared name is not
 //!   enough on its own.
 //! - Otherwise the palette itself, derived from `colors.toml` with the same fallbacks Omarchy's own
 //!   `omarchy-theme-color` applies, so a theme that only sets a few keys comes out whole.
@@ -65,7 +65,7 @@ impl DesktopTheme {
         (self.name.clone(), modified("colors.toml"), modified("luxe.json"))
     }
 
-    /// The Luxe theme for this desktop theme, by the rules in the module docs.
+    /// The luxe theme for this desktop theme, by the rules in the module docs.
     ///
     /// `builtins` decides the second rule, so a built-in is matched by its registered name only —
     /// not by a retired alias, or a light Omarchy theme could land on a dark one.
@@ -193,11 +193,11 @@ impl Palette {
         self.colors.get(key).copied()
     }
 
-    /// A complete Luxe theme from this palette, called `name`.
+    /// A complete luxe theme from this palette, called `name`.
     ///
-    /// Omarchy names colors by hue and Luxe by role, so this is the mapping between them: its
+    /// Omarchy names colors by hue and luxe by role, so this is the mapping between them: its
     /// `accent` stays the accent, red is an error, green a success, orange (or yellow) a warning,
-    /// cyan information and magenta the second accent. The surfaces Luxe needs and Omarchy does not
+    /// cyan information and magenta the second accent. The surfaces luxe needs and Omarchy does not
     /// name are mixed from the background toward the text, which keeps them in the theme's own hue.
     ///
     /// Every color that is read as text is held to 4.5:1 on the background, lifted toward the

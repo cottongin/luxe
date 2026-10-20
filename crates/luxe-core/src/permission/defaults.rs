@@ -1,6 +1,6 @@
 //! Default permission ruleset — permissive, with a few high-confidence guardrails.
 //!
-//! Out of the box Luxe allows everything (parity with Pi's frictionless feel), then layers a
+//! Out of the box luxe allows everything (parity with Pi's frictionless feel), then layers a
 //! small set of guards a more specific rule can always override:
 //!
 //! - **`.env` reads** are denied (`.env.example` allowed) so a stray read can't leak secrets.
@@ -167,20 +167,20 @@ pub(crate) fn runs_as_root(request: &super::PermissionRequest) -> bool {
     })
 }
 
-/// Capture modes that photograph the reader's screen rather than a page Luxe rendered.
+/// Capture modes that photograph the reader's screen rather than a page luxe rendered.
 ///
 /// The most out-of-project thing any tool does — whatever is on the display, which is not the
 /// project and may not even be the reader's to share: a password manager, a private message, a
 /// colleague on a shared screen. It then travels inline to a model provider. Merely *reading* a
 /// file outside the project root is already an `ask`, so this could not stay an outright allow.
 ///
-/// `mode=url` is deliberately absent. It captures a page Luxe was asked to load, the URL is a
+/// `mode=url` is deliberately absent. It captures a page luxe was asked to load, the URL is a
 /// thing a rule can be written about, and it is the mode most visual work actually wants.
 const SCREEN_CAPTURE_ASK: &[&str] = &["fullscreen", "region", "window"];
 
 /// Commit patterns that prompt first, one per route to the same act.
 ///
-/// Unlike everything above, a commit is not dangerous — it is *the reader's move*. Luxe's whole
+/// Unlike everything above, a commit is not dangerous — it is *the reader's move*. luxe's whole
 /// review flow is built on the working tree: the Context Dock lists what changed, and a guided
 /// review turns its chapters into the commits. An agent that commits at the end of its turn takes
 /// that away silently — `HEAD` moves, the diff against it empties, and the CHANGES section the

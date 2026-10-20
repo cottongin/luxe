@@ -1,14 +1,16 @@
 //! `luxe update` — run the update this install's owner provides, then check that it took.
 //!
 //! The policy is [`luxe_core::update`]'s: which owner installed this copy, which commands update
-//! it, and a refusal where Luxe cannot know them. This runs those commands one program at a time
-//! with the terminal attached, so the reader sees the package manager's own output, and Luxe never
+//! it, and a refusal where luxe cannot know them. This runs those commands one program at a time
+//! with the terminal attached, so the reader sees the package manager's own output, and luxe never
 //! writes a binary itself. `/update` on the dashboard comes here too, once the TUI has handed the
 //! terminal back.
 
 use anyhow::{anyhow, bail, Context};
 use luxe_core::update::{self, InstallSource};
 use std::path::{Path, PathBuf};
+
+pub(crate) use aside::remove_leftover;
 
 /// Checks for a newer release now and, unless `check_only`, runs the update and checks the result.
 pub(crate) async fn run(check_only: bool) -> anyhow::Result<()> {
@@ -17,50 +19,62 @@ pub(crate) async fn run(check_only: bool) -> anyhow::Result<()> {
         .await
         .map_err(|error| anyhow!("could not check for a newer release: {error}"))?;
     if !update::is_newer(&latest, current) {
-        println!("Luxe {current} is the newest release.");
+        println!("luxe {current} is the newest release.");
         return Ok(());
     }
-    println!("Luxe {latest} is available (you have {current}).");
+    println!("luxe {latest} is available (you have {current}).");
     let source = InstallSource::detect();
     match (source.update_steps(), check_only) {
-        (Some(steps), false) if !cfg!(windows) => {
-            run_steps(steps).await?;
-            report(installed_now(&latest).await)
-        }
+        (Some(steps), false) => update_with(steps, &latest).await,
         _ => {
-            println!("{}", instructions(source, check_only, cfg!(windows)));
+            println!("{}", instructions(source, check_only));
             Ok(())
         }
     }
 }
 
-/// What to tell a reader Luxe will not run an update for: they asked only to check, Windows cannot
-/// replace the running program, or no owner's command is known.
-fn instructions(source: InstallSource, check_only: bool, windows: bool) -> String {
+/// Runs the owner's steps over this copy, then checks the `luxe` a shell finds now.
+///
+/// Windows won't let a running program's file be overwritten, and `luxe update` is itself a
+/// running luxe. It does allow a rename, so the running copy steps aside first and the owner
+/// writes a new file where it was.
+async fn update_with(steps: &[&[&str]], latest: &str) -> anyhow::Result<()> {
+    let exe = std::env::current_exe().context("could not find the running luxe")?;
+    let aside = match cfg!(windows) {
+        true => Some(aside::MovedAside::move_running(&exe)?),
+        false => None,
+    };
+    let ran = run_steps(steps, exe.parent()).await;
+    if let Some(aside) = &aside {
+        aside.restore_if_missing()?;
+    }
+    ran?;
+    report(installed_now(latest, &exe).await)
+}
+
+/// What to tell a reader luxe will not run an update for: they asked only to check, or no owner's
+/// command is known.
+fn instructions(source: InstallSource, check_only: bool) -> String {
     match source.update_command() {
-        Some(command) if !check_only && windows => format!(
-            "Windows can't replace Luxe while it runs, so run this once it has exited: {command}"
-        ),
         Some(_) if check_only => format!("Run `luxe update`, or {}.", source.advice()),
         _ => format!("To update: {}.", source.advice()),
     }
 }
 
-/// Runs each step in turn, the terminal attached, stopping at the first that fails.
-async fn run_steps(steps: &[&[&str]]) -> anyhow::Result<()> {
+/// Runs each step in turn, the terminal attached, stopping at the first that fails. `beside` is
+/// the running binary's directory.
+async fn run_steps(steps: &[&[&str]], beside: Option<&Path>) -> anyhow::Result<()> {
     for step in steps {
         let Some((program, args)) = step.split_first() else { continue };
         let line = step.join(" ");
         println!("Running: {line}");
-        let beside =
-            std::env::current_exe().ok().and_then(|exe| exe.parent().map(Path::to_path_buf));
-        let status = tokio::process::Command::new(program_path(program, beside.as_deref()))
+        let status = tokio::process::Command::new(program_path(program, beside))
             .args(args)
             .status()
             .await
             .with_context(|| format!("could not start `{program}`"))?;
         if !status.success() {
-            bail!("`{line}` failed ({status}), so Luxe is unchanged");
+            bail!("`{line}` failed ({status}), so luxe is unchanged");
         }
     }
     Ok(())
@@ -108,15 +122,15 @@ fn outcome(found: Option<&Path>, updated: &Path, reported: Option<&str>, latest:
     }
 }
 
-/// The `luxe` a shell would run now, and the outcome it shows.
-async fn installed_now(latest: &str) -> Outcome {
+/// The `luxe` a shell would run now, and the outcome it shows. `updated` is where the running copy
+/// was, read before a Windows update moved it aside.
+async fn installed_now(latest: &str, updated: &Path) -> Outcome {
     let found = luxe_core::program::resolve("luxe");
     let reported = match &found {
         Some(path) => version_of(path).await,
         None => None,
     };
-    let updated = std::env::current_exe().unwrap_or_default();
-    outcome(found.as_deref(), &updated, reported.as_deref(), latest)
+    outcome(found.as_deref(), updated, reported.as_deref(), latest)
 }
 
 /// The version `path --version` prints, as `luxe 0.2.0`.
@@ -149,6 +163,8 @@ fn report(outcome: Outcome) -> anyhow::Result<()> {
     }
     Ok(())
 }
+
+mod aside;
 
 #[cfg(test)]
 mod tests;

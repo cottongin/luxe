@@ -16,7 +16,7 @@ fn model_and_reasoning_icons_come_from_the_shared_catalog() {
 
 /// A session with no model chosen says so where a session with one names it.
 ///
-/// Luxe picks none on the reader's behalf, so this is a state the bar has to report. It used to
+/// luxe picks none on the reader's behalf, so this is a state the bar has to report. It used to
 /// drop the module entirely, which left the one reader who needed an explanation — their turn
 /// is about to be refused — looking at a bar with nothing on its right-hand end.
 #[test]

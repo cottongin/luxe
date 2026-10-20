@@ -120,8 +120,8 @@ export function NotificationSwitch() {
 function Choice({ state }) {
   switch (state) {
     case "unsupported": return html`<p class="dim">Notifications aren't supported in this browser.</p>`;
-    case "home-screen": return html`<p class="dim">Add Luxe to your Home Screen to enable notifications.</p>`;
-    case "blocked": return html`<p class="dim">Allow notifications for Luxe in this device's settings.</p>`;
+    case "home-screen": return html`<p class="dim">Add luxe to your Home Screen to enable notifications.</p>`;
+    case "blocked": return html`<p class="dim">Allow notifications for luxe in this device's settings.</p>`;
     case "on": return html`<p class="dim">Notifications are on for this device.</p>
       <button type="button" class="quiet" onClick=${() => flip(turnOff)}>Turn off</button>`;
     default: return html`<p class="dim">Get notified when a session needs an answer or finishes a long turn.</p>

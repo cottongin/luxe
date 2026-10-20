@@ -3,10 +3,10 @@
 //! A branch's Guided Review already says what changed and why, chapter by chapter, in the order it
 //! makes sense. That is the description a pull request usually lacks, so it becomes the draft: the
 //! review's intent, each chapter with its reasons, and `Closes #n` when the session took up an
-//! issue. Anyone reading it on GitHub gets the story, with or without Luxe.
+//! issue. Anyone reading it on GitHub gets the story, with or without luxe.
 //!
 //! It is a draft. The reader edits it in a preview before anything is sent, and nothing is added
-//! that they did not see: no signature, no marker, nothing about Luxe.
+//! that they did not see: no signature, no marker, nothing about luxe.
 
 use super::{ChapterKind, GuidedReview};
 

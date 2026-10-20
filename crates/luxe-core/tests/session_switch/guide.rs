@@ -86,7 +86,7 @@ fn git(root: &std::path::Path, arguments: &[&str]) {
     assert!(Command::new("git").args(arguments).current_dir(root).status().unwrap().success());
 }
 
-/// Where the repository keeps its sessions: under `.luxe`, as Luxe does, where Guided Review never
+/// Where the repository keeps its sessions: under `.luxe`, as luxe does, where Guided Review never
 /// looks. Anywhere else they are untracked files a review reads, and on Windows an open session's
 /// claim locks its `.lock` file against that read, so the review never loads.
 fn sessions_root(root: &std::path::Path) -> std::path::PathBuf {
@@ -99,7 +99,7 @@ fn changed_repository() -> tempfile::TempDir {
     let root = dir.path();
     git(root, &["init", "-q"]);
     git(root, &["config", "user.email", "tests@example.invalid"]);
-    git(root, &["config", "user.name", "Luxe Tests"]);
+    git(root, &["config", "user.name", "luxe Tests"]);
     std::fs::write(root.join("tracked.rs"), "fn original() {}\n").unwrap();
     git(root, &["add", "tracked.rs"]);
     git(root, &["commit", "-q", "-m", "initial fixture"]);

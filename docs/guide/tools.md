@@ -2,7 +2,7 @@
 title: "Tools"
 summary: "What the agent can use: files, the shell, tests, Git, code intelligence, a debugger and the web."
 order: 10
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## What the agent can use
@@ -50,7 +50,7 @@ the file:
 { "tools": { "disabled": ["web_search", "screenshot"] } }
 ```
 
-A change applies the next time Luxe starts, since the tools the agent is offered are fixed for a
+A change applies the next time luxe starts, since the tools the agent is offered are fixed for a
 run.
 
 For one session, `luxe --no-tool web_search` turns a tool off and `luxe --with-tool web_search`
@@ -71,7 +71,7 @@ their config, in the file's directory or one above it:
 | TypeScript, JavaScript | biome | `biome.json` or `biome.jsonc` |
 | TOML | taplo | `taplo.toml` or `.taplo.toml` |
 
-A formatter that is not installed is skipped. When Luxe pipes a file through one (taplo), an empty
+A formatter that is not installed is skipped. When luxe pipes a file through one (taplo), an empty
 answer, or a file that changed again while it ran, leaves the file as it was. To turn formatting
 off:
 
@@ -92,12 +92,12 @@ reported as having had no effect; one stopped partway says so, since it may have
 A command that starts something and leaves it running, such as a dev server, returns when the
 command itself ends. The server keeps running.
 
-Tools work from the directory Luxe was started in. A `cd` inside one `bash` call does not carry over
-to the next, so start Luxe in the project you want to work on.
+Tools work from the directory luxe was started in. A `cd` inside one `bash` call does not carry over
+to the next, so start luxe in the project you want to work on.
 
 ## Code intelligence
 
-After every edit, Luxe asks the file's language server for errors and warnings and adds the ones
+After every edit, luxe asks the file's language server for errors and warnings and adds the ones
 the edit introduced to the result the agent sees, so it can fix what it broke before moving on.
 Problems that were already in the file are counted, not listed. The result also names changed code
 that no test covers. Set `LUXE_LSP_ON_EDIT=0` to turn both off.
@@ -108,7 +108,7 @@ while the change is fresh. A file that was already long says nothing more. Funct
 in Rust, Python, Go, TypeScript and JavaScript; files in any language. Set `LUXE_SIZE_CHECK=0` to turn this off, for a project whose own
 conventions differ.
 
-Luxe launches these language servers when they are installed:
+luxe launches these language servers when they are installed:
 
 | Language | Server | Install |
 | --- | --- | --- |
@@ -129,13 +129,13 @@ anywhere else, or inside a [fetched repository](#github-repositories), is refuse
 every file is written or none is, and the result says which edits didn't fit their file and which
 file operations, such as creating or renaming one, it left undone.
 
-`/lsp` shows which servers are running, and `luxe doctor` starts each one to check it works. Luxe
+`/lsp` shows which servers are running, and `luxe doctor` starts each one to check it works. luxe
 never installs a server itself. When one is missing, the result tells the agent the command that
 installs it, which runs through `bash` under your rules like any other.
 
 ### A server the project installed
 
-Luxe prefers the copy a project installed for itself, in its `node_modules/.bin` or virtual
+luxe prefers the copy a project installed for itself, in its `node_modules/.bin` or virtual
 environment, since that version matches the project. The same goes for formatters such as `ruff`
 and `biome`, and for MCP servers a project declares. Runs with nobody watching, such as
 `--headless` and the loop, use only what you installed yourself unless you pass `--trust-project`.
@@ -165,14 +165,14 @@ use a container rather than relying on this setting.
 }
 ```
 
-An entry for a language Luxe already knows changes only what it names, so
+An entry for a language luxe already knows changes only what it names, so
 `{ "rust": { "command": "rust-analyzer-nightly" } }` swaps the binary and keeps the rest.
 `alternatives` lists other servers to try, in order, when the first will not start.
 
 ## Debugger
 
 The `debug` tool drives a real debugger, so the agent can set breakpoints, step through code and
-inspect variables rather than add print statements. After three failing test runs in a row, Luxe
+inspect variables rather than add print statements. After three failing test runs in a row, luxe
 suggests it. `LUXE_DEBUG_NUDGE=0` turns that suggestion off.
 
 | Language | Adapter |
@@ -196,9 +196,9 @@ with `lldb-dap`:
 ]
 ```
 
-`transport` is `stdio` (the default) or `tcp_dial_in`, for an adapter that connects back to Luxe:
+`transport` is `stdio` (the default) or `tcp_dial_in`, for an adapter that connects back to luxe:
 put `${DAP_ADDR}` in its `command` where it takes the address, as Delve's
-`dlv dap --client-addr ${DAP_ADDR}` does, and Luxe replaces it with `host:port`.
+`dlv dap --client-addr ${DAP_ADDR}` does, and luxe replaces it with `host:port`.
 `addr_placeholder` names a different placeholder.
 
 A breakpoint the adapter could not set is listed under the launch, with the adapter's reason. An
@@ -225,7 +225,7 @@ server works. Other machines on your network, cloud metadata addresses and `file
 including through an IPv6 address that carries one of them. A page elsewhere can't redirect a fetch
 to your machine, and a fetch reads at most 10 MB. `screenshot` loads only the host you asked for, so
 a redirect, frame or image from any other host fails to load, and it runs the browser on a fresh
-profile, sandboxed unless Luxe runs as root or in a container. `LUXE_WEB_ALLOW_PRIVATE=1` lifts the
+profile, sandboxed unless luxe runs as root or in a container. `LUXE_WEB_ALLOW_PRIVATE=1` lifts the
 address checks, allows `file://` in `screenshot`, and lets it load other hosts. A fetch gives up
 after 30 seconds, or `LUXE_WEB_TIMEOUT_SECS`, within the call's 60-second limit.
 
@@ -239,7 +239,7 @@ of reading the page, so the agent can search the real files. The clone is shallo
 only, and goes into `.luxe/gh-cache/owner/repo` in your project, which git ignores. Reading it never
 asks permission, because it is inside the project.
 
-A repository you did not write sits inside one you did, so Luxe keeps it inert:
+A repository you did not write sits inside one you did, so luxe keeps it inert:
 
 - Symbolic links are checked out as plain files holding the link's target. A link cannot point the
   agent at your `.env`, or anywhere else outside the clone.

@@ -90,7 +90,7 @@ impl serde::Serialize for ApiKey {
     }
 }
 
-/// Parsed Luxe config — the shared shape of `auth.json` and `models.json`.
+/// Parsed luxe config — the shared shape of `auth.json` and `models.json`.
 ///
 /// The documented `auth.json` nests keys under `providers.<name>` and can also set
 /// `default_provider` / `default_model`; `models.json` adds per-model overrides. Both
@@ -152,8 +152,8 @@ pub struct ModelConfig {
     /// ago. A bump made in-session still holds until the model changes — this is where you start,
     /// not a ceiling. Say which levels the endpoint *cannot* do with `thinking_level_map` instead.
     pub thinking: Option<luxe_core::provider::ThinkingLevel>,
-    /// Sampling parameters merged verbatim into the request body, after the fields Luxe sets
-    /// itself — so these keys win. Lets a model carry the samplers Luxe doesn't model (llama.cpp
+    /// Sampling parameters merged verbatim into the request body, after the fields luxe sets
+    /// itself — so these keys win. Lets a model carry the samplers luxe doesn't model (llama.cpp
     /// `min_p`/`repeat_penalty`, vLLM `top_k`), which is how a published sampling recipe is
     /// expressed at all. Merges per key over the provider's map. OpenAI-shaped APIs only.
     #[serde(default)]
@@ -208,14 +208,14 @@ pub struct ProviderConfig {
     /// `anthropic-messages`, or `openai-codex`.
     ///
     /// The built-in provider catalog normally answers this. Set it for a proxy or private deployment
-    /// Luxe doesn't recognize, or to pin a known provider to a different endpoint than its catalog
+    /// luxe doesn't recognize, or to pin a known provider to a different endpoint than its catalog
     /// default.
     pub api: Option<String>,
     /// How this provider's API key goes on the wire: `bearer`, `x-api-key`, `api-key`, or
     /// `foundry` (both key headers).
     ///
     /// Named for the header rather than the vendor, because that is what a 401 shows you. The
-    /// catalog answers it for every provider Luxe knows; set it for a gateway that wants a
+    /// catalog answers it for every provider luxe knows; set it for a gateway that wants a
     /// different one, or to send a Microsoft Entra ID token as `bearer` against a Foundry endpoint
     /// that would otherwise get a key header.
     pub auth: Option<String>,
@@ -227,7 +227,7 @@ pub struct ProviderConfig {
     /// authority, and because it has to survive a launch with the server switched off.
     ///
     /// An Azure resource is the same story told by a cloud: the catalog lists what Azure offers,
-    /// not what anybody deployed, so Luxe records the resource's deployments here too.
+    /// not what anybody deployed, so luxe records the resource's deployments here too.
     pub served_models: Option<Vec<String>>,
     /// Deployment name → the model it runs, for a deployment named something other than its
     /// model (`"sonnet-prod": "claude-sonnet-5"`).

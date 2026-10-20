@@ -89,7 +89,7 @@ mod tests {
         }
     }
 
-    /// The layout that broke it: `mod tests;` pointing at a sibling file. Luxe lays five of its own
+    /// The layout that broke it: `mod tests;` pointing at a sibling file. luxe lays five of its own
     /// modules out this way, so the miss was never exotic.
     #[test]
     fn a_sibling_tests_module_is_test_code() {

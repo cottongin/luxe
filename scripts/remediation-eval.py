@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Ask real models to fix review comments and see whether Luxe can read what they report.
+"""Ask real models to fix review comments and see whether luxe can read what they report.
 
 A fix request ends with a remediation report, and the review learns what the agent did only from
-it. Whether a model writes one Luxe can read is a property of the model and of the prompt, so it is
+it. Whether a model writes one luxe can read is a property of the model and of the prompt, so it is
 measured against live models rather than asserted in a unit test. Each run is a scratch repository
 with two bugs, a working-tree review, a comment on each, and a fix request over `luxe --rpc`; the
 turn's assistant text is then read back from the session log and sorted by how it wrapped its

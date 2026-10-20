@@ -4,7 +4,7 @@ use crate::auth::catalog::ResourceEndpoint;
 
 /// Model-id prefixes that Microsoft Foundry reaches through its Anthropic passthrough.
 ///
-/// The split between Luxe's two Foundry providers, stated once. Every Anthropic-published model in
+/// The split between luxe's two Foundry providers, stated once. Every Anthropic-published model in
 /// the models.dev `azure` catalog is named `claude-*`, and a test holds that true.
 pub(in crate::auth::catalog) const FOUNDRY_ANTHROPIC_PREFIXES: &[&str] = &["claude-"];
 

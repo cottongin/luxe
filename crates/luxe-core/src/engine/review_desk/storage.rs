@@ -126,13 +126,13 @@ impl ReviewDesk {
                 "Review comments cannot be saved without a project.".to_string()
             }
             SaveError::Store(ReviewSessionStoreError::RevisionConflict { .. }) => {
-                // Another Luxe on this project wrote first. Holding on to the older revision would
+                // Another luxe on this project wrote first. Holding on to the older revision would
                 // refuse every later change too, so take theirs and say so.
                 if let Some(stored) = self.load(&review_id).await {
                     self.session = Some(stored);
                     self.persisted = true;
                 }
-                "Another Luxe changed this review's comments at the same time, so this change was \
+                "Another luxe changed this review's comments at the same time, so this change was \
                  not saved. The review shows theirs now; make the change again."
                     .to_string()
             }

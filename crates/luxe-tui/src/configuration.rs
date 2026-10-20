@@ -1,4 +1,4 @@
-//! Configuration — the surface that answers *how do I set Luxe up?*
+//! Configuration — the surface that answers *how do I set luxe up?*
 //!
 //! One place for every way in: a subscription, a key, a server on this machine, or the files
 //! themselves. It is what the dashboard's `Configuration` row opens, what `/config` reaches
@@ -10,7 +10,7 @@
 //! overlays: keys in, a [`ConfigOutcome`] out, and the app owns what happens next.
 //!
 //! The menu asks for the **method** before the provider, which is the inverse of the wizard's own
-//! order. `/login openai` knows its provider; someone who has just installed Luxe knows they have a
+//! order. `/login openai` knows its provider; someone who has just installed luxe knows they have a
 //! ChatGPT plan. Each row hands the wizard a [`LoginScope`], so the list it opens is short and every
 //! row in it starts its flow on Enter.
 
@@ -38,7 +38,7 @@ pub enum ConfigChoice {
     LocalOrCustom,
     /// The settings pages: appearance, the conversation, layout, tools and the agent.
     Settings,
-    /// Open one of Luxe's configuration files in an editor.
+    /// Open one of luxe's configuration files in an editor.
     EditFiles,
 }
 
@@ -239,6 +239,19 @@ impl ConfigurationState {
             Stage::Files => self.file_selected,
             Stage::Settings => self.settings.as_ref().map_or(0, SettingsState::selected),
             Stage::Setup => 0,
+        }
+    }
+
+    /// The cursor and the row count of whichever list is showing.
+    pub(crate) fn list_cursor(&self) -> (usize, usize) {
+        match self.stage {
+            Stage::Menu => (self.selected, ConfigChoice::ROWS.len()),
+            Stage::Files => (self.file_selected, self.files.len()),
+            Stage::Settings => self
+                .settings
+                .as_ref()
+                .map_or((0, 0), |settings| (settings.selected(), settings.selectable_count())),
+            Stage::Setup => self.setup.as_ref().map_or((0, 0), SetupState::step_list),
         }
     }
 

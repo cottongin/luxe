@@ -3,7 +3,7 @@ name = "luxe-dap"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Debug Adapter Protocol client for Luxe: breakpoints, stepping, and variable inspection"
+description = "Debug Adapter Protocol client for luxe: breakpoints, stepping, and variable inspection"
 repository.workspace = true
 homepage.workspace = true
 
@@ -11,7 +11,7 @@ homepage.workspace = true
 # Provides a native Debug Adapter Protocol client + the `debug` tool.
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-core = { path = "../luxe-core", version = "0.1.4" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

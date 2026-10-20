@@ -2,7 +2,7 @@
 title: "Guided Review"
 summary: "Read a change chapter by chapter, comment for the agent, and finish with a commit, fixes or a pull request."
 order: 6
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Guided Review reads a change back to you in the order it makes sense, split into chapters. Each
@@ -13,9 +13,9 @@ the agent as work to do.
 
 ## Open a review
 
-Press `ctrl+g`, or run `/diff`. Luxe writes the guide first; when `review ready` shows above the
+Press `ctrl+g`, or run `/diff`. luxe writes the guide first; when `review ready` shows above the
 composer, press `ctrl+g` again to open it. Asked for while a turn is running, the review waits for
-the turn to end. A review you already have opens at once, and one you had open when Luxe stopped
+the turn to end. A review you already have opens at once, and one you had open when luxe stopped
 comes back with your comments.
 
 | Review | Command |
@@ -28,7 +28,7 @@ comes back with your comments.
 
 Inside a review, `s` changes what it covers: uncommitted changes, the last turn, a base or a commit.
 A pull request takes `/diff pr`. If the agent committed its work, so nothing is uncommitted,
-`ctrl+g` and `/diff` review the last turn instead. Luxe remembers what you have already reviewed in
+`ctrl+g` and `/diff` review the last turn instead. luxe remembers what you have already reviewed in
 each project, so the next review leads with what is new since then.
 
 ## Read it
@@ -75,7 +75,7 @@ To leave project bookkeeping out of every review:
 ```
 
 The patterns take `*`, `**`, `?` and a trailing `/`, and a project's list replaces your own.
-Excluded files are counted in the guide. Luxe's own `.luxe/` is never reviewed.
+Excluded files are counted in the guide. luxe's own `.luxe/` is never reviewed.
 
 A review leaves out a file it cannot hold, so the rest is still reviewable: in the last turn, any
 file over 1 MiB, unreadable, or not a regular file; in uncommitted changes or a base, a new file
@@ -102,7 +102,7 @@ so you can verify it, at any time.
 
 The agent ends a fix by reporting on each comment: fixed, not fixed, or needs clarification, with a
 note. The note shows under the comment, and a comment it calls fixed waits for you to verify it,
-since a claim is not proof. If the agent leaves its report out, Luxe asks for it once. A comment
+since a claim is not proof. If the agent leaves its report out, luxe asks for it once. A comment
 the agent still says nothing about reads `no word from the agent`, with the reason in Feedback,
 and stays where you left it.
 
@@ -156,8 +156,8 @@ agent opened. It needs the GitHub CLI, `gh`, signed in.
 | `enter` | Post it |
 
 Line comments are listed under their files with the diff they sit on, the way GitHub shows them.
-Questions you asked the agent stay in Luxe and are never posted. On your own pull request, GitHub
-only takes a comment, so that is all Luxe offers.
+Questions you asked the agent stay in luxe and are never posted. On your own pull request, GitHub
+only takes a comment, so that is all luxe offers.
 
 A drafted summary opens in the preview for you to read and edit. Anything the agent says beside it,
 such as a part of the change it did not read, appears under it as a note. Once the review is
@@ -166,6 +166,6 @@ posted, the guide's foot says **Posted to GitHub** with the verdict, and `o` ope
 ### Fix it yourself
 
 To change someone else's pull request rather than comment on it, press `alt+u` (or `w` in the post
-preview). Luxe asks GitHub whether you can push to it, then checks it out in a worktree of its own
+preview). luxe asks GitHub whether you can push to it, then checks it out in a worktree of its own
 and starts a session there, with your comments as the agent's first task. A plain `git push` then
 updates the pull request.

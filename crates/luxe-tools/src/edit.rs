@@ -43,7 +43,7 @@ fn edit_schema() -> ToolSchema {
                       disambiguate, or set `replaceAll` to change every occurrence. Multiple \
                       edits apply atomically (all-or-nothing) and must not overlap. Trailing \
                       whitespace and a uniformly shifted indent are tolerated and reported. You \
-                      must have seen the file in this Luxe run — with `read`, lines of it from \
+                      must have seen the file in this luxe run — with `read`, lines of it from \
                       `grep`, or printed by `cat`, `sed -n` or a search in `bash` — and it must \
                       not have changed \
                       on disk since (read-before-edit + staleness guards); otherwise read it \
@@ -299,7 +299,7 @@ impl EditTool {
         let Some(tracker) = &self.tracker else { return Ok(()) };
         match tracker.status(&cx.session_id, full_path) {
             ReadStatus::Unseen => Err(ToolResultData::error(format!(
-                "Error: no read of '{shown}' is on record for this Luxe run \
+                "Error: no read of '{shown}' is on record for this luxe run \
                  ({READ_BEFORE_EDIT}). The record is per process, so a resumed \
                  session starts empty even where the transcript shows an earlier read. \
                  Use the `read` tool, then retry — nothing was written."

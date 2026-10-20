@@ -77,7 +77,7 @@ is read-only and refuses anything it wasn't written to answer.
 
 The trade is stated plainly: **no two runs produce the same bytes, so nothing checks that a capture
 still matches the build.** `manifest.json` records the commit, size and theme each take was shot
-against. When Luxe's appearance changes, re-record.
+against. When luxe's appearance changes, re-record.
 
 The webfonts in `public/fonts/` come from `scripts/site-fonts.sh`, which subsets them to exactly
 the characters **both** directories use — a capture that catches an icon no fixture ever drew would

@@ -148,7 +148,7 @@ impl WorkspaceLspClient {
         for rejected in registry.merge_patches(custom) {
             tracing::warn!(
                 language = %rejected,
-                "lsp-servers.json entry needs a `command`: Luxe ships no default for this language"
+                "lsp-servers.json entry needs a `command`: luxe ships no default for this language"
             );
         }
         Self::over(registry)

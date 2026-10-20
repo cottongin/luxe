@@ -249,10 +249,10 @@ async fn look<G: Discovery + Branches + ?Sized>(
 fn unavailable(error: &GitHubError) -> Option<String> {
     let reason = match error {
         GitHubError::NotInstalled => {
-            "The GitHub CLI (`gh`) is not installed, so Luxe cannot see this branch's pull request."
+            "The GitHub CLI (`gh`) is not installed, so luxe cannot see this branch's pull request."
         }
         GitHubError::NotAuthenticated { .. } => {
-            "The GitHub CLI is not signed in. Run `gh auth login`, and Luxe picks it up the next \
+            "The GitHub CLI is not signed in. Run `gh auth login`, and luxe picks it up the next \
              time the terminal has focus."
         }
         GitHubError::NotGitHub => "This repository has no remote on GitHub.",

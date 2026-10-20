@@ -1,6 +1,6 @@
 //! A call runs as soon as the model has written it.
 //!
-//! A model writes a message's calls one after another, and Luxe used to run none of them until the
+//! A model writes a message's calls one after another, and luxe used to run none of them until the
 //! last had arrived: each card opened, finished, and sat waiting while the next was written, then the
 //! whole stack ran inside a second. Now a finished call runs while the model writes the next one.
 //!
@@ -171,7 +171,7 @@ fn harness(first: Vec<Step>) -> Harness {
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,

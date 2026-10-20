@@ -271,7 +271,7 @@ mod tests {
         assert_eq!(run(&hook, "read", 1).await.len(), 1);
     }
 
-    /// Loading a deferred tool's schema is Luxe's own request-budget bookkeeping, not a step in the
+    /// Loading a deferred tool's schema is luxe's own request-budget bookkeeping, not a step in the
     /// task — so it cannot be the work a plan has fallen behind.
     #[tokio::test]
     async fn bookkeeping_calls_are_not_work_the_plan_fell_behind() {

@@ -1,4 +1,4 @@
-# Luxe's installer for Windows:
+# luxe's installer for Windows:
 #
 #     powershell -c "irm https://luxe.dev/install.ps1 | iex"
 #

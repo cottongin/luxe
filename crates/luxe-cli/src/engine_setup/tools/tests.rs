@@ -108,7 +108,7 @@ fn the_deny_list_classifies_what_a_real_run_asks_for() {
     assert_eq!(
         report.unavailable.iter().map(|d| d.name.as_str()).collect::<Vec<_>>(),
         ["mcp"],
-        "a tool Luxe knows that this run never registered is not a typo"
+        "a tool luxe knows that this run never registered is not a typo"
     );
     assert_eq!(report.unknown.len(), 1);
     assert_eq!(report.unknown[0].0.name, "websearch");

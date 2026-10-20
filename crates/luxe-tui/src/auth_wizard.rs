@@ -196,6 +196,11 @@ impl AuthWizardState {
         &self.providers
     }
 
+    /// How many providers the list shows, while the wizard is on that list.
+    pub(crate) fn provider_rows(&self) -> Option<usize> {
+        matches!(self.stage, Stage::Provider { .. }).then(|| self.visible_providers().len())
+    }
+
     /// Highlighted row in the current list stage.
     pub fn selected_row(&self) -> usize {
         match &self.stage {

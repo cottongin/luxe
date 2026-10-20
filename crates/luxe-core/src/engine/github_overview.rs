@@ -5,7 +5,7 @@
 //! repository and number asked about, so a reply that lands after the reader moved on is matched
 //! to nothing rather than drawn over the wrong row.
 //!
-//! An issue's answer also says whether one of your sessions took it up — Luxe's own knowledge, read
+//! An issue's answer also says whether one of your sessions took it up — luxe's own knowledge, read
 //! from the session store, which GitHub has no way to know.
 
 use super::posting::sentence;

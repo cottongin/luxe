@@ -306,6 +306,9 @@ pub(super) fn wheel(app: &App, col: u16, row: u16, up: bool) -> RouteAction {
             RouteAction::msg(Msg::ScrollChanges { up, lines: crate::changes::SCROLL_STEP })
         }
         Some(ScrollRegionId::ContextFiles) => RouteAction::msg(Msg::ScrollContextFiles { up }),
+        Some(ScrollRegionId::OverlayList(list)) => {
+            RouteAction::msg(Msg::ScrollOverlayList { list, up })
+        }
         // Their bars steer them, but their wheel is still the view's
         Some(ScrollRegionId::ReviewFeedback | ScrollRegionId::PullRequestBody) | None => {
             scroll_for_view(app, up)

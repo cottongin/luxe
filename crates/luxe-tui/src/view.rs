@@ -1,4 +1,4 @@
-//! View — ratatui rendering for Luxe's TUI surfaces.
+//! View — ratatui rendering for luxe's TUI surfaces.
 //!
 //! [`render`] routes a frame to the surface the app is on. The chat frame is measured first
 //! (`frame_layout`), then drawn back to front: the dock and the conversation, the composer and

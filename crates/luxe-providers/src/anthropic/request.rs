@@ -202,7 +202,7 @@ pub(crate) fn build_anthropic_request(
         (ThinkingLevel::Off, _) => {}
         (_, ThinkingMode::Adaptive) => {
             // `display: "summarized"` because the newest models omit thinking text by default and
-            // Luxe shows reasoning in the transcript.
+            // luxe shows reasoning in the transcript.
             body["thinking"] = serde_json::json!({"type": "adaptive", "display": "summarized"});
             body["output_config"] = serde_json::json!({"effort": effort});
         }

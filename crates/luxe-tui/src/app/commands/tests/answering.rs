@@ -257,7 +257,7 @@ fn preparing_and_failing_reach_the_preview() {
 }
 
 /// `/worktree` says where the session works. `remove` asks git, through the engine, what is
-/// uncommitted right now — a snapshot can predate a file made outside Luxe — and is refused,
+/// uncommitted right now — a snapshot can predate a file made outside luxe — and is refused,
 /// naming it, unless nothing is; then the session ends with its worktree to remove.
 #[test]
 fn worktree_says_where_and_removes_only_committed_work() {

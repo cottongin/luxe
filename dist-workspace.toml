@@ -1,4 +1,4 @@
-# How Luxe is released. dist reads this and writes .github/workflows/release.yml from it, so the
+# How luxe is released. dist reads this and writes .github/workflows/release.yml from it, so the
 # workflow is never edited by hand: change this, then run `dist generate`. Run `dist init` only to
 # move to a new dist version; with `--yes` it answers its own questions and drops settings here.
 #
@@ -28,7 +28,7 @@ install-updater = true
 # The installers' last word. A new terminal, because one already open has the old PATH, which the
 # installer's own note then explains. Pasted into a double-quoted string in both scripts, so no
 # backticks (sh would run what they hold), no `$` and no double quotes
-install-success-msg = "Luxe is installed. To start, open a new terminal in your project's folder and run: luxe"
+install-success-msg = "luxe is installed. To start, open a new terminal in your project's folder and run: luxe"
 tap = "evanwhittaker/homebrew-tap"
 # `brew install evanwhittaker/tap/luxe`, not `luxe-cli`: the command is `luxe`
 formula = "luxe"

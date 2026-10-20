@@ -87,7 +87,7 @@ impl HookPoint {
         Self::PermissionResolved,
     ];
 
-    /// The one spelling Luxe writes and documents, matching how the variant serializes.
+    /// The one spelling luxe writes and documents, matching how the variant serializes.
     ///
     /// Exhaustive on purpose: a new variant does not compile until it has a name here.
     pub fn canonical_name(&self) -> &'static str {

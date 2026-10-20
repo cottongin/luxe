@@ -135,7 +135,7 @@ fn the_conversation_comes_with_the_threads() {
     assert!(before.conversation.is_empty() && !before.threads.is_empty());
 }
 
-/// On a real pull request the reader answered the first comment from Luxe, so it and the answer
+/// On a real pull request the reader answered the first comment from luxe, so it and the answer
 /// stay quiet, and the review's summary is what is still asked.
 #[test]
 fn an_answered_comment_on_a_real_pull_request_asks_nothing() {

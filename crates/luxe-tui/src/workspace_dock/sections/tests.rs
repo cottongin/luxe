@@ -385,7 +385,7 @@ fn staying_inside_the_project_shows_no_elsewhere_section() {
 }
 
 /// The two kinds of place are not interchangeable: one is backed by Git and one by the record
-/// of what Luxe itself touched, and the branch is what tells them apart on screen.
+/// of what luxe itself touched, and the branch is what tells them apart on screen.
 #[test]
 fn external_groups_keep_the_witness_that_backs_them() {
     let mut snapshot = snapshot();

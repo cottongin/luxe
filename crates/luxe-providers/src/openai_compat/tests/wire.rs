@@ -282,7 +282,7 @@ fn a_text_only_model_is_never_sent_the_bytes() {
     assert_eq!(roles, ["user", "tool"]);
 }
 
-/// Luxe commits refusals and results as separate `Role::Tool` messages, and `tool_pairing` can
+/// luxe commits refusals and results as separate `Role::Tool` messages, and `tool_pairing` can
 /// synthesize a third. One carrier for the whole run, after all of them — a carrier per message
 /// would interleave a `user` turn between two `tool` turns and 400 the request.
 #[test]

@@ -51,7 +51,9 @@ impl AuthWizardState {
             let rows = chunks[2].height as usize;
             let selected = self.selected_row();
             let start = selected.saturating_sub(rows.saturating_sub(1));
-            let row_width = usize::from(chunks[2].width);
+            let width =
+                crate::widgets::list_rows_width(chunks[2].width, visible.len(), chunks[2].height);
+            let row_width = usize::from(width);
             // One window drives both the rows drawn and the rows clickable
             let shown: Vec<(usize, &luxe_core::auth::ProviderOption)> = visible
                 .iter()
@@ -64,18 +66,21 @@ impl AuthWizardState {
                 .iter()
                 .map(|(row, option)| self.provider_row(option, *row == selected, row_width, theme))
                 .collect();
-            frame.render_widget(List::new(items), chunks[2]);
+            frame.render_widget(List::new(items), Rect { width, ..chunks[2] });
 
             let mut regions = hit.borrow_mut();
             for (offset, _) in &shown {
                 let y = chunks[2].y.saturating_add((offset - start) as u16);
                 if y < chunks[2].bottom() {
                     regions.push(
-                        Rect::new(chunks[2].x, y, chunks[2].width, 1),
+                        Rect::new(chunks[2].x, y, width, 1),
                         MouseTarget::AuthProviderRow(*offset),
                     );
                 }
             }
+            let list = crate::mouse::OverlayList::Providers;
+            let window = (start, visible.len());
+            crate::widgets::list_scrollbar(frame, &mut regions, chunks[2], list, window, theme);
         }
     }
 

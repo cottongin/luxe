@@ -178,7 +178,8 @@ impl SettingsState {
         scroll = scroll.min(rows.len().saturating_sub(height));
         self.scroll.set(scroll);
 
-        let width = usize::from(list.width);
+        let columns = crate::widgets::list_rows_width(list.width, rows.len(), list.height);
+        let width = usize::from(columns);
         let selectable = self.selectable();
         let mut regions = hit.borrow_mut();
         let lines: Vec<Line<'static>> = rows
@@ -190,16 +191,17 @@ impl SettingsState {
                 let selected = index == self.cursor;
                 if let Some(position) = selectable.iter().position(|at| *at == index) {
                     let y = list.y + (index - scroll) as u16;
-                    regions.push(
-                        Rect::new(list.x, y, list.width, 1),
-                        MouseTarget::ConfigRow(position),
-                    );
+                    regions
+                        .push(Rect::new(list.x, y, columns, 1), MouseTarget::ConfigRow(position));
                 }
                 self.row_line(*row, width, selected, theme)
             })
             .collect();
+        let shown = (scroll, rows.len());
+        let surface = crate::mouse::OverlayList::Configuration;
+        crate::widgets::list_scrollbar(f, &mut regions, list, surface, shown, theme);
         drop(regions);
-        f.render_widget(Paragraph::new(lines), list);
+        f.render_widget(Paragraph::new(lines), Rect { width: columns, ..list });
     }
 
     fn row_line(
@@ -302,7 +304,7 @@ impl SettingsState {
                 let mut head = vec![
                     Span::styled(tool.name, theme.text.add_modifier(Modifier::BOLD)),
                     Span::styled("  tools.disabled", theme.accent),
-                    Span::styled("  ·  Takes effect the next time Luxe starts", theme.muted),
+                    Span::styled("  ·  Takes effect the next time luxe starts", theme.muted),
                 ];
                 head.push(Span::styled(source_note(layer), layer_style(layer, theme)));
                 lines.push(Line::from(head));

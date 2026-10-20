@@ -5,9 +5,9 @@
 //! at a glance, which agent is running, which needs a decision, and which is ready to review.
 //!
 //! Herdr recognizes most agents by *process detection* + screen scraping, which requires a Herdr
-//! binary update per new agent. Instead Luxe acts as a **custom socket integration** (Herdr's
-//! supported extension path): when Luxe runs inside a Herdr pane (`HERDR_ENV=1`), this hook reports
-//! Luxe's own lifecycle to Herdr via the `herdr pane report-agent` CLI. That makes Luxe a
+//! binary update per new agent. Instead luxe acts as a **custom socket integration** (Herdr's
+//! supported extension path): when luxe runs inside a Herdr pane (`HERDR_ENV=1`), this hook reports
+//! luxe's own lifecycle to Herdr via the `herdr pane report-agent` CLI. That makes luxe a
 //! first-class, correctly-tracked agent in the sidebar without Herdr needing to know the `luxe`
 //! process at all.
 //!
@@ -136,7 +136,7 @@ impl HerdrReporter for CliHerdrReporter {
     }
 }
 
-/// Reports Luxe's lifecycle to Herdr. Registered only when running inside a Herdr pane.
+/// Reports luxe's lifecycle to Herdr. Registered only when running inside a Herdr pane.
 pub struct HerdrHook {
     reporter: Box<dyn HerdrReporter>,
     /// Last state sent, to suppress redundant reports (a turn fires `AgentStart` many times).

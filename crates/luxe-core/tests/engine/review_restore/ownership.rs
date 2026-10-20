@@ -27,7 +27,7 @@ async fn the_engine_owns_a_review_from_comment_to_report_and_through_a_restart()
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {
@@ -150,7 +150,7 @@ async fn a_comment_saved_just_before_close_is_on_disk_when_the_engine_stops() {
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {
@@ -250,7 +250,7 @@ async fn closing_does_not_wait_for_a_guide_being_written() {
     std::fs::write(project_root.join("tracked.rs"), "fn original() {}\n").unwrap();
     for arguments in [
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "tracked.rs"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {

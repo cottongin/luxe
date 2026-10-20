@@ -131,7 +131,7 @@ fn tool_registry_has_builtins_and_lsp() {
 /// The loop is opt-in, so nothing it owns may reach an ordinary session.
 ///
 /// `loop_control` was registered unconditionally, and since it is not a core tool it landed in
-/// the "available on demand" catalog of every prompt Luxe sent — offering a plain chat session a
+/// the "available on demand" catalog of every prompt luxe sent — offering a plain chat session a
 /// tool for advancing phases of an autonomous run that was not happening.
 #[test]
 fn loop_control_is_absent_unless_a_loop_is_driving() {
@@ -189,6 +189,7 @@ fn a_remembered_model_beats_the_configured_default_but_not_a_flag() {
             provider: "anthropic".into(),
             id: "claude-opus-5".into(),
         }),
+        project_models: Vec::new(),
         thinking: Some(luxe_core::provider::ThinkingLevel::High),
         recent_commands: Vec::new(),
         panes: Default::default(),
@@ -213,6 +214,40 @@ fn a_remembered_model_beats_the_configured_default_but_not_a_flag() {
     assert_eq!(overridden.chosen().r#ref.id, "claude-sonnet-5");
 }
 
+/// The model last chosen in this project outranks the one last chosen anywhere, and a project with
+/// no pick of its own starts on the latter.
+#[test]
+fn a_projects_own_pick_beats_the_last_one_anywhere() {
+    use luxe_core::runtime_state::{ProjectModel, RememberedModel, RuntimeState};
+    let _guard = ENV_LOCK.lock().unwrap_or_else(|error| error.into_inner());
+    let home = tempfile::tempdir().expect("temp home");
+    let state = home.path().join("state");
+    std::fs::create_dir_all(&state).expect("state dir");
+    let here = tempfile::tempdir().expect("temp project");
+    let model =
+        |provider: &str, id: &str| RememberedModel { provider: provider.into(), id: id.into() };
+    RuntimeState {
+        model: Some(model("anthropic", "claude-opus-5")),
+        project_models: vec![ProjectModel {
+            project: luxe_core::paths::display(here.path()),
+            model: model("openai", "gpt-5.6"),
+        }],
+        ..RuntimeState::default()
+    }
+    .save_to(&state.join("state.json"))
+    .expect("write state");
+    let _state_dir = EnvGuard::set("LUXE_STATE_DIR", state.to_str().expect("utf-8 path"));
+
+    let in_project = AgentSettings::resolve(here.path().to_path_buf(), CliOverrides::default());
+    assert_eq!(
+        (in_project.provider.as_str(), in_project.chosen().r#ref.id.as_str()),
+        ("openai", "gpt-5.6")
+    );
+    let elsewhere = tempfile::tempdir().expect("another project");
+    let fresh = AgentSettings::resolve(elsewhere.path().to_path_buf(), CliOverrides::default());
+    assert_eq!(fresh.chosen().r#ref.id, "claude-opus-5", "no pick here, so the last anywhere");
+}
+
 /// A remembered model must not be pasted onto a different provider.
 #[test]
 fn a_remembered_model_is_ignored_when_the_provider_is_forced_elsewhere() {
@@ -226,6 +261,7 @@ fn a_remembered_model_is_ignored_when_the_provider_is_forced_elsewhere() {
             provider: "anthropic".into(),
             id: "claude-opus-5".into(),
         }),
+        project_models: Vec::new(),
         thinking: None,
         recent_commands: Vec::new(),
         panes: Default::default(),
@@ -359,7 +395,7 @@ impl Drop for EnvGuard {
     }
 }
 
-/// Nothing configured means nothing chosen. Luxe used to reach for whichever id the provider
+/// Nothing configured means nothing chosen. luxe used to reach for whichever id the provider
 /// catalog named first, which is a literal in the binary: it goes stale as models turn over,
 /// and the first thing a fresh install did with it was send it.
 #[test]
@@ -541,6 +577,7 @@ fn a_models_own_thinking_level_outranks_the_remembered_one() {
     luxe_core::runtime_state::RuntimeState {
         schema_version: luxe_core::runtime_state::RUNTIME_STATE_SCHEMA_VERSION,
         model: None,
+        project_models: Vec::new(),
         thinking: Some(ThinkingLevel::XHigh),
         recent_commands: Vec::new(),
         panes: Default::default(),

@@ -69,7 +69,7 @@ impl ReviewDesk {
         }
         if interrupted > 0 {
             effects.push(Effect::Event(Event::Notice(
-                "A review feedback turn was cut off when Luxe last stopped. It can be sent again \
+                "A review feedback turn was cut off when luxe last stopped. It can be sent again \
                  from the review."
                     .into(),
             )));

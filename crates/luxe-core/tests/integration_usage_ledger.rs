@@ -167,7 +167,7 @@ fn harness_with(
         external_work: None,
         review_context_files: Vec::new(),
         review_exclude: Vec::new(),
-        remember_runtime_state: false,
+        remember_choices_in: None,
         cache_warming: luxe_core::cache_warming::CacheWarming::Off,
         review_insight_provider: None,
         github: None,
@@ -319,7 +319,7 @@ async fn spend_is_persisted_and_a_resumed_session_adopts_it() {
     assert!((resumed.total.cost_usd - live.total.cost_usd).abs() < 1e-9);
 }
 
-/// A cache refresh is persisted as its own entry kind, so an older Luxe can skip it, and a resumed
+/// A cache refresh is persisted as its own entry kind, so an older luxe can skip it, and a resumed
 /// session still counts it, under its own source rather than as conversation.
 #[tokio::test]
 async fn a_resumed_session_counts_its_cache_refreshes_under_their_own_source() {

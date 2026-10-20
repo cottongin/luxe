@@ -33,7 +33,7 @@ pub const DEFAULT_CONTEXT_WINDOW: u32 = 128_000;
 /// thinking on, it truncated nearly every substantial reply. An older model that refuses this much
 /// says what it does accept, and the adapter retries with that and remembers it. Everywhere else
 /// `0` means "omit the field": OpenAI-compatible endpoints treat it as optional, an omitted cap is
-/// the model's own maximum on every server Luxe targets, and a forced large value trips strict ones.
+/// the model's own maximum on every server luxe targets, and a forced large value trips strict ones.
 const ANTHROPIC_FALLBACK_MAX_TOKENS: u32 = 128_000;
 
 /// Which layer supplied a resolved field.
@@ -368,7 +368,7 @@ fn apply_config(info: &mut ModelInfo, from: &mut Provenance, config: &ModelConfi
     if let Some(values) = &config.input {
         // Replaces for the same reason the thinking map does: the list is a closed claim about
         // what this endpoint accepts, so dropping a modality here must not be undone by a catalog
-        // entry that still advertises it. A list Luxe recognizes nothing in falls back to text
+        // entry that still advertises it. A list luxe recognizes nothing in falls back to text
         // rather than to nothing — no model accepts zero kinds of input, and an empty list would
         // render as a blank row.
         info.input = parse_modalities(values.iter().map(String::as_str))
@@ -392,7 +392,7 @@ fn apply_config(info: &mut ModelInfo, from: &mut Provenance, config: &ModelConfi
     }
 }
 
-/// Derive Luxe thinking levels from models.dev `reasoning_options` effort values.
+/// Derive luxe thinking levels from models.dev `reasoning_options` effort values.
 ///
 /// A declared effort list is a *closed* set when effort is the model's only dial: the levels it
 /// omits are marked unsupported so the picker grays them out and the wire request clamps to a value
@@ -406,7 +406,7 @@ fn thinking_map(dev: &Model) -> HashMap<String, Option<String>> {
     for value in dev.reasoning_options.iter().flat_map(|option| &option.values) {
         let entry = match value.as_str() {
             level @ ("minimal" | "low" | "medium" | "high" | "xhigh") => (level, level),
-            // models.dev's `max` is Luxe's `ultra`.
+            // models.dev's `max` is luxe's `ultra`.
             "max" | "ultra" => ("ultra", "max"),
             _ => continue,
         };
@@ -441,13 +441,13 @@ fn thinking_controls(dev: &Model) -> ThinkingControls {
     controls
 }
 
-/// Input modalities Luxe understands, or `None` when the entry declares none it recognizes.
+/// Input modalities luxe understands, or `None` when the entry declares none it recognizes.
 fn modalities(dev: &Model) -> Option<Vec<Modality>> {
     let declared = dev.modalities.as_ref().map(|m| m.input.as_slice()).unwrap_or_default();
     parse_modalities(declared.iter().map(String::as_str))
 }
 
-/// The modalities in `values` that Luxe models, in declared order and deduplicated.
+/// The modalities in `values` that luxe models, in declared order and deduplicated.
 ///
 /// Anything else is dropped rather than rejected. A catalog that grows a `pdf` or `audio` input,
 /// or a hand-written entry with a typo in it, must not take the whole file down with it — the

@@ -15,15 +15,15 @@ fn project_server(project: &Path) {
     std::fs::write(project.join(".mcp.json"), config.to_string()).unwrap();
 }
 
-/// Whether Luxe launched the project's server. The marker is the proof when the child gets that far,
-/// but the child is this test binary starting up again, and on a slow runner Luxe can give up on the
+/// Whether luxe launched the project's server. The marker is the proof when the child gets that far,
+/// but the child is this test binary starting up again, and on a slow runner luxe can give up on the
 /// closed connection before that startup reaches the write; its report of the attempt is the proof
 /// then. A refused server is never launched, so neither can appear.
 fn started(project: &Path, stdout: &str) -> bool {
     project.join("mcp-ran").exists() || stdout.contains("project-marker: failed to connect")
 }
 
-/// Whether Luxe refused to start the project's server: it says so, naming it. Checked alongside the
+/// Whether luxe refused to start the project's server: it says so, naming it. Checked alongside the
 /// absent marker, which alone would also pass for a server launched too slowly to have written it.
 fn refused(project: &Path, stdout: &str) -> bool {
     stdout.contains("Not starting project MCP servers: project-marker")

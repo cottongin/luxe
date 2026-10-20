@@ -19,7 +19,7 @@ impl ModelRef {
 
     /// Whether this names no model at all.
     ///
-    /// Luxe has no default model — model ids age out faster than releases, so a literal in the
+    /// luxe has no default model — model ids age out faster than releases, so a literal in the
     /// binary is a guess that goes stale and then gets billed. With nothing chosen the front-end
     /// resolves an **empty id**, which no provider serves, and the engine refuses the turn
     /// ([`crate::engine::EngineError::NoModel`]).
@@ -67,7 +67,7 @@ impl ThinkingLevel {
     pub const ALL: [Self; 7] =
         [Self::Off, Self::Minimal, Self::Low, Self::Medium, Self::High, Self::XHigh, Self::Ultra];
 
-    /// Returns Luxe's stable configuration and display name for this level.
+    /// Returns luxe's stable configuration and display name for this level.
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Off => "off",
@@ -137,7 +137,7 @@ pub struct CompatFlags {
     /// Payload for `chat_template_kwargs` under the chat-template thinking formats: a map of
     /// literal values and `{"$var": "thinking.enabled"|"thinking.level"}` references resolved per
     /// request, with `"omit_when_off": true` to drop a key when the turn doesn't think. Empty
-    /// sends Qwen's `enable_thinking` + `preserve_thinking` pair, which is what Luxe always sent.
+    /// sends Qwen's `enable_thinking` + `preserve_thinking` pair, which is what luxe always sent.
     #[serde(default)]
     pub chat_template_kwargs: serde_json::Map<String, serde_json::Value>,
     /// Cache control format.
@@ -156,7 +156,7 @@ pub struct CompatFlags {
     #[serde(default)]
     pub requires_tool_result_name: bool,
     /// Whether the provider reports token usage in a streaming response. On by default:
-    /// Luxe sends `stream_options: {include_usage: true}` on OpenAI-compatible requests so
+    /// luxe sends `stream_options: {include_usage: true}` on OpenAI-compatible requests so
     /// token/cost display, context-window fullness, and compaction thresholds actually work.
     /// Standard and widely supported (OpenAI, LM Studio, vLLM, llama.cpp, DashScope, …); set
     /// `false` only for a strict server that rejects the field.
@@ -203,7 +203,7 @@ pub struct CompatFlags {
     /// client; every other provider ignores them, so this stays opt-in.
     #[serde(default)]
     pub copilot_headers: bool,
-    /// Name Luxe to OpenRouter with the `HTTP-Referer` / `X-Title` headers it publishes for app
+    /// Name luxe to OpenRouter with the `HTTP-Referer` / `X-Title` headers it publishes for app
     /// attribution. They carry nothing about the user or the turn — OpenRouter already has the
     /// key, the model and the prompt — and set this to `false` to drop them anyway.
     #[serde(default)]
@@ -264,7 +264,7 @@ pub struct ModelInfo {
     pub max_tokens: u32,
     /// Whether the model supports reasoning/thinking.
     pub reasoning: bool,
-    /// Luxe level to provider/model value; `None` marks an unsupported level.
+    /// luxe level to provider/model value; `None` marks an unsupported level.
     #[serde(default)]
     pub thinking_level_map: HashMap<String, Option<String>>,
     /// Reasoning level a session starts at on this model (`models.json`'s `thinking`).
@@ -331,7 +331,7 @@ impl ModelInfo {
     /// Resolves a requested level to one this model supports.
     ///
     /// Explicit `null` mappings disable a level. `xhigh` and `ultra` are opt-in because
-    /// providers vary most at the top end; other levels use their Luxe names by default.
+    /// providers vary most at the top end; other levels use their luxe names by default.
     /// Unsupported levels clamp upward first, then downward, matching Pi's behavior.
     pub fn effective_thinking_level(&self, requested: ThinkingLevel) -> ThinkingLevel {
         if !self.reasoning {

@@ -373,7 +373,7 @@ fn a_known_kind_written_wrong_still_fails_loud() {
     );
 }
 
-/// [`EntryKind::Unknown`] makes three promises about a log a newer Luxe has written to: it
+/// [`EntryKind::Unknown`] makes three promises about a log a newer luxe has written to: it
 /// stays readable, the unrecognized entry is kept rather than dropped, and the parent chain
 /// still walks through it. All three were documented; none were tested.
 #[test]

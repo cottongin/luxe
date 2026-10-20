@@ -60,20 +60,24 @@ pub(super) fn footer_lines(
     if lines.len() == 1 {
         lines.clear();
     }
-    let rows = telemetry_start
-        .map(|start| {
-            vec![
-                (start + MODEL_ROW, crate::mouse::MouseTarget::DockModelRow),
-                (start + MODE_ROW, crate::mouse::MouseTarget::DockModeRow),
-            ]
-        })
-        .unwrap_or_default();
+    let rows = telemetry_start.map(clickable_rows).unwrap_or_default();
     (lines, rows)
 }
 
-/// Where the model and mode rows sit in [`telemetry_lines`], under its heading.
-const MODEL_ROW: usize = 1;
-const MODE_ROW: usize = 3;
+/// The telemetry rows a click lands on, for a block starting at line `start`. The provider and the
+/// model are one choice in the picker, so both rows open it.
+fn clickable_rows(start: usize) -> Vec<(usize, crate::mouse::MouseTarget)> {
+    vec![
+        (start + PROVIDER_ROW, crate::mouse::MouseTarget::DockModelRow),
+        (start + MODEL_ROW, crate::mouse::MouseTarget::DockModelRow),
+        (start + MODE_ROW, crate::mouse::MouseTarget::DockModeRow),
+    ]
+}
+
+/// Where the provider, model and mode rows sit in [`telemetry_lines`], under its heading.
+const PROVIDER_ROW: usize = 1;
+const MODEL_ROW: usize = 2;
+const MODE_ROW: usize = 4;
 
 /// Builds the live activity line (spinner + label + elapsed) for the dock footer.
 ///
@@ -108,34 +112,29 @@ fn activity_line(app: &App, presentation: DockPresentation) -> Option<Line<'stat
     Some(Line::from(spans))
 }
 
+/// The widest label the telemetry blocks draw: a cost breakdown's `cache warming`.
+///
+/// Every label is one of ours, so the column is sized to them. The provider is a value now, on its
+/// own row, so a gateway's long id elides in the value column instead of widening the grid.
+pub(super) const WIDEST_TELEMETRY_LABEL: usize = 13;
+
 /// Narrowest the label column in the telemetry blocks gets: its width on the default rail.
 ///
-/// Wide enough to clear the section badge above it, so no value sits under the closing cap of the
-/// heading that introduces it, and wide enough for the one label that is not ours: the provider
-/// serving the model takes this column, and a provider can be named anything (`foundry-anthropic`
-/// is seventeen cells).
+/// The widest label and two cells of air, which also clears the section badge above it, so no
+/// value sits under the closing cap of the heading that introduces it. Every cell not spent here
+/// goes to the values, and the model's name is the one that needs them.
 ///
-/// The room comes out of the value column, and the MODEL row spends what is left on a model's
-/// name — so this number is a **split**, cell for cell, between two things that both elide. Across
-/// the models.dev snapshot each cell returned to the name fits about three percent more display
-/// names, while provider ids cluster well under nineteen and only a gateway prefix pushes one past
-/// it. Nineteen is where a `foundry-`-prefixed provider still reads in full and the name keeps the
-/// rest.
-///
-/// Every other value is bounded by what it reports — a percentage, a level, a price — or truncates
-/// itself, as the token row does ([`token_value`]). `every_telemetry_row_fits_the_rail` holds every
-/// end of that.
-///
-/// All of that is arithmetic about a forty-cell rail. A rail dragged wider has cells to spare, so
-/// [`telemetry_label_width`] grows the column from here rather than holding it.
-pub(super) const TELEMETRY_LABEL_WIDTH: usize = 19;
+/// Every value is bounded by what it reports — a percentage, a level, a price — or truncates
+/// itself, as the token row does ([`token_value`]) and the provider and model names do.
+/// `every_telemetry_row_fits_the_rail` holds every end of that. A rail dragged wider has cells to
+/// spare, so [`telemetry_label_width`] grows the column from here rather than holding it.
+pub(super) const TELEMETRY_LABEL_WIDTH: usize = WIDEST_TELEMETRY_LABEL + 2;
 
 /// The label column for a `row`-wide dock whose longest label is `widest` cells.
 ///
-/// The floor on the default rail, so that rail reads as it always has. Wider, the column grows to
-/// seat a provider the floor would cut, and the gap before the values grows with the rail: two
-/// cells of air read as a pair at forty cells and as a crowd at eighty. Never past two fifths of
-/// the row, which is what keeps the model's name the thing a wide rail spends its room on.
+/// The floor on the default rail. Wider, the gap before the values grows with the rail: two cells
+/// of air read as a pair at forty cells and as a crowd at eighty. Never past two fifths of the
+/// row, which is what keeps the model's name the thing a wide rail spends its room on.
 pub(super) fn telemetry_label_width(row: usize, widest: usize) -> usize {
     let gap = match row {
         0..48 => 2,
@@ -189,27 +188,21 @@ pub(super) fn token_value(totals: &luxe_core::usage::UsageTotals, room: usize) -
 /// and its row is the pointer's way into the picker; SESSION waits for a turn to measure, so an
 /// idle, pre-turn dock stays short.
 pub(super) fn telemetry_lines(app: &App) -> Vec<Line<'static>> {
-    let status = &app.status;
-    // Who is serving it takes the label column the rest of the block uses, so MODEL reads as one
-    // grid with SESSION rather than as a headline with rows under it — and it is the one thing
-    // about the model that its name does not say. Until the engine has announced a model there
-    // is no provider to name, so the row falls back to saying what it is; leaving the column
-    // empty would put the value somewhere no other row's value sits.
-    let served_by = if status.provider.is_empty() { "model" } else { status.provider.as_str() };
     let row = row_width(app);
-    let column = telemetry_label_width(row, served_by.width());
-    let mut lines = model_telemetry(app, served_by, row, column);
+    let column = telemetry_label_width(row, WIDEST_TELEMETRY_LABEL);
+    let mut lines = model_telemetry(app, row, column);
     lines.extend(session_telemetry(app, row, column));
     lines
 }
 
 /// The MODEL block: who serves it, the model, its thinking level, the mode, and auto-approval.
-fn model_telemetry(app: &App, served_by: &str, row: usize, column: usize) -> Vec<Line<'static>> {
+fn model_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>> {
     let styles = &app.theme_styles;
     let status = &app.status;
     let mut lines: Vec<Line<'static>> = Vec::new();
 
     lines.push(section_heading_line(Section::Model, app));
+    lines.push(provider_row(app, row, column));
     let room = telemetry_value_width(row, column).saturating_sub(icon_cells(Icon::Model.glyph()));
     // Nothing chooses a model for the reader, so this row says which it is either way — and stays
     // the affordance that opens the picker, which is the whole reason a reader with none needs it.
@@ -218,7 +211,7 @@ fn model_telemetry(app: &App, served_by: &str, row: usize, column: usize) -> Vec
         false => (truncate_cells(&status.model, room), styles.text),
     };
     lines.push(telemetry_affordance(
-        served_by,
+        "model",
         icon_label(Icon::Model.glyph(), &name),
         ink,
         column,
@@ -259,6 +252,27 @@ fn model_telemetry(app: &App, served_by: &str, row: usize, column: usize) -> Vec
         ));
     }
     lines
+}
+
+/// Who serves the model, wearing that provider's mark. Always drawn, so the rows under it keep
+/// their place: before the engine names a provider it says `none`, dimmed.
+fn provider_row(app: &App, row: usize, column: usize) -> Line<'static> {
+    let styles = &app.theme_styles;
+    let provider = app.status.provider.as_str();
+    let icon = crate::widgets::provider_icon(provider).glyph();
+    let room = telemetry_value_width(row, column).saturating_sub(icon_cells(icon));
+    let (name, ink) = match provider.is_empty() {
+        true => ("none".to_string(), styles.dim),
+        false => (truncate_cells(provider, room), styles.text),
+    };
+    telemetry_affordance(
+        "provider",
+        icon_label(icon, &name),
+        ink,
+        column,
+        app,
+        &crate::mouse::MouseTarget::DockModelRow,
+    )
 }
 
 /// The SESSION block, once a turn has something to measure or someone has joined: the window,

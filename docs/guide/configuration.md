@@ -1,12 +1,12 @@
 ---
 title: "Configuration"
-summary: "Where Luxe's files live, what a project can set, and every key in config.json."
+summary: "Where luxe's files live, what a project can set, and every key in config.json."
 order: 1
 group: "Customize"
 ---
 
-Luxe works with no configuration. Everything here is optional, and most of it can be set from inside
-Luxe: **Configuration** (on the start screen, or `/config`) signs you in and opens these files in
+luxe works with no configuration. Everything here is optional, and most of it can be set from inside
+luxe: **Configuration** (on the start screen, or `/config`) signs you in and opens these files in
 your editor, [`/settings`](#settings) changes the settings you use most, `/theme` sets the theme,
 and `/model` the model.
 
@@ -35,7 +35,7 @@ in `.luxe/` at its root.
 ### What a project cannot change
 
 A project's `.luxe/config.json` overrides yours key by key, with a few exceptions. These run
-programs, reach the network, or decide what a repository is trusted with, so Luxe reads them from
+programs, reach the network, or decide what a repository is trusted with, so luxe reads them from
 your own config only:
 
 - `launchers` and `mentions`, which run programs
@@ -44,7 +44,7 @@ your own config only:
 - `agent.on_ask`, which a project can set to `deny` but not to `allow`
 - `agent.cache_warming`, which a project can turn down but not up, since it spends your money
 
-Project `gate.commands` also run programs. Luxe ignores them and warns unless you start with
+Project `gate.commands` also run programs. luxe ignores them and warns unless you start with
 `--trust-project`. With trust, a nonempty project list replaces your global list. Otherwise, the
 loop uses your global commands. Move the list to your own config if you don't want to trust the
 project.
@@ -55,8 +55,8 @@ project.
 screen) and writes the answers to `config.json`, changing only those keys. It also writes a
 `config.schema.json` beside it so your editor can complete and check every key. `--defaults` writes
 a file that chooses nothing, without asking, and so does a run with no terminal; with a
-`config.json` already there, either one needs `--force`, which removes the old file first. Luxe ignores a key it does
-not know, so an old config always loads on a newer Luxe; check the spelling if a setting seems to
+`config.json` already there, either one needs `--force`, which removes the old file first. luxe ignores a key it does
+not know, so an old config always loads on a newer luxe; check the spelling if a setting seems to
 do nothing.
 
 `/reload` (`ctrl+shift+r`) applies changes to `config.json` and `keybindings.json` without
@@ -82,7 +82,7 @@ change writes one key to your `config.json` and leaves the rest of the file as i
 
 Each value says where it comes from: `default`, `global` (your `config.json`), or `project` (this
 project's `.luxe/config.json`, which wins over yours, so it is changed there). Most settings take
-effect at once; the rest say they take effect the next time Luxe starts. That includes the Tools
+effect at once; the rest say they take effect the next time luxe starts. That includes the Tools
 page, because the tools the agent is offered are fixed for a run. In a window too small for the
 panel, it says so instead, and only `esc` works until the window fits.
 
@@ -115,22 +115,22 @@ are doing.
 
 The notification goes through your terminal, as an escape sequence it turns into a desktop
 notification, so it works over ssh and needs nothing installed. Ghostty, iTerm2, kitty, WezTerm,
-Warp and foot show them; Luxe recognizes those and sends nothing to a terminal it does not know. If
-yours shows them and Luxe does not recognize it, name the sequence: `"notification_method": "osc9"`
+Warp and foot show them; luxe recognizes those and sends nothing to a terminal it does not know. If
+yours shows them and luxe does not recognize it, name the sequence: `"notification_method": "osc9"`
 (the common one) or `"osc777"`. Inside tmux, add `set -g allow-passthrough on` to your tmux
 configuration. Your terminal may also have to be allowed to send notifications in your system's
 settings.
 
 ### herdr
 
-Inside a [herdr](https://herdr.dev) pane, Luxe tells herdr whether it is working, idle, or waiting
+Inside a [herdr](https://herdr.dev) pane, luxe tells herdr whether it is working, idle, or waiting
 on you, and why: `Approve bash`, or the question it asked. herdr shows that in its sidebar, raises
-its own notification when Luxe finishes or needs you (set in herdr's `[ui.toast]`), and reports it
+its own notification when luxe finishes or needs you (set in herdr's `[ui.toast]`), and reports it
 to `herdr agent wait`. After a herdr restart, the pane reopens the same session with
-`luxe --resume`. Luxe sends no escape-sequence notifications inside herdr, because herdr keeps
+`luxe --resume`. luxe sends no escape-sequence notifications inside herdr, because herdr keeps
 them for itself.
 
-[Recipes](recipes.md#luxe-colors-in-herdr) has a Luxe palette for herdr's theme.
+[Recipes](recipes.md#luxe-colors-in-herdr) has a luxe palette for herdr's theme.
 
 This is local to your machine and on by default. Outside herdr nothing is sent.
 `LUXE_HERDR=0` in the environment stops the reports, and so does the config:
@@ -141,7 +141,7 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 
 ### Joining a session
 
-A running Luxe lets another program on this machine join its session: `luxe join`, a script, or
+A running luxe lets another program on this machine join its session: `luxe join`, a script, or
 whatever you build on [the RPC protocol](rpc.md#join-a-running-session). Only your user account can
 connect, and nothing listens on the network. To turn it off:
 
@@ -154,11 +154,11 @@ it back on once yours has.
 
 ### Updates
 
-Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
+Once a day, luxe checks whether a newer release exists, and when one does the start screen says
 *Update available · /update*. The check sends nothing about you or your machine; the comparison
 happens locally.
 
-`/update`, or `luxe update` in a shell, updates Luxe with the command for however you installed
+`/update`, or `luxe update` in a shell, updates luxe with the command for however you installed
 it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
@@ -167,9 +167,10 @@ it, showing each one before it runs:
 | Homebrew | `brew update`, then `brew upgrade luxe` |
 | Cargo | `cargo install --locked --force luxe-cli` |
 
-Luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
+luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
 package manager owns is left to it, and a downloaded archive points you at the releases page. On
-Windows, Luxe can't be replaced while it runs, so it prints the command to run once it has exited.
+Windows, a running program can't be overwritten, so luxe first renames itself to `luxe.exe.old`,
+and the next launch deletes it.
 Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
 copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 
@@ -195,9 +196,9 @@ or lazygit:
 }
 ```
 
-Luxe keeps running underneath and redraws when the program exits. Text the program writes to the
+luxe keeps running underneath and redraws when the program exits. Text the program writes to the
 file named by `$LUXE_HANDOFF` is put in the composer, so a gh-dash command can send
-`#123 look at this` to Luxe. A launcher's key wins over any other binding.
+`#123 look at this` to luxe. A launcher's key wins over any other binding.
 
 ## Reference
 

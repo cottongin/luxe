@@ -22,7 +22,7 @@ const { models, providers } = catalog;
  * Recording sizes, so a caption and its cast cannot drift apart.
  *
  * 120 columns rather than 150: a demo shares its row with a paragraph, and at 150 the type came out
- * too small to read on a laptop. Below about 130 columns Luxe trades the dock for the statusline,
+ * too small to read on a laptop. Below about 130 columns luxe trades the dock for the statusline,
  * which is the layout that reads best at this size anyway.
  */
 const WIDE = { cols: 120, rows: 32 };
@@ -34,10 +34,11 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
   description="A terminal coding agent with real developer tooling, reviews you can actually read, and nothing sent anywhere you didn't ask."
   heroMark
 >
-  {/* The opening assembles itself: the words alone, centered, until "better" has finished
-      refining; then they slide left and the demo rises from the bottom right to sit beside them.
-      `data-hero` is what the driver script looks for. */}
-  <section class="hero" data-hero>
+  {/* The opening assembles itself: the words alone, each line centered, until "better" has
+      finished refining; then they settle onto the left edge and the demo rises from the bottom
+      right to sit beside them. `data-hero` is what the driver script looks for, and
+      `data-align="left"` turns on the left-aligned assembly below. */}
+  <section class="hero" data-hero data-align="left">
     <div class="hero__stage">
     <div class="page hero__inner">
       <div class="hero__lead">
@@ -53,7 +54,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
       </h1>
 
       <p class="lede hero__lede">
-      A beautiful coding agent for your terminal. Write, review, and ship code with a single, intuitive workflow.
+      A coding agent for your terminal. Write, review, and ship code with a single, intuitive workflow.
       </p>
 
       <div class="hero__install">
@@ -106,10 +107,31 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
       const keys = ["ArrowDown", "PageDown", "End", " ", "Spacebar"];
       let assembled = false;
 
+      // The widest line, not the box: a wrapped paragraph's box is wider than any of its lines
+      const contentWidth = (el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return Math.min(range.getBoundingClientRect().width, el.offsetWidth);
+      };
+
+      // Left-aligned, each block is centered on its own, so each needs its own distance
+      const measureBlocks = () => {
+        for (const block of lead.children) {
+          block.style.setProperty("--self-shift", (lead.clientWidth - contentWidth(block)) / 2 + "px");
+        }
+      };
+
       const measure = () => {
         // Left column's center to the page's center. The lead is translated by this at p = 0.
         hero.style.setProperty("--hero-shift", (inner.clientWidth - lead.clientWidth) / 2 + "px");
+        measureBlocks();
       };
+
+      // The headline turns italic mid-opening and changes width, so it has to be measured again
+      if ("ResizeObserver" in window) {
+        const watcher = new ResizeObserver(() => !assembled && wide.matches && measure());
+        for (const block of lead.children) watcher.observe(block);
+      }
 
       // Moved, or simply set: a page that opens mid-scroll or narrow has nothing to watch arrive
       const assemble = (moved = true) => {
@@ -165,12 +187,12 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
           <h2>An agent that <Refine from="shows its" to="explains the" /> work.</h2>
           <div class="prose">
             <p>
-              Agents write code faster than anyone can read it. So Luxe reads it back to you, one
+              Agents write code faster than anyone can read it. So luxe reads it back to you, one
               chapter at a time, in the order it makes sense. Each chapter says what changed, why,
               and how it was checked, right next to the code.
             </p>
             <p>
-              It can read a pull request the same way, regardless of who wrote it. Luxe walks you
+              It can read a pull request the same way, regardless of who wrote it. luxe walks you
               through the code so you can review work from a teammate, Dependabot, or another agent
               in a flash. Comment on a line for the agent to address it, or post a review to GitHub
               without leaving the app.
@@ -319,7 +341,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
           <div class="prose">
             <p>
               Browse and select an issue with <code>/github</code>, or pick one up with
-              <code>luxe --issue 123</code>. Luxe reads the issue, makes a worktree and
+              <code>luxe --issue 123</code>. luxe reads the issue, makes a worktree and
               a branch for it, and starts a session there. Your own checkout stays exactly
               how you left it.
             </p>
@@ -389,14 +411,14 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
           <h2>Plays well with others.</h2>
           <div class="prose">
             <p>
-              Luxe knows more than {models} models from over {providers} providers, through the
+              luxe knows more than {models} models from over {providers} providers, through the
               models.dev catalog, and connects to two dozen of those providers by name. Use a
               frontier model, a local one through LM Studio or Ollama, or any OpenAI-compatible
               endpoint. Sign in with a ChatGPT or Copilot subscription,
               or bring an API key. <code>/model</code> lets you switch mid-session.
             </p>
             <p>
-              Luxe gets along with the rest of your setup, too. Files open in <code>$EDITOR</code> on
+              luxe gets along with the rest of your setup, too. Files open in <code>$EDITOR</code> on
               a keypress, <a href="https://herdr.dev" target="_blank">Herdr</a>'s sidebar knows when it's
               working or waiting on you, and the MCP servers you already run can come along for the ride.
             </p>
@@ -448,13 +470,13 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
     <section class="section" id="extend">
       <div class="duo duo--flip">
         <div class="duo__text">
-          <p class="eyebrow">Extending Luxe</p>
+          <p class="eyebrow">Extending luxe</p>
           <h2>Make it yours.</h2>
           <div class="prose">
             <p>
               Skills teach the agent how you work. Hooks can gate, rewrite or log anything the agent
               does. MCP servers hand the model new tools, mention sources link extra context, and the
-              RPC protocol drives everything Luxe does, Guided Review and GitHub included, so you can
+              RPC protocol drives everything luxe does, Guided Review and GitHub included, so you can
               build a whole new front end on top.
             </p>
             <p>
@@ -499,7 +521,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
           <h2>Right at home, in <Refine from="any" to="every" /> home.</h2>
           <div class="prose">
             <p>
-              Luxe comes with plenty of themes to suit your style, including community favorites like
+              luxe comes with plenty of themes to suit your style, including community favorites like
               Catppuccin, Nord, Tokyo Night, GitHub, One Dark, and more. Or, you can stick with its own
               signature theme, which holds every accent to a contrast floor so every color stays readable.
             </p>
@@ -508,7 +530,7 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
               that names only the colors it changes, so a new one is a few lines to write and share.
             </p>
             <p>
-              For users on <a href='https://omarchy.org/' target='_blank'>Omarchy</a>, Luxe wears your desktop's
+              For users on <a href='https://omarchy.org/' target='_blank'>Omarchy</a>, luxe wears your desktop's
               theme and changes with it when you switch.
             </p>
           </div>
@@ -1030,6 +1052,34 @@ const NARROW = { mobileCols: 72, mobileRows: 24 };
     .hero__demo {
       transform: none;
       opacity: 1;
+    }
+  }
+
+  /* === The left-aligned assembly ===
+
+     `text-align` can't be animated, so nothing switches alignment. The lead is left-aligned from the
+     first frame and each block is slid to the middle on its own, by its own widest line. As `--p`
+     runs out every block lands on the column's left edge, the narrow ones having come furthest.
+     The lede is balanced so its ragged right reads as centered in the opening.
+
+     `translate` rather than `transform`: the blocks' `rise` keeps `transform` for good (`both`). */
+  .hero[data-align] .hero__lead {
+    justify-items: start;
+    text-align: left;
+    transform: none;
+  }
+
+  .hero[data-align] .hero__lead > * {
+    translate: calc((var(--hero-shift, 0px) + var(--self-shift, 0px)) * (1 - var(--p))) 0;
+  }
+
+  .hero[data-align] .hero__lede {
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero[data-align] .hero__lead > * {
+      translate: none;
     }
   }
 

@@ -7,7 +7,7 @@ mod job;
 
 /// Kill the process `pid` started *and everything it started*.
 ///
-/// Every timeout path in Luxe needs this, and none of them can use the child handle alone:
+/// Every timeout path in luxe needs this, and none of them can use the child handle alone:
 /// `kill_on_drop` reaps the shell, not the `cargo` the shell spawned, so a timed-out build keeps
 /// compiling with nobody waiting for it.
 ///
@@ -127,12 +127,12 @@ pub fn hostname() -> String {
     "unknown".to_string()
 }
 
-/// Start this command away from Luxe's terminal: leading a session of its own, and with it a process
+/// Start this command away from luxe's terminal: leading a session of its own, and with it a process
 /// group, so [`kill_tree`] can reach its descendants and nothing in it can use the terminal.
 ///
-/// Everything Luxe runs on its own comes through here (`bash`, [`captured_command`], hooks,
+/// Everything luxe runs on its own comes through here (`bash`, [`captured_command`], hooks,
 /// formatters, MCP servers, debug adapters), and the terminal belongs to the TUI. A process group
-/// alone was not enough: still in Luxe's session, a member that read `/dev/tty` or changed its
+/// alone was not enough: still in luxe's session, a member that read `/dev/tty` or changed its
 /// settings (a spinner's `stty -echo`, a password prompt) had the kernel suspend the whole group,
 /// foreground shell included, until the call timed out, and a plain write drew over the screen. A
 /// session of its own has no controlling terminal: `/dev/tty` does not open, and a program that
@@ -140,7 +140,7 @@ pub fn hostname() -> String {
 /// opencode, Pi and Claude Code get it from Node's `detached`.
 ///
 /// On Windows, where there is no controlling terminal to leave, the child gets a console of its own
-/// that no window shows: one it shared with Luxe was Luxe's terminal tab, and a program that names
+/// that no window shows: one it shared with luxe was luxe's terminal tab, and a program that names
 /// its console, as npm does, renamed the tab. Its tree is reached through [`TreeGuard`]'s job.
 pub fn detach_from_terminal(command: &mut tokio::process::Command) {
     // SAFETY: the hook runs in the forked child before `exec`, where only async-signal-safe work is
@@ -203,12 +203,12 @@ impl Drop for TreeGuard {
     }
 }
 
-/// Takes stdin for the caller alone, and gives every process Luxe starts the null device instead.
+/// Takes stdin for the caller alone, and gives every process luxe starts the null device instead.
 ///
 /// `luxe --rpc` reads its protocol from stdin for as long as it runs, and everything it starts
-/// would otherwise share that pipe. On Unix, a child that reads stdin eats frames meant for Luxe. On
+/// would otherwise share that pipe. On Unix, a child that reads stdin eats frames meant for luxe. On
 /// Windows it is worse: synchronous I/O on one pipe is serialized, so a child holding the inherited
-/// handle stalls behind Luxe's pending read until the client next writes, and a client waiting on
+/// handle stalls behind luxe's pending read until the client next writes, and a client waiting on
 /// that child never does. Every git a review load runs sat there, and so would any tool call.
 ///
 /// The returned file is a private copy nothing inherits: close-on-exec on Unix, not inheritable on

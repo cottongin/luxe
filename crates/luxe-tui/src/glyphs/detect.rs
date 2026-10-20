@@ -1,7 +1,7 @@
 //! Glyph detection — what the terminal and its fonts can draw: braille, Nerd Font icons, kitty.
 
 use super::spinner::SPINNER_BRAILLE;
-use super::{GlyphTier, EVERY_ICON};
+use super::{GlyphTier, EVERY_ICON, RECENT_BRANDS};
 
 /// Whether the terminal in front of the reader can draw the braille sweep.
 ///
@@ -109,8 +109,20 @@ pub(super) fn nerd_icons_available() -> bool {
         return true;
     }
     // Derived from the table, so an icon added in a range nothing else uses extends the probe
-    // rather than slipping past it.
-    fontconfig_has_all(EVERY_ICON.iter().filter_map(|icon| icon.at(GlyphTier::Nerd).chars().next()))
+    // rather than slipping past it. The recent brands are asked about on their own
+    let probed = EVERY_ICON.iter().filter(|icon| !RECENT_BRANDS.contains(icon));
+    fontconfig_has_all(probed.filter_map(|icon| icon.at(GlyphTier::Nerd).chars().next()))
+}
+
+/// Whether one installed font has every recent brand mark, which only Nerd Fonts 3.5 and later do.
+///
+/// fontconfig is the only way to ask, so without it (stock macOS, Windows) the answer is no and
+/// each brand falls back to a mark every v3 font has. Not kitty's shortcut either: the symbol font
+/// it bundles is as old as the kitty.
+pub(super) fn brands_available() -> bool {
+    fontconfig_has_all(
+        RECENT_BRANDS.iter().filter_map(|icon| icon.at(GlyphTier::Nerd).chars().next()),
+    )
 }
 
 /// Whether this is kitty — the one terminal that answers the question above by itself.

@@ -5,9 +5,9 @@
 //! idiom.
 //!
 //! The usual cure — resetting `SIGPIPE` to its default so the process dies silently — is wrong
-//! here. Luxe writes to hook, MCP and LSP pipes and relies on `EPIPE` arriving as an error: the
+//! here. luxe writes to hook, MCP and LSP pipes and relies on `EPIPE` arriving as an error: the
 //! command-hook runner deliberately tolerates a hook that exits without reading its stdin, and a
-//! default `SIGPIPE` would kill Luxe at that line instead. So the pipe stays ignored and the
+//! default `SIGPIPE` would kill luxe at that line instead. So the pipe stays ignored and the
 //! writing goes through one place, where a reader that has gone away is a quiet, successful end of
 //! output.
 //!

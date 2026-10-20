@@ -31,6 +31,11 @@ impl FilesTree {
         wanted
     }
 
+    /// How many listings have been asked for and not yet answered.
+    pub fn in_flight(&self) -> usize {
+        self.listings.values().filter(|listing| listing.request.is_some()).count()
+    }
+
     /// Records that `folder`'s listing was asked for under `request`.
     pub fn requested(&mut self, folder: &str, request: ListingRequestId) {
         self.generation += 1;

@@ -12,7 +12,7 @@
 use serde_json::{Map, Value};
 use tracing::warn;
 
-/// The payload a template with nothing configured gets: Qwen's two flags, which is what Luxe sent
+/// The payload a template with nothing configured gets: Qwen's two flags, which is what luxe sent
 /// for every chat-template model before the map existed.
 fn default_kwargs(enabled: bool) -> Value {
     serde_json::json!({ "enable_thinking": enabled, "preserve_thinking": true })
@@ -40,7 +40,7 @@ pub(crate) fn kwargs(template: &Map<String, Value>, enabled: bool, effort: &str)
 /// Resolve one configured value, or `None` to leave the key out.
 ///
 /// Anything that isn't a `$var` reference is a literal and travels verbatim — a template argument
-/// can be any JSON the template understands, and Luxe has no business inspecting it.
+/// can be any JSON the template understands, and luxe has no business inspecting it.
 fn resolve(key: &str, value: &Value, enabled: bool, effort: &str) -> Option<Value> {
     let Some(reference) = value.as_object().filter(|object| object.contains_key("$var")) else {
         return Some(value.clone());

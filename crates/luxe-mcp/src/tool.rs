@@ -36,7 +36,7 @@ impl Tool for McpProxyTool {
         "mcp"
     }
 
-    /// An MCP server is a third-party process or endpoint that Luxe does not control, and the
+    /// An MCP server is a third-party process or endpoint that luxe does not control, and the
     /// JSON-RPC exchange has no deadline of its own. Untrusted means untrusted about liveness too: a
     /// server that accepts a call and never replies must cost a bounded wait, not the turn.
     fn timeout(&self) -> Option<std::time::Duration> {

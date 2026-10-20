@@ -135,7 +135,7 @@ async fn a_spawned_command_leads_its_own_session_and_group() {
     kill_tree(pid.as_raw_nonzero().get() as u32);
     assert_eq!(session, pid, "a session of its own");
     assert_eq!(group, pid, "and a group of its own");
-    assert_ne!(session, ours, "not Luxe's");
+    assert_ne!(session, ours, "not luxe's");
 }
 
 #[cfg(unix)]

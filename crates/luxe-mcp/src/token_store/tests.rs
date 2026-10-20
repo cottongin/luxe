@@ -209,7 +209,7 @@ fn an_unreadable_store_is_not_overwritten() {
     assert_eq!(store.signed_in_ids(), ["linear".to_string()].into_iter().collect());
 }
 
-/// One entry an older or newer Luxe wrote differently does not hide the others, and survives a
+/// One entry an older or newer luxe wrote differently does not hide the others, and survives a
 /// write for another server.
 #[test]
 fn an_entry_that_does_not_parse_hides_nothing_else() {

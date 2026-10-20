@@ -2,7 +2,7 @@
 //!
 //! Loads `~/.config/luxe/config.json` (global) and `<repo>/.luxe/config.json`
 //! (project-local), merges them (project wins), and falls back to defaults on any
-//! parse error. Unknown fields are ignored so a newer Luxe's config keeps working
+//! parse error. Unknown fields are ignored so a newer luxe's config keeps working
 //! with an older build and vice versa.
 //!
 //! The schema is published via [`Config::schema_json`] for editor autocomplete
@@ -31,7 +31,7 @@ pub use integrations::*;
 use merge::{merge_color_overrides, merge_disabled};
 pub use write::{value_at, ConfigLayers, ConfigWriteError, Layer};
 
-/// The theme a launch lands on when nothing else decides: Luxe's own.
+/// The theme a launch lands on when nothing else decides: luxe's own.
 ///
 /// A default theme is the product's face, so it is the one drawn for it rather than a neutral
 /// stand-in. An explicit setting and a matching desktop theme both still win.
@@ -75,7 +75,7 @@ pub struct Config {
     /// use default (silent), because a modern terminal turns a bell into a window-manager attention
     /// request, which pulls focus off whatever the reader walked away to do.
     pub bell: Option<bool>,
-    /// Report the agent's state to herdr when Luxe runs in one of its panes. `None` = use default
+    /// Report the agent's state to herdr when luxe runs in one of its panes. `None` = use default
     /// (on).
     pub herdr: Option<bool>,
     /// Let another front-end on this machine join a running session. `None` = use default (on).
@@ -105,9 +105,9 @@ pub struct Config {
     pub compaction: CompactionConfig,
     /// Language-server behavior
     pub lsp: LspConfig,
-    /// Whether Luxe checks for a newer release
+    /// Whether luxe checks for a newer release
     pub update: UpdateConfig,
-    /// How Luxe keeps up with GitHub
+    /// How luxe keeps up with GitHub
     pub github: GithubConfig,
     /// Whether sessions work in worktrees of their own
     pub worktree: WorktreeConfig,
@@ -137,7 +137,7 @@ impl Config {
         }
     }
 
-    /// Whether Luxe opens on the start screen (default: yes).
+    /// Whether luxe opens on the start screen (default: yes).
     pub fn dashboard_shown(&self) -> bool {
         !matches!(self.dashboard, Some(DashboardSetting::Enabled(false)))
     }
@@ -186,7 +186,7 @@ impl Config {
         self.notifications.as_ref().is_some_and(Notifications::any)
     }
 
-    /// Whether the agent's state is reported to herdr when Luxe runs inside it (default: yes).
+    /// Whether the agent's state is reported to herdr when luxe runs inside it (default: yes).
     pub fn herdr(&self) -> bool {
         self.herdr.unwrap_or(true)
     }
@@ -202,7 +202,7 @@ impl Config {
 
     /// Resolves the active theme name, falling back to the current desktop theme when known.
     ///
-    /// An explicit Luxe setting always wins. Without one, the desktop's theme is used when the
+    /// An explicit luxe setting always wins. Without one, the desktop's theme is used when the
     /// registry carries one (Omarchy's, see [`crate::omarchy`]), because matching the desktop beats
     /// showing off, and anything else lands on [`DEFAULT_THEME`].
     pub fn resolved_theme_name(&self, registry: &ThemeRegistry) -> String {
@@ -242,7 +242,7 @@ impl Config {
         resolved
     }
 
-    /// The JSON Schema for the config files: the checked-in `config.schema.json`, which Luxe writes
+    /// The JSON Schema for the config files: the checked-in `config.schema.json`, which luxe writes
     /// beside the user's config so an editor can complete and check every key.
     pub fn schema_json() -> &'static str {
         include_str!("config/config.schema.json")
@@ -349,7 +349,7 @@ mod activity_bar_config_tests {
         assert_eq!(config.theme.as_deref(), Some("nord"), "and the rest of the file still lands");
     }
 
-    /// A source's kind is the one set, or its name folded; it may not take one of Luxe's own tabs',
+    /// A source's kind is the one set, or its name folded; it may not take one of luxe's own tabs',
     /// and it needs a program to run.
     #[test]
     fn a_mention_source_has_a_kind_of_its_own() {

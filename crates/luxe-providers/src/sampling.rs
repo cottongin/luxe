@@ -4,7 +4,7 @@
 //! three of the keys a typical one names (`top_k`, `min_p`, `repeat_penalty`) have no field in the
 //! OpenAI wire schema. Worse, the defaults are not neutral: llama.cpp's `min_p` is `0.05`, so a
 //! request that simply omits it runs the model off-spec on every turn. So the map is passthrough,
-//! not a modelled set of options — Luxe carries whatever the server understands and validates none
+//! not a modelled set of options — luxe carries whatever the server understands and validates none
 //! of it.
 //!
 //! OpenAI-shaped bodies only. Anthropic has no equivalent surface and ignores it.
@@ -21,7 +21,7 @@ const RESERVED: [&str; 5] = ["model", "messages", "input", "stream", "tools"];
 ///
 /// Called after every field the adapter sets itself — `temperature`, the output cap, the thinking
 /// payload — which is the whole point: a model card's recipe is the final word on how that model
-/// is sampled, and a key here beats whatever Luxe would otherwise have sent.
+/// is sampled, and a key here beats whatever luxe would otherwise have sent.
 pub(crate) fn apply(body: &mut Value, params: &Map<String, Value>) {
     if params.is_empty() {
         return;
@@ -60,7 +60,7 @@ mod tests {
             })),
         );
 
-        assert_eq!(body["temperature"], 1.0, "the recipe outranks what Luxe set");
+        assert_eq!(body["temperature"], 1.0, "the recipe outranks what luxe set");
         assert_eq!(body["top_k"], 20);
         assert_eq!(body["min_p"], 0.0);
         assert_eq!(body["repeat_penalty"], 1.0);

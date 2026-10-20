@@ -124,7 +124,7 @@ fn the_limits_are_the_ones_the_guide_promises() {
     assert_eq!(STAGING_STALE_AFTER, Duration::from_secs(3_600));
 }
 
-/// A staging directory carries the second it was made, which is all that stops one Luxe from
+/// A staging directory carries the second it was made, which is all that stops one luxe from
 /// tidying away a clone another is still making.
 #[test]
 fn a_staging_directory_made_just_now_survives_tidying() {

@@ -147,7 +147,7 @@ fn test_mention_picker_opens_at_start() {
 
 /// The Files tab keeps up with the disk: opening the picker asks for a fresh read, the read lands
 /// in the open picker with the cursor still on its file, and Ctrl+R asks again. A file made or
-/// moved outside Luxe used to be unreachable until the session was reloaded.
+/// moved outside luxe used to be unreachable until the session was reloaded.
 #[test]
 fn the_files_tab_reads_the_disk_again_and_keeps_its_place() {
     let (tx, _rx) = mpsc::channel(8);
@@ -535,7 +535,7 @@ fn test_multi_mention_submit_does_not_panic() {
     }
 }
 
-/// A mention source whose kind is one of Luxe's own tabs' — `mcp` above all, reserved after sources
+/// A mention source whose kind is one of luxe's own tabs' — `mcp` above all, reserved after sources
 /// existed — says why it has no tab, at startup, instead of quietly not having one.
 #[test]
 fn a_mention_source_on_a_reserved_kind_says_so_at_startup() {

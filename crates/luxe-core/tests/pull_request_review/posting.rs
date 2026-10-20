@@ -263,7 +263,7 @@ async fn a_post_whose_comments_moved_since_the_preview_is_refused() {
     assert!(github.submitted.lock().unwrap().is_empty(), "nothing reached GitHub");
 }
 
-/// On your own pull request only comments go: GitHub refuses the author's approval, so Luxe says so
+/// On your own pull request only comments go: GitHub refuses the author's approval, so luxe says so
 /// before asking it.
 #[tokio::test]
 async fn approving_your_own_pull_request_is_refused_before_github_is_asked() {

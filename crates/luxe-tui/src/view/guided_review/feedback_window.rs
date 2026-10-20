@@ -279,7 +279,7 @@ fn preview_lines(app: &App, finding: &ReviewFinding) -> Vec<Line<'static>> {
         let who = match message.author {
             FindingMessageAuthor::Reviewer => "You",
             FindingMessageAuthor::Agent => "The agent",
-            FindingMessageAuthor::System => "Luxe",
+            FindingMessageAuthor::System => "luxe",
         };
         lines.push(Line::from(Span::styled(who, styles.muted)));
         lines.extend(crate::markdown::render_markdown(&message.body, styles));

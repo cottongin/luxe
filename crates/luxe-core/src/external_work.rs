@@ -11,7 +11,7 @@
 //!
 //! # What it can and cannot see
 //!
-//! Only paths Luxe's own file tools name. A `bash` command that deletes a file elsewhere is
+//! Only paths luxe's own file tools name. A `bash` command that deletes a file elsewhere is
 //! invisible here, which is why an external path inside a Git worktree is recorded as a *root*
 //! instead — Git then reports that tree the same way it reports the project, and catches what the
 //! shell did too. `ExternalWork::roots` is the honest answer for a checkout; `ExternalWork::loose`
@@ -129,7 +129,7 @@ impl ExternalWork {
     /// Called *before* the change, so the first call for a path is the only one that can see what
     /// was there; later calls leave the retained baseline alone. A path inside a Git worktree is
     /// recorded as its root instead of as a file, because Git can then report that tree completely
-    /// rather than only the parts Luxe touched.
+    /// rather than only the parts luxe touched.
     pub fn observe(&self, path: &Path) {
         let Ok(mut state) = self.state.lock() else {
             return;

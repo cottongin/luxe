@@ -96,7 +96,7 @@ fn stylesheet(dark: &HashMap<String, ColorValue>) -> String {
     out.push_str(":root {\n  color-scheme: dark;\n");
     out.push_str(&block(dark, true));
     // The canvas a baked-in capture sits on. A recording is the terminal's own background in every
-    // cell Luxe paints, so a plate in any other color turns the painted cells into rectangles; with
+    // cell luxe paints, so a plate in any other color turns the painted cells into rectangles; with
     // one theme on the page these are the page's own colors, named for what they are for.
     let _ = writeln!(
         out,
@@ -178,7 +178,7 @@ mod tests {
 
     /// Every exported token reaches the stylesheet. A token that resolves to an ANSI index or the
     /// terminal default has no hex to give, which is fine in a terminal and useless on a page — so
-    /// Luxe's own theme must not contain one.
+    /// luxe's own theme must not contain one.
     #[test]
     fn every_exported_token_has_a_color() {
         let dark = luxe();

@@ -16,7 +16,7 @@ fn committed_project(root: &std::path::Path) {
     for arguments in [
         ["init"].as_slice(),
         ["config", "user.email", "tests@example.invalid"].as_slice(),
-        ["config", "user.name", "Luxe Tests"].as_slice(),
+        ["config", "user.name", "luxe Tests"].as_slice(),
         ["add", "test.txt"].as_slice(),
         ["commit", "-m", "initial fixture"].as_slice(),
     ] {

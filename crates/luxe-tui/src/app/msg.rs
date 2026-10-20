@@ -117,6 +117,11 @@ pub enum Msg {
     ScrollContextFiles {
         up: bool,
     },
+    /// Walks a modal list's cursor one row (mouse wheel over it).
+    ScrollOverlayList {
+        list: crate::mouse::OverlayList,
+        up: bool,
+    },
     /// Scrolls one of the dock's lists by one step (mouse wheel over that section).
     ScrollDockList {
         list: crate::workspace_dock::DockList,

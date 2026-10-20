@@ -151,7 +151,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# The throwaway XDG_CONFIG_HOME is for Luxe alone. gh finds its hosts.yml under the same variable,
+# The throwaway XDG_CONFIG_HOME is for luxe alone. gh finds its hosts.yml under the same variable,
 # so without this every GitHub surface in the drive reads "not signed in" while gh is fine
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/gh}"
 

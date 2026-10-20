@@ -283,7 +283,7 @@ pub enum NotificationMethod {
 /// The moments that send a desktop notification: all of them, none, or a list.
 ///
 /// Read leniently, like every other key: a value that is neither a boolean nor a list is treated as
-/// unset and a name Luxe does not know is skipped, so one typo never takes the whole config with it.
+/// unset and a name luxe does not know is skipped, so one typo never takes the whole config with it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(untagged)]
 pub enum Notifications {

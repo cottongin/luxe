@@ -211,7 +211,7 @@ impl ToolActivity {
     }
 }
 
-/// Whether a tool is Luxe's own housekeeping rather than work someone asked for.
+/// Whether a tool is luxe's own housekeeping rather than work someone asked for.
 ///
 /// Only [`crate::tool::ACTIVATE_TOOLS_NAME`], and only because *we* tier the registry: the model
 /// asks for a deferred tool's schema before it can call it, which is a fact about our request

@@ -328,6 +328,11 @@ impl MentionFlyoutState {
         self.nav.select(filtered_index);
     }
 
+    /// The cursor's row among the filtered items.
+    pub(crate) fn cursor(&self) -> usize {
+        self.nav.selected()
+    }
+
     /// Get the current query.
     pub fn query(&self) -> &str {
         self.nav.query()

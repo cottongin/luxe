@@ -60,8 +60,8 @@ pub use workspace::seed_plan_usage;
 
 /// A light palette, for the light-mode paths no built-in reaches any more.
 ///
-/// Luxe ships dark themes only, but a reader's own theme file can be light, and the code that picks
-/// ink for a light canvas still has to be right for them. This is Catppuccin Latte as Luxe shipped
+/// luxe ships dark themes only, but a reader's own theme file can be light, and the code that picks
+/// ink for a light canvas still has to be right for them. This is Catppuccin Latte as luxe shipped
 /// it until the light themes were retired, kept so those paths keep a test that can fail.
 pub const LIGHT_THEME_JSON: &str = include_str!("fixture/light-theme.json");
 

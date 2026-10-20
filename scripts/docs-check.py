@@ -25,7 +25,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 GUIDE = ROOT / "docs" / "guide"
 
 # Sidebar groups, in order. `web/src/content.config.ts` holds the same list.
-GROUPS = ["Get started", "Using Luxe", "Customize", "Extend", "Reference"]
+GROUPS = ["Get started", "Using luxe", "Customize", "Extend", "Reference"]
 
 # Pages exempt from the voice rules while a rewrite is in progress. Empty: every page follows them.
 # Links and frontmatter apply to every page regardless.

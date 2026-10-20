@@ -6,7 +6,7 @@
 use super::Launch;
 
 const TEMPLATE: &str = "[Unit]
-Description=Luxe remote: your sessions on your own devices
+Description=luxe remote: your sessions on your own devices
 After=network-online.target
 
 [Service]

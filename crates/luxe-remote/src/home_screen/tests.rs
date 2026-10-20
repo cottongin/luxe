@@ -10,8 +10,8 @@ fn theme(pairs: &[(&str, ColorValue)]) -> HashMap<String, ColorValue> {
 fn the_manifest_is_pinned() {
     let expected = serde_json::json!({
         "id": "/",
-        "name": "Luxe",
-        "short_name": "Luxe",
+        "name": "luxe",
+        "short_name": "luxe",
         "start_url": "/",
         "scope": "/",
         "display": "standalone",
@@ -26,16 +26,16 @@ fn the_manifest_is_pinned() {
 }
 
 /// A named bridge's app is named for its computer, and the home screen label is the computer
-/// alone, since the icon already says Luxe.
+/// alone, since the icon already says luxe.
 ///
-/// The break this catches: two computers' apps both suggested as "Luxe", so the phone shows two
+/// The break this catches: two computers' apps both suggested as "luxe", so the phone shows two
 /// identical icons, or the full name crowding the home screen's short label.
 #[test]
 fn a_named_bridge_names_its_app_for_the_computer() {
     let named = manifest_json("#12100e", Some("desk"));
     assert_eq!(
         (named["name"].as_str(), named["short_name"].as_str()),
-        (Some("Luxe \u{00b7} desk"), Some("desk"))
+        (Some("luxe \u{00b7} desk"), Some("desk"))
     );
 }
 

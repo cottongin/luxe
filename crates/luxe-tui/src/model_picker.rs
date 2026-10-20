@@ -19,6 +19,9 @@ use ratatui::{
 };
 use unicode_width::UnicodeWidthStr;
 
+mod meta;
+use meta::meta_suffix;
+
 /// Panel label, shared by the rendered title and the modal-width computation.
 const TITLE: &str = "Select model";
 
@@ -136,6 +139,12 @@ impl ModelPickerState {
         self
     }
 
+    /// What the picker says above its list.
+    #[cfg(test)]
+    pub(crate) fn note(&self) -> &[String] {
+        &self.note
+    }
+
     /// Rows the note costs: its lines plus the blank one under them.
     fn note_rows(&self) -> u16 {
         match self.note.is_empty() {
@@ -213,6 +222,11 @@ impl ModelPickerState {
     /// The currently highlighted entry, if any row matches.
     pub fn selected_entry(&self) -> Option<&ModelEntry> {
         self.items.get(self.nav.selected_item_index()?)
+    }
+
+    /// The cursor's row among the visible matches.
+    pub(crate) fn cursor(&self) -> usize {
+        self.nav.selected()
     }
 
     /// Number of visible matches.
@@ -384,18 +398,21 @@ impl ModelPickerState {
             .saturating_add(1)
             .saturating_sub(capacity)
             .min(self.nav.filtered_indices().len().saturating_sub(capacity));
-        let end = start.saturating_add(capacity).min(self.nav.filtered_indices().len());
-        let available =
-            area.width.saturating_sub(2 + crate::widgets::SELECTION_FRAME as u16) as usize;
+        let total = self.nav.filtered_indices().len();
+        let end = start.saturating_add(capacity).min(total);
+        let width = crate::widgets::list_rows_width(area.width, total, area.height);
+        let available = width.saturating_sub(2 + crate::widgets::SELECTION_FRAME as u16) as usize;
         {
             let mut regions = hit.borrow_mut();
             for offset in 0..end.saturating_sub(start) {
                 let row_y = area.y.saturating_add(offset as u16);
                 regions.push(
-                    Rect::new(area.x, row_y, area.width, 1),
+                    Rect::new(area.x, row_y, width, 1),
                     crate::mouse::MouseTarget::ModelRow(start + offset),
                 );
             }
+            let list = crate::mouse::OverlayList::Models;
+            crate::widgets::list_scrollbar(frame, &mut regions, area, list, (start, total), theme);
         }
 
         let items: Vec<ListItem> = self.nav.filtered_indices()[start..end]
@@ -438,45 +455,13 @@ impl ModelPickerState {
                 }
                 ListItem::new(crate::widgets::selection_row(
                     spans,
-                    usize::from(area.width),
+                    usize::from(width),
                     selected,
                     theme,
                 ))
             })
             .collect();
-        frame.render_widget(List::new(items), area);
-    }
-}
-
-/// The parenthesized metadata suffix for a model row (`  (200k ctx · reasoning · catalog)`),
-/// or empty when the model carries none. Shared by the row renderer and the width calculation
-/// so the fitted modal width matches what is drawn.
-fn meta_suffix(entry: &ModelEntry) -> String {
-    let mut meta = Vec::new();
-    if entry.info.context_window > 0 {
-        meta.push(format!("{} ctx", human_tokens(entry.info.context_window)));
-    }
-    if entry.info.reasoning {
-        meta.push("reasoning".to_string());
-    }
-    match (entry.configured, entry.unverified) {
-        (_, true) => meta.push("unverified".to_string()),
-        (false, false) => meta.push("catalog".to_string()),
-        (true, false) => {}
-    }
-    if meta.is_empty() {
-        String::new()
-    } else {
-        format!("  ({})", meta.join(" · "))
-    }
-}
-
-/// `1.0M` / `200k` / `8192` — million-token windows read badly as `1000k`.
-fn human_tokens(tokens: u32) -> String {
-    match tokens {
-        t if t >= 1_000_000 => format!("{:.1}M", t as f64 / 1_000_000.0),
-        t if t >= 10_000 => format!("{}k", t / 1_000),
-        t => t.to_string(),
+        frame.render_widget(List::new(items), Rect { width, ..area });
     }
 }
 

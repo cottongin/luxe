@@ -54,7 +54,7 @@ pub(crate) struct ToolDenyReport {
     removed: Vec<DeniedTool>,
     /// Essential, so the request was refused
     refused: Vec<DeniedTool>,
-    /// A tool Luxe knows, not registered on this machine
+    /// A tool luxe knows, not registered on this machine
     unavailable: Vec<DeniedTool>,
     /// No tool of that name anywhere, with the nearest one when there is a near miss
     unknown: Vec<(DeniedTool, Option<&'static str>)>,
@@ -162,7 +162,7 @@ pub(crate) fn apply_tool_deny_list(
     report
 }
 
-/// Every tool Luxe can register, whatever this machine happens to have installed.
+/// Every tool luxe can register, whatever this machine happens to have installed.
 ///
 /// The set that makes "no such tool" tellable from "not here": four tools register only where
 /// their program exists (`debug`, `screenshot`, `ast_grep`) or where something is configured
@@ -344,7 +344,7 @@ pub(crate) async fn register_mcp_tools(registry: &mut ToolRegistry, repo_root: &
 /// The MCP servers this run may start, and the ids of any the project declared that it may not.
 ///
 /// A stdio server in `.mcp.json` is a command the repository chose, and an `eager` one must not
-/// start the moment Luxe opens a cloned tree, headless included. It answers to the gate project
+/// start the moment luxe opens a cloned tree, headless included. It answers to the gate project
 /// language servers and formatters already use, not a second one.
 pub(crate) fn mcp_servers_for_run(
     repo_root: &std::path::Path,

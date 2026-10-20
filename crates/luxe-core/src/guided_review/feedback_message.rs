@@ -84,7 +84,7 @@ pub fn format_review_feedback_message(
 pub(crate) const REPORT_INSTRUCTION: &str =
     "End your reply with this block, exactly as shown, one \
      line per comment in the order above. Set each status to fixed, not_fixed or \
-     needs_clarification, and replace each note with one sentence on what you did. Luxe reads it to \
+     needs_clarification, and replace each note with one sentence on what you did. luxe reads it to \
      update the review; the reviewer sees your prose, not this.";
 
 /// A finding's words as the agent reads them: the reader's own as they are, and a GitHub

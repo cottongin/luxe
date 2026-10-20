@@ -1,6 +1,6 @@
 //! Ancestry — whether a process was started, at any depth, by another.
 //!
-//! The tripwire that keeps a Luxe's own children (the agent's `bash`, a hook) from joining its
+//! The tripwire that keeps a luxe's own children (the agent's `bash`, a hook) from joining its
 //! session and answering their own prompts. A tripwire, not a wall: a process that detaches itself
 //! leaves the chain, and the documentation says so. Blocking: run it off the async runtime.
 

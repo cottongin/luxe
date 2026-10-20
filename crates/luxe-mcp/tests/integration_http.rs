@@ -240,7 +240,7 @@ async fn spawn_expiring_mock(seen: Seen) -> String {
 /// A session the server expired is started again, once, and the request goes through on the new
 /// one; every request after `initialize` names the version the server agreed to.
 ///
-/// The break this catches: a 404 for an expired session failed every later call until Luxe was
+/// The break this catches: a 404 for an expired session failed every later call until luxe was
 /// restarted, and the transport offered a version older than Streamable HTTP, ignored the one the
 /// server answered with and never sent the header the spec asks for.
 #[tokio::test]
@@ -272,6 +272,6 @@ async fn a_404_with_a_session_reinitializes_once() {
         ],
     );
     let offered = format!("offered {}", luxe_core::mcp_client::MCP_PROTOCOL_VERSION);
-    assert_eq!(seen[0].2, offered, "initialize offers the version Luxe speaks");
+    assert_eq!(seen[0].2, offered, "initialize offers the version luxe speaks");
     assert_eq!(seen[5], ("tools/list".into(), "sess-2".into(), "2025-03-26".into()));
 }

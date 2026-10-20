@@ -58,7 +58,7 @@
     width: calc(24rem + env(safe-area-inset-left));
     box-sizing: border-box;
     overflow-y: auto;
-    padding: env(safe-area-inset-top) 1.5ch calc(env(safe-area-inset-bottom) + 1lh)
+    padding: var(--top-inset) 1.5ch calc(env(safe-area-inset-bottom) + 1lh)
       calc(1.5ch + env(safe-area-inset-left));
     border-right: 1px solid var(--luxe-border-muted, #2e2b27);
   }

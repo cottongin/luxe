@@ -1,7 +1,7 @@
 //! Todo store — the durable checklist behind the `todo` tool.
 //!
 //! One JSON file per session at `.luxe/todos/<session-id>.json`, so a list survives compaction,
-//! restart and resume, and two Luxe instances open on the same repository can never write each
+//! restart and resume, and two luxe instances open on the same repository can never write each
 //! other's list.
 //!
 //! The session **is** the scope: no named envelope around it, and no index mapping one to the

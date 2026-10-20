@@ -2,7 +2,7 @@
 //!
 //! A draft is an ordinary turn in this session, so it is written by the agent that did the work,
 //! with the transcript it already holds in the prompt cache. What the turn adds is appended once,
-//! as one message, never in the system prompt: the thing being answered in full, Luxe's own evidence
+//! as one message, never in the system prompt: the thing being answered in full, luxe's own evidence
 //! about it — the code at the line now, the commits since, the review comment it became and whether
 //! the fix was verified — and the rest of the conversation as a digest, sent whole the first time
 //! and only what is new after, until compaction or a session load forgets what was sent.

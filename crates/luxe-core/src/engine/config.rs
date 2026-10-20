@@ -53,7 +53,7 @@ pub struct EngineConfig {
     ///
     /// `None` disables runtime review loading for embedding and test callers.
     pub guided_review_project_root: Option<std::path::PathBuf>,
-    /// The directory Luxe was launched in, when that is not the project root.
+    /// The directory luxe was launched in, when that is not the project root.
     ///
     /// The one thing the *shell's* directory still answers after [`crate::project::discover`] has
     /// moved the process to the top of the working copy: which instruction files apply. A monorepo
@@ -72,9 +72,13 @@ pub struct EngineConfig {
     pub review_context_files: Vec<String>,
     /// Project-relative globs a review leaves out (`review.exclude`), on top of `.luxe/`.
     pub review_exclude: Vec<String>,
-    /// Whether an in-session model/thinking choice is remembered for the next launch
-    /// (`agent.remember_model`). Off for embedders and tests, which should leave no trace.
-    pub remember_runtime_state: bool,
+    /// The project an in-session model or thinking choice is remembered for, for the next launch
+    /// (`agent.remember_model`).
+    ///
+    /// A model is kept for this project and as the latest anywhere, so the next launch here starts
+    /// on it and a project never opened before starts on it too. `None` for embedders and tests,
+    /// which should leave no trace.
+    pub remember_choices_in: Option<std::path::PathBuf>,
     /// When the prompt cache is kept warm through a long wait (`agent.cache_warming`).
     ///
     /// Only matters for a provider whose `prompt_cache_ttl` answers, so an embedder's or a test's

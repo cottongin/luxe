@@ -74,7 +74,7 @@ impl Engine {
     }
 }
 
-/// The nested files `call` reached, from Luxe launched at `launch`.
+/// The nested files `call` reached, from luxe launched at `launch`.
 ///
 /// Relative paths resolve the way the tool resolved them, against where tools run.
 fn reached(launch: &std::path::Path, call: &ToolCallInfo) -> Vec<NestedFile> {

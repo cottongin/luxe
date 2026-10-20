@@ -2,7 +2,7 @@
 //!
 //! Ignored, so it never runs in CI or on a machine without a Foundry resource, and reports as
 //! ignored rather than passed. Run on purpose, it needs a stored credential for at least one half.
-//! It exists because the two things Luxe had to decide from documentation — that the Anthropic
+//! It exists because the two things luxe had to decide from documentation — that the Anthropic
 //! passthrough authenticates on `x-api-key`/`api-key` rather than a bearer token, and that the
 //! OpenAI half takes a bearer — are only really settled by a 200. A failure here means Foundry moved, not that the login is broken.
 //!
@@ -84,7 +84,7 @@ async fn both_foundry_surfaces_accept_the_stored_key() {
         assert!(
             status.is_success(),
             "{id} refused the request ({status}) at {url}. A 401 means the key headers moved \
-             (Luxe sends {:?}); a 404 means the path did; a 400 naming the model means \
+             (luxe sends {:?}); a 404 means the path did; a 400 naming the model means \
              '{model}' is not a deployment on this resource.\n{text}",
             descriptor.key_style(),
         );

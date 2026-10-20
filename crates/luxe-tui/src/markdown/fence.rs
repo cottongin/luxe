@@ -65,7 +65,7 @@ fn framed_fence(
     let ends_at = rendered.iter().map(Line::width).max().unwrap_or(0);
     // The language the fence declared, if it declared one worth naming. An
     // unlabeled fence gets a rule with nothing on its left rather than the word
-    // "text", which would be Luxe guessing on the author's behalf.
+    // "text", which would be luxe guessing on the author's behalf.
     let lead = fence_language(code_lang)
         .map(|language| {
             // The language's own mark where the terminal can draw one, and the bare

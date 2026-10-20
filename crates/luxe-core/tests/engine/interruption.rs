@@ -1,7 +1,7 @@
 //! An interrupted turn must not brick the session.
 //!
 //! One real incident produced all of this: a model emitted three tool calls in one message, the first
-//! wedged on a host that never answered, the user interrupted, and Luxe quit. What it left behind was
+//! wedged on a host that never answered, the user interrupted, and luxe quit. What it left behind was
 //! an assistant message whose calls had no results — which the OpenAI Responses API answers with
 //! `400 No tool output found for function call <id>` on **every** later request, and Anthropic with
 //! the equivalent about `tool_use` ids. The session, and every resume of it, was over.

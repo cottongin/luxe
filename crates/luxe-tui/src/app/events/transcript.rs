@@ -463,7 +463,7 @@ fn history_preview(value: &str) -> String {
 }
 
 /// A user message as the transcript shows it: the reader's words as they wrote them, and a brief
-/// Luxe wrote to the agent as one line saying what happened.
+/// luxe wrote to the agent as one line saying what happened.
 ///
 /// A question from a review is the exception, since its words *are* the reader's: it shows what
 /// they asked, under where they asked it, so the answer below it is not an answer to nothing.

@@ -3,7 +3,7 @@
 use super::{known_or, Lenient};
 use serde::{Deserialize, Serialize};
 
-/// How a diff is drawn, wherever Luxe draws one.
+/// How a diff is drawn, wherever luxe draws one.
 ///
 /// One setting for three surfaces — the `edit`/`write` tool card, the peeked file beside the
 /// conversation, and Guided Review. They differ only in how much room they have, and

@@ -114,8 +114,8 @@ impl ReviewContextDraft {
     ///
     /// `extra_planning` names additional project-relative planning files (from `review.context_files`);
     /// each is optional and read only when it resolves inside the opened project. The defaults are
-    /// deliberately Luxe's own: a file belonging to the harness Luxe is *developed* with is excluded
-    /// from release archives, so in any shipped Luxe it would never exist.
+    /// deliberately luxe's own: a file belonging to the harness luxe is *developed* with is excluded
+    /// from release archives, so in any shipped luxe it would never exist.
     pub fn from_project_local_sources(
         title: impl Into<String>,
         project_root: &Path,

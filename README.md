@@ -1,15 +1,15 @@
 <h1 align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="web/src/assets/generated/wordmark-dark.gif">
-    <img src="web/src/assets/generated/wordmark-light.gif" alt="Luxe" width="440">
+    <img src="web/src/assets/generated/wordmark-light.gif" alt="luxe" width="440">
   </picture>
 </h1>
 
-Luxe is a coding agent for your terminal, written in Rust. It works in your project with the model
+luxe is a coding agent for your terminal, written in Rust. It works in your project with the model
 you choose, then reads back what it changed as a Guided Review, so you can comment, ask for fixes,
 and open the pull request without leaving the terminal.
 
-![Luxe adding a command with a test, reviewing the change chapter by chapter, and drafting the pull request](docs/images/luxe.gif)
+![luxe adding a command with a test, reviewing the change chapter by chapter, and drafting the pull request](docs/images/luxe.gif)
 
 *One take on Claude Sonnet 5.5, with only the waits cut: it writes `todo overdue` with a test, the
 change is read back in three chapters, and the pull request is drafted from the review.*
@@ -40,13 +40,13 @@ change is read back in three chapters, and the pull request is drafted from the 
   the turn fails, and `--format json` streams its messages, tool calls and each call's token usage.
   With nobody to answer, a call that would ask is allowed; `--on-ask deny` refuses it instead.
   `luxe --rpc` speaks the whole protocol.
-- **Extended with files and programs**, never code loaded into Luxe: skills, hooks, MCP servers,
-  your own `@` sources, and an [RPC protocol](https://luxe.dev/docs/rpc/) for driving Luxe from
+- **Extended with files and programs**, never code loaded into luxe: skills, hooks, MCP servers,
+  your own `@` sources, and an [RPC protocol](https://luxe.dev/docs/rpc/) for driving luxe from
   your own program.
 
-Luxe connects to 24 providers and any OpenAI-compatible endpoint. Sign in with a ChatGPT or GitHub
+luxe connects to 24 providers and any OpenAI-compatible endpoint. Sign in with a ChatGPT or GitHub
 Copilot subscription or an OpenRouter account, or bring an API key; Anthropic and Google take API
-keys only. There is no telemetry: every connection Luxe makes is one you asked for or can turn off,
+keys only. There is no telemetry: every connection luxe makes is one you asked for or can turn off,
 and [the guide lists them](https://luxe.dev/docs/security/#what-luxe-sends-over-the-network).
 
 ![A Guided Review: the guide on the left, the hunk being read on the right](docs/guide/images/review-guide.svg)
@@ -76,16 +76,16 @@ cargo build --release
 ./target/release/luxe --version
 ```
 
-Luxe runs on Linux, macOS and Windows, in any UTF-8 terminal; on Windows, use Windows Terminal and
+luxe runs on Linux, macOS and Windows, in any UTF-8 terminal; on Windows, use Windows Terminal and
 install [Git for Windows](https://gitforwindows.org/) so the agent has a POSIX shell. You also need
 a model to talk to: an API key or a subscription. Your settings and credentials live in
 `~/.config/luxe/` (`%APPDATA%\luxe` on Windows).
 
 Icons come from a [Nerd Font](https://www.nerdfonts.com/) when you have one, in its **Mono** build;
-without one, Luxe draws plain characters, and every icon has a word beside it. See
+without one, luxe draws plain characters, and every icon has a word beside it. See
 [Fonts](https://luxe.dev/docs/install/#fonts).
 
-Luxe uses these when they are installed, and works without them:
+luxe uses these when they are installed, and works without them:
 
 | | For |
 | --- | --- |
@@ -95,7 +95,7 @@ Luxe uses these when they are installed, and works without them:
 | A debug adapter per language | The `debug` tool |
 | [ast-grep](https://ast-grep.github.io) | Search and replace by code structure |
 
-`luxe doctor` checks which of them Luxe can use on your machine, and how to install the rest.
+`luxe doctor` checks which of them luxe can use on your machine, and how to install the rest.
 
 ## Quickstart
 
@@ -110,7 +110,7 @@ Luxe uses these when they are installed, and works without them:
    `luxe --worktree` does the same in a worktree, so your checkout is never touched.
 
 2. **Answer setup.** The first launch asks for a theme, a provider, which tools the agent can use,
-   and what Luxe opens on. Sign in with a subscription or paste an API key; a key already in your
+   and what luxe opens on. Sign in with a subscription or paste an API key; a key already in your
    environment, such as `ANTHROPIC_API_KEY`, is found on its own. Choose a model when the picker
    opens.
 
@@ -132,9 +132,9 @@ on the screen you are on, and `ctrl+c` quits; the session is already saved. The
 
 ## Documentation
 
-The guide is at [luxe.dev/docs](https://luxe.dev/docs/), and built into Luxe for the version you
+The guide is at [luxe.dev/docs](https://luxe.dev/docs/), and built into luxe for the version you
 have: `luxe docs`, `luxe docs hooks`, `luxe docs --search "on_ask"`. Ask the agent how to do
-something in Luxe and it reads the answer from the same pages.
+something in luxe and it reads the answer from the same pages.
 
 | To | Read |
 | --- | --- |
@@ -148,7 +148,7 @@ something in Luxe and it reads the answer from the same pages.
 | Give the agent your project's conventions | [Project context](https://luxe.dev/docs/project-context/) |
 | Change the theme, keys or statusline | [Configuration](https://luxe.dev/docs/configuration/) |
 | Control what the agent may do | [Security and permissions](https://luxe.dev/docs/security/) |
-| Add tools, skills, hooks or your own front end | [Extending Luxe](https://luxe.dev/docs/extending/) |
+| Add tools, skills, hooks or your own front end | [Extending luxe](https://luxe.dev/docs/extending/) |
 | Look up a flag or an environment variable | [Command line](https://luxe.dev/docs/cli/), [Environment variables](https://luxe.dev/docs/environment/) |
 | Fix something that is not working | [Troubleshooting](https://luxe.dev/docs/troubleshooting/) |
 
@@ -161,11 +161,11 @@ Every page is also plain markdown in [`docs/guide/`](docs/guide/), and
 the site and the demos are made; [`AGENTS.md`](AGENTS.md) has the rules an agent working here holds
 to. Problems and questions go to [GitHub issues](https://github.com/evanwhittaker/luxe/issues).
 
-Luxe is built with AI assistance, much of it Luxe working on itself. Every change still passes the
+luxe is built with AI assistance, much of it luxe working on itself. Every change still passes the
 full test suite and CI before it merges, and its maintainer decides what does. If AI helped with
 yours, [say so](CONTRIBUTING.md#ai-assistance).
 
-Luxe draws on Pi, by earendil-works, and on OpenCode, and on the unidirectional data flow of Elm
+luxe draws on Pi, by earendil-works, and on OpenCode, and on the unidirectional data flow of Elm
 and Ratatui.
 
 ## License

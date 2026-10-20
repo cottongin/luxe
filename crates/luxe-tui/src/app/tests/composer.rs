@@ -62,7 +62,7 @@ fn printable_input_bypasses_legacy_plain_character_shortcuts() {
 
 /// A submission with no model chosen opens the picker and keeps the draft.
 ///
-/// Luxe picks no model for the reader, so this is a state a session can legitimately be in. The
+/// luxe picks no model for the reader, so this is a state a session can legitimately be in. The
 /// engine refuses such a turn anyway; the point of asking here is that the reader's message is
 /// still in the composer when they come back from the picker, rather than gone into a turn that
 /// was never going to run.

@@ -22,6 +22,12 @@ pub const RUNTIME_STATE_SCHEMA_VERSION: u32 = 1;
 /// than forgotten, and comes back when you are somewhere it works.
 pub const RECENT_COMMANDS_KEPT: usize = 20;
 
+/// How many projects' last models the record keeps, most recently chosen first.
+///
+/// A project left that long ago starts on the model last chosen anywhere, which is what a project
+/// never opened before gets too.
+pub const PROJECT_MODELS_KEPT: usize = 50;
+
 /// A model the user chose, in the form settings resolution needs it back.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RememberedModel {
@@ -31,6 +37,15 @@ pub struct RememberedModel {
     pub id: String,
 }
 
+/// The model last chosen in one project.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProjectModel {
+    /// The project's root, as [`crate::paths::display`] writes it
+    pub project: String,
+    /// What was chosen there
+    pub model: RememberedModel,
+}
+
 /// What the last session chose.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
@@ -38,8 +53,14 @@ pub struct RuntimeState {
     /// Schema version, so a future format can be ignored rather than misread.
     #[serde(default = "default_schema_version")]
     pub schema_version: u32,
-    /// The last model chosen in a session.
+    /// The last model chosen in a session, in any project.
     pub model: Option<RememberedModel>,
+    /// The last model chosen in each project, most recent first, at most [`PROJECT_MODELS_KEPT`].
+    ///
+    /// Outranks [`Self::model`] in its own project, so a repository you work in with a local model
+    /// keeps it while the rest keep a hosted one. Left out while empty.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub project_models: Vec<ProjectModel>,
     /// The last reasoning level chosen in a session.
     ///
     /// The *requested* level, not the one a model clamped it to: a session with a model that cannot
@@ -94,6 +115,7 @@ impl Default for RuntimeState {
         Self {
             schema_version: RUNTIME_STATE_SCHEMA_VERSION,
             model: None,
+            project_models: Vec::new(),
             thinking: None,
             recent_commands: Vec::new(),
             panes: PaneWidths::default(),
@@ -139,7 +161,7 @@ impl RuntimeState {
     /// Reads the record at `path`, applies `change`, and writes it back when `change` says it
     /// changed something.
     ///
-    /// Every remembering is this: read, change one field, write. Two Luxe processes racing lose
+    /// Every remembering is this: read, change one field, write. Two luxe processes racing lose
     /// each other's update, which is acceptable for a convenience record; a failed write is logged
     /// and otherwise ignored, because forgetting across a relaunch is the right failure for one.
     fn update_at(path: &Path, what: &str, change: impl FnOnce(&mut Self) -> bool) -> Self {
@@ -152,16 +174,34 @@ impl RuntimeState {
         state
     }
 
-    /// Records a chosen model, leaving everything else as it was.
-    pub fn remember_model(provider: &str, id: &str) {
-        let remembered = RememberedModel { provider: provider.to_owned(), id: id.to_owned() };
-        Self::update_at(&Self::path(), "the chosen model", |state| {
-            let changed = state.model.as_ref() != Some(&remembered);
-            if changed {
-                state.model = Some(remembered);
-            }
-            changed
-        });
+    /// The model to start on in `project`: the one last chosen there, else the last chosen
+    /// anywhere.
+    pub fn model_for(&self, project: &Path) -> Option<&RememberedModel> {
+        let key = crate::paths::display(project);
+        let here = self.project_models.iter().find(|entry| entry.project == key);
+        here.map(|entry| &entry.model).or(self.model.as_ref())
+    }
+
+    /// Records a model chosen in `project`, as the latest there and the latest anywhere, leaving
+    /// everything else as it was.
+    pub fn remember_model(project: &Path, provider: &str, id: &str) {
+        Self::remember_model_at(&Self::path(), project, provider, id);
+    }
+
+    fn remember_model_at(path: &Path, project: &Path, provider: &str, id: &str) {
+        let chosen = RememberedModel { provider: provider.to_owned(), id: id.to_owned() };
+        Self::update_at(path, "the chosen model", |state| state.note_model(project, chosen));
+    }
+
+    /// Puts `chosen` first for `project` and anywhere. Answers whether that changed the record.
+    fn note_model(&mut self, project: &Path, chosen: RememberedModel) -> bool {
+        let key = crate::paths::display(project);
+        let before = (self.model.clone(), self.project_models.first().cloned());
+        self.project_models.retain(|entry| entry.project != key);
+        self.project_models.insert(0, ProjectModel { project: key, model: chosen.clone() });
+        self.project_models.truncate(PROJECT_MODELS_KEPT);
+        self.model = Some(chosen);
+        before != (self.model.clone(), self.project_models.first().cloned())
     }
 
     /// Records a chosen reasoning level, leaving everything else as it was.

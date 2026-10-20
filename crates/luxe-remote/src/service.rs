@@ -46,7 +46,7 @@ pub enum ServiceError {
         detail: String,
     },
     /// Nowhere to put a service: no home folder, or a platform without a per-user service manager
-    #[error("this system has no per-user service manager Luxe knows how to use")]
+    #[error("this system has no per-user service manager luxe knows how to use")]
     Unsupported,
 }
 

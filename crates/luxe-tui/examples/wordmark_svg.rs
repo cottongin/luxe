@@ -84,8 +84,8 @@ fn tile(rows: &[&str], (plate_color, ink): (String, String)) -> String {
 
     format!(
         "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {side} {side}\" \
-         width=\"{side}\" height=\"{side}\" role=\"img\" aria-label=\"Luxe\">\n  \
-         <title>Luxe</title>\n  \
+         width=\"{side}\" height=\"{side}\" role=\"img\" aria-label=\"luxe\">\n  \
+         <title>luxe</title>\n  \
          <path fill=\"{plate_color}\" d=\"{plate}\"/>\n  \
          <g transform=\"translate({offset_x:.2} {TILE_PAD}) scale({scale:.4})\">\n    \
          <path fill=\"{ink}\" d=\"{letter}\"/>\n  \
@@ -111,9 +111,9 @@ fn svg(rows: &[&str], letters: std::ops::Range<usize>) -> String {
     out.push_str(&format!(
         "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"{left} 0 {width} {height}\" \
          width=\"{width}\" height=\"{height}\" data-cell=\"{CELL_W} {CELL_H}\" \
-         role=\"img\" aria-label=\"Luxe\">\n"
+         role=\"img\" aria-label=\"luxe\">\n"
     ));
-    out.push_str("  <title>Luxe</title>\n");
+    out.push_str("  <title>luxe</title>\n");
     for (index, path) in paths.iter().enumerate() {
         let step = index + letters.start + 1;
         out.push_str(&format!(
@@ -293,7 +293,7 @@ mod tests {
         assert!(svg.trim_end().ends_with("</svg>"));
         assert_eq!(svg.matches("<path").count(), 4, "one path per letter");
         assert!(svg.contains("--luxe-wordmark-1"), "letters are themable from CSS");
-        assert!(svg.contains("aria-label=\"Luxe\""));
+        assert!(svg.contains("aria-label=\"luxe\""));
         assert!(svg.contains("data-cell=\"10 22\""), "the grid the highlight is drawn in");
     }
 

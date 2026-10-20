@@ -289,7 +289,7 @@ pub async fn run_formatter(
 /// looks — on a 2024 crate it formats to the wrong style edition and refuses to parse syntax that
 /// edition added, which reads as a broken file rather than a wrong flag. `rustfmt.toml` first,
 /// because that is the project speaking about formatting specifically; then the manifest; then the
-/// last edition Luxe can safely assume.
+/// last edition luxe can safely assume.
 ///
 /// A line scan rather than a TOML parse, deliberately: one key, three well-known file names, and no
 /// dependency worth adding for it. Anything it cannot read falls back rather than guessing.

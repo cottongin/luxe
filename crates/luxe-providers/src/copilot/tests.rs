@@ -143,7 +143,7 @@ async fn requests_reach_the_endpoint_their_model_takes() {
     assert_eq!(*chat.asked.lock().unwrap(), ["gemini-3.8-flash"]);
     assert_eq!(hits.load(Ordering::SeqCst), 1, "the list is fetched once, not per request");
 
-    // a model the list does not name stays on chat, and does not send Luxe straight back to ask
+    // a model the list does not name stays on chat, and does not send luxe straight back to ask
     send(&copilot, "gpt-4o").await;
     assert_eq!(chat.asked.lock().unwrap().last().map(String::as_str), Some("gpt-4o"));
     assert_eq!(hits.load(Ordering::SeqCst), 1);
@@ -165,7 +165,7 @@ async fn without_the_list_everything_stays_on_chat() {
     assert!(recorders.messages.asked.lock().unwrap().is_empty());
 }
 
-/// The list is trusted for an hour, and a model it does not name sends Luxe back to ask once it is
+/// The list is trusted for an hour, and a model it does not name sends luxe back to ask once it is
 /// five minutes old, since that model may be new.
 #[test]
 fn the_list_is_asked_again_when_old_or_silent() {
@@ -181,7 +181,7 @@ fn the_list_is_asked_again_when_old_or_silent() {
     assert!(stale(Some(&known), "new-model", at(5)));
 }
 
-/// A list that cannot be had when it is due again leaves the routes Luxe knew in place; an error
+/// A list that cannot be had when it is due again leaves the routes luxe knew in place; an error
 /// Copilot answers in JSON is not a list with nothing in it.
 #[tokio::test]
 async fn a_failed_refresh_keeps_the_routes_it_had() {
@@ -299,7 +299,7 @@ impl AuthSource for Copilot {
     }
 }
 
-/// The effort values a model lists are the only ones Luxe sends it: Copilot refuses any other with
+/// The effort values a model lists are the only ones luxe sends it: Copilot refuses any other with
 /// a 400. Values copied from the live list.
 #[test]
 fn a_models_reasoning_levels_are_the_ones_copilot_lists() {

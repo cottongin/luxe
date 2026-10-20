@@ -167,7 +167,7 @@ fn request_text(app: &mut App) {
             view.text_request = None;
             view.text = crate::changes::TextLoad::Failed(
                 luxe_core::project_files::ProjectFileFailure::Unreadable(
-                    "Luxe is not accepting requests".into(),
+                    "luxe is not accepting requests".into(),
                 ),
             );
         }
@@ -227,7 +227,7 @@ fn request_capture(app: &mut App) {
         if let Some(view) = app.changes.as_mut() {
             view.request = None;
             view.load = crate::changes::ChangesLoad::Failed(
-                luxe_core::file_diff::FileDiffFailure::Git("Luxe is not accepting requests".into()),
+                luxe_core::file_diff::FileDiffFailure::Git("luxe is not accepting requests".into()),
             );
         }
         app.push_convo(ConvoBlock::System("Could not read that file's changes.".to_string()));

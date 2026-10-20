@@ -13,61 +13,61 @@ DashboardMinimal@64x20: frame=939001adda3bcbb4 hits=0f39b6e30d251353
 Configuration@140x44: frame=73fbef3e76d36c7c hits=03493dafb9356d07
 Configuration@100x30: frame=644345f8e6340004 hits=04d865ae91d0aa35
 Configuration@64x20: frame=28ea511ad251f8c2 hits=77b9c8af75245265
-Setup@140x44: frame=d61d62a149232446 hits=36aaf8db347382c4
-Setup@100x30: frame=1a7c35ff007f3aef hits=2d10b9f0a226a5e0
-Setup@64x20: frame=2df799477067503a hits=1b0ef6d44f0cf1bd
-SetupTools@140x44: frame=7f80f916b3e06e49 hits=2c443d3127ccc230
-SetupTools@100x30: frame=1985e10dacdabc20 hits=ee965f337121049c
-SetupTools@64x20: frame=8b216818fd028690 hits=a19d86f6dbe23c71
-Settings@140x44: frame=fe898302ba994a90 hits=cd87fca5b2ba4ec8
-Settings@100x30: frame=91f4280764fa0bd6 hits=375d168bbed52454
-Settings@64x20: frame=d476c9a9f087e724 hits=e62f026c0e6c2c68
-SettingsTools@140x44: frame=64c3ec0635cedb70 hits=da22dfea81800160
-SettingsTools@100x30: frame=d2c93a7dd4398630 hits=a1f07d9572d622b1
-SettingsTools@64x20: frame=013360d54995a40d hits=b6f0fa676ba137f1
-ChatIdle@140x44: frame=659adbd49eb40384 hits=9a0a159710153729
+Setup@140x44: frame=9ee06904109e2e42 hits=4967dcab05ea9bae
+Setup@100x30: frame=66763485ecbb7edd hits=f82015c482806682
+Setup@64x20: frame=b57b7459a02ec4d2 hits=2805bc66d9d1fb97
+SetupTools@140x44: frame=62fcaf1fe8de1c29 hits=fe46e4a47674954c
+SetupTools@100x30: frame=405fbeeafe01e8d3 hits=3956f37fd5c677ba
+SetupTools@64x20: frame=85a5e02524e92762 hits=1671b40783b4805f
+Settings@140x44: frame=0509bf03eebc60b0 hits=1fbfce715d19422f
+Settings@100x30: frame=39045d87eeb5db36 hits=2f6854de9f605c01
+Settings@64x20: frame=125e6bc55b79d4a0 hits=f39d9d6dc36254de
+SettingsTools@140x44: frame=6d10321950d2e310 hits=6616bccda6cac2cb
+SettingsTools@100x30: frame=271c31ac292537cf hits=a88a7c38aea25a39
+SettingsTools@64x20: frame=dcdf73ac9e80be44 hits=56896b2217e7b7f8
+ChatIdle@140x44: frame=8f3a6a0a2f0b92d2 hits=a0cf286ea7fd1d55
 ChatIdle@100x30: frame=37277ebdbb0d0104 hits=f28115f769459349
 ChatIdle@64x20: frame=d5330f1c309a6918 hits=1fd57df076a5e100
-ChatThinking@140x44: frame=914d2bbef64e8920 hits=57dd670de9e41750
+ChatThinking@140x44: frame=cb85f56ee191ef52 hits=57dd670de9e41750
 ChatThinking@100x30: frame=713f52d8af6e9871 hits=91183601e552563c
 ChatThinking@64x20: frame=8552649903cdc808 hits=eb606a4e4cfb053a
-ChatStreaming@140x44: frame=c7896b8809869a65 hits=06bab310faee6d54
+ChatStreaming@140x44: frame=ba8453d7ed81f1c7 hits=06bab310faee6d54
 ChatStreaming@100x30: frame=cc3ae2d95405065a hits=c63f95971c6a18fc
 ChatStreaming@64x20: frame=970c22c578c362aa hits=a16a29ea4502d9fb
-ChatTools@140x44: frame=d25d186d4f95cc4e hits=db1de58363be363c
+ChatTools@140x44: frame=bbdd9c65f51351f8 hits=db1de58363be363c
 ChatTools@100x30: frame=7cd8b091af2f6451 hits=9d228eaa9af30b84
 ChatTools@64x20: frame=0233bef5bd8bc8b0 hits=9b2b3231b63926ce
-ChatCardBodies@140x44: frame=758842a9d0e7c640 hits=0c7b7867a8415fd2
+ChatCardBodies@140x44: frame=2eb2cc123501a3b2 hits=0c7b7867a8415fd2
 ChatCardBodies@100x30: frame=d1c442c5eaa6af7c hits=434a845e1880132c
 ChatCardBodies@64x20: frame=5638628d5920489e hits=328a37efc8b251f0
-ChatWideProse@140x44: frame=766695a5e1a4e777 hits=94dbf7b32b37b330
+ChatWideProse@140x44: frame=115e6bb44eef9beb hits=94dbf7b32b37b330
 ChatWideProse@100x30: frame=4ffb6880f5abff90 hits=bddfef30519a2a3a
 ChatWideProse@64x20: frame=d2f917fcaa50aeca hits=b3b75080bd6ccea1
-ChatToolError@140x44: frame=1d2febb26904d212 hits=0247483feb740b19
+ChatToolError@140x44: frame=205e8b9d2ec06764 hits=0247483feb740b19
 ChatToolError@100x30: frame=bf5d84f32dfbbe41 hits=e17adbd05e6a6d3b
 ChatToolError@64x20: frame=329c49dd3a8bdd5d hits=e4e4f40e90cb3bca
-ChatToolRun@140x44: frame=c68d55e2d8b22582 hits=f1514e1cf2ab0514
+ChatToolRun@140x44: frame=23a4d42a0f8ad56c hits=f1514e1cf2ab0514
 ChatToolRun@100x30: frame=94c5a5920231ad6d hits=ed4e206d929f1002
 ChatToolRun@64x20: frame=b58a55ad577d37b3 hits=116fb38474c732bb
-ChatQuestion@140x44: frame=15b112dccad9caa1 hits=3d24e8bf8375f597
+ChatQuestion@140x44: frame=4854f6da0d4e8bed hits=3d24e8bf8375f597
 ChatQuestion@100x30: frame=089f5cfe357b006e hits=0f98bb30ff5537bf
 ChatQuestion@64x20: frame=78a535c57f876301 hits=7681468669569173
-ChatPlan@140x44: frame=9df66741fe062711 hits=7796221e13dac2ac
+ChatPlan@140x44: frame=c7cc574df002e27c hits=d76108ca7f13f116
 ChatPlan@100x30: frame=d61c241010275e79 hits=79c1409c0f886542
 ChatPlan@64x20: frame=97082e9d92c7616d hits=cb490269d9d6b6d3
-ChatPlanReady@140x44: frame=b18f1105c54ae15f hits=23da509548f232f0
+ChatPlanReady@140x44: frame=b30ca9958f2cad32 hits=23da509548f232f0
 ChatPlanReady@100x30: frame=7e20e1b0a94d94b3 hits=b7ea73f584bfc4ef
 ChatPlanReady@64x20: frame=0e3d9399fae48508 hits=f077305e4d966dff
-ChatTurn@140x44: frame=5524de78f71527eb hits=4a67edb8228eb613
+ChatTurn@140x44: frame=b45b4bb827842816 hits=4a67edb8228eb613
 ChatTurn@100x30: frame=22919d1047132c86 hits=b8ded94d236c0817
 ChatTurn@64x20: frame=91595c7c8fb3a9de hits=bc965e96875bbfe6
-ChatPermission@140x44: frame=54ddeb5522ffcb19 hits=063b591e442cd221
+ChatPermission@140x44: frame=8289b864f67fe472 hits=063b591e442cd221
 ChatPermission@100x30: frame=b2c0e21530b64523 hits=200049ec7749eeb8
 ChatPermission@64x20: frame=9f98f5664f85406f hits=abbd7bfaa97a4ed0
-ChatPalette@140x44: frame=3022f8834ce418f2 hits=bf9355f178f8e332
-ChatPalette@100x30: frame=cacc9b3e033c0401 hits=eae72d9c1c194fee
-ChatPalette@64x20: frame=085c324962ef0357 hits=888344c2d380ae7f
-ChatScreenshot@140x44: frame=5aec1b106f841d81 hits=1489393a2950d711
+ChatPalette@140x44: frame=19faed2faa7a9b54 hits=40cfef8a8401b132
+ChatPalette@100x30: frame=2ceacd7336e193e2 hits=c4aaaf53ba134bb2
+ChatPalette@64x20: frame=ca770995ab283020 hits=23d605e8cac60ffe
+ChatScreenshot@140x44: frame=40919b4019a285d8 hits=1489393a2950d711
 ChatScreenshot@100x30: frame=709f9e4b32a7c8f6 hits=f8537762de7b55a2
 ChatScreenshot@64x20: frame=0a22c420e0e4092e hits=1e33d25e6f2a5032
 GuidedReviewError@140x44: frame=4cfe3be8529e0715 hits=e84eb4945912e2b4
@@ -145,28 +145,28 @@ GuidedReviewNoise@64x20: frame=3528c31dc7357be3 hits=31b20cc44e89c2c4
 GuidedReviewRefreshing@140x44: frame=1668abd1d9025883 hits=9df927e0266ef722
 GuidedReviewRefreshing@100x30: frame=4317b6bf215040e7 hits=295bff8546ac5c6b
 GuidedReviewRefreshing@64x20: frame=09ab7d15dbf61722 hits=7bc94e825dcae38d
-SessionPicker@140x44: frame=912f8377d1180acc hits=9ff439d2a4207bb1
-SessionPicker@100x30: frame=88899dac0687cbcc hits=1b25f7bbb1167a3d
-SessionPicker@64x20: frame=f83d9954bc28b0a4 hits=e1458e2ef219e1d3
-ChatPending@140x44: frame=5ff40dac179e081a hits=d71099c1d790fd9d
+SessionPicker@140x44: frame=912f8377d1180acc hits=a8942d3fdbcd05fa
+SessionPicker@100x30: frame=88899dac0687cbcc hits=245cbe04c33898e1
+SessionPicker@64x20: frame=054360868f390170 hits=4bf7f0b37b2cfe0e
+ChatPending@140x44: frame=b3d3a6a0888d6dcc hits=bffa58bed6da097d
 ChatPending@100x30: frame=af25fbea80bc33e0 hits=aed87b5034e6d516
 ChatPending@64x20: frame=6cf055d281a6e059 hits=a326dcaa5154d3d5
-ChatPaste@140x44: frame=a8d0b4eb15876387 hits=c7b811a92cf2a0be
+ChatPaste@140x44: frame=a114c31fca3067b3 hits=fdaff3e47dccb21c
 ChatPaste@100x30: frame=1bc91697dbb32003 hits=ab8dbf94c139d6b6
 ChatPaste@64x20: frame=9a087a91b9e245db hits=c81a12575eed6a9b
-DockWide@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockWide@140x44: frame=1dbfc5a41a3416b6 hits=a826df811d38f497
 DockWide@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
 DockWide@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
-DockPullRequest@140x44: frame=a72cb3bc1796768d hits=3b00f944c7d994d9
+DockPullRequest@140x44: frame=6a0782c8b8f2ea02 hits=3d025fbcee7cebb1
 DockPullRequest@100x30: frame=d9977f7217a61374 hits=0ca570204cd54d62
 DockPullRequest@64x20: frame=5f381b5f389b3bbf hits=8defa6fb47bd7b1c
-DockOverlay@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockOverlay@140x44: frame=1dbfc5a41a3416b6 hits=a826df811d38f497
 DockOverlay@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
 DockOverlay@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
-DockCompact@140x44: frame=64c9fcc0a72267ba hits=d1b078de1c2ba7f1
+DockCompact@140x44: frame=1dbfc5a41a3416b6 hits=a826df811d38f497
 DockCompact@100x30: frame=690c39c8c1842982 hits=dab83cf7c7b0dcf4
 DockCompact@64x20: frame=c2743913ce96feb2 hits=9a683e49f6050f6a
-ChangesWide@140x44: frame=975a9cb87847b355 hits=5d6424db7af8b13b
+ChangesWide@140x44: frame=a97fe98d1e004a98 hits=f56f82edef818dc4
 ChangesWide@100x30: frame=7f799b893667c928 hits=5ebcfa50c83c624f
 ChangesWide@64x20: frame=3531cf4c1d3f2402 hits=a39e334a4bdaa029
 ChangesNarrow@140x44: frame=4d45021ad9fb0fa7 hits=de2158bdae6d8dfb
@@ -178,12 +178,12 @@ ChangesFailed@64x20: frame=8d0caaba450a4f3a hits=e16f1ab1fbfea007
 ChangesExternal@140x44: frame=fc75aaae10ddb262 hits=d5c3115642e748ad
 ChangesExternal@100x30: frame=522c8250b0f50ac4 hits=3dd17e6200cfb4b5
 ChangesExternal@64x20: frame=d257ba5dbedfc85f hits=a8e0be5b4625e2bc
-ChatTools+palette: frame=85cc5ae977de2fa6 hits=ca2a2a735278a5bd
-ChatTools+slash: frame=a3ce4c3a7d03f8d0 hits=8adf06de80ecdcb2
-ChatTools+mention: frame=33c4a73f189a3dcc hits=c1b8d78b51a767b7
+ChatTools+palette: frame=c829d2f08b78c950 hits=fa6287559ab11768
+ChatTools+slash: frame=994b21c60891c86e hits=c2817c90b9b6135b
+ChatTools+mention: frame=33c4a73f189a3dcc hits=a2bdd891f205d6cd
 ChatTools+model: frame=98b419f1ad7ab1ea hits=c1b8d78b51a767b7
 ChatTools+thinking: frame=3f2738927b6db1ef hits=b78e78ebc5c1a7dc
-ChatTools+theme: frame=1b1a5f40ea00f08f hits=a38042688ec71863
+ChatTools+theme: frame=1b1a5f40ea00f08f hits=a78b8d6b414df96c
 ChatTools+auth: frame=3a06199e21845eef hits=c1b8d78b51a767b7
 ChatTools+permission: frame=95b9f5bbdfe1bf17 hits=e455918b91b5d273
 ChatTools+question: frame=c49b4cf700798f0d hits=c4d62e93c9c4be28
@@ -197,11 +197,11 @@ ChatTools+configuration: frame=644345f8e6340004 hits=04d865ae91d0aa35
 ChatTools+image: frame=43dd64619ec6ac3d hits=0c880222e467f603
 ChatTools+keys: frame=d3c4357fcb28c0cd hits=c1b8d78b51a767b7
 Dashboard+palette: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
-Dashboard+slash: frame=bd9dfaabce289d81 hits=452e35ccd107d1e3
-Dashboard+mention: frame=6091ee9a8ba6bb8e hits=2178ca57f0b3cfd3
+Dashboard+slash: frame=1972225550a37fa3 hits=7bc21f0311a1f171
+Dashboard+mention: frame=6091ee9a8ba6bb8e hits=3f150d5f4decbee7
 Dashboard+model: frame=94b31acf2a644906 hits=de7bc67135fb88ec
 Dashboard+thinking: frame=2e4f1d6cde8c3b6d hits=f64c038377072b2b
-Dashboard+theme: frame=186de30e37569285 hits=0fea45d2fc373428
+Dashboard+theme: frame=186de30e37569285 hits=6ae67c6c9fb14fcd
 Dashboard+auth: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
 Dashboard+permission: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
 Dashboard+question: frame=c30b575f2402e1d9 hits=de7bc67135fb88ec
@@ -218,11 +218,11 @@ ChatWideProse scrolled: frame=763f6da386997546 hits=3836f0941803048a
 ChatWideProse searching: frame=1878156c08a54641 hits=00e988aa75182c51
 ChatWideProse selecting: frame=8c1edde42c1f3700 hits=bddfef30519a2a3a
 ChatWideProse copied: frame=7757bb42f647c93e hits=bddfef30519a2a3a
-ChangesWide@180x44: frame=2f39ea02da654a31 hits=e9b01340cccc666e
+ChangesWide@180x44: frame=9bbe81ca767acba8 hits=c9c1021bb64d2d75
 ChangesNarrow unwrapped: frame=13da9745cf50215c hits=c84985bf30e3251e
-ChangesWide file: frame=4292536a789062da hits=da530d7bf2c94fdf
-ChangesWide file cursor: frame=aacfd7dfe8f072f0 hits=6293b97445fe71a6
-ChangesWide file unwrapped: frame=cbf79ee6830376c5 hits=316acbdf05625e0b
+ChangesWide file: frame=1194fa59f8ea5db3 hits=36477f2310641d0c
+ChangesWide file cursor: frame=833f03816b3313b1 hits=897bb2fabe0e82c5
+ChangesWide file unwrapped: frame=3617d8bccfa68b3c hits=f64a48041a46cec2
 review help@140x44: frame=ce6ecfdcf523a173 hits=363734d0f1e4973a
 review help@100x30: frame=f556ce437bd29e48 hits=e4ef9f77a3045de7
 review details@140x44: frame=74d4463801d34480 hits=5c309ee031fdabbc
@@ -246,9 +246,9 @@ GuidedReviewSplit wrapped: frame=744f32f79e0e2cdb hits=0f089258f4d432e1
 GuidedReviewFindings wrapped: frame=b633d879925abb7d hits=6dbae16ee902d2ad
 GuidedReviewFindings split: frame=0ca567ccbed0b3c4 hits=ed78edfc97c588fe
 GuidedReviewFindings split wrapped: frame=198214cf1a5d51f4 hits=a1ef3e921a2f268b
-login@100x30: frame=b38ac40b582acab9 hits=fe653c5a7d02c41e
-login-subscription@100x30: frame=d0d2a22124d02530 hits=57ef1e7d5ac5daaf
-login-local@100x30: frame=2e2797e9080feb20 hits=9d3e38903152bd40
+login@100x30: frame=b38ac40b582acab9 hits=95ec927979b30d8d
+login-subscription@100x30: frame=e124818a2e734350 hits=5676dba97e0ea37f
+login-local@100x30: frame=2e2797e9080feb20 hits=ee2b62ff5ee571b4
 login-method@100x30: frame=25f0337c7e66d84b hits=d7190c558c1be1a3
 login-secret@100x30: frame=8e5caa0414d23337 hits=b05996f46f500728
 login-device@100x30: frame=9678dcaabe255bf8 hits=4f495f0ab9ddfec4
@@ -261,16 +261,16 @@ github-draft@100x30: frame=4422c33d0017af09 hits=6ce218f729777fd8
 github-issue@100x30: frame=e3d564c4eef215f3 hits=6ce218f729777fd8
 github-pulls@100x30: frame=cac8411b28b1f011 hits=6ce218f729777fd8
 github-merged@100x30: frame=e82ed89a22ea11e1 hits=6ce218f729777fd8
-mention-files-query@100x30: frame=2eb05c671dab8ebc hits=94f686e59ecfd850
-mention-files-status@100x30: frame=a7d9e3d29bb40d91 hits=93e4a8d7ebc91b2b
-mention-skills@100x30: frame=6e6877b6dd409095 hits=47910cf92223c731
-mention-mcp@100x30: frame=038a9d5361f2bc2f hits=0cef6f71d501ed1c
-mention-jira@100x30: frame=f640a573307765d3 hits=47910cf92223c731
-mention-github@100x30: frame=026d8b9a16953d45 hits=c3ebc406964da748
-mention-github-signed-out@100x30: frame=d1d8c82792308662 hits=b05996f46f500728
-login@64x20: frame=3b1d75fe18a971a0 hits=2b4df26313e3f401
-login-subscription@64x20: frame=36f5e865860fbdc2 hits=2d2883380c90c475
-login-local@64x20: frame=1e111e16e697b7d2 hits=7aff247fdf8c800d
+mention-files-query@100x30: frame=2eb05c671dab8ebc hits=e6c3e66b46987af2
+mention-files-status@100x30: frame=91f8455b4baf0148 hits=7757c43a2fec458b
+mention-skills@100x30: frame=6e6877b6dd409095 hits=27fb10f91fed61ab
+mention-mcp@100x30: frame=038a9d5361f2bc2f hits=0c089633a27c8ae2
+mention-jira@100x30: frame=f640a573307765d3 hits=27fb10f91fed61ab
+mention-github@100x30: frame=026d8b9a16953d45 hits=e23658383d089fb6
+mention-github-signed-out@100x30: frame=d1d8c82792308662 hits=21234e7842378b16
+login@64x20: frame=3b1d75fe18a971a0 hits=c63cd0e65b0b73cd
+login-subscription@64x20: frame=9f51f8338dd333a2 hits=faeb76f2da50194c
+login-local@64x20: frame=1e111e16e697b7d2 hits=cf1a97c489a227e5
 login-method@64x20: frame=c0818a1d2ffab01b hits=d068b54bba55b395
 login-secret@64x20: frame=f7cb80562502782e hits=a16a29ea4502d9fb
 login-device@64x20: frame=d61ec0dc1534f2a5 hits=44ef8648f0a8302d
@@ -283,10 +283,10 @@ github-draft@64x20: frame=9d8959251dd7d83d hits=7c38e58fb5f36453
 github-issue@64x20: frame=8add8ff54baf5a03 hits=7c38e58fb5f36453
 github-pulls@64x20: frame=b3b0eb63f8cd945a hits=7c38e58fb5f36453
 github-merged@64x20: frame=a84ad5ca4b5dee92 hits=7c38e58fb5f36453
-mention-files-query@64x20: frame=da23adbd6c69989c hits=a584b39e65ff3032
-mention-files-status@64x20: frame=a0e536dce3f224a9 hits=65b02333eb73a649
-mention-skills@64x20: frame=1de91f817235caaa hits=8c5d9faebecd685a
-mention-mcp@64x20: frame=c7116499ec2e6de7 hits=d672d83176bdf2cf
-mention-jira@64x20: frame=7c4e7cbbf9dfbfe4 hits=8c5d9faebecd685a
-mention-github@64x20: frame=38344f549d6e1c2f hits=d672d83176bdf2cf
-mention-github-signed-out@64x20: frame=cfdc0449ca9d0350 hits=a16a29ea4502d9fb
+mention-files-query@64x20: frame=da23adbd6c69989c hits=b7e5cd3a9d5b2844
+mention-files-status@64x20: frame=b8032fcc39098b20 hits=93543fda718d1960
+mention-skills@64x20: frame=1de91f817235caaa hits=907bb533764c9348
+mention-mcp@64x20: frame=c7116499ec2e6de7 hits=b0a66af049a2990d
+mention-jira@64x20: frame=7c4e7cbbf9dfbfe4 hits=907bb533764c9348
+mention-github@64x20: frame=38344f549d6e1c2f hits=b0a66af049a2990d
+mention-github-signed-out@64x20: frame=cfdc0449ca9d0350 hits=9a375098c9c3f3e9

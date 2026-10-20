@@ -55,7 +55,7 @@ fn icon_side(file: &str) -> Option<u32> {
 }
 
 /// The manifest for a theme whose background is `background`, for the computer `machine`. The
-/// icon already says Luxe, so a named one's home screen label is the computer: an app for each of
+/// icon already says luxe, so a named one's home screen label is the computer: an app for each of
 /// two computers tells itself apart.
 fn manifest_json(background: &str, machine: Option<&str>) -> serde_json::Value {
     let icon = |side: u32| {
@@ -65,7 +65,7 @@ fn manifest_json(background: &str, machine: Option<&str>) -> serde_json::Value {
     serde_json::json!({
         "id": "/",
         "name": app_name(machine),
-        "short_name": machine.unwrap_or("Luxe"),
+        "short_name": machine.unwrap_or("luxe"),
         "start_url": "/",
         "scope": "/",
         "display": "standalone",
@@ -75,9 +75,9 @@ fn manifest_json(background: &str, machine: Option<&str>) -> serde_json::Value {
     })
 }
 
-/// The app's name: `Luxe · desk` for the computer `desk`, or plain Luxe unnamed.
+/// The app's name: `luxe · desk` for the computer `desk`, or plain luxe unnamed.
 pub(crate) fn app_name(machine: Option<&str>) -> String {
-    machine.map_or_else(|| "Luxe".to_owned(), |machine| format!("Luxe \u{00b7} {machine}"))
+    machine.map_or_else(|| "luxe".to_owned(), |machine| format!("luxe \u{00b7} {machine}"))
 }
 
 /// The active theme's tile colors, read off the async threads like the stylesheet.

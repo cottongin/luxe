@@ -50,7 +50,7 @@ pub const ANIMATION_TICK: Duration = Duration::from_millis(33);
 /// Why the TUI returned control to the CLI.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TuiExit {
-    /// The user quit Luxe.
+    /// The user quit luxe.
     Quit,
     /// Open a file in the reader's editor, then come back.
     ///
@@ -72,7 +72,7 @@ pub enum TuiExit {
     ///
     /// Args: `(launch)` — the session, and the draft and mode the reader carries into it.
     ResumeSession(ResumeLaunch),
-    /// Leave Luxe and run `luxe update`, which needs the terminal for the package manager.
+    /// Leave luxe and run `luxe update`, which needs the terminal for the package manager.
     Update,
 }
 
@@ -149,18 +149,30 @@ pub(crate) fn startup_surface(
     }
 }
 
-/// Whether this is the first launch on the machine: no `config.json` yet, and someone at the
-/// keyboard to ask.
+/// Whether this is the first launch on the machine: no `config.json` and no stored login yet, and
+/// someone at the keyboard to ask.
 ///
 /// Strict on purpose. A question asked of a terminal nobody is watching stops a container or a CI
 /// job until something answers it, so anything not interactive never sees it — and skipping it
 /// writes the file, so it is asked once.
 fn is_first_run(headless: bool) -> bool {
     use std::io::IsTerminal;
-    !headless
-        && std::io::stdin().is_terminal()
-        && std::io::stdout().is_terminal()
-        && !luxe_core::config::Config::global_path().exists()
+    let interactive =
+        !headless && std::io::stdin().is_terminal() && std::io::stdout().is_terminal();
+    first_run_from(
+        interactive,
+        luxe_core::config::Config::global_path().exists(),
+        luxe_core::user_dirs::luxe_config_file("auth.json").exists(),
+    )
+}
+
+/// [`is_first_run`] over what it found. A stored login counts as having run before: a build that
+/// never wrote `config.json` (one from before setup existed, or one quit mid-setup) still signed
+/// someone in, and walking them through setup again after an update reads as a lost install.
+///
+/// Args: `(interactive, config file exists, auth file exists)`.
+fn first_run_from(interactive: bool, config_exists: bool, login_exists: bool) -> bool {
+    interactive && !config_exists && !login_exists
 }
 
 /// Run the TUI event loop.

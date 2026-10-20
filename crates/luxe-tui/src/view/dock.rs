@@ -46,8 +46,8 @@ use {
     plan::{plan_follow, plan_row_grants, subject_rows, todo_lines, PLAN_LOOKAHEAD},
     plan::{PLAN_ROWS_MAX, PLAN_WRAP_ROWS},
     ratatui::style::Modifier,
-    telemetry::TELEMETRY_LABEL_WIDTH,
     telemetry::{telemetry_label_width, telemetry_lines, telemetry_value_width, token_value},
+    telemetry::{TELEMETRY_LABEL_WIDTH, WIDEST_TELEMETRY_LABEL},
     tree::tree_row_line,
 };
 

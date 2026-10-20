@@ -27,10 +27,10 @@ use std::path::PathBuf;
 #[cfg(test)]
 const HARNESS_TOOLS: &[&str] = &["question", "todo"];
 
-/// Where questions about Luxe itself are answered: its own guide, built into the binary and run
+/// Where questions about luxe itself are answered: its own guide, built into the binary and run
 /// through `bash`. Static text, so the prompt stays byte-identical between turns; without it, a
-/// model asked how to configure Luxe answers from what other harnesses do.
-const LUXE_DOCS: &str = " Questions about Luxe itself are answered by its guide: `luxe docs`.";
+/// model asked how to configure luxe answers from what other harnesses do.
+const LUXE_DOCS: &str = " Questions about luxe itself are answered by its guide: `luxe docs`.";
 
 /// Purpose-built tools paired with the shell command a model reaches for instead.
 ///
@@ -239,7 +239,7 @@ impl SystemPromptBuilder {
 
         format!(
             "## Tools\n\
-             Every tool in Luxe is designed to beat the shell command it replaces by providing \
+             Every tool in luxe is designed to beat the shell command it replaces by providing \
              structured, bounded output for a fraction of the context. They also make your actions \
              easier for the user to read, which improves clarity and efficiency. So, always reach \
              for the purpose-built tool before `bash`, which should be reserved for everything they \
@@ -294,7 +294,7 @@ pub(crate) fn shared_len(sections: &[MeasuredSection]) -> usize {
 }
 
 /// The `## Memory` section: the repository as what outlives the conversation, and where to ask
-/// about Luxe itself when the agent can run `luxe docs`.
+/// about luxe itself when the agent can run `luxe docs`.
 fn memory_section(ctx: &PromptContext) -> String {
     let docs = if ctx.tools.iter().any(|tool| tool == "bash") { LUXE_DOCS } else { "" };
     format!(
@@ -335,7 +335,7 @@ fn plans_section() -> String {
 
 /// Who the agent is, in every session and every mode.
 pub(crate) const DEFAULT_ROLE: &str =
-    "You are an agentic engineering assistant operating in Luxe, a coding \
+    "You are an agentic engineering assistant operating in luxe, a coding \
 agent harness. Build features incrementally with small, safe diffs, and verify them before calling \
 the work done.";
 
@@ -382,7 +382,7 @@ own conventions say otherwise:
 - Comments should say *why*, never *what*.
 - Use specific names and types: no `data`, `handler`, or `Manager`.
 - Errors should be detailed and never swallowed.
-- Luxe features specialized tools to read, write, and debug code. Use them.";
+- luxe features specialized tools to read, write, and debug code. Use them.";
 
 /// What makes a test worth having.
 const TESTING: &str = "## Testing

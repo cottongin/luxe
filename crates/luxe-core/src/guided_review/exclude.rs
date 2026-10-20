@@ -1,6 +1,6 @@
 //! Review exclusions — what a review leaves out, and why that is safe to do.
 //!
-//! Two things a repository carries that nobody reviews: Luxe's own `.luxe/` directory (sessions,
+//! Two things a repository carries that nobody reviews: luxe's own `.luxe/` directory (sessions,
 //! logs, caches, screenshots, task and review memory — byproducts of the tool running, not changes
 //! to the project), and whatever bookkeeping a given project keeps that its reviewers already
 //! ignore. The first is excluded always and needs no configuration; the second is `review.exclude`.
@@ -11,7 +11,7 @@
 
 use serde::{Deserialize, Serialize};
 
-/// Luxe's own project directory. Never reviewed, never configurable.
+/// luxe's own project directory. Never reviewed, never configurable.
 pub const LUXE_PROJECT_DIR: &str = ".luxe";
 
 /// What a review leaves out of the diff it presents.
@@ -37,13 +37,13 @@ impl ReviewExclusions {
         is_luxe_artifact(path) || self.patterns.iter().any(|pattern| matches_glob(pattern, path))
     }
 
-    /// Whether anything beyond Luxe's own directory is configured.
+    /// Whether anything beyond luxe's own directory is configured.
     pub fn is_empty(&self) -> bool {
         self.patterns.is_empty()
     }
 }
 
-/// Whether a path is a byproduct of Luxe running rather than a change to the project.
+/// Whether a path is a byproduct of luxe running rather than a change to the project.
 pub fn is_luxe_artifact(path: &str) -> bool {
     path == LUXE_PROJECT_DIR
         || path.starts_with(&format!("{LUXE_PROJECT_DIR}/"))

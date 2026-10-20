@@ -586,7 +586,7 @@ fn edited_draft_ctrl_enter_sends_the_new_wording() {
 }
 
 /// The composer is the one place a reviewer writes prose, and it was push/pop-char only. It now
-/// runs on Luxe's real editor: a cursor you can move, word operations, and Unicode safety.
+/// runs on luxe's real editor: a cursor you can move, word operations, and Unicode safety.
 #[test]
 fn the_comment_composer_supports_real_editing() {
     use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};

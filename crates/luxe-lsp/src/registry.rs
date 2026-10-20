@@ -32,7 +32,7 @@ pub struct ServerEntry {
     /// A language is not a server, and the two drift apart. TypeScript 7 is the native port: it
     /// ships no `tsserver.js`, so `typescript-language-server` — at every version — fails its
     /// handshake with "Could not find a valid TypeScript installation", and the language service
-    /// moved to `tsc --lsp`. One hardcoded command turns that into "Luxe has no TypeScript
+    /// moved to `tsc --lsp`. One hardcoded command turns that into "luxe has no TypeScript
     /// support"; a list turns it into a fallback nobody has to notice.
     ///
     /// Ordered most-preferred first, and tried on a *failed handshake*, not merely a missing
@@ -90,7 +90,7 @@ pub struct ServerEntryPatch {
 impl ServerEntryPatch {
     /// Apply this patch over the shipped entry for the same language, if there is one.
     ///
-    /// Returns `None` for a patch that names a language Luxe does not ship *and* omits `command`,
+    /// Returns `None` for a patch that names a language luxe does not ship *and* omits `command`,
     /// which is the one combination that cannot produce a launchable server.
     pub fn apply(self, base: Option<&ServerEntry>) -> Option<ServerEntry> {
         let base = base.cloned().unwrap_or_default();
@@ -125,7 +125,7 @@ impl ServerRegistry {
     /// Add default server entries for the common languages from the bundled `default-lsp-servers
     /// .json`. Shipping them as DATA (not hardcoded) lets users inspect + copy the defaults, and
     /// built-in + user config share one schema and code path. Servers are external binaries the
-    /// user installs; Luxe only knows how to launch + detect them.
+    /// user installs; luxe only knows how to launch + detect them.
     fn add_defaults(&mut self) {
         // Compile-time-embedded and covered by `default_servers_bundle_parses` — a genuine
         // invariant, so a parse failure is a build-time bug, never a runtime path.

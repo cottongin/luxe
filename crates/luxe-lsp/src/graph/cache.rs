@@ -9,7 +9,7 @@
 //!
 //! A shard also records the [`EXTRACTOR_VERSION`] that wrote it, because a matching content hash
 //! only says the file is unchanged, not that today's extractor would read it the same way. Writes
-//! are atomic, so a second Luxe in the same project never reads a torn shard.
+//! are atomic, so a second luxe in the same project never reads a torn shard.
 
 use super::extract::FileGraph;
 use serde::{Deserialize, Serialize};

@@ -5,7 +5,7 @@ fn env_of<'a>(pairs: &'a [(&'a str, &'a str)]) -> impl Fn(&str) -> Option<String
     move |name| pairs.iter().find(|(key, _)| *key == name).map(|(_, value)| (*value).to_string())
 }
 
-/// A Luxe variable names the directory itself; without one, it is `luxe` under the base, and a
+/// A luxe variable names the directory itself; without one, it is `luxe` under the base, and a
 /// blank one is unset.
 #[test]
 fn a_luxe_variable_names_the_directory_itself() {
@@ -35,7 +35,7 @@ fn the_runtime_folder_is_private_to_the_user() {
     let mac = [("TMPDIR", "/var/folders/x/T/"), ("XDG_RUNTIME_DIR", "/elsewhere")];
     assert_eq!(runtime(&mac, true), Some(PathBuf::from("/var/folders/x/T/luxe")));
     let named = [("LUXE_RUNTIME_DIR", "/chosen"), ("XDG_RUNTIME_DIR", "/run/user/1000")];
-    assert_eq!(runtime(&named, false), Some(PathBuf::from("/chosen")), "the Luxe variable wins");
+    assert_eq!(runtime(&named, false), Some(PathBuf::from("/chosen")), "the luxe variable wins");
 }
 
 /// The old resolver: the XDG variable, then `HOME`, never the Windows folders, and nothing to

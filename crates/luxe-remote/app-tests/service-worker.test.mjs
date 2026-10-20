@@ -43,7 +43,7 @@ test("a push it can't read still shows a notification", async () => {
   const { fire, shown } = worker();
   await fire("push", push("not json"));
   await fire("push", { data: null });
-  assert.deepEqual(shown.map((notice) => notice.title), ["Luxe", "Luxe"]);
+  assert.deepEqual(shown.map((notice) => notice.title), ["luxe", "luxe"]);
 });
 
 const click = (session) => {

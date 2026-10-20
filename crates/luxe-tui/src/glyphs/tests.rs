@@ -501,7 +501,7 @@ fn each_sweep_keeps_the_cadence_it_was_drawn_for() {
 /// The process tier is what the ~150 render sites read, so moving it has to move them.
 #[test]
 fn the_process_tier_selects_the_vocabulary() {
-    assert_eq!(tier(), GlyphTier::Nerd, "the default is the look Luxe ships with");
+    assert_eq!(tier(), GlyphTier::Nerd, "the default is the look luxe ships with");
     for at in TIERS {
         set_tier(at);
         assert_eq!(tier(), at, "{at:?} does not survive the round trip");

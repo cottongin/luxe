@@ -126,7 +126,7 @@ fn rustfmt_spec_is_correct() {
 }
 
 /// The edition on the command line overrides the project's own `rustfmt.toml`, so a constant
-/// there is not a default — it is Luxe overruling the repository about its own formatting.
+/// there is not a default — it is luxe overruling the repository about its own formatting.
 #[test]
 fn rust_is_formatted_against_the_edition_the_project_declares() {
     let project = tempfile::tempdir().expect("temp dir");
@@ -150,7 +150,7 @@ fn rust_is_formatted_against_the_edition_the_project_declares() {
     assert_eq!(edition_of(&FormatterRegistry::for_project(project.path(), false)), "2018");
 
     // rustfmt reads `rustfmt.toml` itself, so what it says has to win over the manifest —
-    // otherwise the flag Luxe passes silently overrules it.
+    // otherwise the flag luxe passes silently overrules it.
     std::fs::write(project.path().join("rustfmt.toml"), "edition = \"2015\"\n").expect("write");
     assert_eq!(edition_of(&FormatterRegistry::for_project(project.path(), false)), "2015");
 }

@@ -1,6 +1,6 @@
-//! local_endpoint — the way into a running Luxe from the same machine, and the list of them.
+//! local_endpoint — the way into a running luxe from the same machine, and the list of them.
 //!
-//! Each interactive Luxe serves its protocol here, so another front-end (the `luxe remote` bridge,
+//! Each interactive luxe serves its protocol here, so another front-end (the `luxe remote` bridge,
 //! `luxe join`, a script) can join the session it is running. It is local IPC, not network I/O: a
 //! Unix socket in a folder only this user can open, or on Windows a named pipe only this user can
 //! open and no other machine can reach. This module is the one owner of those platform details.
@@ -28,14 +28,14 @@ pub trait LocalIo: AsyncRead + AsyncWrite + Unpin + Send {}
 
 impl<T: AsyncRead + AsyncWrite + Unpin + Send> LocalIo for T {}
 
-/// A connection to or from a running Luxe.
+/// A connection to or from a running luxe.
 pub type LocalStream = Box<dyn LocalIo>;
 
 /// A client that connected, with its process id where the platform reports one.
 pub struct Joined {
     /// The connection
     pub stream: LocalStream,
-    /// The client's process id, for the check that it is not one of this Luxe's own children
+    /// The client's process id, for the check that it is not one of this luxe's own children
     pub peer: Option<u32>,
 }
 
@@ -61,7 +61,7 @@ impl EndpointError {
     }
 }
 
-/// This Luxe's endpoint, open for clients until it is dropped.
+/// This luxe's endpoint, open for clients until it is dropped.
 pub struct EndpointListener(platform::Listener);
 
 impl EndpointListener {

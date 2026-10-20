@@ -71,6 +71,31 @@ pub fn steered_scrollbar(
     scrollbar(frame, area, offset, total, viewport, styles);
 }
 
+/// Publishes `rows` as `list`'s wheel region and, when the list runs past them, draws its steered
+/// bar down their last column.
+///
+/// The region covers the rows even when everything fits, so a notch over a short list moves its
+/// cursor rather than scrolling the transcript behind the modal. `top` is the first line drawn and
+/// `total` the lines there are, a rule included.
+pub fn list_scrollbar(
+    frame: &mut Frame,
+    hit: &mut crate::mouse::HitRegions,
+    rows: Rect,
+    list: crate::mouse::OverlayList,
+    (top, total): (usize, usize),
+    styles: &ThemeStyles,
+) {
+    let region = crate::mouse::ScrollRegionId::OverlayList(list);
+    hit.push_scroll(rows, region);
+    steered_scrollbar(frame, hit, rows, region, top, total, usize::from(rows.height), styles);
+}
+
+/// The columns a list's rows keep beside its bar: one less when it scrolls, so no row sits half
+/// under the bar and a press on the track never lands on a row.
+pub fn list_rows_width(width: u16, total: usize, viewport: u16) -> u16 {
+    width.saturating_sub(u16::from(total > usize::from(viewport)))
+}
+
 /// What [`ScrollbarState`] has to be told the content is, to park the thumb at the end of the
 /// track on the last offset.
 ///

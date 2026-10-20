@@ -1,7 +1,7 @@
 //! Warm, process-wide service singletons — the LSP client, code graph, DAP debugger, and
 //! diagnostics cache — plus the per-project session store.
 //!
-//! Luxe runs one project per process, so each service is a `OnceLock` singleton reused across
+//! luxe runs one project per process, so each service is a `OnceLock` singleton reused across
 //! every tool call and hook instead of being spawned per request.
 
 use std::sync::Arc;
@@ -56,7 +56,7 @@ pub(crate) fn tool_statuses() -> Vec<luxe_core::ToolStatus> {
 /// Three inputs, and the judgement is here rather than in `luxe-lsp` so it can be read and tested
 /// in one place: the user's preference, whether a front-end can prompt, and `--trust-project`.
 ///
-/// `interactive` carries the whole argument for the default. Luxe is a coding agent someone sits
+/// `interactive` carries the whole argument for the default. luxe is a coding agent someone sits
 /// in front of; the loop is a feature, not the usual way it runs. With a person there, using the
 /// server the project pinned is ordinary work — and `node_modules/.bin` exists only because
 /// `npm install` already ran that project's install scripts, which is arbitrary code and a wider
@@ -96,7 +96,7 @@ pub(crate) fn project_tooling_allowed() -> bool {
 
 /// The process-wide warm LSP service. A singleton (like [`shared_diagnostics_store`]) so the tools,
 /// the diagnostics-on-edit hook, and the workspace collector (which reads running-server state for
-/// `/lsp`) all share one instance. Luxe runs one project per process; the collector scopes
+/// `/lsp`) all share one instance. luxe runs one project per process; the collector scopes
 /// running servers to the active root.
 pub(crate) fn build_lsp_service() -> SharedLspService {
     static SERVICE: std::sync::OnceLock<SharedLspService> = std::sync::OnceLock::new();
@@ -112,7 +112,7 @@ pub(crate) fn build_lsp_service() -> SharedLspService {
 
 /// The process-wide warm code graph service, shared by the `impact` / `module_report` tools and the
 /// graph-invalidation hook. Singleton like the LSP/DAP services; rooted at the workspace on first
-/// use (Luxe runs one project per process).
+/// use (luxe runs one project per process).
 pub(crate) fn build_graph_service(
     repo_root: &std::path::Path,
 ) -> Arc<luxe_lsp::graph::GraphService> {
@@ -223,7 +223,7 @@ fn read_config_text(path: &std::path::Path) -> Result<Option<String>, String> {
 ///
 /// A shared handle at the binary boundary: it lets the (core) hook publish per-file diagnostics
 /// that the (core-agnostic) collector reads for the Context Dock without threading a channel
-/// through every front-end. Luxe runs one project per process; the collector filters entries to the
+/// through every front-end. luxe runs one project per process; the collector filters entries to the
 /// active root, so a project switch never leaks another tree's diagnostics.
 pub(crate) fn shared_diagnostics_store() -> luxe_core::lsp::DiagnosticsStore {
     static STORE: std::sync::OnceLock<luxe_core::lsp::DiagnosticsStore> =

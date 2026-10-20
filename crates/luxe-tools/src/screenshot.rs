@@ -273,10 +273,10 @@ pub fn is_available() -> bool {
     capture::desktop_capture_available(capture::detect_backend()) || browser::is_available()
 }
 
-/// Modes that photograph whatever is on the reader's screen, rather than a page Luxe rendered.
+/// Modes that photograph whatever is on the reader's screen, rather than a page luxe rendered.
 ///
 /// The distinction the permission engine and the unattended guard are both drawn on: `url` shows a
-/// model a document it asked Luxe to load, and these show it the desktop — a password manager, a
+/// model a document it asked luxe to load, and these show it the desktop — a password manager, a
 /// private message, a colleague on a shared display.
 fn captures_the_desktop(mode: &str) -> bool {
     matches!(mode, "fullscreen" | "region" | "window")

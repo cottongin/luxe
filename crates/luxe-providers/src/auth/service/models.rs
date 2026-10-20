@@ -94,22 +94,6 @@ pub(super) fn answers_nothing(id: &str) -> bool {
     ["embed", "rerank"].iter().any(|kind| id.contains(kind))
 }
 
-/// A default model worth pointing the user at.
-///
-/// Prefers the provider's own preference order (the catalog default, when the account can actually
-/// reach it), then the first model the endpoint reported. Never invents an id the account can't use.
-pub(super) fn pick_model(descriptor: &ProviderDescriptor, available: &[String]) -> Option<String> {
-    if available.is_empty() {
-        return None;
-    }
-    descriptor
-        .preferred_models
-        .iter()
-        .find(|candidate| available.iter().any(|id| id == *candidate))
-        .map(|candidate| (*candidate).to_string())
-        .or_else(|| available.first().cloned())
-}
-
 /// "17 models available" — the line that tells a user the login actually worked.
 pub(super) fn describe_models(models: &[String]) -> Option<String> {
     if models.is_empty() {

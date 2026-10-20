@@ -1,7 +1,7 @@
 //! Live `gdb --interpreter=dap` debugging — the first test of this crate against a real debugger.
 //!
 //! Everything else here drives a **stub** adapter: a shell script that speaks just enough DAP to
-//! answer the choreography. That proves Luxe's side of the protocol and nothing about a real one,
+//! answer the choreography. That proves luxe's side of the protocol and nothing about a real one,
 //! which is how twelve lines of GPL notice came to ride into the model's context on every gdb
 //! launch — a stub has no banner to emit, so no test could see it.
 //!
@@ -268,7 +268,7 @@ async fn real_gdb_walks_the_whole_debug_surface() {
     //
     // Only `next` is asserted here. gdb answers `stepIn` with `success: true` and then sends no
     // event at all when there is nothing to step into (confirmed against the raw protocol), and no
-    // client can invent a stop the adapter never reported — what Luxe owes there is a *reply that
+    // client can invent a stop the adapter never reported — what luxe owes there is a *reply that
     // says so*, which `a_resume_that_never_stops_says_the_program_is_running` covers.
     let (stepped, failed) =
         call(json!({"action": "next", "session": session, "threadId": thread_id})).await;
@@ -398,7 +398,7 @@ async fn real_gdb_takes_program_arguments() {
 ///
 /// `kernel.yama.ptrace_scope = 1` — the default on most desktop Linux — forbids attaching to a
 /// process you did not fork. gdb accepts the `attach` request anyway and then simply never reports
-/// a stop, so the only thing Luxe can do is say which situation this is. It used to answer
+/// a stop, so the only thing luxe can do is say which situation this is. It used to answer
 /// `request 'event' timed out`, which names an internal wait and offers nothing; the check here is
 /// that the reply names the permission and the sysctl that governs it.
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]

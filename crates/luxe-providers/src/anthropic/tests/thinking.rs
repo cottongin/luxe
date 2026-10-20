@@ -47,7 +47,7 @@ fn an_effort_only_model_is_steered_with_adaptive_thinking_and_effort() {
     assert_eq!(xhigh["thinking"]["type"], "adaptive");
     assert_eq!(xhigh["output_config"]["effort"], "xhigh");
     assert!(xhigh["thinking"].get("budget_tokens").is_none(), "extended thinking would 400");
-    // Luxe shows reasoning in the transcript, and these models omit the text by default.
+    // luxe shows reasoning in the transcript, and these models omit the text by default.
     assert_eq!(xhigh["thinking"]["display"], "summarized");
 
     // A level the model doesn't offer clamps to one it does rather than inventing an effort.

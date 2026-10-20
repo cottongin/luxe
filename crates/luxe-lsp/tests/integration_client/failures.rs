@@ -4,7 +4,7 @@ use super::*;
 
 /// A server that starts, complains on stderr, and stops.
 ///
-/// The commonest real shape of a broken language server, and the one Luxe reported worst: a
+/// The commonest real shape of a broken language server, and the one luxe reported worst: a
 /// version-manager shim that resolves on `PATH` and then refuses to run. `mise ERROR No version is
 /// set for shim: pyright-langserver` and rustup's `error: infinite recursion detected` are both
 /// this, and both were reported as `initialize timed out after 30s` — after waiting the full 30

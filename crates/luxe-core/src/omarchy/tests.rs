@@ -203,14 +203,14 @@ fn the_desktop_theme_resolves_most_specific_first() {
     let dir = root.path().to_path_buf();
     let desktop = |name: &str| DesktopTheme { name: name.into(), dir: dir.clone() };
 
-    // A dark theme Luxe ships: the built-in, under the desktop's name
+    // A dark theme luxe ships: the built-in, under the desktop's name
     std::fs::write(dir.join("colors.toml"), "mode = \"dark\"\nbackground = \"#2e3440\"")
         .expect("write");
     let nord = desktop("nord").theme(&builtins).expect("nord");
     assert_eq!(nord.name, DESKTOP_THEME);
     assert_eq!(nord.resolve_aliases(), builtins.resolve("nord").expect("built in"));
 
-    // Omarchy's rose-pine is Dawn: light, so the palette, not Luxe's dark rose-pine
+    // Omarchy's rose-pine is Dawn: light, so the palette, not luxe's dark rose-pine
     std::fs::write(
         dir.join("colors.toml"),
         "mode = \"light\"\nbackground = \"#faf4ed\"\nforeground = \"#575279\"",

@@ -138,7 +138,7 @@ fn settings() -> CompactionSettings {
 /// `invoked_from` is the test's own directory on purpose.
 ///
 /// Left unset, the engine takes the *process's* directory — this repository — so the system prompt
-/// these tests measure against a threshold quietly includes Luxe's own `AGENTS.md`, its skills, and
+/// these tests measure against a threshold quietly includes luxe's own `AGENTS.md`, its skills, and
 /// the name of the branch they run on. Editing `AGENTS.md` then fails three compaction tests, which
 /// is a fixture reading the room rather than a defect.
 fn config(

@@ -2,7 +2,7 @@
 //!
 //! The reviewer's comments become a single review with a verdict, the way they would submit one on
 //! the site. Where each comment lands is decided here, against GitHub's own patches rather than
-//! Luxe's diff: the two usually agree, and a comment that assumed so and was wrong would be refused
+//! luxe's diff: the two usually agree, and a comment that assumed so and was wrong would be refused
 //! (`Line could not be resolved`) and take the whole review with it.
 //!
 //! Nothing is added to the reviewer's words. A comment that cannot sit on a line goes in the

@@ -2,7 +2,7 @@
 title: "Commands and keys"
 summary: "The Command Palette, slash commands, Help, every default key, and how to rebind them."
 order: 4
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Command Palette and slash commands
@@ -26,7 +26,7 @@ list says what the command does and the arguments it takes.
 Past the command, the list shows the arguments it takes, such as `/diff turn` or
 `/diff pr <number or URL>`, and narrows as you type. `tab` fills in the one under the cursor.
 `enter` runs it when nothing is missing, and fills it in when it still needs a value. `esc` puts the
-list away for that command. In the composer, a command Luxe knows is highlighted, and so are the
+list away for that command. In the composer, a command luxe knows is highlighted, and so are the
 words of it you have typed, like `pr` in `/diff pr 142`. A command that stays plain is misspelled.
 
 ## Slash commands
@@ -66,8 +66,8 @@ words of it you have typed, like `pr` in `/diff pr 142`. A command that stays pl
 | `/login`, `/logout` | Add or remove a provider's credential |
 | `/auth` | Which providers you are signed in to, and how |
 | `/reload` | Re-read your config and keys without restarting |
-| `/quit` | Leave Luxe. The session is already saved. |
-| `/update` | Leave Luxe and update it, as `luxe update` does |
+| `/quit` | Leave luxe. The session is already saved. |
+| `/update` | Leave luxe and update it, as `luxe update` does |
 
 The Command Palette also lists commands with no slash form, such as **Copy message**, **Swap the
 sidebar's side** and, in a review, **Send comments**.
@@ -200,7 +200,7 @@ Put your bindings in `~/.config/luxe/keybindings.json`, or open it from **Config
 ## Alt keys on a Mac
 
 A Mac has no Alt key. Its Option key types characters instead: `option+o` is `ø`, `option+p` is
-`π`. Most of Luxe's `alt` keys need your terminal to send Option as Alt:
+`π`. Most of luxe's `alt` keys need your terminal to send Option as Alt:
 
 | Terminal | Setting |
 | --- | --- |
@@ -212,6 +212,6 @@ A Mac has no Alt key. Its Option key types characters instead: `option+o` is `ø
 | Alacritty | `option_as_alt = "Both"` under `[window]` |
 
 Ghostty already does this on the "U.S." keyboard layouts. On the others it sends the character and
-marks it as an Alt key. On "ABC", the Mac's default English layout, Luxe reads that back as the key
+marks it as an Alt key. On "ABC", the Mac's default English layout, luxe reads that back as the key
 you pressed, so `option+o` opens a file from the preview without any setting. On other layouts, set
 the option above.

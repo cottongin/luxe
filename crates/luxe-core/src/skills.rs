@@ -6,7 +6,7 @@
 //!
 //! # Where skills live
 //!
-//! Luxe's own folders, and the `.agents/skills` folders every other skills-aware agent reads —
+//! luxe's own folders, and the `.agents/skills` folders every other skills-aware agent reads —
 //! Codex, OpenCode, Pi and Copilot among them, and where `npx skills` installs — so a skill
 //! installed for one of them is already installed here. Broadest first:
 //!

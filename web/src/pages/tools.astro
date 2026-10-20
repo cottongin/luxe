@@ -244,7 +244,7 @@ const tokens = (bytes: number) => {
   return `${(count / 1_000_000).toFixed(1)}M tokens`;
 };
 
-/** The head's terminal: the commands whose output Luxe's tool cuts the most, measured like the rest. */
+/** The head's terminal: the commands whose output luxe's tool cuts the most, measured like the rest. */
 const terminal = ["git", "module_report", "glob"].flatMap((id) => rows.get(id) ?? []);
 
 const times = (shell: number, tool: number) => {
@@ -253,7 +253,7 @@ const times = (shell: number, tool: number) => {
   if (ratio < 1.1) return tool <= shell * 0.95 ? `${Math.round((1 - tool / shell) * 100)}% less` : "the same";
   return ratio < 10 ? `${ratio.toFixed(1)}× less` : `${Math.round(ratio).toLocaleString("en-US")}× less`;
 };
-/** Luxe against the tightest cut another agent makes, said both ways round. */
+/** luxe against the tightest cut another agent makes, said both ways round. */
 const versus = (cut: number, tool: number) => {
   if (tool <= cut * 1.05 && tool >= cut * 0.95) return "about what the tightest cut sends";
   if (tool < cut) return `${times(cut, tool)} than the tightest cut`;
@@ -263,7 +263,7 @@ const versus = (cut: number, tool: number) => {
 
 /**
  * Whole tasks against the other agents: each agent's cost on the same task as a multiple of
- * Luxe's, charged as a cold start.
+ * luxe's, charged as a cold start.
  */
 type Other = { warm: number; cold: number; passed: number; runs: number };
 type CostRow = { model: string; luxe: { passed: number; runs: number } } & Partial<
@@ -272,11 +272,11 @@ type CostRow = { model: string; luxe: { passed: number; runs: number } } & Parti
 const costRows = agentCost.rows as CostRow[];
 const multiple = (other?: Other) => (other ? `${other.cold.toFixed(2)}×` : "–");
 
-/** Each model's bars: Luxe at 1×, then every agent that ran it. A vendor's agent runs only its own
+/** Each model's bars: luxe at 1×, then every agent that ran it. A vendor's agent runs only its own
  *  vendor's models, so a model has Claude Code's bar or Codex's, never both. */
 const chartBars = (row: CostRow) =>
   [
-    { kind: "luxe", label: "Luxe", cold: 1 },
+    { kind: "luxe", label: "luxe", cold: 1 },
     { kind: "claude", label: "Claude Code", cold: row.claude?.cold },
     { kind: "codex", label: "Codex", cold: row.codex?.cold },
     { kind: "opencode", label: "OpenCode", cold: row.opencode?.cold },
@@ -290,8 +290,8 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
 ---
 
 <Base
-  title="Tools — Luxe"
-  description="Every tool in Luxe has to beat the shell command it replaces. Here's how each one does, measured."
+  title="Tools — luxe"
+  description="Every tool in luxe has to beat the shell command it replaces. Here's how each one does, measured."
 >
   <div class="page">
     <section class="section section--head">
@@ -306,7 +306,7 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
           success, and the model pays for all of it in tokens and turns.
         </p>
         <p>
-          So every tool in Luxe has to beat the command it replaces: by sending less, by getting it
+          So every tool in luxe has to beat the command it replaces: by sending less, by getting it
           right the first time, or by doing something the shell can't.
         </p>
         <p class="muted note">
@@ -359,10 +359,10 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
       <div class="tasks__data">
       <div class="prose">
         <p>
-          Luxe, Claude Code, Codex and OpenCode each ran the first twelve Django tasks of
+          luxe, Claude Code, Codex and OpenCode each ran the first twelve Django tasks of
           SWE-bench Verified Mini, with the same model, the same prompt and the same keys, every
           call metered at the network and priced from one list. Each figure is what the other agent
-          spent on the same task, as a multiple of what Luxe spent: above 1× costs more than Luxe.
+          spent on the same task, as a multiple of what luxe spent: above 1× costs more than luxe.
         </p>
       </div>
       <table class="costs">
@@ -391,7 +391,7 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
       </table>
       <p class="muted note tasks__note">
         Every run is charged as a cold start, the way a session begins after a break. Run side by
-        side on a warm cache, Claude Code and OpenCode cost up to 2.6× what Luxe does on Claude
+        side on a warm cache, Claude Code and OpenCode cost up to 2.6× what luxe does on Claude
         models. Claude Code runs only Claude models and Codex only OpenAI's, hence the dashes.
         Pass rates overlapped on every model. Graded on one machine rather than in
         SWE-bench's own containers, so these are not leaderboard scores. Measured at
@@ -481,7 +481,7 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
                       <dd set:html={inline(tool.contrast.shell)} />
                     </div>
                     <div class="contrast__row contrast__row--luxe">
-                      <dt>Luxe</dt>
+                      <dt>luxe</dt>
                       <dd set:html={inline(tool.contrast.luxe)} />
                     </div>
                   </dl>
@@ -672,7 +672,7 @@ const share = (shell: number, tool: number) => `${Math.max((tool / shell) * 100,
   }
 
   /* macOS's window controls, in its own colors: close, minimize, zoom. Literal rather than theme
-     tokens, since they draw a Mac window rather than Luxe */
+     tokens, since they draw a Mac window rather than luxe */
   .terminal__dots i {
     display: inline-block;
     width: 0.7em;

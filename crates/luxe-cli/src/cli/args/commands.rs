@@ -7,13 +7,13 @@ use clap::{Parser, Subcommand};
 pub(crate) enum SubCommand {
     /// Sign in to a provider, check credentials, or sign out.
     Auth(AuthArgs),
-    /// Read Luxe's user guide, for this version.
+    /// Read luxe's user guide, for this version.
     Docs(DocsArgs),
     /// Check which language servers, debug adapters and tools work on this machine.
     Doctor,
-    /// Set Luxe up: a theme, a provider, the tools and the start screen.
+    /// Set luxe up: a theme, a provider, the tools and the start screen.
     Init(InitArgs),
-    /// Join a session another Luxe on this machine is running, speaking the `--rpc` protocol on
+    /// Join a session another luxe on this machine is running, speaking the `--rpc` protocol on
     /// stdin and stdout.
     Join(JoinArgs),
     /// Serve your sessions to your own phone or tablet, through Tailscale.
@@ -27,7 +27,7 @@ pub(crate) enum SubCommand {
     Models(ModelsArgs),
     /// List this project's sessions.
     Sessions(SessionsArgs),
-    /// Update Luxe with the command for however it was installed.
+    /// Update luxe with the command for however it was installed.
     Update(UpdateArgs),
     /// Summarize a `LUXE_WIRE_LOG` capture.
     Wire(WireArgs),
@@ -109,10 +109,10 @@ pub(crate) struct ModelsArgs {
     pub(crate) command: ModelsCommand,
 }
 
-/// Models subcommand — what Luxe knows about a model, and where it learned it.
+/// Models subcommand — what luxe knows about a model, and where it learned it.
 #[derive(Subcommand, Debug)]
 pub(crate) enum ModelsCommand {
-    /// List known models for the providers Luxe can route to.
+    /// List known models for the providers luxe can route to.
     List {
         /// Only this provider.
         #[arg(long)]
@@ -148,7 +148,7 @@ pub(crate) struct InitArgs {
 /// Join arguments.
 #[derive(Parser, Debug)]
 pub(crate) struct JoinArgs {
-    /// The session: its id or the start of it, or the process id of the Luxe running it. Omit
+    /// The session: its id or the start of it, or the process id of the luxe running it. Omit
     /// it to join the one running in this folder.
     pub(crate) target: Option<String>,
     /// List the sessions running on this machine that can be joined, and exit.

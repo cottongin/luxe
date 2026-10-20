@@ -87,6 +87,16 @@ impl ThemePickerState {
         }
     }
 
+    /// The cursor's row.
+    pub(crate) fn cursor(&self) -> usize {
+        self.selected
+    }
+
+    /// How many themes the list holds.
+    pub(crate) fn len(&self) -> usize {
+        self.themes.len()
+    }
+
     /// Move the cursor to `index`, previewing what lands under it.
     pub fn select(&mut self, index: usize) -> Option<String> {
         (index < self.themes.len() && index != self.selected).then(|| {
@@ -164,6 +174,8 @@ impl ThemePickerState {
             self.selected,
             usize::from(chunks[0].height),
         );
+        let total = self.themes.len();
+        let width = crate::widgets::list_rows_width(chunks[0].width, total, chunks[0].height);
         let shown: Vec<usize> = window
             .slots()
             .filter_map(|slot| match slot {
@@ -188,7 +200,7 @@ impl ThemePickerState {
                 }
                 ListItem::new(crate::widgets::selection_row(
                     spans,
-                    usize::from(chunks[0].width),
+                    usize::from(width),
                     selected,
                     theme,
                 ))
@@ -200,12 +212,15 @@ impl ThemePickerState {
             for (row, &index) in shown.iter().enumerate() {
                 let row_y = chunks[0].y.saturating_add(row as u16);
                 regions.push(
-                    Rect::new(chunks[0].x, row_y, chunks[0].width, 1),
+                    Rect::new(chunks[0].x, row_y, width, 1),
                     crate::mouse::MouseTarget::ThemeRow(index),
                 );
             }
+            let list = crate::mouse::OverlayList::Themes;
+            let window = (window.top(), total);
+            crate::widgets::list_scrollbar(frame, &mut regions, chunks[0], list, window, theme);
         }
-        frame.render_widget(List::new(items), chunks[0]);
+        frame.render_widget(List::new(items), Rect { width, ..chunks[0] });
         crate::widgets::render_footer(frame, chunks[1], FOOTER, None, theme);
     }
 }

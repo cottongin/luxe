@@ -1,7 +1,7 @@
 //! Refresh — when to ask GitHub about the branch's pull request again.
 //!
 //! GitHub has no push channel a local program can subscribe to, so the status row is kept current
-//! two ways: right away after anything Luxe saw happen, and on an interval otherwise. This module
+//! two ways: right away after anything luxe saw happen, and on an interval otherwise. This module
 //! is the interval, and only the arithmetic of it — the workspace runtime tells it what happened
 //! and asks when to look next, so every rule here is testable without a clock or a network.
 //!

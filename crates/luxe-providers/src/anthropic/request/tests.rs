@@ -430,7 +430,7 @@ fn a_failed_activation_is_left_as_text() {
     assert_eq!(turn[0]["is_error"], true);
 }
 
-/// Listing is the request Luxe always sent: the engine's list as is, and no reference anywhere.
+/// Listing is the request luxe always sent: the engine's list as is, and no reference anywhere.
 /// The same holds for a pass that withholds tools, where a reference would point at nothing.
 #[test]
 fn listing_and_a_toolless_pass_send_no_deferred_tools() {

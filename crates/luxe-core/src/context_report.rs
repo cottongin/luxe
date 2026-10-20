@@ -187,7 +187,7 @@ pub struct ContextComposition {
     pub cache_write_pct: Option<f32>,
     /// Enabled MCP servers, and the tokens their single gateway tool costs.
     ///
-    /// A line rather than a part: Luxe exposes every server through one gateway tool, so the
+    /// A line rather than a part: luxe exposes every server through one gateway tool, so the
     /// category the rest of the field warns about is always near zero here — and a row that always
     /// reads zero teaches nothing.
     pub mcp: Option<McpFootprint>,

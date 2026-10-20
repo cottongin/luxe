@@ -11,7 +11,7 @@ async fn project_with_changes() -> (tempfile::TempDir, LocalGit) {
     // In the repository, not as `-c` flags on the setup commit: the commit under test is made by
     // *product* code, which rightly never invents an author. A machine with no global identity — a
     // CI runner, a fresh container — then fails at the assertion rather than at the fixture.
-    git.run("configure author", &["config", "user.name", "Luxe Tests"]).await.unwrap();
+    git.run("configure author", &["config", "user.name", "luxe Tests"]).await.unwrap();
     git.run("configure author", &["config", "user.email", "tests@luxe.local"]).await.unwrap();
     std::fs::write(project.path().join("lib.rs"), "let a = 1;\n").unwrap();
     std::fs::write(project.path().join("notes.md"), "old\n").unwrap();

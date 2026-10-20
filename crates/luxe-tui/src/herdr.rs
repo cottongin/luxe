@@ -1,10 +1,10 @@
-//! herdr — the agent's state, reported to herdr when Luxe runs in one of its panes.
+//! herdr — the agent's state, reported to herdr when luxe runs in one of its panes.
 //!
 //! herdr is a terminal workspace manager for coding agents. It shows each agent's state in its
 //! sidebar, rolls it up to tabs and workspaces, and raises its own notification when an agent
 //! finishes or needs a decision. That last part matters here: herdr emulates the terminal in each
-//! pane and keeps an `OSC 9` for itself, so the desktop notification Luxe writes through the
-//! terminal never leaves the pane. Reporting the state is how a reader inside herdr hears from Luxe.
+//! pane and keeps an `OSC 9` for itself, so the desktop notification luxe writes through the
+//! terminal never leaves the pane. Reporting the state is how a reader inside herdr hears from luxe.
 //!
 //! The state is derived from the app on every pass of the loop ([`crate::app::App::agent_state`])
 //! rather than pushed from each place it changes, and only a change is sent: `working` while a turn
@@ -54,7 +54,7 @@ impl AgentState {
     }
 }
 
-/// The pane Luxe runs in, and the herdr that owns it.
+/// The pane luxe runs in, and the herdr that owns it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Pane {
     /// `$HERDR_BIN_PATH`: the binary of the herdr that owns the pane, which may not be on `PATH`
@@ -63,7 +63,7 @@ struct Pane {
     id: String,
 }
 
-/// The pane herdr says Luxe runs in, or `None` outside herdr.
+/// The pane herdr says luxe runs in, or `None` outside herdr.
 ///
 /// All of it or nothing: herdr's own guidance is to report only when `HERDR_ENV=1` and the rest
 /// are set, so a shell that merely inherited one variable reports nowhere.
@@ -128,7 +128,7 @@ fn release_args(pane: &str, seq: u64) -> Vec<String> {
     args
 }
 
-/// Whether a session id can travel in a resume command: what Luxe writes, nothing a shell or herdr
+/// Whether a session id can travel in a resume command: what luxe writes, nothing a shell or herdr
 /// would read as more than one plain word.
 fn resumable(id: &str) -> bool {
     !id.is_empty() && id.chars().all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_'))
@@ -148,7 +148,7 @@ fn message_text(message: &str) -> String {
     }
 }
 
-/// Report numbers: rising across reports, and across restarts of Luxe, which a clock gives for free.
+/// Report numbers: rising across reports, and across restarts of luxe, which a clock gives for free.
 #[derive(Debug, Default)]
 struct Sequence {
     last: u64,
@@ -164,7 +164,7 @@ impl Sequence {
     }
 }
 
-/// Reports the agent's state to the herdr pane Luxe runs in.
+/// Reports the agent's state to the herdr pane luxe runs in.
 pub struct Reporter {
     pane: Pane,
     /// What was last handed to the worker, so an unchanged state is not sent again

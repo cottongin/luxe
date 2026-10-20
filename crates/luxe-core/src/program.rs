@@ -1,6 +1,6 @@
 //! Program resolution — find an external tool that is installed but not on `PATH`.
 //!
-//! Luxe drives a lot of external programs: language servers, debug adapters, formatters, `git`,
+//! luxe drives a lot of external programs: language servers, debug adapters, formatters, `git`,
 //! `ast-grep`. Resolving them through `PATH` alone reports "not installed" for a tool that is
 //! sitting on disk, because a package manager's bin directory and the launching process's `PATH`
 //! are different things. `cargo install` writes to `~/.cargo/bin` whether or not that directory was

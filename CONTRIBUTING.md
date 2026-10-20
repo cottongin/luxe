@@ -1,6 +1,6 @@
-# Contributing to Luxe
+# Contributing to luxe
 
-Process and tooling for people working on Luxe itself. The rules an agent has to hold to are in
+Process and tooling for people working on luxe itself. The rules an agent has to hold to are in
 [`AGENTS.md`](AGENTS.md), deliberately kept short because it rides in every request; this file is
 the long version, for humans, and nothing here is loaded into a prompt.
 
@@ -11,18 +11,18 @@ editing a page, and a test fails until you do.
 
 ## Licensing your contribution
 
-Luxe is dual licensed under MIT (`LICENSE-MIT`) or Apache-2.0 (`LICENSE-APACHE`), at the user's
+luxe is dual licensed under MIT (`LICENSE-MIT`) or Apache-2.0 (`LICENSE-APACHE`), at the user's
 option. Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
 the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 additional terms or conditions.
 
 ## AI assistance
 
-AI help is welcome. Luxe is built with plenty of it, much of it Luxe working on itself. Three things
+AI help is welcome. luxe is built with plenty of it, much of it luxe working on itself. Three things
 to hold to:
 
 - **Say so.** Name the tool and how much of the change it wrote in the pull request: "written with
-  Luxe on Claude Sonnet 5.5, then reviewed and edited by me", or "asked ChatGPT how the cache works,
+  luxe on Claude Sonnet 5.5, then reviewed and edited by me", or "asked ChatGPT how the cache works,
   wrote the fix myself". Tab completion doesn't count. A commit can carry the Linux kernel's
   `Assisted-by: AGENT:MODEL` trailer.
 - **Understand it.** You should be able to explain what your change does and how it fits without
@@ -280,7 +280,7 @@ python3 scripts/voice-check.py --review
 
 The Tools page's bars are recorded, not generated: `scripts/tool-bench.sh NAME=REPO:CASES ...` runs
 each tool and the shell command it replaces in each checkout you name (the cases are in
-`scripts/tool-bench/`), then in Luxe itself, and writes `web/src/data/tool-bench.json` naming every
+`scripts/tool-bench/`), then in luxe itself, and writes `web/src/data/tool-bench.json` naming every
 repository's commit. Each shell row is also put through the other agents' own output limits, since
 that, not the raw output, is what their models are sent. Nothing checks the file; run it on
 committed trees when a tool's output changes. The page draws from the first repository.
@@ -327,6 +327,7 @@ npm ci                                   # TypeScript, Playwright, and the vendo
 npm run check                            # tsc
 npm test                                 # unit tests
 cargo build -p luxe-cli && npm run e2e   # end to end; LUXE_BIN picks another luxe
+node e2e/screenshots.mjs                 # the guide's phone shots, into docs/guide/phone/
 ```
 
 Every iOS browser is WebKit, so check the app there. Playwright's WebKit build wants Ubuntu's ICU,
@@ -386,7 +387,7 @@ packages and builds every crate the way the registry will, dependencies first.
 
 ## Development-only files
 
-A development checkout carries planning files, design notes and evaluation rigs that Luxe never
+A development checkout carries planning files, design notes and evaluation rigs that luxe never
 needs at runtime. They are marked `export-ignore` in `.gitattributes`, and
 `scripts/publish-clean.sh <dir>` writes a release tree without them, then scans what it wrote for
 anything that must not ship.

@@ -94,7 +94,7 @@ async fn fetch_into(
     let cache = luxe_core::fetched::cache_dir(root);
     let Some(dest) = checkout_dir(&cache, owner, repo) else {
         return ToolResultData::error(format!(
-            "`{owner}/{repo}` is not a GitHub repository name Luxe will clone."
+            "`{owner}/{repo}` is not a GitHub repository name luxe will clone."
         ));
     };
     {
@@ -252,7 +252,7 @@ fn clone_command(git: &Path, source: &str, staging: &Path, cwd: &Path) -> tokio:
 }
 
 /// A fresh staging directory name under `cache`, carrying the time it was made so [`tidy`] can tell
-/// a leftover from a clone still running in another Luxe.
+/// a leftover from a clone still running in another luxe.
 fn staging_dir(cache: &Path, owner: &str, repo: &str) -> PathBuf {
     let nanos = SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |since| since.as_nanos());
     let secs = nanos / 1_000_000_000;

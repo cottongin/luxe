@@ -187,7 +187,7 @@ impl ReviewSession {
         Ok(())
     }
 
-    /// Notes, in Luxe's own name, that a fix turn ended with no word from the agent on these
+    /// Notes, in luxe's own name, that a fix turn ended with no word from the agent on these
     /// comments, and why.
     ///
     /// Without it a comment the agent was asked to fix looks exactly as if it had been ignored. The

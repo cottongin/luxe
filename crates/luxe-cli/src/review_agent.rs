@@ -1,6 +1,6 @@
 //! The reviewer as an agent — a real turn, with the real tools, in a session of its own.
 //!
-//! A review is a model driving Luxe. It gets the same pipeline every other turn gets: the tool
+//! A review is a model driving luxe. It gets the same pipeline every other turn gets: the tool
 //! registry, the permission engine, per-tool deadlines, cancellation, the hook chain. What makes it
 //! a *review* is how its engine is built — the reviewer's model, the reviewer's tools and no others,
 //! and a mode that refuses every write — and the brief it is handed, which says who it is.

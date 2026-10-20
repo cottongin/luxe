@@ -1,4 +1,4 @@
-//! Wire log — an opt-in, on-disk record of everything Luxe sends to a model and gets back.
+//! Wire log — an opt-in, on-disk record of everything luxe sends to a model and gets back.
 //!
 //! Set `LUXE_WIRE_LOG=<path>` and every provider call appends JSONL: the exact request body as it
 //! goes on the wire (after provider-specific shaping — `cache_control` markers, tool schemas,

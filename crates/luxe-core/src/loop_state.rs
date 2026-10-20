@@ -116,7 +116,7 @@ pub enum LoopLiveness {
         /// The machine that wrote the record
         host: String,
     },
-    /// Nothing was recorded: a state file written before Luxe kept this, or a run marked
+    /// Nothing was recorded: a state file written before luxe kept this, or a run marked
     /// resumable by `luxe loop resume`, which flags the state without driving anything.
     Unrecorded,
 }
@@ -328,7 +328,7 @@ mod owner_tests {
         assert_eq!(state.owned_by_another_process(), None);
     }
 
-    /// A state file written before Luxe recorded an owner still loads, and claims nothing.
+    /// A state file written before luxe recorded an owner still loads, and claims nothing.
     #[test]
     fn a_state_without_an_owner_makes_no_claim() {
         let older = r#"{"running":true,"iteration":3,"current_phase":1,"max_turns_per_run":50,

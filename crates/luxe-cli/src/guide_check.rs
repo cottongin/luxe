@@ -1,9 +1,9 @@
 //! Guide check — the user guide's config examples, flags and slash commands, held against the code.
 //!
-//! `docs/guide/` is what a user copies from and what an agent follows. Luxe ignores a config key it
-//! does not know, on purpose, so an old config loads on a new Luxe; the cost is that a misspelled
+//! `docs/guide/` is what a user copies from and what an agent follows. luxe ignores a config key it
+//! does not know, on purpose, so an old config loads on a new luxe; the cost is that a misspelled
 //! or invented key in the docs loads too, and does nothing. These tests load every example the
-//! guide names a file for as that file, and fail on anything Luxe would ignore.
+//! guide names a file for as that file, and fail on anything luxe would ignore.
 //!
 //! A code block opts in by naming its file in the fence, ` ```json title="config.json" `, which is
 //! also what the site shows above the block. `scripts/docs-check.py` covers links and voice.
@@ -76,7 +76,7 @@ fn blocks(page: &str, text: &str) -> Vec<Block> {
     blocks
 }
 
-/// The keys Luxe would ignore reading `text` as `T`, as paths like `dock.mode`.
+/// The keys luxe would ignore reading `text` as `T`, as paths like `dock.mode`.
 fn ignored<T: DeserializeOwned>(text: &str) -> Result<Vec<String>, String> {
     let value: serde_json::Value = serde_json::from_str(text).map_err(|error| error.to_string())?;
     let mut paths = Vec::new();
@@ -85,7 +85,7 @@ fn ignored<T: DeserializeOwned>(text: &str) -> Result<Vec<String>, String> {
     Ok(paths)
 }
 
-/// The keys Luxe would ignore in an `auth.json`: every top-level key is a provider's credential,
+/// The keys luxe would ignore in an `auth.json`: every top-level key is a provider's credential,
 /// except the configuration keys it shares with `models.json`.
 fn auth_file(text: &str) -> Result<Vec<String>, String> {
     const CONFIGURATION: &[&str] =
@@ -153,7 +153,7 @@ fn check_file(title: &str, text: &str) -> Result<(), String> {
     if unknown.is_empty() {
         Ok(())
     } else {
-        Err(format!("Luxe would ignore {}", unknown.join(", ")))
+        Err(format!("luxe would ignore {}", unknown.join(", ")))
     }
 }
 
@@ -174,7 +174,7 @@ fn every_named_config_example_loads() {
     }
     assert!(
         failures.is_empty(),
-        "config examples Luxe would not read as written:\n{}",
+        "config examples luxe would not read as written:\n{}",
         failures.join("\n")
     );
 }
@@ -235,7 +235,7 @@ fn shell_words(line: &str) -> Vec<String> {
     words
 }
 
-/// What is wrong with a `luxe …` command line, if anything: a flag or subcommand Luxe lacks.
+/// What is wrong with a `luxe …` command line, if anything: a flag or subcommand luxe lacks.
 fn check_command_line(root: &clap::Command, line: &str) -> Result<(), String> {
     let mut path: Vec<&clap::Command> = vec![root];
     let words = shell_words(line);
@@ -286,14 +286,14 @@ fn every_command_line_in_the_guide_exists() {
             }
         }
     }
-    assert!(failures.is_empty(), "command lines Luxe would refuse:\n{}", failures.join("\n"));
+    assert!(failures.is_empty(), "command lines luxe would refuse:\n{}", failures.join("\n"));
 }
 
 /// Paths that look like a slash command in a code span.
 const NOT_COMMANDS: &[&str] =
     &["/tmp", "/etc", "/usr", "/dev", "/home", "/var", "/opt", "/bin", "/proc"];
 
-/// Every slash command the guide names is one Luxe has.
+/// Every slash command the guide names is one luxe has.
 #[test]
 fn every_slash_command_in_the_guide_exists() {
     let registry = luxe_tui::commands::CommandRegistry::all();
@@ -329,10 +329,10 @@ fn every_slash_command_in_the_guide_exists() {
             }
         }
     }
-    assert!(failures.is_empty(), "slash commands Luxe does not have:\n{}", failures.join("\n"));
+    assert!(failures.is_empty(), "slash commands luxe does not have:\n{}", failures.join("\n"));
 }
 
-/// The command reference lists every slash command Luxe has, and every key it binds by default, so a
+/// The command reference lists every slash command luxe has, and every key it binds by default, so a
 /// new command or binding cannot ship undocumented.
 #[test]
 fn the_command_reference_is_complete() {
@@ -350,7 +350,7 @@ fn the_command_reference_is_complete() {
     assert!(missing.is_empty(), "commands.md does not mention:\n{}", missing.join("\n"));
 }
 
-/// The configuration reference names every key `config.json` takes, from the schema Luxe writes
+/// The configuration reference names every key `config.json` takes, from the schema luxe writes
 /// beside it, so a new setting cannot ship undocumented.
 #[test]
 fn the_configuration_reference_is_complete() {

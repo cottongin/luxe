@@ -80,7 +80,7 @@ async fn a_prompt_answered_in_time_is_never_sent() {
     let (mut heard, mut joined, _watcher) = watched(&mut session).await;
     say(&mut joined, &[PERMISSION, QUESTION, CLOSED]).await;
     let notice = heard.recv().await.expect("a notice");
-    assert_eq!(notice.body, "Luxe has a question");
+    assert_eq!(notice.body, "The agent has a question for you");
     tokio::time::sleep(PROMPT_GRACE * 2).await;
     assert!(heard.try_recv().is_err(), "the answered prompt was sent");
 }

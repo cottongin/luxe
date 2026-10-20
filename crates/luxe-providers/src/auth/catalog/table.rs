@@ -42,7 +42,6 @@ pub(super) const BASE: ProviderDescriptor = ProviderDescriptor {
     compat_defaults: plain,
     served_models: ServedModels::Catalog,
     subscription_billed: false,
-    preferred_models: &[],
 };
 
 /// The curated catalog.
@@ -59,7 +58,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         models_dev: Some("openai"),
         console_url: Some("https://platform.openai.com/api-keys"),
         key_hint: Some("sk-…"),
-        preferred_models: &["gpt-5.6", "gpt-5.4", "gpt-5.2", "gpt-5"],
         compat_defaults: openai_flags,
         ..BASE
     },
@@ -84,7 +82,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
             "gpt-5.3-codex-spark",
         ]),
         subscription_billed: true,
-        preferred_models: &["gpt-5.6-sol", "gpt-5.4", "gpt-5.3-codex-spark"],
         compat_defaults: codex_flags,
         ..BASE
     },
@@ -99,9 +96,8 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         key_hint: Some("sk-ant-…"),
         note: Some(
             "API key only. Anthropic's terms forbid using a Claude Pro/Max subscription from a \
-             third-party harness, so Luxe does not offer that sign-in.",
+             third-party harness, so luxe does not offer that sign-in.",
         ),
-        preferred_models: &["claude-sonnet-5-5", "claude-sonnet-5", "claude-sonnet-4-6"],
         compat_defaults: anthropic_flags,
         ..BASE
     },
@@ -119,7 +115,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
              picker → Enable.",
         ),
         subscription_billed: true,
-        preferred_models: &["claude-sonnet-5", "gpt-5.6-sol", "gpt-5.4"],
         compat_defaults: copilot_flags,
         ..BASE
     },
@@ -133,7 +128,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         oauth: Some((OauthFlow::OpenRouter, "Sign in with OpenRouter")),
         console_url: Some("https://openrouter.ai/keys"),
         key_hint: Some("sk-or-…"),
-        preferred_models: &["anthropic/claude-sonnet-5", "openai/gpt-5.6-sol"],
         compat_defaults: openrouter_flags,
         ..BASE
     },
@@ -148,9 +142,8 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         key_hint: Some("AIza…"),
         note: Some(
             "API key only. Google's terms forbid using Gemini CLI / Google AI subscription sign-in \
-             from a third-party harness, so Luxe does not offer that sign-in.",
+             from a third-party harness, so luxe does not offer that sign-in.",
         ),
-        preferred_models: &["gemini-3.1-pro-preview", "gemini-3.8-flash", "gemini-2.5-pro"],
         ..BASE
     },
     ProviderDescriptor {
@@ -162,7 +155,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         models_dev: Some("xai"),
         console_url: Some("https://console.x.ai"),
         key_hint: Some("xai-…"),
-        preferred_models: &["grok-4.5", "grok-4.3"],
         ..BASE
     },
     ProviderDescriptor {
@@ -174,7 +166,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         models_dev: Some("deepseek"),
         console_url: Some("https://platform.deepseek.com/api_keys"),
         key_hint: Some("sk-…"),
-        preferred_models: &["deepseek-v4-pro", "deepseek-flash", "deepseek-v4-flash"],
         compat_defaults: deepseek_flags,
         ..BASE
     },
@@ -230,7 +221,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         env: &["ZAI_API_KEY"],
         models_dev: Some("zai"),
         console_url: Some("https://z.ai/manage-apikey/apikey-list"),
-        preferred_models: &["glm-4.6", "glm-4.5"],
         ..BASE
     },
     ProviderDescriptor {
@@ -304,7 +294,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         lists_deployments: true,
         paired_with: &["foundry-anthropic", "foundry-completions"],
         served_models: ServedModels::Unprefixed(FOUNDRY_NON_RESPONSES_PREFIXES),
-        preferred_models: &["gpt-5.6-terra", "gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.4"],
         compat_defaults: openai_flags,
         ..BASE
     },
@@ -330,7 +319,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         lists_deployments: true,
         paired_with: &["foundry-openai", "foundry-completions"],
         served_models: ServedModels::Prefixed(FOUNDRY_ANTHROPIC_PREFIXES),
-        preferred_models: &["claude-sonnet-5-5", "claude-sonnet-5", "claude-sonnet-4-6"],
         compat_defaults: anthropic_flags,
         ..BASE
     },
@@ -350,7 +338,6 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         lists_deployments: true,
         paired_with: &["foundry-openai", "foundry-anthropic"],
         served_models: ServedModels::Prefixed(FOUNDRY_COMPLETIONS_PREFIXES),
-        preferred_models: &["deepseek-v4-pro", "grok-4-20-reasoning", "llama-3.3-70b-instruct"],
         ..BASE
     },
     ProviderDescriptor {
@@ -362,7 +349,7 @@ pub(super) static CATALOG: &[ProviderDescriptor] = &[
         console_url: Some("https://portal.azure.com"),
         note: Some(
             "For an `openai.azure.com` resource. A `services.ai.azure.com` one is Microsoft \
-             Foundry — pick that instead and Luxe derives both endpoints for you.",
+             Foundry — pick that instead and luxe derives both endpoints for you.",
         ),
         needs_base_url: true,
         lists_deployments: true,

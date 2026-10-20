@@ -21,7 +21,7 @@ fn sessions() -> Vec<LiveSession> {
 /// With no target, the session running in this folder is the one joined.
 ///
 /// The break this catches: ignoring the folder, so `luxe join` in one project lands in another's
-/// session, or refuses because more than one Luxe is running somewhere.
+/// session, or refuses because more than one luxe is running somewhere.
 #[test]
 fn no_target_joins_the_session_running_here() {
     let all = sessions();
@@ -39,7 +39,7 @@ fn two_sessions_in_the_folder_are_listed_not_guessed() {
     assert!(error.contains("aaab-2222") && error.contains("cccc-3333"), "{error}");
 }
 
-/// A target names a session by the start of its id or by its Luxe's process id.
+/// A target names a session by the start of its id or by its luxe's process id.
 ///
 /// The break this catches: matching the id exactly, so the short form the listing invites fails,
 /// or not accepting a pid, which is what `ps` and herdr show.
@@ -62,7 +62,7 @@ fn an_ambiguous_or_empty_target_is_refused() {
 
 /// Nothing to join says why, and how sharing is turned back on when nothing is running.
 ///
-/// The break this catches: a bare "not found" when every Luxe has `joinable` off, which leaves the
+/// The break this catches: a bare "not found" when every luxe has `joinable` off, which leaves the
 /// reader with nothing to try.
 #[test]
 fn nothing_to_join_says_what_is_running() {

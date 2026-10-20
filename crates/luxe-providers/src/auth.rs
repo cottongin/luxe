@@ -38,7 +38,7 @@ pub use store::{AuthStore, StoreError};
 
 use std::path::PathBuf;
 
-/// Luxe's config directory, where the credential store and `models.json` live. See
+/// luxe's config directory, where the credential store and `models.json` live. See
 /// [`luxe_core::user_dirs::luxe_config_dir`], the one owner.
 pub fn config_dir() -> PathBuf {
     luxe_core::user_dirs::luxe_config_dir()

@@ -273,6 +273,7 @@ fn render_picker_draws_title_rows_selection_and_hit_regions() {
                     divider: None,
                     detail: None,
                     rows: None,
+                    list: crate::mouse::OverlayList::Slash,
                 },
             );
         })
@@ -343,6 +344,7 @@ fn a_row_too_long_for_the_flyout_clips_rather_than_losing_its_cap() {
                     divider: None,
                     detail: None,
                     rows: None,
+                    list: crate::mouse::OverlayList::Slash,
                 },
             );
         })
@@ -400,6 +402,7 @@ fn tabs_sit_above_the_list_and_move_it_down() {
                     divider: None,
                     detail: None,
                     rows: None,
+                    list: crate::mouse::OverlayList::Slash,
                 },
             )
         })
@@ -450,6 +453,7 @@ fn tabs_sit_above_the_list_and_move_it_down() {
                     divider: None,
                     detail: None,
                     rows: None,
+                    list: crate::mouse::OverlayList::Slash,
                 },
             )
         })

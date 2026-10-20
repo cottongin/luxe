@@ -301,7 +301,7 @@ pub(super) fn feedback_tally(
         .partition(|finding| with_the_agent(session, &finding.id));
     let to_verify =
         back.iter().filter(|finding| finding.state == FindingState::NeedsVerification).count();
-    // Open and back from the agent: it answered, said it could not, or Luxe said it said nothing
+    // Open and back from the agent: it answered, said it could not, or luxe said it said nothing
     let to_read = back
         .iter()
         .filter(|finding| finding.state == FindingState::Open)

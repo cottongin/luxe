@@ -1,4 +1,4 @@
-//! Session claims — one Luxe process writes a session's log at a time.
+//! Session claims — one luxe process writes a session's log at a time.
 //!
 //! Two processes appending to one log interleave entries that each parent on their own leaf, so a
 //! resume walks one branch and silently drops the other's turns. A claim is an OS lock on a
@@ -70,7 +70,7 @@ mod tests {
         file.try_lock().is_ok()
     }
 
-    /// The break this catches: a claim that takes no OS lock, so a second Luxe writes beside it.
+    /// The break this catches: a claim that takes no OS lock, so a second luxe writes beside it.
     #[test]
     fn a_claim_keeps_other_holders_out_until_it_drops() {
         let dir = tempfile::tempdir().expect("tempdir");

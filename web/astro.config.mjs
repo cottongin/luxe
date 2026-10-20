@@ -133,7 +133,7 @@ export default defineConfig({
 		remarkPlugins: [guideShots],
 		rehypePlugins: [guideLinks],
 		shikiConfig: {
-			// Luxe's own palette, generated from the same JSON the terminal loads. The docs describe a
+			// luxe's own palette, generated from the same JSON the terminal loads. The docs describe a
 			// terminal program; coloring their code in someone else's palette would be a small lie about
 			// what it looks like. Every color in it clears 4.5:1 on the code background — asserted where
 			// it is generated, because syntax highlighting is the one surface that puts all six accents

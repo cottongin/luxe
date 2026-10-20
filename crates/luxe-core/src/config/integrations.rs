@@ -71,7 +71,7 @@ impl MentionSource {
         !kind.is_empty() && !self.reserved() && !self.command.trim().is_empty()
     }
 
-    /// Whether its kind is one Luxe's own tabs use, which leaves it without a tab of its own.
+    /// Whether its kind is one luxe's own tabs use, which leaves it without a tab of its own.
     ///
     /// Worth telling the reader rather than only skipping: `mcp` joined the list after sources
     /// could be named anything, so a source that worked yesterday can be the one it displaced.
@@ -80,7 +80,7 @@ impl MentionSource {
     }
 }
 
-/// The reference kinds Luxe's own `@` tabs use: `@[file:…]`, `@[skill:…]`, `@[github:…]`,
+/// The reference kinds luxe's own `@` tabs use: `@[file:…]`, `@[skill:…]`, `@[github:…]`,
 /// `@[mcp:…]`.
 pub const RESERVED_MENTION_KINDS: [&str; 4] = ["file", "skill", "github", "mcp"];
 
@@ -102,7 +102,7 @@ impl WorktreeConfig {
 
 /// GitHub preferences.
 ///
-/// Read from the global config only, like [`UpdateConfig`]: how often Luxe calls out on a timer is
+/// Read from the global config only, like [`UpdateConfig`]: how often luxe calls out on a timer is
 /// the reader's decision, not one a repository they cloned gets to make.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(default)]
@@ -152,7 +152,7 @@ impl GithubConfig {
 
 /// Update-notice preferences.
 ///
-/// Luxe never updates itself; the only question here is whether it may *notice* that it is behind.
+/// luxe never updates itself; the only question here is whether it may *notice* that it is behind.
 /// The check fetches a public manifest and sends nothing about you — see `luxe_core::update` — but
 /// it is still an outbound request, so it gets a switch like every other one.
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
@@ -186,7 +186,7 @@ pub struct LspConfig {
     pub project_servers: Option<ProjectServers>,
 }
 
-/// Whether Luxe may launch a language server out of the project's `node_modules/.bin`.
+/// Whether luxe may launch a language server out of the project's `node_modules/.bin`.
 ///
 /// npm puts a dev dependency there rather than on `PATH`, so for the JavaScript servers it is
 /// routinely the only copy that matches the project — `svelteserver` has to agree with the Svelte
@@ -223,7 +223,7 @@ pub struct ReviewConfig {
     /// `PLAN.md`/`AGENTS.md`. Each must resolve inside the opened project.
     #[serde(default)]
     pub context_files: Vec<String>,
-    /// Project-relative globs a review leaves out, on top of Luxe's own `.luxe/` directory.
+    /// Project-relative globs a review leaves out, on top of luxe's own `.luxe/` directory.
     ///
     /// For bookkeeping a repo carries but nobody reviews — a loop's `PROGRESS.md`, a planning
     /// directory, another agent's memory. Excluded files are *counted and named*, never silently

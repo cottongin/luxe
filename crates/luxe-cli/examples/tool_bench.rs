@@ -11,7 +11,7 @@
 //! model is sent a raw 900 KB `git log`: the honest comparison is with what a harness forwards.
 //!
 //! `TOOL_BENCH_CASES` names a JSON file of cases (`id`, `shell`, `tool`, `args`) for measuring in a
-//! repository other than this one; without it, the cases below measure Luxe itself.
+//! repository other than this one; without it, the cases below measure luxe itself.
 
 use std::process::Command;
 use std::sync::Arc;

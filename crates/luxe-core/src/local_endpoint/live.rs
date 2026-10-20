@@ -1,17 +1,17 @@
 //! Live sessions — which Luxes on this machine can be joined, and where.
 //!
-//! Each running Luxe with an endpoint leaves a small record in the runtime folder, named for its
-//! process, and takes it away when it stops. A record left by a Luxe that died is found out by the
+//! Each running luxe with an endpoint leaves a small record in the runtime folder, named for its
+//! process, and takes it away when it stops. A record left by a luxe that died is found out by the
 //! one test that matters: its endpoint no longer answers.
 
 use serde::{Deserialize, Serialize};
 use std::io;
 use std::path::{Path, PathBuf};
 
-/// One running Luxe that can be joined.
+/// One running luxe that can be joined.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LiveSession {
-    /// The Luxe's process id
+    /// The luxe's process id
     pub pid: u32,
     /// Session it is running
     pub session_id: String,
@@ -23,7 +23,7 @@ pub struct LiveSession {
     pub luxe_version: String,
 }
 
-/// This Luxe's record in the runtime folder, removed when dropped.
+/// This luxe's record in the runtime folder, removed when dropped.
 pub struct Publication {
     path: PathBuf,
 }
@@ -39,7 +39,7 @@ impl LiveSession {
 }
 
 impl Publication {
-    /// Rewrites the record, as when the Luxe moves to another session.
+    /// Rewrites the record, as when the luxe moves to another session.
     pub fn update(&self, session: &LiveSession) -> io::Result<()> {
         let bytes = serde_json::to_vec_pretty(session).map_err(io::Error::other)?;
         crate::fs_atomic::replace_private(&self.path, &bytes)
@@ -64,7 +64,7 @@ pub fn live_sessions(dir: &Path) -> Vec<LiveSession> {
     found
 }
 
-/// [`live_sessions`] whose Luxe is still running: one that crashed leaves its record behind.
+/// [`live_sessions`] whose luxe is still running: one that crashed leaves its record behind.
 ///
 /// Checked by process id rather than by connecting, since a connection is a client joining, and the
 /// terminal running the session says so each time.

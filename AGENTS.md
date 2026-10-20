@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Rules for working on Luxe: only what you'd get wrong without being told. It's sent with every
+Rules for working on luxe: only what you'd get wrong without being told. It's sent with every
 request, so keep it short; the long version is [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Commands
@@ -52,7 +52,7 @@ cargo run -p luxe-cli -- --headless -p "..."                # one prompt, no UI
 - A UI talks to core over channels only: `Action` in, `Event` out. It never calls a provider or a
   tool and never blocks the runtime.
 - Behavior that cuts across the loop is a `Hook`, not a special case in the loop.
-- One owner per platform question: `user_dirs` (home and Luxe's folders), `program` (finding
+- One owner per platform question: `user_dirs` (home and luxe's folders), `program` (finding
   programs and shells, detaching, killing a process tree), `paths` (path to string), `fs_atomic`
   (safe file replace), `luxe-lsp::uri` (`file://` URLs).
 
@@ -108,7 +108,7 @@ Enforce these in code (the permission engine or a hook), never in prompt text.
   `gate.commands`, MCP and language servers need `--trust-project` (or global
   `lsp.project_servers`), so "always" approvals save globally. `project_tooling_allowed` is the one
   switch for project binaries; reuse it. Language servers still run `build.rs` and proc macros, so
-  never say Luxe runs no repo code.
+  never say luxe runs no repo code.
 - Secrets: `0600` files, `$ENV` or `!command`, held in `secrecy::SecretString`, scrubbed from tool
   results, logs and wire captures by `redact::process_secrets()`.
 - No telemetry. Every outbound call is one the user asked for or can turn off, sends nothing about
@@ -159,7 +159,7 @@ Enforce these in code (the permission engine or a hook), never in prompt text.
 - Glyphs decorate; they never carry meaning alone. Every icon sits beside its words. Prefer block
   elements, which every terminal draws.
 - `web/src/assets/generated/` comes from Rust and CI checks it; `captures/` are real sessions from
-  `scripts/site-record.sh`. Change how Luxe looks and you owe a `site-assets.sh` run and a
+  `scripts/site-record.sh`. Change how luxe looks and you owe a `site-assets.sh` run and a
   re-record.
 - The wordmark constants in `luxe-tui/src/widgets/wordmark/art.rs` are the logo: one drawing, no
   alternatives.

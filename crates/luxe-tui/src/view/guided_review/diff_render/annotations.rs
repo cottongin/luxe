@@ -180,7 +180,7 @@ fn comment_reply_rows(
     let styles = &app.theme_styles;
     let mut rows = Vec::new();
     // The last word that was not the reader's: the answer to a question belongs beside the
-    // question, not behind two overlays, and so does Luxe saying the agent left none
+    // question, not behind two overlays, and so does luxe saying the agent left none
     if let Some(reply) =
         finding.thread.iter().rev().find(|message| {
             message.author != luxe_core::guided_review::FindingMessageAuthor::Reviewer

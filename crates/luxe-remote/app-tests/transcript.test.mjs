@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { WINDOW, elapsed, windowOf } from "../app/items.js";
+import { WINDOW, elapsed, windowOf, windowStart } from "../app/items.js";
 import { createTranscript, formatTokens } from "../app/transcript.js";
 
 /** A session joined through the bridge: the snapshot, then a live turn with two tool calls. */
@@ -214,7 +214,42 @@ test("a transcript that fits is drawn whole", () => {
   assert.deepEqual(windowOf(items, 3), { hidden: 0, drawn: items });
 });
 
+// The break this catches: a reader at the bottom left with an ever-growing page, or a first draw
+// that doesn't start from the latest items
+test("the window slides to the latest items while the reader follows the bottom", () => {
+  assert.equal(windowStart(null, WINDOW + 5, WINDOW, false), 5);
+  assert.equal(windowStart(5, WINDOW + 6, WINDOW, true), 6);
+});
+
+// The break this catches: each new item taking the oldest from the top while the reader is scrolled
+// up, which in WebKit moves everything they were reading up the screen
+test("the window holds its start while the reader reads above the bottom", () => {
+  assert.equal(windowStart(5, WINDOW + 6, WINDOW, false), 5);
+  assert.equal(windowStart(5, WINDOW + 40, WINDOW, false), 5);
+});
+
+// The break this catches: "Show earlier" doing nothing while the reader is scrolled up to tap it
+test("asking for earlier items moves the start back while reading above the bottom", () => {
+  assert.equal(windowStart(500, 900, 900 - 200, false), 200);
+});
+
+// The break this catches: a reader back at the bottom keeping every item that came while they read
+test("back at the bottom, the window trims to the latest items again", () => {
+  assert.equal(windowStart(5, WINDOW + 40, WINDOW, true), 40);
+});
+
 // The break this catches: a duration written differently from the TUI's card beside it.
 test("durations read as the TUI writes them", () => {
   assert.deepEqual([0.4, 19, 1500, 63000].map(elapsed), ["<1ms", "19ms", "1.5s", "1m 3s"]);
+});
+
+// The break this catches: reasoning clipped to a few rows with nothing to say there's more, which
+// reads as the agent's thought cut off mid-sentence where the TUI shows all of it
+test("reasoning is drawn whole, never clipped", () => {
+  const css = readFileSync(new URL("../app/style.css", import.meta.url), "utf8");
+  const rules = [...css.matchAll(/([^{}]*\.thinking[^{}]*)\{([^}]*)\}/g)];
+  assert.ok(rules.length > 0, "the reasoning rule is where this test looks");
+  for (const [, selector, body] of rules) {
+    assert.doesNotMatch(body, /max-height|overflow\s*:\s*hidden|line-clamp/, `${selector.trim()} clips`);
+  }
 });

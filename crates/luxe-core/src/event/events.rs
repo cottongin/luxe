@@ -516,17 +516,17 @@ pub enum Event {
     /// The answer to `show_open_review`. Boxed: it carries a whole review.
     OpenReviewShown(Box<super::types::OpenReview>),
     /// The open review's feedback session changed and was stored. Every change arrives this way,
-    /// whoever made it: an `EditReview`, answered under its `request_id`, or something Luxe did
+    /// whoever made it: an `EditReview`, answered under its `request_id`, or something luxe did
     /// itself (a turn dispatched, a report recorded, a review posted), under a fresh one.
     ReviewSessionSaved {
-        /// The edit this answers, or a fresh id for a change Luxe made itself.
+        /// The edit this answers, or a fresh id for a change luxe made itself.
         request_id: ReviewSessionSaveRequestId,
         /// Complete authoritative state returned by the expected-revision store.
         session: Box<ReviewSession>,
     },
     /// A change to the feedback session was refused or could not be stored, and nothing changed.
     ReviewSessionSaveFailed {
-        /// The edit this answers, or a fresh id for a change Luxe made itself.
+        /// The edit this answers, or a fresh id for a change luxe made itself.
         request_id: ReviewSessionSaveRequestId,
         /// Logical review whose mutable state was not persisted.
         review_id: ReviewId,
@@ -586,7 +586,7 @@ pub enum Event {
     Ready {
         /// Wire protocol version — [`crate::PROTOCOL_VERSION`].
         protocol_version: u32,
-        /// The Luxe build serving this session.
+        /// The luxe build serving this session.
         luxe_version: String,
         /// Session the stream is attached to.
         session_id: String,

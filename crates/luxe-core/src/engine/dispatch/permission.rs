@@ -223,7 +223,7 @@ impl Engine {
 /// or stopping. What it should do is hand the command to the person.
 pub(super) fn deny_message(request: &crate::permission::PermissionRequest) -> String {
     if crate::permission::defaults::runs_as_root(request) {
-        return "Blocked: Luxe does not run commands as root. A command that needs root needs the \
+        return "Blocked: luxe does not run commands as root. A command that needs root needs the \
                 user's attention and consent, so they run it: give them the exact command in a \
                 fenced code block, ask them to run it in their own terminal, and continue once \
                 they say it is done. Do not look for another way to run it here."

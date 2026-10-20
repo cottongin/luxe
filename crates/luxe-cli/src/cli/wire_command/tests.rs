@@ -184,7 +184,7 @@ fn a_bold_label_outside_the_tools_section_is_not_a_duplicate() {
 
 #[test]
 fn a_credential_prefix_in_prose_is_not_a_leak_but_a_real_key_is() {
-    // Reading Luxe's own redact.rs puts every prefix in a tool result; that is not a leak.
+    // Reading luxe's own redact.rs puts every prefix in a tool result; that is not a leak.
     assert!(looks_like_credential("patterns like sk- and ghp_ and AKIA").is_none());
     assert!(looks_like_credential("Authorization: Bearer short").is_none());
     let leak = looks_like_credential("key=sk-abcdefghijklmnopqrstuvwxyz0123")

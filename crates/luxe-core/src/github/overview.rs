@@ -321,7 +321,7 @@ pub struct IssueOverview {
     pub conversation_count: usize,
 }
 
-/// A session of yours that took an issue up, which only Luxe knows about.
+/// A session of yours that took an issue up, which only luxe knows about.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LocalSession {
     /// The session's id, which resuming it names

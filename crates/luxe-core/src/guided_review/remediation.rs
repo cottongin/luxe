@@ -84,13 +84,13 @@ pub enum RemediationReportError {
     /// The report describes a different immutable source revision.
     #[error("remediation report has a different source revision")]
     WrongRevision,
-    /// Not one entry names a comment that was sent with a status Luxe reads.
+    /// Not one entry names a comment that was sent with a status luxe reads.
     #[error("remediation report names no submitted finding with a known status")]
     NothingUsable,
 }
 
 impl RemediationReportError {
-    /// What went wrong, as the tail of a sentence: told to the agent when Luxe asks again, and to
+    /// What went wrong, as the tail of a sentence: told to the agent when luxe asks again, and to
     /// the reviewer on each comment the report did not cover.
     pub fn reason(&self) -> &'static str {
         match self {
@@ -232,7 +232,7 @@ fn first_json_value(text: &str) -> Result<(Value, usize), serde_json::Error> {
 ///
 /// A review or revision the report names must be the turn's, prefix or no prefix, or the whole
 /// report is refused: it is about something else. One it leaves out is the turn's. Inside it, an entry for a comment that was not sent, a second entry for
-/// the same comment, or a status Luxe cannot read is dropped and the rest are kept. A report left
+/// the same comment, or a status luxe cannot read is dropped and the rest are kept. A report left
 /// with nothing is [`RemediationReportError::NothingUsable`].
 fn read_report(
     value: &Value,
@@ -260,7 +260,7 @@ fn read_report(
                 findings.push(result);
             }
             Some(_) => tracing::debug!("dropped a second report entry for one comment"),
-            None => tracing::debug!(%entry, "dropped a report entry Luxe cannot use"),
+            None => tracing::debug!(%entry, "dropped a report entry luxe cannot use"),
         }
     }
     if findings.is_empty() {
@@ -273,7 +273,7 @@ fn read_report(
     })
 }
 
-/// One entry, when it names a comment that was sent and has a status Luxe reads.
+/// One entry, when it names a comment that was sent and has a status luxe reads.
 fn read_result(entry: &Value, known: &[FindingId]) -> Option<RemediationResult> {
     let named = entry.get("finding_id")?.as_str()?.trim();
     // the known ID, never one built out of what the model wrote

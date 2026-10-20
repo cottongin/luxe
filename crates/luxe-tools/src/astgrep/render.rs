@@ -1,4 +1,4 @@
-//! ast-grep output — what a call reports, and what an applied rewrite tells the rest of Luxe.
+//! ast-grep output — what a call reports, and what an applied rewrite tells the rest of luxe.
 
 use super::*;
 

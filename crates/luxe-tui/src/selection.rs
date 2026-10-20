@@ -1,6 +1,6 @@
 //! Text selection — grid selection shared by the transcript and the composer.
 //!
-//! Capturing the mouse means the terminal's own click-drag selection never fires, so Luxe draws
+//! Capturing the mouse means the terminal's own click-drag selection never fires, so luxe draws
 //! and owns the selection itself: a drag records an anchor and a moving cursor over a surface's
 //! rendered lines, the view paints the covered cells, and releasing copies the text out. Positions
 //! are `(line, column)` in *terminal cells*, matching what the user actually sees, so wide glyphs

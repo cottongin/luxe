@@ -420,7 +420,7 @@ const BRIEF_INSTRUCTION: &str = "Also add a top-level \"brief\": {\"intent\", \"
      Its reader has already seen the conversation, so don't repeat it. `intent` is one or two \
      sentences on the problem being solved. `account` is up to five short claims about what the \
      change does, each one something a reviewer can check in the diff. Don't report on your own \
-     testing; Luxe states that from the record.\n";
+     testing; luxe states that from the record.\n";
 
 /// The request describing one batch, or `None` when it cannot be serialized.
 fn batch_prompt(

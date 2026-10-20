@@ -1,17 +1,20 @@
 ---
-title: "Luxe on your phone"
+title: "luxe on your phone"
 summary: "Reach the sessions running on your computer from your own phone or tablet, over Tailscale."
 order: 13
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 `luxe remote` lets your phone or tablet see the sessions running on your computer, join one, and
 start new ones. It listens on your computer only. [Tailscale](https://tailscale.com), a private
 network between your own devices, carries it to them over HTTPS, so nothing is opened to the
-internet and there is no Luxe server in between.
+internet and there is no luxe server in between.
 
 On the phone it's an app in the browser, drawn like the interface in your theme. For the whole
-terminal, editor included, [Luxe from your phone](recipes.md#luxe-from-your-phone) works over SSH.
+terminal, editor included, [luxe from your phone](recipes.md#luxe-from-your-phone) works over SSH.
+
+![On an iPhone, an edit waiting for permission](phone/remote-permission.png)
+![The same turn finished: its tool cards and the reply](phone/remote-turn.png)
 
 ## Set it up
 
@@ -24,11 +27,11 @@ terminal, editor included, [Luxe from your phone](recipes.md#luxe-from-your-phon
 
 3. Scan the QR code it shows with the phone's camera, and give the device a name.
 4. On an iPhone or iPad, add it to the Home Screen: in Safari, Share, then Add to Home Screen. It
-   opens full screen with the Luxe mark as its icon, and keeps the sign-in Safari had when you
+   opens full screen with the luxe mark as its icon, and keeps the sign-in Safari had when you
    added it. An app added before pairing asks for the invitation link instead: copy it from
    `luxe remote pair` and paste it in.
 
-Setup takes four steps, and asks before each one that changes something outside Luxe:
+Setup takes four steps, and asks before each one that changes something outside luxe:
 
 | Step | Does |
 | --- | --- |
@@ -51,9 +54,9 @@ The service is your own, and needs no administrator:
 | --- | --- |
 | Linux | A systemd user unit, `~/.config/systemd/user/luxe-remote.service` |
 | macOS | A launch agent, `~/Library/LaunchAgents/dev.luxe.remote.plist` |
-| Windows | `Luxe remote` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+| Windows | `luxe remote` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
 
-Without it, run `luxe remote` in a terminal, and your devices reach Luxe while it runs.
+Without it, run `luxe remote` in a terminal, and your devices reach luxe while it runs.
 
 ## Devices
 
@@ -79,13 +82,13 @@ luxe remote setup --allow sam@github
 Each computer runs its own bridge at its own address, so one phone can reach several: set each up
 as above, with Tailscale signed in to the same account, and pair the phone with each. Every one is
 its own app on the Home Screen, named for the computer as Tailscale names it (`desk` for
-`desk.tail1234.ts.net`), with the name beside the Luxe mark in its session list and after the
-project in its notifications, "luxe · desk". Luxe finds Tailscale by the `tailscale` command, so
+`desk.tail1234.ts.net`), with the name beside the luxe mark in its session list and after the
+project in its notifications, "luxe · desk". luxe finds Tailscale by the `tailscale` command, so
 on a Mac check that `tailscale version` works in Terminal before running setup.
 
 ## What your device sees
 
-Every Luxe running on the computer as you: the interface, `luxe --rpc`, and any started from your
+Every luxe running on the computer as you: the interface, `luxe --rpc`, and any started from your
 device. A device that joins a session is a guest, as in [joining a
 session](rpc.md#join-a-running-session): it sees the conversation so far and every live event, and
 can answer prompts and send messages. It can't switch or end the session, or publish to GitHub.
@@ -149,8 +152,8 @@ to `false` is out of reach, from your device too.
 
 ## Starting a session
 
-Tap **New** on the session list to start Luxe in a folder: one where Luxe is running now, one with
-a [herdr](recipes.md#run-luxe-in-herdr) pane, one where the bridge has seen Luxe run, or any path
+Tap **New** on the session list to start luxe in a folder: one where luxe is running now, one with
+a [herdr](recipes.md#run-luxe-in-herdr) pane, one where the bridge has seen luxe run, or any path
 you type. What you type narrows the folders it offers, by name and then by path. They're only the
 ones above: it never looks through your home folder.
 

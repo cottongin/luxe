@@ -1,6 +1,6 @@
 //! Permission engine — allow/ask/deny for tool calls.
 //!
-//! Luxe is permissive by default; this engine is the seatbelt. It borrows OpenCode's shape
+//! luxe is permissive by default; this engine is the seatbelt. It borrows OpenCode's shape
 //! (per-tool `allow`/`ask`/`deny` rules keyed by a concrete input, plus the `external_directory`
 //! and `doom_loop` guards) and improves on it in two ways:
 //!

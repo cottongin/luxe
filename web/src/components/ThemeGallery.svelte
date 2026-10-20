@@ -10,7 +10,7 @@
    * The picture arrives as the slot, drawn once at build time by `fixture_svg --palette`: every
    * color in it is `var(--pN, …)`, and `palette` says what each `N` is in each theme. So this sets
    * a dozen custom properties on the frame and the browser repaints the rest. It used to be an HTML
-   * mock of the app, which showed the colors and nothing of how Luxe actually uses them.
+   * mock of the app, which showed the colors and nothing of how luxe actually uses them.
    *
    * With `cycle`, the gallery takes turns on its own every few seconds, so a reader who never
    * touches it still sees what the themes are. Pointing at a chip holds that theme, pointing at the
@@ -141,7 +141,7 @@
     onmouseenter={() => (reading = true)}
     onmouseleave={() => (reading = false)}
   >
-    <div class="preview__frame" {style} role="img" aria-label="The Luxe dashboard in {showing}">
+    <div class="preview__frame" {style} role="img" aria-label="The luxe dashboard in {showing}">
       {@render children?.()}
     </div>
   </figure>

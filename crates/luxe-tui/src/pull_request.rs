@@ -52,7 +52,7 @@ pub(crate) fn wants_attention(pr: &PullRequestStatus) -> bool {
 pub(crate) fn report(presence: &PullRequestPresence) -> String {
     match presence {
         PullRequestPresence::Unknown => {
-            "Luxe has not heard from GitHub about this branch yet; it is asking now.".into()
+            "luxe has not heard from GitHub about this branch yet; it is asking now.".into()
         }
         PullRequestPresence::None => "This branch has no pull request on GitHub.".into(),
         PullRequestPresence::Unavailable { reason } => reason.clone(),

@@ -1,4 +1,4 @@
-//! Provider adapter construction — the active adapter plus a registry of every provider Luxe can
+//! Provider adapter construction — the active adapter plus a registry of every provider luxe can
 //! route to, so an in-session model switch or a mid-session `/login` reaches the right backend.
 
 use std::collections::HashMap;
@@ -88,7 +88,7 @@ pub(super) fn active_auth(
 /// the provider's own variable, then the key its block names.
 ///
 /// One chain for the provider a session starts on and every one it can switch to, so the key that
-/// goes out never depends on how the session got there. A provider Luxe does not know has no
+/// goes out never depends on how the session got there. A provider luxe does not know has no
 /// variable of its own, only the `OPENAI_API_KEY` fallback, so its configured key comes first: an
 /// OpenAI key must not go to someone else's endpoint in place of the key written for it. Keys stay
 /// as written; the source expands them per request.
@@ -108,7 +108,7 @@ fn provider_auth(store: AuthStore, name: &str, config: Option<&ProviderConfig>) 
 
 /// Assemble the provider registry the engine routes through on an in-session model switch.
 ///
-/// Every provider Luxe knows about is registered: the built-in catalog plus anything declared in
+/// Every provider luxe knows about is registered: the built-in catalog plus anything declared in
 /// `~/.config/luxe/{auth,models}.json`. That is what makes `/login` take effect mid-session — the
 /// adapter is already there, and its store-backed auth source finds the new credential on the next
 /// turn. A provider with no credential registers too, and answers with an actionable auth error
@@ -154,7 +154,7 @@ pub(crate) fn build_provider_registry(
 
 /// A `--model` that names its provider, `anthropic/claude-opus-5-5`, split into the two.
 ///
-/// Only when the prefix is a provider Luxe knows, built in or configured, and no other provider
+/// Only when the prefix is a provider luxe knows, built in or configured, and no other provider
 /// was named: under `--provider openrouter`, `anthropic/claude-x` is OpenRouter's own id, slash and
 /// all. Without the split the whole string went to the default provider as an id, which is the
 /// form the "no model selected" error tells you to type.

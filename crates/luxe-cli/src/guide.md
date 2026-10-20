@@ -4,7 +4,7 @@
 title: "How the agent works"
 summary: "How the agent writes to you, asks you questions, plans, and gets a second opinion."
 order: 11
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## How it writes
@@ -62,7 +62,7 @@ nor the tools, so it does not re-read the conversation at full price.
 
 In plan mode the agent asks its open questions one at a time, then writes the plan as one
 `## Phase N` section per phase, numbered from 0, which is the shape [`luxe loop`](loop.md) works
-through. When a turn writes the plan, Luxe asks what next:
+through. When a turn writes the plan, luxe asks what next:
 
 - **Build it here**, with the planning conversation still in context
 - **Build it in a fresh session**, starting from `PLAN.md` alone
@@ -115,10 +115,12 @@ In order, the first that is set:
 
 1. `--model` and `--thinking` on the command line
 2. `LUXE_MODEL` and `LUXE_PROVIDER` in the environment
-3. The model you last chose
-4. `default_model` in `models.json`
+3. The model you last chose in this project
+4. The model you last chose anywhere
+5. `default_model` in `models.json`
 
-Luxe never picks a model for you. With none of these set, sending a message opens the model picker,
+luxe never picks a model for you, and signing in doesn't either: the model picker opens at the top
+of the list for you to choose. With none of these set, sending a message opens the model picker,
 and `--headless` and the loop refuse to start. To always start from your configured default rather
 than your last choice:
 
@@ -153,13 +155,13 @@ Every setting on this page goes in `~/.config/luxe/config.json`, or a project's 
 `/theme` previews each theme as you move through the list. `enter` keeps one and saves it to your
 config; `esc` puts back the theme you had.
 
-Luxe's own theme is `luxe`, a warm graphite with a brass accent. Every accent clears a 4.5:1
+luxe's own theme is `luxe`, a warm graphite with a brass accent. Every accent clears a 4.5:1
 contrast ratio against the background, and body text 7:1. The others are dark versions of
 community favorites and of Omarchy's themes:
 
 | | |
 | --- | --- |
-| Luxe | `luxe` |
+| luxe | `luxe` |
 | Editors | `jetbrains` (Darcula), `vscode` (Visual Studio 2017 Dark), `xcode` (Default Dark) |
 | Community | `aura`, `ayu`, `catppuccin`, `dracula`, `everforest`, `github` (Dark Dimmed), `gruvbox`, `kanagawa`, `monokai`, `noctis-bordo`, `nord`, `one-dark`, `panda`, `rose-pine`, `tokyo-night`, `vesper`, `zenburn` |
 | Omarchy | `ethereal`, `hackerman`, `last-horizon`, `lumon`, `matte-black`, `miasma`, `osaka-jade`, `retro-82`, `ristretto`, `solitude`, `vantablack` |
@@ -168,7 +170,7 @@ community favorites and of Omarchy's themes:
 { "theme": "nord" }
 ```
 
-An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all on
+An unknown name falls back to `luxe`, and luxe says so when the session opens. See them all on
 [luxe.dev](https://luxe.dev/#craft).
 
 Code is colored by the theme too: in answers, tool cards, diffs and the preview, keywords take the
@@ -196,7 +198,7 @@ The names are the ones a theme file uses; [`luxe.json`](https://github.com/evanw
 lists every one.
 
 One more name is optional: `modePlan`, the color [plan mode](agent.md#plan-then-build) wears on the
-composer and the menus and questions around it. Without it, Luxe picks the first of the theme's
+composer and the menus and questions around it. Without it, luxe picks the first of the theme's
 other colors that reads as different from its accent.
 
 ### Make a theme
@@ -218,12 +220,12 @@ for a complete one.
 
 ### On Omarchy
 
-Leave `theme` unset, or set it to `omarchy`, and Luxe wears your desktop's theme and changes with
+Leave `theme` unset, or set it to `omarchy`, and luxe wears your desktop's theme and changes with
 it, within a couple of seconds, in a running session. It uses, in order:
 
 1. A `luxe.json` in the current Omarchy theme. To give every theme one, write a template at
    `~/.config/omarchy/themed/luxe.json.tpl` and Omarchy renders it from each theme's colors.
-2. Luxe's built-in theme of the same name, when both are dark.
+2. luxe's built-in theme of the same name, when both are dark.
 3. A theme made on the spot from the Omarchy theme's `colors.toml`, with text lifted until it is
    readable. This is how a light Omarchy theme comes out.
 
@@ -279,12 +281,12 @@ When the bar runs out of room, it drops modules in this order: `cwd`, `tokens`, 
 
 ## Icons and fonts
 
-`glyphs` sets which icons Luxe draws. Every icon has a word beside it, so nothing is lost at any
+`glyphs` sets which icons luxe draws. Every icon has a word beside it, so nothing is lost at any
 setting.
 
 | `glyphs` | Draws | Needs |
 | --- | --- | --- |
-| `auto` | `nerd` when Luxe can confirm your font has every icon, otherwise `unicode` | |
+| `auto` | `nerd` when luxe can confirm your font has every icon, otherwise `unicode` | |
 | `nerd` | Nerd Font icons | A Nerd Font |
 | `nerd_wide` | The same icons, each given two cells | A Nerd Font whose icons are drawn wide |
 | `unicode` | Plain shapes: `■ ► ▪ ○ ●` | UTF-8 |
@@ -299,7 +301,7 @@ which brings its own. On macOS and Windows without fontconfig, it picks `unicode
 have a Nerd Font. If icons sit flush against the word beside them, you have the wide build of your Nerd
 Font: switch to its `Mono` build (see [Fonts](install.md#fonts)), or set `nerd_wide`.
 
-Fonts that draw every character Luxe uses, measured against the font files:
+Fonts that draw every character luxe uses, measured against the font files:
 
 | Font | Missing | Width |
 | --- | --- | --- |
@@ -375,7 +377,7 @@ Screenshots and images the agent reads are drawn in the conversation where the t
 ```
 
 Double-click an image, or select its message (`alt+k`) and press `alt+i`, to view it full-window.
-`/images` says which setting is in effect and why. A change to `images` applies the next time Luxe
+`/images` says which setting is in effect and why. A change to `images` applies the next time luxe
 starts.
 
 ## The start screen
@@ -454,7 +456,7 @@ luxe --headless -p "list the TODO comments in src/" --format text
 ```
 
 A headless run needs `-p` and a model: `--model`, `LUXE_MODEL`, your last choice or `default_model`
-in `models.json`. It refuses to start without either. It exits with status 1 when the turn fails or Luxe stops before the turn ends, so a
+in `models.json`. It refuses to start without either. It exits with status 1 when the turn fails or luxe stops before the turn ends, so a
 script can tell a failure from an answer without reading the output.
 
 ## Commands
@@ -466,15 +468,15 @@ script can tell a failure from an answer without reading the output.
 | `luxe auth status [provider]` | A credential's type, where it came from, and when it expires |
 | `luxe auth logout <provider>` | Remove a stored credential |
 | `luxe models list` | Models you can use. `--provider <id>` filters, `--configured` lists only the models `models.json` or `auth.json` names. |
-| `luxe models show <provider/id>` | What Luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
+| `luxe models show <provider/id>` | What luxe knows about a model, and where each value came from. A bare ID uses the active provider. |
 | `luxe models refresh` | Refresh the model catalog. `--force` even if it is fresh. |
 | `luxe sessions list` | Sessions in this project, newest first |
-| `luxe join [id]` | Join a session another Luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the Luxe's process id; without one, it joins the session running in this folder. |
+| `luxe join [id]` | Join a session another luxe is running, speaking the [RPC protocol](rpc.md#join-a-running-session) on stdin and stdout. The id can be its start, or the luxe's process id; without one, it joins the session running in this folder. |
 | `luxe join --list` | Sessions running on this machine that can be joined |
 | `luxe remote` | Serve this machine's sessions to your own phone or tablet. Listens on this machine only, for Tailscale Serve to carry to your devices, and lets in this machine's tailnet owner from a paired device. |
 | `luxe remote --port <n>` | The port it listens on (default 4519) |
 | `luxe remote --allow <login>` | Also let this tailnet login in, as Tailscale names it (`alex@github`). Repeatable. |
-| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside Luxe asks first. |
+| `luxe remote setup` | Check Tailscale, offer to publish the bridge on your tailnet with Tailscale Serve, offer to run it at login as a user service, then show a QR code to pair a device. Each step that changes something outside luxe asks first. |
 | `luxe remote pair` | Show a QR code and link that pair one phone or tablet. They work once, within ten minutes. |
 | `luxe remote devices` | The paired devices |
 | `luxe remote devices revoke <id>` | Unpair a device. Its open sessions close within a few seconds. |
@@ -491,7 +493,7 @@ script can tell a failure from an answer without reading the output.
 | `luxe loop fresh` | Reset the run's turn count; see [Autonomous runs](loop.md#start-a-run) |
 | `luxe docs [page]` | Read this guide, offline and for the installed version. `--search <words>` finds lines across every page. |
 | `luxe doctor` | Check which tools, language servers and debug adapters work |
-| `luxe update` | Update Luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
+| `luxe update` | Update luxe with the command for however it was installed; see [Updates](configuration.md#updates). `--check` only reports. |
 | `luxe init` | Set up a theme, a provider, the tools and the start screen, and write them to `~/.config/luxe/config.json`. `--defaults` skips the questions, `--force` starts from an empty file; see [Editing](configuration.md#editing). |
 | `luxe wire <log>` | Summarize a `LUXE_WIRE_LOG` capture; see [Troubleshooting](troubleshooting.md#see-what-is-sent-to-the-model). `--tools` breaks the tool schemas' size down per tool. |
 
@@ -501,7 +503,7 @@ Every command also takes the model and permission flags above.
 title: "Commands and keys"
 summary: "The Command Palette, slash commands, Help, every default key, and how to rebind them."
 order: 4
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Command Palette and slash commands
@@ -525,7 +527,7 @@ list says what the command does and the arguments it takes.
 Past the command, the list shows the arguments it takes, such as `/diff turn` or
 `/diff pr <number or URL>`, and narrows as you type. `tab` fills in the one under the cursor.
 `enter` runs it when nothing is missing, and fills it in when it still needs a value. `esc` puts the
-list away for that command. In the composer, a command Luxe knows is highlighted, and so are the
+list away for that command. In the composer, a command luxe knows is highlighted, and so are the
 words of it you have typed, like `pr` in `/diff pr 142`. A command that stays plain is misspelled.
 
 ## Slash commands
@@ -565,8 +567,8 @@ words of it you have typed, like `pr` in `/diff pr 142`. A command that stays pl
 | `/login`, `/logout` | Add or remove a provider's credential |
 | `/auth` | Which providers you are signed in to, and how |
 | `/reload` | Re-read your config and keys without restarting |
-| `/quit` | Leave Luxe. The session is already saved. |
-| `/update` | Leave Luxe and update it, as `luxe update` does |
+| `/quit` | Leave luxe. The session is already saved. |
+| `/update` | Leave luxe and update it, as `luxe update` does |
 
 The Command Palette also lists commands with no slash form, such as **Copy message**, **Swap the
 sidebar's side** and, in a review, **Send comments**.
@@ -699,7 +701,7 @@ Put your bindings in `~/.config/luxe/keybindings.json`, or open it from **Config
 ## Alt keys on a Mac
 
 A Mac has no Alt key. Its Option key types characters instead: `option+o` is `ø`, `option+p` is
-`π`. Most of Luxe's `alt` keys need your terminal to send Option as Alt:
+`π`. Most of luxe's `alt` keys need your terminal to send Option as Alt:
 
 | Terminal | Setting |
 | --- | --- |
@@ -711,19 +713,19 @@ A Mac has no Alt key. Its Option key types characters instead: `option+o` is `ø
 | Alacritty | `option_as_alt = "Both"` under `[window]` |
 
 Ghostty already does this on the "U.S." keyboard layouts. On the others it sends the character and
-marks it as an Alt key. On "ABC", the Mac's default English layout, Luxe reads that back as the key
+marks it as an Alt key. On "ABC", the Mac's default English layout, luxe reads that back as the key
 you pressed, so `option+o` opens a file from the preview without any setting. On other layouts, set
 the option above.
 @@@ page: configuration
 ---
 title: "Configuration"
-summary: "Where Luxe's files live, what a project can set, and every key in config.json."
+summary: "Where luxe's files live, what a project can set, and every key in config.json."
 order: 1
 group: "Customize"
 ---
 
-Luxe works with no configuration. Everything here is optional, and most of it can be set from inside
-Luxe: **Configuration** (on the start screen, or `/config`) signs you in and opens these files in
+luxe works with no configuration. Everything here is optional, and most of it can be set from inside
+luxe: **Configuration** (on the start screen, or `/config`) signs you in and opens these files in
 your editor, [`/settings`](#settings) changes the settings you use most, `/theme` sets the theme,
 and `/model` the model.
 
@@ -752,7 +754,7 @@ in `.luxe/` at its root.
 ### What a project cannot change
 
 A project's `.luxe/config.json` overrides yours key by key, with a few exceptions. These run
-programs, reach the network, or decide what a repository is trusted with, so Luxe reads them from
+programs, reach the network, or decide what a repository is trusted with, so luxe reads them from
 your own config only:
 
 - `launchers` and `mentions`, which run programs
@@ -761,7 +763,7 @@ your own config only:
 - `agent.on_ask`, which a project can set to `deny` but not to `allow`
 - `agent.cache_warming`, which a project can turn down but not up, since it spends your money
 
-Project `gate.commands` also run programs. Luxe ignores them and warns unless you start with
+Project `gate.commands` also run programs. luxe ignores them and warns unless you start with
 `--trust-project`. With trust, a nonempty project list replaces your global list. Otherwise, the
 loop uses your global commands. Move the list to your own config if you don't want to trust the
 project.
@@ -772,8 +774,8 @@ project.
 screen) and writes the answers to `config.json`, changing only those keys. It also writes a
 `config.schema.json` beside it so your editor can complete and check every key. `--defaults` writes
 a file that chooses nothing, without asking, and so does a run with no terminal; with a
-`config.json` already there, either one needs `--force`, which removes the old file first. Luxe ignores a key it does
-not know, so an old config always loads on a newer Luxe; check the spelling if a setting seems to
+`config.json` already there, either one needs `--force`, which removes the old file first. luxe ignores a key it does
+not know, so an old config always loads on a newer luxe; check the spelling if a setting seems to
 do nothing.
 
 `/reload` (`ctrl+shift+r`) applies changes to `config.json` and `keybindings.json` without
@@ -799,7 +801,7 @@ change writes one key to your `config.json` and leaves the rest of the file as i
 
 Each value says where it comes from: `default`, `global` (your `config.json`), or `project` (this
 project's `.luxe/config.json`, which wins over yours, so it is changed there). Most settings take
-effect at once; the rest say they take effect the next time Luxe starts. That includes the Tools
+effect at once; the rest say they take effect the next time luxe starts. That includes the Tools
 page, because the tools the agent is offered are fixed for a run. In a window too small for the
 panel, it says so instead, and only `esc` works until the window fits.
 
@@ -832,22 +834,22 @@ are doing.
 
 The notification goes through your terminal, as an escape sequence it turns into a desktop
 notification, so it works over ssh and needs nothing installed. Ghostty, iTerm2, kitty, WezTerm,
-Warp and foot show them; Luxe recognizes those and sends nothing to a terminal it does not know. If
-yours shows them and Luxe does not recognize it, name the sequence: `"notification_method": "osc9"`
+Warp and foot show them; luxe recognizes those and sends nothing to a terminal it does not know. If
+yours shows them and luxe does not recognize it, name the sequence: `"notification_method": "osc9"`
 (the common one) or `"osc777"`. Inside tmux, add `set -g allow-passthrough on` to your tmux
 configuration. Your terminal may also have to be allowed to send notifications in your system's
 settings.
 
 ### herdr
 
-Inside a [herdr](https://herdr.dev) pane, Luxe tells herdr whether it is working, idle, or waiting
+Inside a [herdr](https://herdr.dev) pane, luxe tells herdr whether it is working, idle, or waiting
 on you, and why: `Approve bash`, or the question it asked. herdr shows that in its sidebar, raises
-its own notification when Luxe finishes or needs you (set in herdr's `[ui.toast]`), and reports it
+its own notification when luxe finishes or needs you (set in herdr's `[ui.toast]`), and reports it
 to `herdr agent wait`. After a herdr restart, the pane reopens the same session with
-`luxe --resume`. Luxe sends no escape-sequence notifications inside herdr, because herdr keeps
+`luxe --resume`. luxe sends no escape-sequence notifications inside herdr, because herdr keeps
 them for itself.
 
-[Recipes](recipes.md#luxe-colors-in-herdr) has a Luxe palette for herdr's theme.
+[Recipes](recipes.md#luxe-colors-in-herdr) has a luxe palette for herdr's theme.
 
 This is local to your machine and on by default. Outside herdr nothing is sent.
 `LUXE_HERDR=0` in the environment stops the reports, and so does the config:
@@ -858,7 +860,7 @@ This is local to your machine and on by default. Outside herdr nothing is sent.
 
 ### Joining a session
 
-A running Luxe lets another program on this machine join its session: `luxe join`, a script, or
+A running luxe lets another program on this machine join its session: `luxe join`, a script, or
 whatever you build on [the RPC protocol](rpc.md#join-a-running-session). Only your user account can
 connect, and nothing listens on the network. To turn it off:
 
@@ -871,11 +873,11 @@ it back on once yours has.
 
 ### Updates
 
-Once a day, Luxe checks whether a newer release exists, and when one does the start screen says
+Once a day, luxe checks whether a newer release exists, and when one does the start screen says
 *Update available · /update*. The check sends nothing about you or your machine; the comparison
 happens locally.
 
-`/update`, or `luxe update` in a shell, updates Luxe with the command for however you installed
+`/update`, or `luxe update` in a shell, updates luxe with the command for however you installed
 it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
@@ -884,9 +886,10 @@ it, showing each one before it runs:
 | Homebrew | `brew update`, then `brew upgrade luxe` |
 | Cargo | `cargo install --locked --force luxe-cli` |
 
-Luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
+luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
 package manager owns is left to it, and a downloaded archive points you at the releases page. On
-Windows, Luxe can't be replaced while it runs, so it prints the command to run once it has exited.
+Windows, a running program can't be overwritten, so luxe first renames itself to `luxe.exe.old`,
+and the next launch deletes it.
 Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
 copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 
@@ -912,9 +915,9 @@ or lazygit:
 }
 ```
 
-Luxe keeps running underneath and redraws when the program exits. Text the program writes to the
+luxe keeps running underneath and redraws when the program exits. Text the program writes to the
 file named by `$LUXE_HANDOFF` is put in the composer, so a gh-dash command can send
-`#123 look at this` to Luxe. A launcher's key wins over any other binding.
+`#123 look at this` to luxe. A launcher's key wins over any other binding.
 
 ## Reference
 
@@ -995,13 +998,13 @@ order: 6
 group: "Extend"
 ---
 
-Luxe knows how to reach every provider in [Models and providers](providers.md), and the
+luxe knows how to reach every provider in [Models and providers](providers.md), and the
 [models.dev](https://models.dev) catalog tells it each model's context window, output limit,
 thinking levels and price. This page is for what neither covers: your own endpoint, a model the
 catalog does not know, or a local server that needs its requests shaped a particular way.
 
 Everything here goes in `~/.config/luxe/models.json`. `luxe models show <provider>/<id>` shows what
-Luxe resolved for a model, and where each value came from.
+luxe resolved for a model, and where each value came from.
 
 ## Add an endpoint
 
@@ -1028,7 +1031,7 @@ Then `luxe --model gateway/qwen3-coder-480b`, or choose it in `/model`.
 | Provider key | Does |
 | --- | --- |
 | `base_url` | The endpoint, including its version, such as `/v1` |
-| `api_key` | The key: the value, `$VAR`, `${VAR}` or `$env:VAR`, or `!command`, which runs each time a request needs the key. An unset `${VAR}` is empty, as in `mcp.json`, and Luxe logs which one. |
+| `api_key` | The key: the value, `$VAR`, `${VAR}` or `$env:VAR`, or `!command`, which runs each time a request needs the key. An unset `${VAR}` is empty, as in `mcp.json`, and luxe logs which one. |
 | `api` | The API it speaks: `openai-completions` (the default), `openai-responses`, `anthropic-messages` |
 | `auth` | How the key is sent: `bearer`, `x-api-key`, `api-key`, or `foundry` for both of the last two |
 | `models_dev` | The models.dev provider to take model details from, when the names differ |
@@ -1036,12 +1039,12 @@ Then `luxe --model gateway/qwen3-coder-480b`, or choose it in `/model`.
 | `sampling_params` | Samplers for every model it serves; see [Samplers](#samplers) |
 
 A provider in `models.json` replaces the same provider's block in `auth.json` whole, so keep a
-provider's key and endpoint in one file. A provider Luxe already knows keeps everything you do not
-write. A key in a provider Luxe knows is used when its own variable, such as `OPENAI_API_KEY`, is
+provider's key and endpoint in one file. A provider luxe already knows keeps everything you do not
+write. A key in a provider luxe knows is used when its own variable, such as `OPENAI_API_KEY`, is
 unset; for one it does not know, the key you write comes first and `OPENAI_API_KEY` is the
 fallback. A key you signed in with comes before either.
 
-A file Luxe cannot parse is skipped with a warning in the log, and a misspelled key is ignored, so
+A file luxe cannot parse is skipped with a warning in the log, and a misspelled key is ignored, so
 check the result with `luxe models show <provider>/<id>` after editing.
 
 ## Model settings
@@ -1054,7 +1057,7 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | Key | Does |
 | --- | --- |
 | `context_window` | The model's context window, in tokens |
-| `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. Luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
+| `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
 | `name` | The name shown in the picker and statusline |
 | `reasoning` | Whether it can think |
 | `thinking` | The level a session starts at for this model |
@@ -1064,14 +1067,14 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | `compat`, `sampling_params` | Override the provider's, key by key |
 
 A model the catalog does not know gets a 128k context window and no output limit until you set
-them. Anthropic endpoints require a limit, so there Luxe asks for 128k. If the model allows less,
-Anthropic's refusal names its real limit, and Luxe retries with that and uses it for the rest of the
+them. Anthropic endpoints require a limit, so there luxe asks for 128k. If the model allows less,
+Anthropic's refusal names its real limit, and luxe retries with that and uses it for the rest of the
 session.
 
 ## Thinking levels
 
-`thinking_level_map` says what each of Luxe's levels sends to the model. `null` marks a level the
-model cannot do, removing it from `/thinking`; a level Luxe needs falls back to the nearest one that
+`thinking_level_map` says what each of luxe's levels sends to the model. `null` marks a level the
+model cannot do, removing it from `/thinking`; a level luxe needs falls back to the nearest one that
 is left. `ultra` is the name for a provider's `max`.
 
 ```json title="~/.config/luxe/models.json"
@@ -1097,12 +1100,12 @@ is left. `ultra` is the name for a provider's `max`.
 A level you do not map sends its own name, and `off` sends `none`; `xhigh` and `ultra` are offered
 only once mapped. Setting a map also marks the model as one that reasons.
 
-An endpoint Luxe does not know sends no thinking setting at all until its `compat` says how: for
+An endpoint luxe does not know sends no thinking setting at all until its `compat` says how: for
 most OpenAI-compatible servers, `"thinking_format": "openai"`, which sends `reasoning_effort` on
 every request, `off` included. See [Request format](#request-format).
 
-For Anthropic models, Luxe uses adaptive thinking with an effort level where the model supports
-it, and a token budget for older ones. If a model refuses how thinking was requested, Luxe tries
+For Anthropic models, luxe uses adaptive thinking with an effort level where the model supports
+it, and a token budget for older ones. If a model refuses how thinking was requested, luxe tries
 the other way once and remembers it for the session. `compat.force_adaptive_thinking` forces
 adaptive thinking for an endpoint the catalog does not know.
 
@@ -1140,7 +1143,7 @@ to every model the provider serves; on a model, only the keys you write override
 | `force_adaptive_thinking` | Use Anthropic's adaptive thinking |
 | `supports_long_cache_retention` | Ask Anthropic to keep cached prompts for an hour rather than five minutes. Each cache write costs 2x input instead of 1.25x. Off by default, since not every Anthropic-compatible endpoint accepts it. |
 | `stream_tool_arguments` | Stream a `write` call's file from Anthropic as it is written, so its card fills in live. On by default; turn off for an endpoint that rejects a tool's `eager_input_streaming` field. |
-| `defer_tool_loading` | Load a tool the agent asks for with `activate_tools` where it asked, so the cached prompt stays cached. On by default. Luxe stops on its own for an endpoint that refuses it; turn it off for one that accepts it and then misbehaves. Anthropic and Responses endpoints only. |
+| `defer_tool_loading` | Load a tool the agent asks for with `activate_tools` where it asked, so the cached prompt stays cached. On by default. luxe stops on its own for an endpoint that refuses it; turn it off for one that accepts it and then misbehaves. Anthropic and Responses endpoints only. |
 | `copilot_headers`, `openrouter_headers` | Send those services' identifying headers. With `copilot_headers`, each model also goes to the Copilot endpoint it takes. |
 | `use_responses_api` | Use OpenAI's Responses API. Provider only; prefer `"api": "openai-responses"`. |
 
@@ -1154,7 +1157,7 @@ provider's.
 
 A local model's card often gives a sampling recipe with settings the OpenAI format has no field for,
 such as `top_k`, `min_p` and `repeat_penalty`. `sampling_params` is added to the request as written,
-after Luxe's own fields, so its values win:
+after luxe's own fields, so its values win:
 
 ```json title="~/.config/luxe/models.json"
 {
@@ -1202,9 +1205,9 @@ sent as written. LM Studio ignores `chat_template_kwargs`; use `"thinking_format
 
 ## Model details
 
-Luxe takes a model's details from three places, each overriding the one before, value by value:
+luxe takes a model's details from three places, each overriding the one before, value by value:
 
-1. The models.dev catalog built into Luxe, which works offline
+1. The models.dev catalog built into luxe, which works offline
 2. A fresher copy, refreshed in the background into `~/.cache/luxe/models-dev.json`
 3. Your `models.json`
 
@@ -1221,7 +1224,7 @@ anthropic/claude-opus-5
   cost /Mtok        $5.00/$25.00  [models.dev]
 ```
 
-Each value names where it came from: `snapshot` for the catalog built into Luxe, `models.dev` for
+Each value names where it came from: `snapshot` for the catalog built into luxe, `models.dev` for
 the refreshed copy, `config` for your `models.json`, and `default` where none of them said.
 
 | Variable | Does |
@@ -1235,7 +1238,7 @@ the refreshed copy, `config` for your `models.json`, and `default` where none of
 
 ### Keyless sign-in with Microsoft Entra ID
 
-If your Foundry resource has key sign-in turned off, give Luxe a command that prints a token:
+If your Foundry resource has key sign-in turned off, give luxe a command that prints a token:
 
 ```json title="~/.config/luxe/models.json"
 {
@@ -1255,9 +1258,9 @@ Run `az login` first. Only the Claude provider needs `auth`; the others already 
 token. The command runs for each request and nothing is kept, so a token from `az`, which lasts
 about an hour, is replaced as it expires and a long session carries on.
 
-### Choose which deployments Luxe offers
+### Choose which deployments luxe offers
 
-Luxe records what a resource has deployed in each provider's `served_models`, and the model behind
+luxe records what a resource has deployed in each provider's `served_models`, and the model behind
 any deployment named something else in `deployments`, which is where it looks up the context window
 and price. If your key cannot list deployments, or you want to choose the list yourself, turn
 discovery off and write both:
@@ -1274,7 +1277,7 @@ discovery off and write both:
 }
 ```
 
-`discover_deployments: false` on any of the three providers stops Luxe asking the resource at all.
+`discover_deployments: false` on any of the three providers stops luxe asking the resource at all.
 
 ### Thinking on partner models
 
@@ -1296,21 +1299,21 @@ Use `reasoning_effort` only: Foundry refuses DeepSeek's own `thinking` format. F
 report these models' thinking tokens, so `/cost` counts them as output.
 
 A Foundry deployment can have a different context window and price from the vendor's own API.
-Luxe uses Azure's figures for Foundry models.
+luxe uses Azure's figures for Foundry models.
 
 ## OpenRouter
 
-- Luxe asks OpenRouter to cache prompts for Claude models, which it otherwise does not, and which
+- luxe asks OpenRouter to cache prompts for Claude models, which it otherwise does not, and which
   makes later turns of a session far cheaper. `"cache_control_format": null` in the provider's
   `compat` stops it.
-- Some models on OpenRouter cannot turn thinking off. For those, Luxe leaves the setting out and
+- Some models on OpenRouter cannot turn thinking off. For those, luxe leaves the setting out and
   the model thinks at its own default. `luxe models show openrouter/<id>` says `never off`.
-- Luxe identifies itself to OpenRouter with its `HTTP-Referer` and `X-Title` headers, which carry
+- luxe identifies itself to OpenRouter with its `HTTP-Referer` and `X-Title` headers, which carry
   nothing about you. `"openrouter_headers": false` in `compat` drops them.
 @@@ page: environment
 ---
 title: "Environment variables"
-summary: "The environment variables you can set, and the ones Luxe sets."
+summary: "The environment variables you can set, and the ones luxe sets."
 order: 3
 group: "Reference"
 ---
@@ -1338,10 +1341,10 @@ config file turned off.
 | Variable | Does |
 | --- | --- |
 | `LUXE_CONFIG_DIR` | Where configuration and credentials live, instead of `~/.config/luxe` |
-| `LUXE_STATE_DIR` | Where Luxe keeps its state, such as the model you last chose, MCP sign-ins and the logs of commands that only report, instead of `~/.local/state/luxe` |
+| `LUXE_STATE_DIR` | Where luxe keeps its state, such as the model you last chose, MCP sign-ins and the logs of commands that only report, instead of `~/.local/state/luxe` |
 | `XDG_CONFIG_HOME`, `XDG_STATE_HOME`, `XDG_CACHE_HOME` | Honored on every platform; see [Install](install.md#where-luxe-keeps-files) |
 
-When Luxe works out where its files go, a path in one of these, or in `HOME`, that is not valid
+When luxe works out where its files go, a path in one of these, or in `HOME`, that is not valid
 UTF-8 is ignored, as if the variable were unset.
 
 ## Model catalog
@@ -1368,7 +1371,7 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_LAZY_TOOLS` | `1` | `0` sends every tool's description with every request |
 | `LUXE_CORE_TOOLS` | | The tools sent with every request, comma-separated; the rest load when needed |
 | `LUXE_DAP_STOP_TIMEOUT_SECS` | `30` | How long the debugger waits for a program to stop |
-| `LUXE_MAX_DEPTH` | `2` | How deeply Luxe may run inside itself, as with [subagents](recipes.md#subagents) |
+| `LUXE_MAX_DEPTH` | `2` | How deeply luxe may run inside itself, as with [subagents](recipes.md#subagents) |
 | `LUXE_WEB_ALLOW_PRIVATE` | | `1` lets `web_fetch` and `screenshot` reach your local network and files |
 | `LUXE_WEB_TIMEOUT_SECS` | `30` | How long one fetch may take. Past 60, raise `LUXE_TOOL_TIMEOUT_SECS` too. |
 | `BRAVE_API_KEY`, `TAVILY_API_KEY`, `EXA_API_KEY`, `FIRECRAWL_API_KEY` | | Search providers, and Firecrawl for pages built with JavaScript; see [Tools](tools.md#web) |
@@ -1377,12 +1380,12 @@ UTF-8 is ignored, as if the variable were unset.
 
 | Variable | Does |
 | --- | --- |
-| `LUXE_EDITOR`, then `VISUAL`, then `EDITOR` | The editor Luxe opens files in |
+| `LUXE_EDITOR`, then `VISUAL`, then `EDITOR` | The editor luxe opens files in |
 | `LUXE_FILE_MANAGER`, then `FILE_MANAGER` | The file manager `O` in the dock's file tree opens a folder in. Without either, the first of yazi, lf, ranger and nnn that is installed, then your desktop's own. |
 | `LUXE_HERDR` | `0` stops reporting state to [Herdr](recipes.md#run-luxe-in-herdr) |
 | `LUXE_UPDATE_CHECK` | `0` turns off the update check |
 | `LUXE_JOINABLE` | `0` stops other programs [joining](configuration.md#joining-a-session) this run's session |
-| `LUXE_RUNTIME_DIR` | Where a running Luxe keeps the socket and record that let a program join it, instead of `luxe` in `$XDG_RUNTIME_DIR` on Linux or `$TMPDIR` on macOS, or `run` in the state folder |
+| `LUXE_RUNTIME_DIR` | Where a running luxe keeps the socket and record that let a program join it, instead of `luxe` in `$XDG_RUNTIME_DIR` on Linux or `$TMPDIR` on macOS, or `run` in the state folder |
 
 ## Diagnostics
 
@@ -1391,22 +1394,22 @@ UTF-8 is ignored, as if the variable were unset.
 | `LUXE_LOG` | What goes in the log, such as `debug` or `luxe_core=debug`. `RUST_LOG` works too. See [Logs](troubleshooting.md#logs). |
 | `LUXE_WIRE_LOG` | A file to record every request sent to the model; see [Troubleshooting](troubleshooting.md#see-what-is-sent-to-the-model) |
 
-## Set by Luxe
+## Set by luxe
 
 | Variable | Is |
 | --- | --- |
-| `LUXE_DEPTH` | How deeply this run is nested inside another Luxe |
-| `LUXE_REVIEW_GATE_ACTIVE` | Set for a loop's [gate commands](loop.md#check-each-phase), so a Luxe they start does not run a gate of its own |
+| `LUXE_DEPTH` | How deeply this run is nested inside another luxe |
+| `LUXE_REVIEW_GATE_ACTIVE` | Set for a loop's [gate commands](loop.md#check-each-phase), so a luxe they start does not run a gate of its own |
 | `LUXE_HANDOFF` | For a [launcher](configuration.md#launchers): a file whose contents go in the composer when the program exits |
 @@@ page: extending
 ---
-title: "Extending Luxe"
+title: "Extending luxe"
 summary: "Which kind of extension you need, how to install one, and what stays stable across updates."
 order: 1
 group: "Extend"
 ---
 
-Luxe extends through files and programs, never through code loaded into Luxe itself. A file carries
+luxe extends through files and programs, never through code loaded into luxe itself. A file carries
 instructions or settings; a program carries behavior, and runs with the same access you have.
 Installing an extension is copying a file.
 
@@ -1414,13 +1417,13 @@ Installing an extension is copying a file.
 
 | To | Use | Runs |
 | --- | --- | --- |
-| Change how Luxe looks, or which tools exist | [Configuration](configuration.md) and [themes](appearance.md#make-a-theme) | Nothing |
+| Change how luxe looks, or which tools exist | [Configuration](configuration.md) and [themes](appearance.md#make-a-theme) | Nothing |
 | Teach the agent a procedure or house style | [Skills](skills.md) and [`AGENTS.md`](project-context.md) | Nothing |
 | Point the agent at your tracker or runbooks with `@` | [Mention sources](mention-sources.md) | Your program, when its tab opens |
 | Give the agent new tools | [An MCP server](mcp.md) | Your program, when the agent calls it |
 | Block, rewrite, audit or react to what the agent does | [Hooks](hooks.md) | Your program, at points in a turn |
-| Use an endpoint or model Luxe does not know | [Custom providers](custom-providers.md) | Nothing, or your `!command` for a key |
-| Drive Luxe from your own program, or build a new front end: conversation, Guided Review and GitHub | [The RPC protocol](rpc.md) | Your program, driving Luxe |
+| Use an endpoint or model luxe does not know | [Custom providers](custom-providers.md) | Nothing, or your `!command` for a key |
+| Drive luxe from your own program, or build a new front end: conversation, Guided Review and GitHub | [The RPC protocol](rpc.md) | Your program, driving luxe |
 | Open another terminal tool with a key | [Launchers](configuration.md#launchers) | Your program, on a key |
 
 The rows are in order of effort; the first that fits is usually right. [Recipes](recipes.md) puts
@@ -1465,7 +1468,7 @@ releases.
 
 `.luxe/` writes its own `.gitignore`, which keeps everything in it out of Git except
 `permissions.json`, `mcp.json`, `hooks.json` and `skills/`. To share more with your team, such as the
-project's `config.json`, write that `.gitignore` yourself: Luxe rewrites its own copy, but leaves
+project's `config.json`, write that `.gitignore` yourself: luxe rewrites its own copy, but leaves
 alone one it did not write.
 
 ## Trust
@@ -1474,11 +1477,11 @@ alone one it did not write.
 `gate.commands` run only with `--trust-project`, and its permission rules can only make yours
 stricter. MCP servers, language servers and formatters it brings start, by default, only in an
 interactive session or with `--trust-project`; `lsp.project_servers` in your own config changes
-that, see [Tools](tools.md#a-server-the-project-installed). This is about which programs Luxe starts. A
+that, see [Tools](tools.md#a-server-the-project-installed). This is about which programs luxe starts. A
 language server itself may run project code, as rust-analyzer does with `build.rs`, so open an
-unfamiliar repository in Luxe the way you would build it.
+unfamiliar repository in luxe the way you would build it.
 
-**A repository can still write instructions.** Its `AGENTS.md` and skills reach the model. Luxe
+**A repository can still write instructions.** Its `AGENTS.md` and skills reach the model. luxe
 removes text a reviewer cannot see, but plain text is still instructions, so read an unfamiliar
 repository's `AGENTS.md` as you would its `Makefile`.
 
@@ -1487,7 +1490,7 @@ repository's `AGENTS.md` as you would its `Makefile`.
 | | Across updates |
 | --- | --- |
 | `config.json`, `models.json`, `keybindings.json`, `lsp-servers.json`, `debug-adapters.json` | **Only added to.** An old file always loads. An unknown key is ignored, and no key changes meaning. |
-| Sessions in `.luxe/sessions/` | A newer Luxe reads every older session. An older Luxe skips what it does not know in a newer one. |
+| Sessions in `.luxe/sessions/` | A newer luxe reads every older session. An older luxe skips what it does not know in a newer one. |
 | The RPC protocol | Adding to it changes nothing. Removing or renaming anything changes `protocol_version`. |
 | Hook points | Added, never renamed. An unknown point skips that hook alone, with a warning in the log. |
 | Tool arguments | A renamed argument still accepts its old name. |
@@ -1498,9 +1501,9 @@ Before 1.0, a minor release may change the RPC protocol and the hook points, and
 will say so. Config files and sessions keep the stronger promise regardless, since they are the two
 you cannot regenerate.
 
-## What Luxe will not add
+## What luxe will not add
 
-- **Plugins loaded into Luxe.** A plugin would have all of Luxe's access, however it was sandboxed.
+- **Plugins loaded into luxe.** A plugin would have all of luxe's access, however it was sandboxed.
 - **A network listener for RPC.** It would turn a local program into a service that needs
   authentication.
 @@@ page: github
@@ -1508,11 +1511,11 @@ you cannot regenerate.
 title: "Git and GitHub"
 summary: "Worktrees, issues, opening and merging pull requests, review threads, and stacks."
 order: 7
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Everything that talks to GitHub goes through the GitHub CLI, `gh`, signed in with your own account
-(`gh auth login`). Without it, the rest of Luxe works and these features say why they cannot.
+(`gh auth login`). Without it, the rest of luxe works and these features say why they cannot.
 
 ## Work in a worktree
 
@@ -1541,7 +1544,7 @@ worktree stays out of `git status`.
 luxe --issue 123
 ```
 
-Luxe reads issue #123, makes a worktree on a branch named for it (`123-short-title`), and starts a
+luxe reads issue #123, makes a worktree on a branch named for it (`123-short-title`), and starts a
 session there. The issue and its latest comments go to the agent with your first message, so "fix
 it" is enough. They are treated as the reporter's words to weigh, not as instructions.
 
@@ -1558,13 +1561,13 @@ luxe --from-pr 142   # resume the session already working on it
 A plain `git push` from the worktree updates the pull request, including one from a fork. A fork's
 branch that has to be renamed here, such as its `main` checked out as `mara/main`, gets a remote of
 its own (`mara-push-main`) for that push, so pushes from the fork's other branches are not
-redirected. Luxe refuses a pull request that is merged or closed, that your account cannot push to,
+redirected. luxe refuses a pull request that is merged or closed, that your account cannot push to,
 or whose author turned off edits by maintainers.
 
 ## Open a pull request
 
 Review the work with [Guided Review](guided-review.md), finish (`alt+enter`), and choose **Open pull
-request**. Luxe drafts the title and description from the review, with `Closes #123` when the
+request**. luxe drafts the title and description from the review, with `Closes #123` when the
 session started from an issue.
 
 ![The pull request, drafted from the review](images/quickstart-pull-request.svg)
@@ -1622,7 +1625,7 @@ you can see a match before you search for it.
 
 ![Editing a search in /github](images/github-search.svg)
 
-A changed tab is marked with `*` and keeps your search until you close Luxe. `x` puts back the
+A changed tab is marked with `*` and keeps your search until you close luxe. `x` puts back the
 tab's own search, and so does running an empty search.
 
 The tabs always stay in this repository. A `repo:`, `org:` or `user:` you type is ignored.
@@ -1714,9 +1717,9 @@ After the bottom pull request is squash-merged, keep its branch until `/stack` h
 one. Deleting it through the API, with `gh pr merge --delete-branch`, makes GitHub close the pull
 requests based on it.
 
-## How often Luxe checks GitHub
+## How often luxe checks GitHub
 
-Luxe reads the pull request after anything that could change it, such as a push or `/pr`, and on
+luxe reads the pull request after anything that could change it, such as a push or `/pr`, and on
 an interval otherwise: every 15 seconds while checks run, every minute once things settle, and every
 five minutes when the terminal has been in the background for a while. Each read costs one point
 of the 5,000 an hour your `gh` sign-in allows.
@@ -1732,7 +1735,7 @@ your own config only, not a project's.
 title: "Guided Review"
 summary: "Read a change chapter by chapter, comment for the agent, and finish with a commit, fixes or a pull request."
 order: 6
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Guided Review reads a change back to you in the order it makes sense, split into chapters. Each
@@ -1743,9 +1746,9 @@ the agent as work to do.
 
 ## Open a review
 
-Press `ctrl+g`, or run `/diff`. Luxe writes the guide first; when `review ready` shows above the
+Press `ctrl+g`, or run `/diff`. luxe writes the guide first; when `review ready` shows above the
 composer, press `ctrl+g` again to open it. Asked for while a turn is running, the review waits for
-the turn to end. A review you already have opens at once, and one you had open when Luxe stopped
+the turn to end. A review you already have opens at once, and one you had open when luxe stopped
 comes back with your comments.
 
 | Review | Command |
@@ -1758,7 +1761,7 @@ comes back with your comments.
 
 Inside a review, `s` changes what it covers: uncommitted changes, the last turn, a base or a commit.
 A pull request takes `/diff pr`. If the agent committed its work, so nothing is uncommitted,
-`ctrl+g` and `/diff` review the last turn instead. Luxe remembers what you have already reviewed in
+`ctrl+g` and `/diff` review the last turn instead. luxe remembers what you have already reviewed in
 each project, so the next review leads with what is new since then.
 
 ## Read it
@@ -1805,7 +1808,7 @@ To leave project bookkeeping out of every review:
 ```
 
 The patterns take `*`, `**`, `?` and a trailing `/`, and a project's list replaces your own.
-Excluded files are counted in the guide. Luxe's own `.luxe/` is never reviewed.
+Excluded files are counted in the guide. luxe's own `.luxe/` is never reviewed.
 
 A review leaves out a file it cannot hold, so the rest is still reviewable: in the last turn, any
 file over 1 MiB, unreadable, or not a regular file; in uncommitted changes or a base, a new file
@@ -1832,7 +1835,7 @@ so you can verify it, at any time.
 
 The agent ends a fix by reporting on each comment: fixed, not fixed, or needs clarification, with a
 note. The note shows under the comment, and a comment it calls fixed waits for you to verify it,
-since a claim is not proof. If the agent leaves its report out, Luxe asks for it once. A comment
+since a claim is not proof. If the agent leaves its report out, luxe asks for it once. A comment
 the agent still says nothing about reads `no word from the agent`, with the reason in Feedback,
 and stays where you left it.
 
@@ -1886,8 +1889,8 @@ agent opened. It needs the GitHub CLI, `gh`, signed in.
 | `enter` | Post it |
 
 Line comments are listed under their files with the diff they sit on, the way GitHub shows them.
-Questions you asked the agent stay in Luxe and are never posted. On your own pull request, GitHub
-only takes a comment, so that is all Luxe offers.
+Questions you asked the agent stay in luxe and are never posted. On your own pull request, GitHub
+only takes a comment, so that is all luxe offers.
 
 A drafted summary opens in the preview for you to read and edit. Anything the agent says beside it,
 such as a part of the change it did not read, appears under it as a note. Once the review is
@@ -1896,7 +1899,7 @@ posted, the guide's foot says **Posted to GitHub** with the verdict, and `o` ope
 ### Fix it yourself
 
 To change someone else's pull request rather than comment on it, press `alt+u` (or `w` in the post
-preview). Luxe asks GitHub whether you can push to it, then checks it out in a worktree of its own
+preview). luxe asks GitHub whether you can push to it, then checks it out in a worktree of its own
 and starts a session there, with your comments as the agent's first task. A plain `git push` then
 updates the pull request.
 @@@ page: hooks
@@ -1937,7 +1940,7 @@ case "$cmd" in
 esac
 ```
 
-A project's `.luxe/hooks.json` runs only when you start Luxe with `--trust-project`, since opening a
+A project's `.luxe/hooks.json` runs only when you start luxe with `--trust-project`, since opening a
 repository should never run its commands. When both are loaded, a project's hooks run after yours.
 
 ### Hook settings
@@ -1951,7 +1954,7 @@ repository should never run its commands. When both are loaded, a project's hook
 
 `on_timeout: "deny"` makes a guard fail closed. `"ask"` puts the question to you instead, at
 `BeforeToolUse`; at other points it acts as `allow`. A
-`decision` Luxe does not recognize, a typo or different casing included, gets the same treatment,
+`decision` luxe does not recognize, a typo or different casing included, gets the same treatment,
 with a warning in the log, and its `args` and `context` are dropped.
 
 ## Matchers
@@ -1976,10 +1979,10 @@ points without a tool call ignore the matcher.
 | Point | Runs | stdin | Can |
 | --- | --- | --- | --- |
 | `SessionStart` | A session starts or resumes, including a switch to it from another session | `{"Other": null}` | |
-| `SessionEnd` | A session ends, including a switch to another session; Luxe waits for the hook | `{"Other": null}` | |
+| `SessionEnd` | A session ends, including a switch to another session; luxe waits for the hook | `{"Other": null}` | |
 | `UserPromptSubmit` | You send a message, including one sent while the agent works | `{"Other": {"content": "…"}}` | block it, add context |
 | `BeforeAgentStart` | A turn is about to start | `{"Other": null}` | |
-| `AgentStart` | Luxe is about to call the model | `{"Other": null}` | |
+| `AgentStart` | luxe is about to call the model | `{"Other": null}` | |
 | `BeforeToolUse` | Before each tool call | `{"ToolUse": {"tool_name": "bash", "args": {…}}}` | block it, ask you, rewrite it |
 | `AfterToolUse` | After each tool call | `{"ToolResult": {"tool_name": "bash", "result": "…", "is_error": false}}` | add context to the result |
 | `FileChanged` | `write`, `edit`, an applied rename or code action, or an `ast_grep` rewrite changed a file | `{"FileChanged": {"path": "/abs/file", "operation": "edit"}}` | |
@@ -2001,7 +2004,7 @@ that hook alone, with a warning naming the nearest real point.
 
 | Field | Where | Does |
 | --- | --- | --- |
-| `decision` | Required in any answer | `deny` blocks the call or message. `ask` raises a permission prompt, at `BeforeToolUse`. `allow`, or no output at all, means no opinion. An answer without `decision` counts as one Luxe cannot read. |
+| `decision` | Required in any answer | `deny` blocks the call or message. `ask` raises a permission prompt, at `BeforeToolUse`. `allow`, or no output at all, means no opinion. An answer without `decision` counts as one luxe cannot read. |
 | `reason` | with `deny` or `ask` | Shown to the model when a call is blocked, to you when a message is blocked, and on the prompt |
 | `args` | `BeforeToolUse` | New values for the call's arguments. Keys you leave out keep their values. |
 | `context` | `AfterToolUse`, `UserPromptSubmit` | Text added to the tool result, or saved with your message, for the model to see |
@@ -2054,7 +2057,7 @@ saved. Read a hook script before installing it, as you would anything on your `P
 }
 ```
 
-Luxe already adds language server errors after every edit; a hook like this is for a different
+luxe already adds language server errors after every edit; a hook like this is for a different
 check.
 
 **Refuse messages that contain an internal token:**
@@ -2078,7 +2081,7 @@ command is destructive.
 
 ## Coming from Claude Code
 
-| Claude Code | Luxe |
+| Claude Code | luxe |
 | --- | --- |
 | `PreToolUse`, `PostToolUse` | `BeforeToolUse`, `AfterToolUse` |
 | `UserPromptSubmit` with `additionalContext` | `UserPromptSubmit` with `context` |
@@ -2092,16 +2095,16 @@ command is destructive.
 @@@ page: index
 ---
 title: "Overview"
-summary: "What Luxe is, and where to find what you need."
+summary: "What luxe is, and where to find what you need."
 order: 0
 group: "Get started"
 ---
 
-Luxe is a coding agent for your terminal. It works in your project with the model you choose,
+luxe is a coding agent for your terminal. It works in your project with the model you choose,
 then walks you through what it changed so you can review it and open a pull request without leaving
 the terminal.
 
-New to Luxe? [Install](install.md) it, then follow the [Quickstart](quickstart.md). The rest of the
+New to luxe? [Install](install.md) it, then follow the [Quickstart](quickstart.md). The rest of the
 guide is reference, for when you need it.
 
 ## Find what you need
@@ -2117,10 +2120,10 @@ guide is reference, for when you need it.
 | Resume a session, or see what fills the context | [Sessions and context](sessions.md) |
 | See what the agent can use | [Tools](tools.md) |
 | Let the agent work through a plan on its own | [Autonomous runs](loop.md) |
-| Reach your sessions from your phone or tablet | [Luxe on your phone](remote.md) |
+| Reach your sessions from your phone or tablet | [luxe on your phone](remote.md) |
 | Change the theme, keys or statusline | [Configuration](configuration.md) |
 | Give the agent your project's conventions | [Project context](project-context.md) |
-| Add tools, skills or your own commands | [Extending Luxe](extending.md), [Recipes](recipes.md) |
+| Add tools, skills or your own commands | [Extending luxe](extending.md), [Recipes](recipes.md) |
 | Control what the agent may do | [Security and permissions](security.md) |
 | Look up a command, flag or environment variable | [Command line](cli.md), [Environment variables](environment.md) |
 | Fix something that is not working | [Troubleshooting](troubleshooting.md) |
@@ -2128,14 +2131,14 @@ guide is reference, for when you need it.
 ## Help
 
 - **Help** (`/help`) lists every key for the screen you are on, with any you have rebound.
-- `luxe doctor` checks which language servers, debuggers and tools Luxe can use on your machine.
+- `luxe doctor` checks which language servers, debuggers and tools luxe can use on your machine.
 - [Troubleshooting](troubleshooting.md) covers common problems and how to report a bug.
 - Problems and questions: [GitHub issues](https://github.com/evanwhittaker/luxe/issues).
 
-## Ask Luxe
+## Ask luxe
 
-This guide is built into Luxe, for the version you have installed. Ask the agent how to do
-something in Luxe, such as *how do I add an MCP server?*, and it reads the answer from the guide
+This guide is built into luxe, for the version you have installed. Ask the agent how to do
+something in luxe, such as *how do I add an MCP server?*, and it reads the answer from the guide
 rather than guessing. You can read it yourself too:
 
 ```bash
@@ -2149,11 +2152,11 @@ luxe docs --search "on_ask"
 Every page is also plain markdown, at the same address with `.md` on the end:
 `https://luxe.dev/docs/install.md`. [`llms.txt`](https://luxe.dev/llms.txt) lists every page with a
 one-line summary, and [`llms-full.txt`](https://luxe.dev/llms-full.txt) is the whole guide in one
-file. Inside Luxe, `luxe docs` serves the same pages offline.
+file. Inside luxe, `luxe docs` serves the same pages offline.
 @@@ page: install
 ---
 title: "Install"
-summary: "Install Luxe, check your setup, and pick a font."
+summary: "Install luxe, check your setup, and pick a font."
 order: 1
 group: "Get started"
 ---
@@ -2177,6 +2180,11 @@ With Homebrew, on macOS or Linux:
 brew install evanwhittaker/tap/luxe
 ```
 
+Homebrew finishes with a line that names the installed version; run `luxe --version`
+to check. Since Homebrew 6, a tap has to be trusted before its code runs. The full name above
+trusts luxe's formula for you, but Homebrew can still stop on *another* tap you already have. If it
+names one, trust it with `brew trust <user>/<repository>`, or remove it with `brew untap`.
+
 With Cargo, which builds it, so you need Rust 1.89 or newer ([rustup](https://rustup.rs) installs
 one):
 
@@ -2196,7 +2204,7 @@ about your policy is saved.
 
 Any of them installs the `luxe` command; `luxe --version` checks it worked.
 
-To update, run `luxe update`, or `/update` inside Luxe. Luxe checks once a day for a newer release
+To update, run `luxe update`, or `/update` inside luxe. luxe checks once a day for a newer release
 and says so on the start screen; see [Updates](configuration.md#updates) for how it updates and how
 to turn the check off.
 
@@ -2220,17 +2228,17 @@ cargo build --release
 
 ## Requirements
 
-Luxe runs natively on Linux, macOS and Windows. Only a terminal and a model are required.
+luxe runs natively on Linux, macOS and Windows. Only a terminal and a model are required.
 
 | | |
 | --- | --- |
 | **Terminal** | Any current terminal with UTF-8. On Windows, use Windows Terminal. |
 | **Model** | An API key, a ChatGPT, Copilot or OpenRouter subscription, or a local server such as LM Studio or Ollama. See [Providers](providers.md). |
-| **Git** | For reviewing changes and working in worktrees. Without a repository, Luxe runs with nothing to review. |
+| **Git** | For reviewing changes and working in worktrees. Without a repository, luxe runs with nothing to review. |
 | **GitHub CLI** | Optional. `gh`, signed in, for issues and pull requests. |
 | **A Nerd Font** | Optional, for icons. See [Fonts](#fonts). |
 
-Luxe also uses these when they are installed:
+luxe also uses these when they are installed:
 
 - `ast-grep`, for structural search.
 - A language server per language, for code intelligence. See [Code
@@ -2243,7 +2251,7 @@ Luxe also uses these when they are installed:
 luxe doctor
 ```
 
-`luxe doctor` lists the tools, language servers and debug adapters Luxe found, which ones work, and
+`luxe doctor` lists the tools, language servers and debug adapters luxe found, which ones work, and
 how to install what is missing:
 
 ```
@@ -2259,7 +2267,7 @@ Language servers
 
 ## Fonts
 
-Luxe draws its icons from a [Nerd Font](https://www.nerdfonts.com/) when your terminal has one.
+luxe draws its icons from a [Nerd Font](https://www.nerdfonts.com/) when your terminal has one.
 Without one, it falls back to plain characters on its own, and every icon has a word beside it, so
 nothing becomes unreadable.
 
@@ -2287,7 +2295,7 @@ desktop's font instead. To check what a name resolves to:
 fc-match -f '%{file}\n' "JetBrainsMono NFM"
 ```
 
-JetBrains Mono lacks six symbols Luxe draws (`ℹ︎ ↳︎ ↺︎ ⏸︎ ✔︎ ✖︎`), and your system fills them in
+JetBrains Mono lacks six symbols luxe draws (`ℹ︎ ↳︎ ↺︎ ⏸︎ ✔︎ ✖︎`), and your system fills them in
 from another font. For every character from one face, use **IosevkaTerm** or **Adwaita Mono**:
 
 ```bash
@@ -2298,26 +2306,26 @@ scoop install nerd-fonts/IosevkaTerm-NF-Mono nerd-fonts/AdwaitaMono-NF-Mono
 ```
 
 To use the wider icons anyway, set `"glyphs": "nerd_wide"` in
-[`config.json`](configuration.md), and Luxe gives each icon two cells.
+[`config.json`](configuration.md), and luxe gives each icon two cells.
 
 ## On Windows
 
-Install [Git for Windows](https://gitforwindows.org/). Luxe finds its `bash` even though it is not
+Install [Git for Windows](https://gitforwindows.org/). luxe finds its `bash` even though it is not
 on `PATH`, and the agent needs a POSIX shell for most commands. Without one, commands run through
 `cmd.exe`, which handles `cargo test` or `npm run build` but not much else.
 
-If WSL is installed, Luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
+If WSL is installed, luxe skips the `bash.exe` in `System32`, which would run commands inside Linux
 against a different filesystem.
 
 Python on Windows is `py` or `python`. `python3` is usually the Microsoft Store's placeholder, so
-Luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
+luxe tries `py -3` first. For the Python debugger, run `py -m pip install debugpy`. The agent's
 commands run Python in UTF-8 mode (`PYTHONUTF8=1`) unless you have set it yourself, so output with
 characters outside your code page doesn't crash them.
 
-Windows Terminal keeps a column at the right edge for its scrollbar. To give it to Luxe, set
+Windows Terminal keeps a column at the right edge for its scrollbar. To give it to luxe, set
 **Scrollbar visibility** to **Hidden** in your profile's **Appearance** settings.
 
-## Where Luxe keeps files
+## Where luxe keeps files
 
 | | Linux and macOS | Windows |
 | --- | --- | --- |
@@ -2327,10 +2335,10 @@ Windows Terminal keeps a column at the right edge for its scrollbar. To give it 
 
 An `XDG_CONFIG_HOME`, `XDG_STATE_HOME` or `XDG_CACHE_HOME` you have set wins on every platform.
 `LUXE_CONFIG_DIR` moves every configuration file, API key and provider sign-in. `LUXE_STATE_DIR`
-moves the state Luxe keeps for you: the model you last chose, MCP sign-ins, and the logs of
+moves the state luxe keeps for you: the model you last chose, MCP sign-ins, and the logs of
 commands that only report, such as `luxe auth`.
 
-Inside a project, Luxe keeps its sessions, logs and caches in `.luxe/`, with a `.gitignore` that
+Inside a project, luxe keeps its sessions, logs and caches in `.luxe/`, with a `.gitignore` that
 keeps all of it out of Git except the files a team may want to share: `permissions.json`,
 `mcp.json`, `hooks.json` and `skills/`.
 @@@ page: interface
@@ -2338,7 +2346,7 @@ keeps all of it out of Git except the files a team may want to share: `permissio
 title: "The interface"
 summary: "The start screen, the conversation, the composer, the dock, the statusline and the preview."
 order: 3
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ![The dock beside the preview, showing one file's diff](images/interface-peek.svg)
@@ -2350,7 +2358,7 @@ This page names the keys for each part of the screen. All of them, and how to re
 
 ## The start screen
 
-Luxe opens on a prompt. Type and press `enter` to ask in a new session, or choose a row from the
+luxe opens on a prompt. Type and press `enter` to ask in a new session, or choose a row from the
 list under it with `↑`/`↓` and `enter`.
 
 | Row | Opens |
@@ -2361,7 +2369,7 @@ list under it with `↑`/`↓` and `enter`.
 | **Sessions…** | Every session in this project, searchable. `/sessions` opens it too, here or in a session. |
 | **Review changes** | A [Guided Review](guided-review.md) of your uncommitted changes, when there are any |
 | **Configuration** | Providers, credentials, [settings](configuration.md#settings) and config files, once a provider is set up |
-| **Quit** | Leaves Luxe. `ctrl+c` does too, here and in a session, even mid-turn, unless a prompt or menu is open, which it answers instead. |
+| **Quit** | Leaves luxe. `ctrl+c` does too, here and in a session, even mid-turn, unless a prompt or menu is open, which it answers instead. |
 | **RECENT** | Your other recent sessions |
 
 Typing narrows the list. The first row becomes **Ask in a new session**, and under it come the
@@ -2395,7 +2403,7 @@ screen and opens a new session. **Start screen** in `/settings` sets the same ke
 
 ![The minimal start screen](images/interface-launcher-minimal.svg)
 
-Luxe works on the project it was started in. To switch projects, `cd` there and run `luxe`.
+luxe works on the project it was started in. To switch projects, `cd` there and run `luxe`.
 
 ## The conversation
 
@@ -2494,7 +2502,7 @@ conversation, or in its place below 80 columns.
 `mode` is `auto` (beside the conversation when there is room), `shown` or `hidden`.
 
 Drag the line between the dock and the conversation to make the dock wider or narrower. It stays
-that width the next time Luxe starts; double-click the line to put it back.
+that width the next time luxe starts; double-click the line to put it back.
 
 ### Files
 
@@ -2600,12 +2608,12 @@ scrollbar to scroll, or press anywhere on it to jump.
 
 The lines between panes move: the dock's, the preview's, and the one beside a review's guide. A line
 lights under the pointer; drag it to resize the pane beside it, or double-click it to put the pane
-back to its own width. Luxe remembers the widths for next time.
+back to its own width. luxe remembers the widths for next time.
 
 Drag across the conversation or the composer to select, and the selection is copied when you let
 go. Click a message to copy all of it. `ctrl+insert` or `ctrl+shift+c` copies a selection too.
 
-Your terminal's own copy key reaches Luxe only if the terminal passes it through. Either hold
+Your terminal's own copy key reaches luxe only if the terminal passes it through. Either hold
 `shift` (`option` on macOS) while dragging, to make a selection the terminal copies itself, or let
 the copy key fall through when the terminal has nothing selected. In Ghostty:
 
@@ -2613,7 +2621,7 @@ the copy key fall through when the terminal has nothing selected. In Ghostty:
 keybind = performable:control+insert=copy_to_clipboard
 ```
 
-Luxe copies to the desktop clipboard, and over SSH through the terminal (OSC 52). Inside tmux,
+luxe copies to the desktop clipboard, and over SSH through the terminal (OSC 52). Inside tmux,
 that needs `set -g set-clipboard on`.
 
 `/mouse off` hands the mouse back to the terminal for the session, and `"mouse": false` in
@@ -2624,7 +2632,7 @@ notch scrolls, from 1 to 20 lines (3 by default).
 title: "Autonomous runs"
 summary: "Let the agent work through a phased plan on its own, with tests and a reviewer at each phase."
 order: 12
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 `luxe loop` runs the agent on its own, phase by phase through your plan. A phase only counts as done
@@ -2677,7 +2685,7 @@ A run uses your session's model, or `--model`. Only one run at a time works in a
 
 ## Check each phase
 
-When the agent says a phase is done, Luxe checks it before moving on:
+When the agent says a phase is done, luxe checks it before moving on:
 
 1. **Your commands.** Each must pass.
 2. **A reviewer**, if `gate.review` is on and the commands passed. It runs in a fresh session, so
@@ -2720,12 +2728,21 @@ phase with `luxe loop phase --set <next>`.
 A run prints one line per step, timed from its start:
 
 ```text
-      19s    write logstats.py
-      49s    test python3 -m unittest -q
-    1m09s  phase 0 claimed complete — running the gate
-    1m31s  the acceptance commands passed — asking the reviewer
-    2m34s  phase 0 accepted — now on phase 1
+       0s  ┃ phase 0
+       0s  ┃ ┌ start
+      19s  ┃ │ ✓ write logstats.py
+      49s  ┃ │ ✗ test python3 -m unittest -q · failed
+    1m09s  ┃ │ phase 0 claimed complete — running the gate
+    1m31s  ┃ │ the acceptance commands passed — asking the reviewer
+    2m34s  ┃ │ phase 0 accepted — now on phase 1
+    2m40s  ┃ └ turn ended · 6 tools · 2m40s
+    2m41s  ┃ phase 1
+    2m41s  ┃ ┌ iteration 1
 ```
+
+The heavy rail on the left marks the phase, in a color of its own, and the bracket inside it marks
+each iteration. In a terminal, a tool's line shows `○` while it runs, then turns green with `✓` or
+red with `✗` when it ends. Piped to a file there's no color, and a failure gets a line of its own.
 
 `luxe loop status` shows what it has cost, by model:
 
@@ -2760,7 +2777,7 @@ group: "Extend"
 ---
 
 An [MCP](https://modelcontextprotocol.io) server gives the agent new tools: a browser, a database,
-your issue tracker. Luxe reaches every server through one `mcp` tool, so a server's tools cost
+your issue tracker. luxe reaches every server through one `mcp` tool, so a server's tools cost
 nothing in a request until the agent looks for them:
 
 ```text
@@ -2798,14 +2815,14 @@ removed by editing that file. `luxe mcp list` starts nothing: it shows every con
 disabled ones included, and marks a project's entries `not started (project)`, with or without
 `--trust-project`. In a session, `/mcp` shows each server, how it connects and its tools.
 
-Luxe also reads `~/.config/mcp/mcp.json`, and a project's `.mcp.json` and `.luxe/mcp.json`. Where
+luxe also reads `~/.config/mcp/mcp.json`, and a project's `.mcp.json` and `.luxe/mcp.json`. Where
 two files name the same server, the project's wins.
 
 ### Server settings
 
 | Key | Does |
 | --- | --- |
-| `command`, `args`, `env` | Start a local server. An `env` value can use `${VAR}` or `$env:VAR`; an unset one is empty, and Luxe logs which. |
+| `command`, `args`, `env` | Start a local server. An `env` value can use `${VAR}` or `$env:VAR`; an unset one is empty, and luxe logs which. |
 | `url`, `headers` | Connect to a remote server. `headers` take `${VAR}` the same way. |
 | `auth` | Sign in: see [below](#sign-in) |
 | `lifecycle` | `lazy` (the default) connects on first use and disconnects when idle. `eager` connects at start; `keep_alive` stays connected. |
@@ -2829,7 +2846,7 @@ A remote server signs in with a token or with OAuth.
 }
 ```
 
-For OAuth, sign in once in a browser, and Luxe refreshes the token from then on:
+For OAuth, sign in once in a browser, and luxe refreshes the token from then on:
 
 ```bash
 luxe mcp login --id linear
@@ -2837,7 +2854,7 @@ luxe mcp login --id linear
 
 The agent never starts a sign-in. Tokens are kept in `~/.local/state/luxe/mcp-auth.json`, readable
 only by you. With `LUXE_STATE_DIR` set they are kept there instead, so a moved state directory does
-not share the default one's sign-ins. If that file stops being valid JSON, Luxe moves it to
+not share the default one's sign-ins. If that file stops being valid JSON, luxe moves it to
 `mcp-auth.json.bad` (or a dated name, if one is already there) rather than write over it, and you
 sign in again.
 
@@ -2910,7 +2927,7 @@ A server's descriptions and results are treated as information, never as instruc
 
 ### Servers a project brings
 
-A project's `.mcp.json` names programs that would run on your machine. Luxe starts a project's
+A project's `.mcp.json` names programs that would run on your machine. luxe starts a project's
 servers in an interactive session, or with `--trust-project`, but not in a headless or loop run. To
 decide for every run, set `lsp.project_servers` in your own config; see
 [Tools](tools.md#a-server-the-project-installed).
@@ -2950,14 +2967,14 @@ row, and the agent receives the text your program gave for it.
 | `icon` | One Nerd Font glyph for the tab, as the character or a JSON escape. Without one, the tab shows a tag; without a Nerd Font, a plain mark. |
 
 Sources are read from your own config only, since each one runs a program. Their tabs come after
-Luxe's own: Files, Skills, GitHub and MCP, whose kinds `file`, `skill`, `github` and `mcp` are
+luxe's own: Files, Skills, GitHub and MCP, whose kinds `file`, `skill`, `github` and `mcp` are
 taken. Two sources with the same kind get one tab, the first's.
 
 ## What the program prints
 
-Luxe runs the program, in the project, the first time its tab opens, and lists what it prints: one
-JSON object per line. The rows are kept until Luxe exits, so a new ticket, or a change to your
-script, shows up the next time you start Luxe. The program has no terminal and no stdin, so it
+luxe runs the program, in the project, the first time its tab opens, and lists what it prints: one
+JSON object per line. The rows are kept until luxe exits, so a new ticket, or a change to your
+script, shows up the next time you start luxe. The program has no terminal and no stdin, so it
 cannot prompt for a sign-in.
 
 ```json
@@ -2977,7 +2994,7 @@ wrong. If the program fails, the tab shows the last line it wrote to stderr, or 
 and it runs again the next time the tab opens.
 
 Make `text` enough for the agent to find the rest: a title and a link, or an ID it can look up with
-a CLI or an MCP server. A mention you type by hand, or one not picked since Luxe started, reaches
+a CLI or an MCP server. A mention you type by hand, or one not picked since luxe started, reaches
 the agent as `Jira PROJ-12` alone. What a tracker says is other people's words, and it reaches your model
 provider once you mention it.
 
@@ -2998,13 +3015,13 @@ jq -c --arg site "$site" '.issues[] | {
 ```
 
 Make it executable (`chmod +x`), put it on your `PATH`, and add the Jira entry above. For Asana,
-see [Recipes](recipes.md#asana). Or ask Luxe to write one for the tracker you use.
+see [Recipes](recipes.md#asana). Or ask luxe to write one for the tracker you use.
 @@@ page: mentions
 ---
 title: "Mentions"
 summary: "Point the agent at a file, skill, issue, MCP server or your own tracker with `@`."
 order: 5
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Type `@` at the start of a word in the composer to mention something. The picker opens on your
@@ -3054,7 +3071,7 @@ In `/github`, `c` inserts a mention of the pull request or issue under the curso
 @@@ page: project-context
 ---
 title: "Project context"
-summary: "Give the agent your project's conventions in AGENTS.md, and how Luxe finds the project."
+summary: "Give the agent your project's conventions in AGENTS.md, and how luxe finds the project."
 order: 3
 group: "Customize"
 ---
@@ -3065,12 +3082,12 @@ Put your project's conventions in an `AGENTS.md` at its root, and the agent read
 every session. In a project folder a `CLAUDE.md` works too; when both exist, `AGENTS.md` is used.
 The global files below are read only by those names, so `~/.claude/CLAUDE.md` is not.
 
-Luxe reads, in order:
+luxe reads, in order:
 
 1. `~/.agents/AGENTS.md`, the file many people keep for every agent they use
-2. `~/.config/luxe/agents.md`, for every project in Luxe
+2. `~/.config/luxe/agents.md`, for every project in luxe
 3. `AGENTS.md` at the top of the repository
-4. One `AGENTS.md` per folder down to where you started Luxe
+4. One `AGENTS.md` per folder down to where you started luxe
 
 So a monorepo can keep shared rules at the root and package rules beside the code, and `luxe`
 started in `packages/app` reads both. Nothing above the repository is read. Outside a repository,
@@ -3086,7 +3103,7 @@ agent is told with your next message.
 
 An `AGENTS.md` in a folder below the repository's top, but not on the way to where you started,
 joins when the agent first opens, writes or searches a path in that folder. It's added to that
-tool result, once, and Luxe shows **Following** and the file's path. The system prompt doesn't
+tool result, once, and luxe shows **Following** and the file's path. The system prompt doesn't
 change, so the cache holds. Ignored folders, such as `node_modules`, are skipped. If a rewind or a
 compaction drops the file, it joins again the next time the agent goes there.
 `LUXE_NESTED_INSTRUCTIONS=0` turns this off.
@@ -3094,7 +3111,7 @@ compaction drops the file, it joins again the next time the agent goes there.
 **Project context** lists every file a turn reads, and says whose rules each one carries:
 **global**, **project** or **folder** context. Type `context` on the start screen and open it.
 `enter` opens a file in your editor, or creates one from a template. The template's guidance is in
-comments, which Luxe removes and reports, so replace them with your own lines.
+comments, which luxe removes and reports, so replace them with your own lines.
 
 ### Duplicates
 
@@ -3130,7 +3147,7 @@ lists and architecture overviews do not; the agent reads those from the code.
 An `AGENTS.md` over 24,000 characters is cut off, with a note telling the agent to read the rest of
 the file itself.
 
-### What Luxe removes
+### What luxe removes
 
 Two kinds of text are removed from `AGENTS.md` and skill files before the agent sees them, because
 neither is visible to someone reviewing the file:
@@ -3141,13 +3158,13 @@ neither is visible to someone reviewing the file:
   and soft hyphens and other marks that draw nothing, written as characters or as references
   such as `&#x202E;`
 
-A file that repeats one link label so often that Luxe cannot check every definition is left out
-entirely. For an `AGENTS.md`, Luxe says what it removed or left out when it starts; a skill file is
+A file that repeats one link label so often that luxe cannot check every definition is left out
+entirely. For an `AGENTS.md`, luxe says what it removed or left out when it starts; a skill file is
 cleaned without a notice.
 
 ## Where the project begins
 
-Luxe works on one project, found by walking up from where you started it:
+luxe works on one project, found by walking up from where you started it:
 
 1. Inside a repository (`.git`, `.jj` or `.hg`), the nearest folder with a `.luxe/` in it, up to
    the top of the repository
@@ -3165,14 +3182,14 @@ mkdir -p packages/app/.luxe
 
 The package keeps its own sessions and still reads the `AGENTS.md` at the top of the repository.
 
-Outside a repository, a `.luxe/` claims only its own folder. Luxe writes one wherever it runs, so
+Outside a repository, a `.luxe/` claims only its own folder. luxe writes one wherever it runs, so
 starting it once in `~/.config` does not make `~/.config/herdr` part of that project.
 @@@ page: providers
 ---
 title: "Models and providers"
 summary: "Sign in to a provider, choose a model and thinking level, and run local models."
 order: 9
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Sign in
@@ -3239,7 +3256,7 @@ used from other programs.
 
 GitHub Copilot serves Claude through Anthropic's Messages API, its newer GPT, Grok and MAI models
 only through its Responses API, and the rest through chat completions. Copilot says which model
-takes which, and Luxe sends each one where it belongs. Claude goes to Messages even though chat
+takes which, and luxe sends each one where it belongs. Claude goes to Messages even though chat
 completions would take it, because only Messages keeps its thinking, its effort level and the
 prompt cache for the whole conversation. The models offered are your plan's own, kept current each
 time the sign-in refreshes. Signing in turns on any model your plan offers that you have not been
@@ -3263,8 +3280,9 @@ A command runs each time a request needs the key.
 ## Choose a model
 
 `/model` opens the model picker: every model your providers can serve, configured providers first.
-Type to search. The session carries on with the new model, even across providers, and Luxe
-remembers your choice for next time.
+Type to search. The session carries on with the new model, even across providers, and luxe
+remembers your choice for next time, in this project and as your latest anywhere
+([which model a session starts on](agent.md#which-model-a-session-starts-on)).
 
 From the command line, `--model` takes a model ID, or `provider/id` to pick the provider too:
 
@@ -3272,7 +3290,7 @@ From the command line, `--model` takes a model ID, or `provider/id` to pick the 
 luxe --model anthropic/claude-opus-5
 ```
 
-To see what Luxe knows about a model, or list what you can use:
+To see what luxe knows about a model, or list what you can use:
 
 ```bash
 luxe models show anthropic/claude-opus-5   # context window, output limit, thinking levels, price
@@ -3280,8 +3298,8 @@ luxe models list --provider anthropic      # every model; * is active, + is conf
 luxe models refresh --force                # update the model catalog now
 ```
 
-Luxe ships with the [models.dev](https://models.dev) catalog built in and refreshes it in the
-background, so a model released after your copy of Luxe still has the right context window and
+luxe ships with the [models.dev](https://models.dev) catalog built in and refreshes it in the
+background, so a model released after your copy of luxe still has the right context window and
 price.
 
 ## Thinking
@@ -3290,7 +3308,7 @@ price.
 **Medium**, **High**, **XHigh** or **Ultra**. Levels the model does not support are grayed out.
 `--thinking high` sets it at launch.
 
-Luxe remembers the level per model, since `high` on a frontier model and on a small local one cost
+luxe remembers the level per model, since `high` on a frontier model and on a small local one cost
 very different amounts of time. To give a model its own starting level:
 
 ```json title="~/.config/luxe/models.json"
@@ -3312,7 +3330,7 @@ ChatGPT plan, the statusline shows how much of the plan is used, such as `12% we
 shows when it resets. On a Copilot plan it shows the month's allowance the same way, such as `19%
 monthly`.
 
-Luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
+luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
 for each request. A Copilot plan billed by the token spends its monthly allowance at those rates.
 
 A ChatGPT subscription serves its own set of models, different from OpenAI's API, and `/model`
@@ -3336,7 +3354,7 @@ For reasoning controls, chat templates and sampling settings on a local server, 
 
 ## Microsoft Foundry
 
-One Foundry resource and key serve three APIs, which Luxe treats as three providers. Signing in to
+One Foundry resource and key serve three APIs, which luxe treats as three providers. Signing in to
 one configures all three:
 
 ```bash
@@ -3352,7 +3370,7 @@ choose a model with the provider that serves it:
 | `foundry-anthropic` | Claude | `luxe --model foundry-anthropic/claude-sonnet-5` |
 | `foundry-completions` | DeepSeek, Grok, Llama, Mistral, Phi and Cohere | `luxe --model foundry-completions/deepseek-v4-pro` |
 
-`/model` lists what your resource has deployed, not every model Azure offers. Luxe asks the
+`/model` lists what your resource has deployed, not every model Azure offers. luxe asks the
 resource for its deployments when you sign in and again each time you open `/model`, and sorts them
 onto the right provider by the model each one runs. `luxe models refresh` asks too. If a resource
 cannot list its deployments, `/model` shows Azure's catalog marked `unverified`, and you can
@@ -3363,8 +3381,8 @@ Entra ID, see [Custom providers](custom-providers.md#keyless-sign-in-with-micros
 
 ## When a provider stalls
 
-Luxe waits 60 seconds for a provider to start answering, and 180 seconds between parts of a reply.
-If a provider is overloaded, rate limited or unreachable before it has sent anything, Luxe tries
+luxe waits 60 seconds for a provider to start answering, and 180 seconds between parts of a reply.
+If a provider is overloaded, rate limited or unreachable before it has sent anything, luxe tries
 again after 2, 4 and 8 seconds, showing `retrying (2/3)` above the composer. Once a reply has
 started, a failure ends the turn rather than paying for the reply twice. A bad key or a refused
 request is not retried.
@@ -3385,7 +3403,7 @@ group: "Get started"
 This walks through one change from start to finish: connect a model, ask for something, review
 what the agent did, and open a pull request.
 
-## 1. Start Luxe in your project
+## 1. Start luxe in your project
 
 ```bash
 cd your-project
@@ -3397,14 +3415,14 @@ Reviewing changes and opening a pull request need a Git repository. A pull reque
 branch other than the one it merges into; `luxe --worktree` makes one for you, in a
 [worktree](github.md#work-in-a-worktree) of its own.
 
-The first time, Luxe asks four questions: a theme, a provider, which tools the agent can use, and
-what Luxe opens on. Each one previews or explains itself, and `enter` moves on. `s` skips setup and
+The first time, luxe asks four questions: a theme, a provider, which tools the agent can use, and
+what luxe opens on. Each one previews or explains itself, and `enter` moves on. `s` skips setup and
 keeps none of the answers, though a provider you signed in to stays signed in. Your answers go to
 `~/.config/luxe/config.json`, and `/settings` or `luxe init` changes them later.
 
 ![Setup, on its theme step](images/quickstart-setup.svg)
 
-After that, Luxe opens on the start screen: a prompt, with your last session, your other sessions
+After that, luxe opens on the start screen: a prompt, with your last session, your other sessions
 and **Configuration** listed under it, or **Set up a provider** first if you have none yet. Type to ask something or to find a session or a command, or
 use `↑`/`↓` and `enter` to open a row.
 
@@ -3425,7 +3443,7 @@ and pick one:
 
 When it connects, the model picker opens. Choose a model, and change it any time with `/model`.
 
-An API key in your environment works too. Luxe finds `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+An API key in your environment works too. luxe finds `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
 `GEMINI_API_KEY` and the rest, and offers that provider's models. To sign in from a script or a
 machine without the interface, use the CLI:
 
@@ -3458,7 +3476,7 @@ place on a narrow one.
 
 ## 4. Review the change
 
-Press `ctrl+g` to start a **Guided Review**. Luxe writes a guide to the change, split into
+Press `ctrl+g` to start a **Guided Review**. luxe writes a guide to the change, split into
 chapters, each with what changed, why, and how it was checked, next to the code. When
 `review ready` shows above the prompt, press `ctrl+g` again to open it.
 
@@ -3477,7 +3495,7 @@ Comments go to the agent as work to do when you finish with **Request fixes**.
 ## 5. Open a pull request
 
 This needs the GitHub CLI, `gh`, signed in (`gh auth login`): **Open pull request** is offered once
-`gh` says the branch has none. Finish the review (`alt+enter`) and choose it. Luxe drafts the title
+`gh` says the branch has none. Finish the review (`alt+enter`) and choose it. luxe drafts the title
 and description from the review. The heading says what happens before it opens, such as
 "commits and pushes first". The pull request pictured came from a session that took up an issue
 ([`luxe --issue 123`](github.md#start-from-an-issue)), so its branch is named for the issue and its
@@ -3614,7 +3632,7 @@ and the agent can look it up through the MCP server. See [Mention sources](menti
 ## Subagents
 
 A subagent is a separate context that does one job and returns a summary, which is what a headless
-Luxe run is:
+luxe run is:
 
 ```bash
 luxe --headless --read-only --model openai/gpt-5.6 --format json \
@@ -3637,7 +3655,7 @@ To let the agent start one itself, wrap that command in an MCP server with a
 - Return the subagent's stderr when it fails, so the agent sees why.
 - Give a subagent that writes its own worktree, with `git worktree add`, so it stays out of yours.
 
-Luxe refuses to nest more than two levels deep, since an agent that starts two subagents per turn
+luxe refuses to nest more than two levels deep, since an agent that starts two subagents per turn
 would multiply fast. `LUXE_MAX_DEPTH` raises the limit.
 
 ## A guard that asks a model
@@ -3690,10 +3708,10 @@ fi
 - **Nobody answers in a headless run**, so its `ask` is allowed there. Use `--on-ask deny`, or
   `"hook_ask": "deny"` in `permissions.json`, to make it hold.
 
-## Run Luxe in Herdr
+## Run luxe in Herdr
 
 [Herdr](https://herdr.dev) keeps coding agents in panes and shows which ones are working, waiting
-on you, or done. Luxe reports its state to Herdr on its own when it runs in a Herdr pane:
+on you, or done. luxe reports its state to Herdr on its own when it runs in a Herdr pane:
 **working** during a turn, **blocked** when it needs you, and **done** when the turn ends.
 
 ```bash
@@ -3710,11 +3728,11 @@ curl -fsSL https://raw.githubusercontent.com/ogulcancelik/herdr/master/SKILL.md 
   -o ~/.config/luxe/skills/herdr/SKILL.md
 ```
 
-`LUXE_HERDR=0` or `{ "herdr": false }` in Luxe's config turns the reporting off.
+`LUXE_HERDR=0` or `{ "herdr": false }` in luxe's config turns the reporting off.
 
-### Luxe colors in Herdr
+### luxe colors in Herdr
 
-Herdr has no theme files — it takes a built-in theme plus per-token overrides. This is Luxe's
+Herdr has no theme files — it takes a built-in theme plus per-token overrides. This is luxe's
 own palette in those tokens, so the pane and the multiplexer around it read as one program:
 
 ```toml title="~/.config/herdr/config.toml"
@@ -3722,12 +3740,12 @@ own palette in those tokens, so the pane and the multiplexer around it read as o
 name = "vesper"          # the closest built-in; every token below is overridden anyway
 
 [theme.custom]
-accent        = "#ddc084"  # champagne, the one color Luxe leads with
+accent        = "#ddc084"  # champagne, the one color luxe leads with
 text          = "#e4dfd6"
 subtext0      = "#97938c"
 overlay0      = "#4d4a45"
 overlay1      = "#97938c"
-sidebar_bg    = "#12100e"  # the base surface, same as Luxe's background
+sidebar_bg    = "#12100e"  # the base surface, same as luxe's background
 panel_bg      = "#12100e"  # the tab bar sits on it too, so the chrome is one field
 surface0      = "#201e1a"
 surface1      = "#2e2b27"
@@ -3739,7 +3757,7 @@ yellow        = "#ddc084"  # working — an agent at work glows in the accent
 green         = "#81caa0"  # idle / done
 red           = "#e68485"  # blocked, needs you
 peach         = "#faaa51"  # interrupted
-blue          = "#85c7d7"  # Luxe has one cool hue, so blue and teal share it
+blue          = "#85c7d7"  # luxe has one cool hue, so blue and teal share it
 teal          = "#85c7d7"
 
 [ui]
@@ -3747,18 +3765,18 @@ accent = "#ddc084"         # borders and navigation chrome, which read off their
 ```
 
 Reload it in place with `prefix+shift+r`, or `herdr server reload-config`. For any of the other
-[themes](appearance.md) Luxe ships, the hexes are in its theme file and the token names above do
+[themes](appearance.md) luxe ships, the hexes are in its theme file and the token names above do
 not change.
 
 The one token worth a second thought is `panel_bg`: Herdr draws the active tab as `panel_bg` text
 on an `accent` fill, so it has to stay dark enough to read there. Lifting it to `#201e1a` gives the
 tab bar a surface of its own if you prefer the chrome delineated.
 
-## Luxe from your phone
+## luxe from your phone
 
 Your sessions keep running on your computer, and your phone or tablet reaches them over
 [Tailscale](https://tailscale.com), a private network between your own devices. Nothing is opened to
-the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is Luxe's own way in.
+the internet. This is the terminal over SSH; [luxe on your phone](remote.md) is luxe's own way in.
 
 1. Install Tailscale on the computer and on the phone, and sign in to the same account on both.
 2. On the computer, turn on SSH. On Linux and macOS, Tailscale can do it for you:
@@ -3768,10 +3786,10 @@ the internet. This is the terminal over SSH; [Luxe on your phone](remote.md) is 
    ```
 
    On Windows, turn on the OpenSSH Server in Settings, under Optional features.
-3. Run Luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
+3. Run luxe in [Herdr](#run-luxe-in-herdr), so your sessions outlive the terminal you started
    them in.
 4. On the phone, connect with an SSH app such as Blink Shell or Termius, using the computer's
-   Tailscale name, and run `herdr`. It attaches to the panes you left, with Luxe where it was.
+   Tailscale name, and run `herdr`. It attaches to the panes you left, with luxe where it was.
 
 ```bash
 mosh you@desk -- herdr
@@ -3781,24 +3799,24 @@ mosh you@desk -- herdr
 cellular. It needs `mosh` installed on the computer too, which Linux and macOS have and Windows
 does not; plain `ssh` works everywhere.
 
-On an iPad with a keyboard, this is Luxe as you know it. On a phone, Luxe fits a narrow screen,
+On an iPad with a keyboard, this is luxe as you know it. On a phone, luxe fits a narrow screen,
 and Herdr marks which session is waiting on you.
 
-### A notification when Luxe needs you
+### A notification when luxe needs you
 
-[Luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
+[luxe on your phone](remote.md#notifications) has notifications built in. Without it, a
 [hook](hooks.md) can post to [ntfy](https://ntfy.sh), whose app shows it on your phone:
 
 ```json title="~/.config/luxe/hooks.json"
 {
   "PermissionRequested": [
-    { "command": ["curl", "-s", "-d", "Luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
+    { "command": ["curl", "-s", "-d", "luxe is waiting for an approval", "https://ntfy.sh/your-topic"] }
   ],
   "BeforeToolUse": [
-    { "matcher": "question", "command": ["curl", "-s", "-d", "Luxe has a question", "https://ntfy.sh/your-topic"] }
+    { "matcher": "question", "command": ["curl", "-s", "-d", "luxe has a question", "https://ntfy.sh/your-topic"] }
   ],
   "AgentEnd": [
-    { "command": ["curl", "-s", "-d", "Luxe finished", "https://ntfy.sh/your-topic"] }
+    { "command": ["curl", "-s", "-d", "luxe finished", "https://ntfy.sh/your-topic"] }
   ]
 }
 ```
@@ -3811,11 +3829,11 @@ and Herdr marks which session is waiting on you.
 ## A local model in LM Studio
 
 1. Load a model in LM Studio and start its server.
-2. In Luxe, open **Configuration** and choose **Connect a local or custom model**, then
+2. In luxe, open **Configuration** and choose **Connect a local or custom model**, then
    **LM Studio**. Leave the endpoint blank for the default.
 3. Choose the model in the picker that opens.
 
-LM Studio ignores the chat-template settings Luxe sends a local server by default, so for
+LM Studio ignores the chat-template settings luxe sends a local server by default, so for
 thinking levels to reach the model, send them as `reasoning_effort`, and start each session at a
 sensible level. Connecting already wrote an `lmstudio` provider to `models.json`, so add these keys
 to it rather than replacing the file:
@@ -3834,19 +3852,22 @@ to it rather than replacing the file:
 [Custom providers](custom-providers.md) covers samplers and request formats.
 @@@ page: remote
 ---
-title: "Luxe on your phone"
+title: "luxe on your phone"
 summary: "Reach the sessions running on your computer from your own phone or tablet, over Tailscale."
 order: 13
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 `luxe remote` lets your phone or tablet see the sessions running on your computer, join one, and
 start new ones. It listens on your computer only. [Tailscale](https://tailscale.com), a private
 network between your own devices, carries it to them over HTTPS, so nothing is opened to the
-internet and there is no Luxe server in between.
+internet and there is no luxe server in between.
 
 On the phone it's an app in the browser, drawn like the interface in your theme. For the whole
-terminal, editor included, [Luxe from your phone](recipes.md#luxe-from-your-phone) works over SSH.
+terminal, editor included, [luxe from your phone](recipes.md#luxe-from-your-phone) works over SSH.
+
+![On an iPhone, an edit waiting for permission](phone/remote-permission.png)
+![The same turn finished: its tool cards and the reply](phone/remote-turn.png)
 
 ## Set it up
 
@@ -3859,11 +3880,11 @@ terminal, editor included, [Luxe from your phone](recipes.md#luxe-from-your-phon
 
 3. Scan the QR code it shows with the phone's camera, and give the device a name.
 4. On an iPhone or iPad, add it to the Home Screen: in Safari, Share, then Add to Home Screen. It
-   opens full screen with the Luxe mark as its icon, and keeps the sign-in Safari had when you
+   opens full screen with the luxe mark as its icon, and keeps the sign-in Safari had when you
    added it. An app added before pairing asks for the invitation link instead: copy it from
    `luxe remote pair` and paste it in.
 
-Setup takes four steps, and asks before each one that changes something outside Luxe:
+Setup takes four steps, and asks before each one that changes something outside luxe:
 
 | Step | Does |
 | --- | --- |
@@ -3886,9 +3907,9 @@ The service is your own, and needs no administrator:
 | --- | --- |
 | Linux | A systemd user unit, `~/.config/systemd/user/luxe-remote.service` |
 | macOS | A launch agent, `~/Library/LaunchAgents/dev.luxe.remote.plist` |
-| Windows | `Luxe remote` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
+| Windows | `luxe remote` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
 
-Without it, run `luxe remote` in a terminal, and your devices reach Luxe while it runs.
+Without it, run `luxe remote` in a terminal, and your devices reach luxe while it runs.
 
 ## Devices
 
@@ -3914,13 +3935,13 @@ luxe remote setup --allow sam@github
 Each computer runs its own bridge at its own address, so one phone can reach several: set each up
 as above, with Tailscale signed in to the same account, and pair the phone with each. Every one is
 its own app on the Home Screen, named for the computer as Tailscale names it (`desk` for
-`desk.tail1234.ts.net`), with the name beside the Luxe mark in its session list and after the
-project in its notifications, "luxe · desk". Luxe finds Tailscale by the `tailscale` command, so
+`desk.tail1234.ts.net`), with the name beside the luxe mark in its session list and after the
+project in its notifications, "luxe · desk". luxe finds Tailscale by the `tailscale` command, so
 on a Mac check that `tailscale version` works in Terminal before running setup.
 
 ## What your device sees
 
-Every Luxe running on the computer as you: the interface, `luxe --rpc`, and any started from your
+Every luxe running on the computer as you: the interface, `luxe --rpc`, and any started from your
 device. A device that joins a session is a guest, as in [joining a
 session](rpc.md#join-a-running-session): it sees the conversation so far and every live event, and
 can answer prompts and send messages. It can't switch or end the session, or publish to GitHub.
@@ -3984,8 +4005,8 @@ to `false` is out of reach, from your device too.
 
 ## Starting a session
 
-Tap **New** on the session list to start Luxe in a folder: one where Luxe is running now, one with
-a [herdr](recipes.md#run-luxe-in-herdr) pane, one where the bridge has seen Luxe run, or any path
+Tap **New** on the session list to start luxe in a folder: one where luxe is running now, one with
+a [herdr](recipes.md#run-luxe-in-herdr) pane, one where the bridge has seen luxe run, or any path
 you type. What you type narrows the folders it offers, by name and then by path. They're only the
 ones above: it never looks through your home folder.
 
@@ -4036,12 +4057,12 @@ session needs a paired device as well. [Security](security.md#luxe-remote) has t
 @@@ page: rpc
 ---
 title: "The RPC protocol"
-summary: "Drive Luxe from your own program: an editor plugin, a dashboard, or a front end of your own."
+summary: "Drive luxe from your own program: an editor plugin, a dashboard, or a front end of your own."
 order: 7
 group: "Extend"
 ---
 
-`luxe --rpc` runs Luxe without its interface and speaks JSON over stdin and stdout, one object per
+`luxe --rpc` runs luxe without its interface and speaks JSON over stdin and stdout, one object per
 line. Use it to build an editor plugin, a dashboard, a CI adapter, or a whole new front end, in any
 language.
 
@@ -4051,7 +4072,7 @@ luxe --rpc --github-writes   # also lets your client publish to GitHub
 ```
 
 A client is trusted like the interface it replaces: it answers permission prompts, and it cannot
-loosen any permission rule. Nothing listens on the network. Your client either started Luxe, or
+loosen any permission rule. Nothing listens on the network. Your client either started luxe, or
 [joined a session](#join-a-running-session) open in the interface on the same machine.
 
 ## A session
@@ -4104,7 +4125,7 @@ for line in luxe.stdout:
     elif kind == "turn_ended":
         print()
         send("close")
-    # Ignore everything else, so the client keeps working with newer versions of Luxe.
+    # Ignore everything else, so the client keeps working with newer versions of luxe.
 ```
 
 Three rules make a working client: read `ready` first, answer both kinds of prompt, and ignore
@@ -4119,7 +4140,7 @@ client above works with `["luxe", "join"]` in place of `["luxe", "--rpc"]`.
 ```bash
 luxe join --list    # sessions running on this machine
 luxe join           # the one running in this folder
-luxe join 5898d57b  # one by the start of its id, or by its Luxe's process id
+luxe join 5898d57b  # one by the start of its id, or by its luxe's process id
 ```
 
 After `ready` comes the session so far: `session_loaded` with the transcript, the latest
@@ -4132,7 +4153,7 @@ A joined client is a guest in someone else's session:
 - **Either side can answer a prompt.** The first answer counts, and `prompt_closed` tells everyone
   to put the prompt away. The interface says which client answered.
 - **It can't switch or end the session.** `new_session` and `load_session` are refused with
-  `action_rejected`. `close`, or the end of your stdin, disconnects you and leaves Luxe running.
+  `action_rejected`. `close`, or the end of your stdin, disconnects you and leaves luxe running.
 - **GitHub writes are off**, and `ready` says `"github_writes": false`.
 - **Keep reading.** A client that falls far behind gets a `notice` and is disconnected. Join
   again for a fresh copy of the session.
@@ -4142,7 +4163,7 @@ leaves, by the name it gives in `introduce` if it sends one within a second of c
 its process id. A device the bridge introduces as `yours`, paired by you, is listed but not
 announced: you know your own phone joined, and a phone reconnects often.
 
-A running Luxe lists its session in a file in its [runtime folder](environment.md#integrations),
+A running luxe lists its session in a file in its [runtime folder](environment.md#integrations),
 `<pid>.json`, with the `address` to connect to: a Unix socket, or a named pipe on Windows. Connect
 there yourself to skip `luxe join`.
 To stop sessions being joined, set [`joinable`](configuration.md#joining-a-session) to `false`.
@@ -4176,12 +4197,12 @@ To stop sessions being joined, set [`joinable`](configuration.md#joining-a-sessi
 | `load_file_diff` | `{"request_id": "…", "path": "src/main.rs"}` | One file's change, outside any review; answered by `file_diff_loaded` |
 | `list_directory` | `{"request_id": "…", "path": "src"}` | One project folder's entries, without what `.gitignore` ignores unless `"include_ignored": true`, which marks each such entry `"ignored": true`; answered by `directory_listed` |
 | `read_project_file` | `{"request_id": "…", "path": "src/main.rs"}` | One project file's text, up to 2 MB; answered by `project_file_read` |
-| `introduce` | `{"name": "iPhone"}` | A joined client's name, which the interface uses when it says who joined or answered. Add `"watch_only": true` as your first line to read without being announced; Luxe then drops everything else you send. `"yours": true` says the person at the terminal paired it, so it's listed without a line in the conversation. Refused from the client that started the session. |
+| `introduce` | `{"name": "iPhone"}` | A joined client's name, which the interface uses when it says who joined or answered. Add `"watch_only": true` as your first line to read without being announced; luxe then drops everything else you send. `"yours": true` says the person at the terminal paired it, so it's listed without a line in the conversation. Refused from the client that started the session. |
 | `close` | | Shut down, stopping a turn in flight the way `cancel` does. The stream ends after it. |
 
 ### Guided Review
 
-A review is loaded with `load_guided_review`. Luxe answers with `guided_review_loaded`, which
+A review is loaded with `load_guided_review`. luxe answers with `guided_review_loaded`, which
 carries the whole review (its `id`, `revision_id`, files, hunks and chapters), and then always
 `review_session_restored`, which carries its comments. Everything below names the review by its
 `id`. An action for a review that is no longer the open one is refused.
@@ -4218,7 +4239,7 @@ goes in `edit`, beside `request_id` and `review_id`:
 as `review_session_saved` while it runs: the agent's answer to a question, and its report on a fix,
 are recorded on the comments. You can keep editing while it works.
 
-Each comment's `thread` says who said what, by `author`: `reviewer`, `agent`, or `system` for Luxe's
+Each comment's `thread` says who said what, by `author`: `reviewer`, `agent`, or `system` for luxe's
 own word. A fix turn that ends with no report on a comment leaves a `system` entry saying why, and
 the comment stays `open`.
 
@@ -4239,7 +4260,7 @@ the comment stays `open`.
 | `prepare_thread_answers` | `{"request_id", "review_id"}` | Whether your fixes are pushed yet, on your own pull request; answered by `thread_answers_prepared` |
 | `answer_threads` | `{"request_id", "review_id", "answers": [{"finding_id", "reply", "resolve"}]}` | Reply to and resolve its threads, each named by the comment it became. **A GitHub write.** |
 
-The `open_*` and `post_*` actions confirm a preview by its `request_id`. Luxe keeps what it
+The `open_*` and `post_*` actions confirm a preview by its `request_id`. luxe keeps what it
 prepared, so you send back only what a person can change: a title, a description, a verdict.
 `post_pull_request_review` is refused if the comments changed after the `session_revision` you drew
 the preview from, so what posts is what you showed. A failed open or post can be confirmed again;
@@ -4258,16 +4279,16 @@ These go through your own `gh`, as the interface's `/github` and `/pr` do. `repo
 | `read_github_conversation` | `{"number": 142, "pull_request": true}` | Everything said on it; answered by `github_conversation_read` |
 | `draft_github_reply` | `{"request_id": "…", "number": 142, "pull_request": true, "target": {…}, "conversation": […]}` | The agent drafts a reply in a turn that changes nothing; answered by `github_reply_drafted`. `target` and `conversation` are what `github_conversation_read` gave you. |
 | `check_pull_request_fix` | `{"number": 142}` | Whether it can be checked out here to fix; answered by `pull_request_fix_checked` |
-| `plan_restack` | `{"request_id": "restack:…"}` | What restacking this branch's stack would do; answered by `restack_planned`. Luxe keeps the plan. |
+| `plan_restack` | `{"request_id": "restack:…"}` | What restacking this branch's stack would do; answered by `restack_planned`. luxe keeps the plan. |
 | `check_worktree_removal` | | What the session's worktree has not committed; answered by `worktree_removal_checked` |
-| `set_focus` | `{"focused": false}` | Whether your window has focus. Luxe checks GitHub less often while it does not. |
+| `set_focus` | `{"focused": false}` | Whether your window has focus. luxe checks GitHub less often while it does not. |
 | `link_pull_request` | `{"number": 142, "url": "…"}` | Record that this session worked on that pull request |
 | `post_github_comment` | `{"number": 142, "thread": "PRRT_…", "body": "Fixed."}` | Post a reply in a thread, or a comment without `thread`; answered by `github_comment_posted`. **A GitHub write.** |
 | `change_pull_request` | `{"number": 142, "write": {"change": "mark_ready"}}` | `update_branch`, `mark_ready`, `merge`, `enable_auto_merge` or `disable_auto_merge`; answered by `pull_request_changed`. **A GitHub write.** |
 | `restack` | `{"request_id": "restack:…"}` | Push the plan `plan_restack` made under that id, exactly as planned; answered by `restacked` or `restack_failed`. **A GitHub write.** |
 
-You confirm a restack by its id, not by sending the plan back: Luxe pushes the plan it showed you. A
-newer `plan_restack` replaces the older plan, and a plan is pushed once. Before pushing, Luxe checks
+You confirm a restack by its id, not by sending the plan back: luxe pushes the plan it showed you. A
+newer `plan_restack` replaces the older plan, and a plan is pushed once. Before pushing, luxe checks
 that every moving branch here is where the plan saw it, checked out where it was, and clean, and
 refuses with `restack_failed` otherwise. A push that did not finish is also `restack_failed`, and
 its message says to check the branches on GitHub, since some may have moved. If the push succeeds
@@ -4292,7 +4313,7 @@ There are around sixty. These are the ones a front end is built on:
 
 | `kind` | Is |
 | --- | --- |
-| `ready` | The handshake: protocol version, Luxe version, session ID, directory |
+| `ready` | The handshake: protocol version, luxe version, session ID, directory |
 | `token_delta`, `thinking_delta` | The reply and reasoning as they stream. `block` orders them. |
 | `tool_call_composing` | The model has started writing a tool call. Optional; useful for showing a `write` filling in. |
 | `tool_started`, `tool_progress`, `tool_completed`, `tool_ended` | A tool call's progress, by `call_id`. `tool_completed` carries its output. |
@@ -4302,7 +4323,7 @@ There are around sixty. These are the ones a front end is built on:
 | `question_asked` | **Answer it** with `answer_question` |
 | `turn_started` | A turn began, from any client. It comes before the turn's message is saved, and `turn_ended` always follows. A client joining mid-turn gets it as part of catching up. |
 | `turn_ended` | The turn finished; `reason` says why |
-| `provider_retrying` | The provider failed before answering, and Luxe is trying again |
+| `provider_retrying` | The provider failed before answering, and luxe is trying again |
 | `state_changed` | Model, thinking level, mode, and whether a turn is running |
 | `plan_written` | Plan mode wrote `path`. The interface offers the plan's next step when the turn ends. |
 | `review_started`, `review_finished` | A requested review began on `model`, and came back with a `verdict` (`continue`, `fix` or `unavailable`) and `findings`. On `fix` the findings also become the agent's next turn. |
@@ -4324,7 +4345,7 @@ Guided Review, as the interface sees it:
 | `guided_review_guide_updated` | Better chapters and a summary replaced the first ones, for the same pinned revision |
 | `review_session_restored` | The comments and progress that go with the review just loaded. It always follows `guided_review_loaded`, after a restart too. |
 | `open_review_shown` | The answer to `show_open_review`, under its `request_id`: the open `review` and its `session`, or neither when no review is open. `reading` says what each chapter asks of the reader: `needs_review` items, and the `reason` when one thing accounts for all of them. |
-| `review_session_saved`, `review_session_save_failed` | A change to them was stored, or refused. Luxe reports its own changes this way too: a turn starting, the agent's report, a review posted. |
+| `review_session_saved`, `review_session_save_failed` | A change to them was stored, or refused. luxe reports its own changes this way too: a turn starting, the agent's report, a review posted. |
 | `review_feedback_turn_dispatched`, `review_feedback_turn_completed`, `review_feedback_turn_failed` | Feedback you sent reaching the agent, and how its turn went |
 | `review_questions_answered`, `remediation_reported` | The agent's answer to a question, and its report on a fix |
 | `review_committed`, `review_commit_failed` | Committing a review's chapters |
@@ -4366,7 +4387,7 @@ list is closed.
 - Nothing listens on the network. A [joined](#join-a-running-session) session takes connections
   on a local socket or pipe that only your user account can open, and turns away any program the
   agent itself started, so the agent can't answer its own prompts.
-- Permission rules are enforced inside Luxe. A client cannot weaken a `deny`: reading `.env` is
+- Permission rules are enforced inside luxe. A client cannot weaken a `deny`: reading `.env` is
   refused here as everywhere.
 - Prompts go to your client to answer. To approve everything, send `set_permission_auto_approve` or
   start with `--auto-approve`. `--on-ask` is refused, since your client can answer.
@@ -4375,27 +4396,27 @@ list is closed.
 ### GitHub writes
 
 Your client can read GitHub without asking. To let it publish there (post a comment or a review,
-answer threads, open, change, merge or restack a pull request), start Luxe with `--github-writes`.
+answer threads, open, change, merge or restack a pull request), start luxe with `--github-writes`.
 Without it, those actions are refused with `action_rejected`, and `ready` says
 `"github_writes": false` so you can hide them.
 
 - **Read-only wins.** With `--read-only`, or a read-only mode in your permissions file, the writes
   are refused even with the flag, and so is `commit_review_chapters`.
-- **It is a flag, not a setting.** Whoever starts Luxe decides, for that session. No config file
+- **It is a flag, not a setting.** Whoever starts luxe decides, for that session. No config file
   turns it on, and a project cannot.
 - **It covers your client, not the agent.** The agent's own GitHub writes are permission rules: they
   ask first, and the prompt comes to your client. See [Security](security.md#when-you-step-away).
 
-Luxe is not a sandbox. To isolate it, run it in a [container](security.md#isolation).
+luxe is not a sandbox. To isolate it, run it in a [container](security.md#isolation).
 @@@ page: security
 ---
 title: "Security and permissions"
-summary: "What the agent may do, the rules and prompts that decide it, secrets, and what Luxe sends over the network."
+summary: "What the agent may do, the rules and prompts that decide it, secrets, and what luxe sends over the network."
 order: 1
 group: "Reference"
 ---
 
-The agent reads and writes files and runs commands on your machine. Luxe lets ordinary work through
+The agent reads and writes files and runs commands on your machine. luxe lets ordinary work through
 without asking, keeps a few guardrails on at all times, and gives you rules to tighten the rest.
 For real isolation, run it in a [container](#isolation).
 
@@ -4495,7 +4516,7 @@ open. They don't sandbox a language server, which can index other files and runs
 code.
 
 A project's `.luxe/permissions.json` can only make your rules stricter, never looser, unless you
-start Luxe with `--trust-project`.
+start luxe with `--trust-project`.
 
 ## The permission prompt
 
@@ -4541,11 +4562,11 @@ which then sees the conversation and can answer its prompts. That makes who may 
 question:
 
 - **Only your user account.** The socket sits in a folder only you can open, only you can use it,
-  and Luxe checks the account of whatever connects. On Windows the named pipe admits your account
+  and luxe checks the account of whatever connects. On Windows the named pipe admits your account
   alone, and refuses remote clients.
   Nothing listens on the network.
 - **Not the agent.** A program the agent started, at any depth, is turned away, so it can't
-  approve its own prompts. Luxe checks the joining process's ancestry. It can't see past a program
+  approve its own prompts. luxe checks the joining process's ancestry. It can't see past a program
   that detaches from its parent, such as one started with `setsid` and left running after its
   parent exits, so treat this as a tripwire, not a wall. A command that would do that should be
   something your rules ask about.
@@ -4556,19 +4577,19 @@ Anything running as you can already read your sessions on disk and your credenti
 adds a way to steer, not a way to read. To turn it off, set
 [`joinable`](configuration.md#joining-a-session) to `false`.
 
-## Luxe remote
+## luxe remote
 
-[`luxe remote`](remote.md) is the one part of Luxe that answers network requests, and it is off
+[`luxe remote`](remote.md) is the one part of luxe that answers network requests, and it is off
 until you run it. It puts your sessions in reach of your phone, so it takes two things to get in:
 
 - **Your Tailscale login.** The bridge listens on this machine only (`127.0.0.1`) and refuses to
   listen anywhere else. Tailscale Serve carries it to your tailnet over HTTPS and adds the login of
   whoever is asking, replacing any the request brought. A request without one didn't come through
-  Serve and is refused, and so is a login other than yours or one you `--allow`. Luxe never uses
+  Serve and is refused, and so is a login other than yours or one you `--allow`. luxe never uses
   Tailscale Funnel, which would publish it to the internet.
 - **A paired device.** Any program on this machine can reach a local port and claim a login, so
   every session also needs the credential a device gets when it pairs. An invitation works once,
-  within ten minutes. Luxe keeps only a hash of each invitation and credential, in
+  within ten minutes. luxe keeps only a hash of each invitation and credential, in
   `~/.config/luxe/remote.json`. The device keeps its credential in a cookie scripts can't read,
   sent only over HTTPS and never with a request from another site; a request a page on another
   site makes is refused too.
@@ -4582,28 +4603,28 @@ Notifications are off until you turn them on in the app, one device at a time, a
 answer anything: a notification says what is waiting and where, such as "Approve bash" over the
 folder's name, never the command, and answering takes the app. While any device has them on, the
 bridge joins each running session to watch for prompts. It joins watch-only: the terminal doesn't
-announce it, and Luxe drops anything it sends, so a client nobody sees can't act. Each
+announce it, and luxe drops anything it sends, so a client nobody sees can't act. Each
 notification is sealed so only that device can read it (RFC 8291) and posted to the push service
 the device's browser picked; the push service sees when, not what. The bridge posts only to
 Apple's, Google's, Mozilla's and Microsoft's push services, so a paired device can't aim it at
 anything else on your network. It signs with a key of its own, kept in `remote.json`, and revoking
 a device ends its notifications.
 
-The bridge starts Luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
-already running and as its own `luxe --rpc` otherwise. A packager can build Luxe without the
+The bridge starts luxe only in a folder a device asks for, as you, in a herdr pane when herdr is
+already running and as its own `luxe --rpc` otherwise. A packager can build luxe without the
 `remote` feature, which leaves out the bridge entirely.
 
-A session is open in one Luxe at a time. A second `luxe --resume` of a session the interface
+A session is open in one luxe at a time. A second `luxe --resume` of a session the interface
 already has, or a resume from the session list, is refused and says which process has it. The lock
 is the operating system's, so a crash never leaves a session stuck.
 
 ## Secrets
 
-- Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. Luxe warns if
+- Credentials are stored in `~/.config/luxe/auth.json`, readable only by you. luxe warns if
   `auth.json` or `models.json` can be read by others.
 - A key is found in this order: `--api-key` or `LUXE_API_KEY`, then what you signed in with, then
   the provider's own variable, then a provider block in `auth.json` or `models.json`. For a provider
-  Luxe does not know, the block comes before `OPENAI_API_KEY`. The order is the same for the
+  luxe does not know, the block comes before `OPENAI_API_KEY`. The order is the same for the
   provider a session starts on and for one you switch to in `/model`.
 - A key can be `$VAR` or `!command` rather than the value, so it never sits in a file. A command
   runs when a key is needed, so treat these files like your shell's startup file. It runs from your
@@ -4611,7 +4632,7 @@ is the operating system's, so a crash never leaves a session stuck.
   needs a graphical prompt.
 - Anything that looks like a secret (API keys, tokens, private keys, passwords in URLs) is removed
   from tool output before the model, the transcript, hooks or the log see it. So is every key and
-  token Luxe itself has used or loaded, whatever it looks like, including `$VAR` and `!command`
+  token luxe itself has used or loaded, whatever it looks like, including `$VAR` and `!command`
   keys and MCP tokens, as long as it is at least 8 characters.
 - MCP sign-in tokens are kept in `~/.local/state/luxe/mcp-auth.json`, outside your config folder,
   so a dotfiles repository never carries them.
@@ -4665,23 +4686,23 @@ Opening a repository should not run its code. So, without `--trust-project`:
   [Tools](tools.md#a-server-the-project-installed).
 
 Its `AGENTS.md` and skills, including the ones it commits in `.agents/skills/`, still reach the
-model, because your own project's are the point of the feature. Luxe removes text a reviewer
+model, because your own project's are the point of the feature. luxe removes text a reviewer
 cannot see, comments and invisible Unicode, and leaves out a file it cannot finish checking; see
-[What Luxe removes](project-context.md#what-luxe-removes). Plain text is still instructions, so read
+[What luxe removes](project-context.md#what-luxe-removes). Plain text is still instructions, so read
 an unfamiliar repository's `AGENTS.md` as you would its `Makefile`.
 Text from GitHub, such as issues and comments, is filtered the same way and given to the agent as
 someone else's words, not as instructions. So are MCP servers' descriptions and results.
 
 A language server can run project code itself: rust-analyzer runs `build.rs`. Treat opening a
-repository in Luxe like building it.
+repository in luxe like building it.
 
-A repository the agent fetches with `web_fetch` is different: you never chose to open it. Luxe
+A repository the agent fetches with `web_fetch` is different: you never chose to open it. luxe
 clones it into `.luxe/gh-cache/` with symbolic links flattened to plain files, and starts no
 language server or formatter there; see [Tools](tools.md#github-repositories).
 
 ### Isolation
 
-Rules are a policy, not a sandbox. For hard isolation, run Luxe in a container that mounts only the
+Rules are a policy, not a sandbox. For hard isolation, run luxe in a container that mounts only the
 project:
 
 ```bash
@@ -4692,9 +4713,9 @@ docker run --rm -it -v "$PWD":/work -w /work -e ANTHROPIC_API_KEY <image-with-lu
 Do not mount your home folder or SSH keys. `--network none` works for everything but the model
 provider, the web tools, the catalog refresh and the update check.
 
-## What Luxe sends over the network
+## What luxe sends over the network
 
-There is no telemetry. Luxe connects only to:
+There is no telemetry. luxe connects only to:
 
 1. The model provider you configured, including the cache refreshes described in
    [Keeping the cache warm](sessions.md#keeping-the-cache-warm) (`"agent": { "cache_warming": "off" }`
@@ -4717,7 +4738,7 @@ There is no telemetry. Luxe connects only to:
 None of them carries anything about you or your machine. The update check sends no version,
 platform or identifier; it downloads a public file and compares versions locally.
 
-One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, Luxe runs
+One local report stays on your machine: inside a [herdr](configuration.md#herdr) pane, luxe runs
 herdr's own command to tell it whether the agent is working, idle or waiting on you, and the id of
 the session for herdr to resume. Nothing is sent outside herdr, and `"herdr": false` stops it.
 And a running session takes connections on a local socket only you can open, so another program can
@@ -4725,16 +4746,16 @@ And a running session takes connections on a local socket only you can open, so 
 
 Apart from notifications, `luxe remote` sends nothing of its own. It answers your paired devices
 through Tailscale Serve and runs your own `tailscale` and `herdr` commands; see
-[Luxe remote](#luxe-remote).
+[luxe remote](#luxe-remote).
 
 What you post to GitHub is yours alone: reviews, replies and pull requests are posted from a
 preview, with nothing added, and no agent tool can post them.
 
 ## Supply chain
 
-Luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
+luxe is written in Rust with `unsafe` code denied throughout, apart from a few small, reviewed
 modules that call the operating system directly. One starts each command in a session of its own,
-so nothing the agent runs can reach your terminal. On Windows, one keeps the programs Luxe starts
+so nothing the agent runs can reach your terminal. On Windows, one keeps the programs luxe starts
 off the stdin `--rpc` reads, one ends a command's whole process tree on a timeout, and one locks
 the [session pipe](#joining-a-session) to your account. CI checks
 every dependency's security advisories and license with `cargo-deny`, builds with `--locked`, and
@@ -4742,9 +4763,9 @@ pins its GitHub Actions to exact commits.
 @@@ page: sessions
 ---
 title: "Sessions and context"
-summary: "Resume past sessions, see what fills the context window, and how Luxe keeps long sessions going."
+summary: "Resume past sessions, see what fills the context window, and how luxe keeps long sessions going."
 order: 8
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## Sessions
@@ -4752,7 +4773,7 @@ group: "Using Luxe"
 Every conversation is saved as it goes, in `.luxe/sessions/` inside the project. Quitting loses
 nothing.
 
-| To | In Luxe | From the command line |
+| To | In luxe | From the command line |
 | --- | --- | --- |
 | Pick up the last session | **Resume** on the start screen | `luxe -c` |
 | Find an older one | Type part of its title on the start screen, or open **Sessions…** (`/sessions`) | `luxe sessions list`, then `luxe --resume <id>` |
@@ -4782,7 +4803,7 @@ threshold. A price you set in `models.json` replaces the catalog's, tiers and al
 Anthropic keeps a cached prompt for five minutes after it was last read. A turn that waits longer
 than that, on a slow command, a permission prompt or a question, loses the cache, and the next
 request pays to write the whole conversation again: about $2 on a 400k-token Opus session. So while
-a turn runs, Luxe re-sends its last request with a one-token reply just before the five minutes are
+a turn runs, luxe re-sends its last request with a one-token reply just before the five minutes are
 up. That costs a cache read, a tenth of the write it saves.
 
 `agent.cache_warming` decides when:
@@ -4794,7 +4815,7 @@ up. That costs a cache read, a tenth of the write it saves.
 | `off` | Never |
 
 A refresh goes out only when it is expected to save at least $0.05, so a short conversation is
-never refreshed. Between turns Luxe cannot know you will reply, so `idle` refreshes only a large
+never refreshed. Between turns luxe cannot know you will reply, so `idle` refreshes only a large
 conversation. On real sessions it lost money overall, which is why it is not the default. Refreshes
 are never sent on a subscription plan, or for an Anthropic model using a fixed thinking budget,
 whose cache would change on replay. Their cost shows under **cache warming** in `/cost`.
@@ -4824,7 +4845,7 @@ more on every turn instead of on each pause.
 | tool schemas | The tools the agent can call | `tools.disabled`; see [Tools](tools.md) |
 | instructions | Your `AGENTS.md` files | A shorter file; see [Project context](project-context.md) |
 | skills | The list of skills the agent can load | Fewer, or shorter descriptions |
-| harness | Luxe's own instructions | Nothing; this is fixed |
+| harness | luxe's own instructions | Nothing; this is fixed |
 | appended | One-time context added to a resumed session, such as what changed while you were away | `/new` |
 
 The largest single items are named under a row, which is usually how you find a `read` or `bash`
@@ -4832,7 +4853,7 @@ call that should have been narrower. The total is what the provider reported for
 
 ## Compaction
 
-When a conversation fills 90% of the usable window, Luxe summarizes it and carries on, keeping the
+When a conversation fills 90% of the usable window, luxe summarizes it and carries on, keeping the
 most recent part word for word. The summary records the goal, constraints, progress, decisions,
 next steps and the files the session touched. You see a line like
 `Compacted the conversation — 82k → 21k of context.`
@@ -4841,7 +4862,7 @@ next steps and the files the session touched. You see a line like
 conversation that already fits in what `keep_recent` keeps has nothing to summarize, and `/compact`
 says so.
 
-Before summarizing, from 80% full, Luxe first replaces old tool output in the request with a short
+Before summarizing, from 80% full, luxe first replaces old tool output in the request with a short
 placeholder. The session file keeps everything; only what is sent changes.
 
 To change when and how it happens:
@@ -4869,7 +4890,7 @@ To change when and how it happens:
 | `summarizer` | the session's model | The model that writes the summary, as `provider/id`, on a provider you have set up. A smaller, cheaper model is usually enough, and `/cost` prices its spend as it does any other model's. |
 
 This works in a project's `.luxe/config.json` too, and so does `agent.cache_warming`, which a project
-can turn down but not up. The compaction settings in `/settings` apply the next time Luxe starts.
+can turn down but not up. The compaction settings in `/settings` apply the next time luxe starts.
 
 ## Long command output
 
@@ -4906,7 +4927,7 @@ One folder per skill, with a `SKILL.md` in it:
 | `.luxe/skills/<name>/` | This project. Git sees it too, since `.luxe/` keeps `skills/` out of what it ignores. |
 
 `.agents/skills/` is where Codex, OpenCode, Pi, GitHub Copilot and the `npx skills` installer put
-skills, so one installed for any of them works here too. Luxe reads a repository's `.agents/skills/`
+skills, so one installed for any of them works here too. luxe reads a repository's `.agents/skills/`
 from the top of the repository down to the project. When two skills share a name, whatever its case,
 the one lower in the table wins, so a project's skill replaces your own, and between nested
 `.agents/skills/` folders the deeper one wins. A skill reached twice through a symbolic link counts
@@ -4939,8 +4960,8 @@ with a note telling the agent to read the rest of the file.
 The agent loads a skill when its description fits the task. To ask for one yourself, mention it:
 `@`, `tab` to **Skills**, and `enter`, as in *split this into a stack with @[skill:gh-stack]*.
 
-**Project context** lists the skills Luxe found: type `skills` on the start screen and open it. A
-`SKILL.md` placed directly in `skills/`, without its own folder, is skipped, and Luxe names it at
+**Project context** lists the skills luxe found: type `skills` on the start screen and open it. A
+`SKILL.md` placed directly in `skills/`, without its own folder, is skipped, and luxe names it at
 startup. The list in the agent's instructions is read with a session's first message, and again
 when you resume one. The `@` picker and the `skill` tool look again every time, so a skill added
 mid-session can be mentioned or loaded at once.
@@ -4961,7 +4982,7 @@ itself, one level too high.
 
 A skill's text reaches the model as instructions, so read a skill before installing it, as you
 would a script. The same goes for a repository you clone: its `.agents/skills/` and
-`.luxe/skills/` reach the model without `--trust-project`. Luxe removes comments and invisible
+`.luxe/skills/` reach the model without `--trust-project`. luxe removes comments and invisible
 characters from skill files, as it does from [`AGENTS.md`](project-context.md#what-luxe-removes),
 but without a notice.
 @@@ page: tools
@@ -4969,7 +4990,7 @@ but without a notice.
 title: "Tools"
 summary: "What the agent can use: files, the shell, tests, Git, code intelligence, a debugger and the web."
 order: 10
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 ## What the agent can use
@@ -5017,7 +5038,7 @@ the file:
 { "tools": { "disabled": ["web_search", "screenshot"] } }
 ```
 
-A change applies the next time Luxe starts, since the tools the agent is offered are fixed for a
+A change applies the next time luxe starts, since the tools the agent is offered are fixed for a
 run.
 
 For one session, `luxe --no-tool web_search` turns a tool off and `luxe --with-tool web_search`
@@ -5038,7 +5059,7 @@ their config, in the file's directory or one above it:
 | TypeScript, JavaScript | biome | `biome.json` or `biome.jsonc` |
 | TOML | taplo | `taplo.toml` or `.taplo.toml` |
 
-A formatter that is not installed is skipped. When Luxe pipes a file through one (taplo), an empty
+A formatter that is not installed is skipped. When luxe pipes a file through one (taplo), an empty
 answer, or a file that changed again while it ran, leaves the file as it was. To turn formatting
 off:
 
@@ -5059,12 +5080,12 @@ reported as having had no effect; one stopped partway says so, since it may have
 A command that starts something and leaves it running, such as a dev server, returns when the
 command itself ends. The server keeps running.
 
-Tools work from the directory Luxe was started in. A `cd` inside one `bash` call does not carry over
-to the next, so start Luxe in the project you want to work on.
+Tools work from the directory luxe was started in. A `cd` inside one `bash` call does not carry over
+to the next, so start luxe in the project you want to work on.
 
 ## Code intelligence
 
-After every edit, Luxe asks the file's language server for errors and warnings and adds the ones
+After every edit, luxe asks the file's language server for errors and warnings and adds the ones
 the edit introduced to the result the agent sees, so it can fix what it broke before moving on.
 Problems that were already in the file are counted, not listed. The result also names changed code
 that no test covers. Set `LUXE_LSP_ON_EDIT=0` to turn both off.
@@ -5075,7 +5096,7 @@ while the change is fresh. A file that was already long says nothing more. Funct
 in Rust, Python, Go, TypeScript and JavaScript; files in any language. Set `LUXE_SIZE_CHECK=0` to turn this off, for a project whose own
 conventions differ.
 
-Luxe launches these language servers when they are installed:
+luxe launches these language servers when they are installed:
 
 | Language | Server | Install |
 | --- | --- | --- |
@@ -5096,13 +5117,13 @@ anywhere else, or inside a [fetched repository](#github-repositories), is refuse
 every file is written or none is, and the result says which edits didn't fit their file and which
 file operations, such as creating or renaming one, it left undone.
 
-`/lsp` shows which servers are running, and `luxe doctor` starts each one to check it works. Luxe
+`/lsp` shows which servers are running, and `luxe doctor` starts each one to check it works. luxe
 never installs a server itself. When one is missing, the result tells the agent the command that
 installs it, which runs through `bash` under your rules like any other.
 
 ### A server the project installed
 
-Luxe prefers the copy a project installed for itself, in its `node_modules/.bin` or virtual
+luxe prefers the copy a project installed for itself, in its `node_modules/.bin` or virtual
 environment, since that version matches the project. The same goes for formatters such as `ruff`
 and `biome`, and for MCP servers a project declares. Runs with nobody watching, such as
 `--headless` and the loop, use only what you installed yourself unless you pass `--trust-project`.
@@ -5132,14 +5153,14 @@ use a container rather than relying on this setting.
 }
 ```
 
-An entry for a language Luxe already knows changes only what it names, so
+An entry for a language luxe already knows changes only what it names, so
 `{ "rust": { "command": "rust-analyzer-nightly" } }` swaps the binary and keeps the rest.
 `alternatives` lists other servers to try, in order, when the first will not start.
 
 ## Debugger
 
 The `debug` tool drives a real debugger, so the agent can set breakpoints, step through code and
-inspect variables rather than add print statements. After three failing test runs in a row, Luxe
+inspect variables rather than add print statements. After three failing test runs in a row, luxe
 suggests it. `LUXE_DEBUG_NUDGE=0` turns that suggestion off.
 
 | Language | Adapter |
@@ -5163,9 +5184,9 @@ with `lldb-dap`:
 ]
 ```
 
-`transport` is `stdio` (the default) or `tcp_dial_in`, for an adapter that connects back to Luxe:
+`transport` is `stdio` (the default) or `tcp_dial_in`, for an adapter that connects back to luxe:
 put `${DAP_ADDR}` in its `command` where it takes the address, as Delve's
-`dlv dap --client-addr ${DAP_ADDR}` does, and Luxe replaces it with `host:port`.
+`dlv dap --client-addr ${DAP_ADDR}` does, and luxe replaces it with `host:port`.
 `addr_placeholder` names a different placeholder.
 
 A breakpoint the adapter could not set is listed under the launch, with the adapter's reason. An
@@ -5192,7 +5213,7 @@ server works. Other machines on your network, cloud metadata addresses and `file
 including through an IPv6 address that carries one of them. A page elsewhere can't redirect a fetch
 to your machine, and a fetch reads at most 10 MB. `screenshot` loads only the host you asked for, so
 a redirect, frame or image from any other host fails to load, and it runs the browser on a fresh
-profile, sandboxed unless Luxe runs as root or in a container. `LUXE_WEB_ALLOW_PRIVATE=1` lifts the
+profile, sandboxed unless luxe runs as root or in a container. `LUXE_WEB_ALLOW_PRIVATE=1` lifts the
 address checks, allows `file://` in `screenshot`, and lets it load other hosts. A fetch gives up
 after 30 seconds, or `LUXE_WEB_TIMEOUT_SECS`, within the call's 60-second limit.
 
@@ -5206,7 +5227,7 @@ of reading the page, so the agent can search the real files. The clone is shallo
 only, and goes into `.luxe/gh-cache/owner/repo` in your project, which git ignores. Reading it never
 asks permission, because it is inside the project.
 
-A repository you did not write sits inside one you did, so Luxe keeps it inert:
+A repository you did not write sits inside one you did, so luxe keeps it inert:
 
 - Symbolic links are checked out as plain files holding the link's target. A link cannot point the
   agent at your `.env`, or anywhere else outside the clone.
@@ -5230,7 +5251,7 @@ other page from the web. To read repositories as web pages instead:
 @@@ page: troubleshooting
 ---
 title: "Troubleshooting"
-summary: "Common problems, where Luxe logs, and what to include in a bug report."
+summary: "Common problems, where luxe logs, and what to include in a bug report."
 order: 4
 group: "Reference"
 ---
@@ -5241,23 +5262,23 @@ group: "Reference"
 luxe doctor
 ```
 
-It lists the tools, language servers and debug adapters Luxe found, starts each language server to
+It lists the tools, language servers and debug adapters luxe found, starts each language server to
 check that it works, and shows how to install or fix what does not.
 
 ## Common problems
 
 | Problem | Fix |
 | --- | --- |
-| **No model selected**, or `--headless` refuses to start | Choose one with `/model`, or pass `--model provider/id`. Luxe never picks one for you. |
+| **No model selected**, or `--headless` refuses to start | Choose one with `/model`, or pass `--model provider/id`. luxe never picks one for you. |
 | The model picker is empty | No provider is set up. Open **Configuration** (`c`), or set a provider's key in the environment. |
 | A provider keeps failing with `retrying (3/3)` | It is overloaded or unreachable. See [When a provider stalls](providers.md#when-a-provider-stalls) for the time limits. |
-| A setting does nothing | Luxe ignores keys it does not know, so check the spelling. `luxe init` and `/settings` write a `config.schema.json` your editor can check against. A project's file cannot change some settings; see [Configuration](configuration.md#what-a-project-cannot-change). |
+| A setting does nothing | luxe ignores keys it does not know, so check the spelling. `luxe init` and `/settings` write a `config.schema.json` your editor can check against. A project's file cannot change some settings; see [Configuration](configuration.md#what-a-project-cannot-change). |
 | Icons show as boxes, or sit flush against their words | See [Fonts](install.md#fonts), and the `glyphs` setting in [Appearance](appearance.md#icons-and-fonts). |
 | Your terminal's copy key does nothing | The terminal keeps it. Hold `shift` while dragging, or let the key pass through; see [Mouse and clipboard](interface.md#mouse-and-clipboard). |
 | Images do not appear | Your terminal may not draw them. `/images` says why; see [Images](appearance.md#images). |
 | A language server is not used | `luxe doctor` says whether it starts. A server a project installed is used only when you are watching; see [Tools](tools.md#a-server-the-project-installed). |
 | A project's hooks or MCP servers do not run | They need `--trust-project`, or an interactive session for MCP servers. See [Security](security.md#untrusted-repositories). |
-| Luxe opened the wrong folder as the project | Inside a repository, a `.luxe/` between you and its top scopes the project there. Remove it, or start Luxe somewhere else. See [Where the project begins](project-context.md#where-the-project-begins). |
+| luxe opened the wrong folder as the project | Inside a repository, a `.luxe/` between you and its top scopes the project there. Remove it, or start luxe somewhere else. See [Where the project begins](project-context.md#where-the-project-begins). |
 | `/pr` or `/github` says GitHub is unavailable | Install the GitHub CLI and sign in: `gh auth login`. A private repository also needs `gh auth setup-git`. |
 | A key binding does not work | Your terminal may not send that key. Rebind it; see [Commands and keys](commands.md#rebind-keys). |
 | On a Mac, some `alt` keys type a character such as `ø` or `π` | Your terminal treats Option as a key that types characters. Set it to act as Alt; see [Alt keys on a Mac](commands.md#alt-keys-on-a-mac). |
@@ -5268,9 +5289,9 @@ A session logs to `.luxe/logs/luxe.log` in the project. Commands that only repor
 `luxe auth`, `luxe doctor` and `luxe models`, log to `logs/luxe.log` in the state directory:
 `~/.local/state/luxe/` (`%LOCALAPPDATA%\luxe\` on Windows), or wherever `LUXE_STATE_DIR` or
 `XDG_STATE_HOME` puts it. On macOS and Linux, a log is readable only by you. One past 5 MB is moved
-to `luxe.log.1` the next time Luxe starts, replacing the one before.
+to `luxe.log.1` the next time luxe starts, replacing the one before.
 
-The log shows Luxe's own activity at `info` and everything else at `warn`. For more:
+The log shows luxe's own activity at `info` and everything else at `warn`. For more:
 
 ```bash
 LUXE_LOG=debug luxe                        # everything
@@ -5279,7 +5300,7 @@ LUXE_LOG=luxe_core::hooks=debug luxe       # one part, in detail
 
 ## See what is sent to the model
 
-`LUXE_WIRE_LOG` records every request Luxe sends and every reply, with credentials removed.
+`LUXE_WIRE_LOG` records every request luxe sends and every reply, with credentials removed.
 `luxe wire` summarizes it: what fills each request, whether the cached part stays the same between
 turns, and whether anything is sent twice.
 
@@ -5300,7 +5321,7 @@ Open an issue at [github.com/evanwhittaker/luxe](https://github.com/evanwhittake
 - The relevant part of `.luxe/logs/luxe.log`
 
 If the interface itself draws wrongly, such as stray characters or a half-drawn screen, record the
-raw output, which shows what Luxe actually wrote:
+raw output, which shows what luxe actually wrote:
 
 ```bash
 script -f /tmp/luxe.tty -c luxe       # replay with `cat` or `scriptreplay`

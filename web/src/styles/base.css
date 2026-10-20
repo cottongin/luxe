@@ -1,4 +1,4 @@
-/* Luxe — the design system.
+/* luxe — the design system.
  *
  * Color is not here: `tokens.css` is generated from the theme JSON the terminal reads, so the site
  * and the product cannot drift. This file is everything else — type, the plate, spacing, motion.
@@ -25,7 +25,7 @@
 	font-display: swap;
 }
 /* JetBrains Mono, because it is the face most people already have in their terminal, so a capture
-   here looks like Luxe looks for them. Adwaita Mono follows it for the six marks JetBrains Mono does
+   here looks like luxe looks for them. Adwaita Mono follows it for the six marks JetBrains Mono does
    not draw; its subset holds nothing else, so the browser only reaches for it glyph by glyph. */
 @font-face {
 	font-family: "JetBrainsMono Nerd Font Mono";

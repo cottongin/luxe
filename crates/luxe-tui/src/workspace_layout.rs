@@ -21,16 +21,16 @@ pub const CONTEXT_DOCK_WIDTH: u16 = LEFT_RAIL_WIDTH;
 /// The divider between side-by-side conversation and dock surfaces.
 pub const CONTEXT_DOCK_SEPARATOR_WIDTH: u16 = 1;
 
-/// Cells a surface keeps between itself and a rule Luxe drew beside it.
+/// Cells a surface keeps between itself and a rule luxe drew beside it.
 const INNER_GUTTER: u16 = 1;
 
-/// `rect`, inset by a column on each side that faces something Luxe drew, and flush on each side
+/// `rect`, inset by a column on each side that faces something luxe drew, and flush on each side
 /// that sits on an edge of `frame`.
 ///
-/// The two edges are different questions. A rule Luxe owns needs a column of air or text runs
+/// The two edges are different questions. A rule luxe owns needs a column of air or text runs
 /// into it. The terminal's edge does not: air there is a column the reader doesn't get, and a
 /// host with chrome of its own (herdr draws its tab row flush to the pane's left edge) would
-/// disagree with Luxe about where the content starts. Every surface that touches an edge insets
+/// disagree with luxe about where the content starts. Every surface that touches an edge insets
 /// through here, so the answer lives in one place.
 ///
 /// Degenerate widths collapse the rect rather than wrapping, matching
@@ -319,7 +319,7 @@ mod tests {
         assert_eq!(compact.conversation_width, 78);
     }
 
-    /// The terminal's edge is drawn flush; a side facing something Luxe drew keeps its air.
+    /// The terminal's edge is drawn flush; a side facing something luxe drew keeps its air.
     #[test]
     fn a_gutter_tells_the_terminal_edge_from_one_luxe_drew() {
         let frame = Rect::new(0, 0, 100, 40);

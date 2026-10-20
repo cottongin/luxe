@@ -65,7 +65,7 @@ impl luxe_core::auth::AuthService for FixtureAuth {
                 CredentialStatus::Env("ANTHROPIC_API_KEY".into()),
                 Some(
                     "API key only. Anthropic's terms forbid using a Claude Pro/Max subscription \
-                     from a third-party harness, so Luxe does not offer that sign-in.",
+                     from a third-party harness, so luxe does not offer that sign-in.",
                 ),
             ),
             option(
@@ -272,7 +272,6 @@ pub fn seed_login_wizard(app: &mut App, which: LoginFixture) {
             provider_name: "OpenAI".into(),
             kind: Some(CredentialKind::ApiKey),
             account: None,
-            suggested_model: Some("gpt-5.6".into()),
             notes: vec!["47 models available (gpt-4.1, gpt-5, gpt-5-mini, …)".into()],
             advice: Vec::new(),
         }))));

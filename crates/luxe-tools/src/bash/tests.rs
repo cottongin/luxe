@@ -434,7 +434,7 @@ const UNDER_A_TERMINAL: &str = "LUXE_TEST_UNDER_A_TERMINAL";
 /// The omacvm incident, end to end: a background job that changes the terminal's settings, as a
 /// spinner does with `stty -echo < /dev/tty`, then a foreground `echo`.
 ///
-/// Before commands left Luxe's terminal, the kernel suspended the whole process group for that,
+/// Before commands left luxe's terminal, the kernel suspended the whole process group for that,
 /// foreground shell included, and the call timed out having "printed nothing". Reproducing it
 /// takes a real controlling terminal and a process not run by nextest (which runs tests where
 /// none of this happens), so this re-runs its own test binary under `script(1)`.

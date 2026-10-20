@@ -272,7 +272,7 @@ fn changed_repository() -> tempfile::TempDir {
     };
     git(&["init", "--quiet", "--initial-branch=main"]);
     git(&["config", "user.email", "tests@example.invalid"]);
-    git(&["config", "user.name", "Luxe Tests"]);
+    git(&["config", "user.name", "luxe Tests"]);
     std::fs::write(project.path().join("total.rs"), "fn total() -> u32 {\n    1\n}\n").unwrap();
     git(&["add", "total.rs"]);
     git(&["commit", "--quiet", "-m", "initial"]);

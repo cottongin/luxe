@@ -2,7 +2,7 @@
 //!
 //! A clone lives inside the project so the agent can read and search it without tripping the
 //! external-directory guard. That makes it the one directory in the tree whose contents came from a
-//! stranger rather than from the person running Luxe, so anything that would *run* repository code
+//! stranger rather than from the person running luxe, so anything that would *run* repository code
 //! on the user's behalf — a language server rooted there, a formatter loading its plugins — checks
 //! [`contains`] and stays out. This module is the single answer to where that directory is and
 //! whether a path is inside it.

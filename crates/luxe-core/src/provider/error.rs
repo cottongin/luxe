@@ -131,7 +131,7 @@ fn has_code(text: &str, code: &str) -> bool {
 /// `reqwest::Error`'s `Display` names the request and stops: "error sending request for url (...)".
 /// The reason — `Connection refused`, `dns error`, `operation timed out`, `connection closed before
 /// message completed` — lives in its `source` chain, three levels down, and `format!("{e}")` throws
-/// all of it away. That left every transport failure in Luxe reporting the same uninformative line,
+/// all of it away. That left every transport failure in luxe reporting the same uninformative line,
 /// which is exactly the class of failure where the cause is the only useful part.
 pub fn describe_error_chain(error: &(dyn std::error::Error + 'static)) -> String {
     let mut rendered = error.to_string();

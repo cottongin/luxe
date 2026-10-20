@@ -57,7 +57,7 @@ pub fn replace_with_mode(path: &Path, bytes: &[u8], mode: Option<u32>) -> io::Re
 /// Replace `path` keeping whatever mode the file already has, or owner-only when it is new.
 ///
 /// For a config file that may hold a secret but that the user owns: a mode they chose stays theirs,
-/// and a file Luxe creates starts tight.
+/// and a file luxe creates starts tight.
 pub fn replace_preserving_mode(path: &Path, bytes: &[u8]) -> io::Result<()> {
     replace_with_mode(path, bytes, existing_mode(path))
 }

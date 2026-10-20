@@ -2,7 +2,7 @@
 //!
 //! The guide ships in the binary, so it works offline and always describes the version installed:
 //! `scripts/guide-bundle.sh` writes every page of `docs/guide/` into `src/guide.md`, and this reads
-//! that bundle. The agent is told the command exists, so asking Luxe how to configure Luxe gets an
+//! that bundle. The agent is told the command exists, so asking luxe how to configure luxe gets an
 //! answer from the manual rather than a guess.
 
 use crate::cli::args::DocsArgs;
@@ -11,7 +11,7 @@ use crate::cli::args::DocsArgs;
 const BUNDLE: &str = include_str!("../guide.md");
 
 /// The sidebar's groups, in reading order. `web/src/content.config.ts` holds the same list.
-const GROUPS: [&str; 5] = ["Get started", "Using Luxe", "Customize", "Extend", "Reference"];
+const GROUPS: [&str; 5] = ["Get started", "Using luxe", "Customize", "Extend", "Reference"];
 
 /// The most lines `--search` prints, so a common word cannot flood a tool result.
 const SEARCH_LIMIT: usize = 40;
@@ -74,7 +74,7 @@ pub(crate) fn run(args: &DocsArgs) -> anyhow::Result<()> {
 /// Every page, under its group, with its summary and how to read it.
 fn index(pages: &[Page]) -> String {
     let mut out = String::from(
-        "Luxe's user guide, for this version. `luxe docs <page>` prints a page; \
+        "luxe's user guide, for this version. `luxe docs <page>` prints a page; \
          `luxe docs --search <words>` finds lines across all of them.\n",
     );
     for group in GROUPS {

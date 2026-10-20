@@ -105,13 +105,10 @@ fn command_palette_filters_and_dispatches() {
     assert!(app.editor.current_input().is_empty(), "palette text must not leak to the editor");
 }
 
-/// A login has to leave the session able to run a turn, on a model that provider serves.
-///
-/// The suggested model is the flow's own answer and wins; without one, any model of that
-/// provider beats leaving the session on whatever it launched with. What must never happen is
-/// adopting *another* provider's model because the ids happened to line up.
+/// A finished login opens the picker at its top row and leaves the session's model alone: which
+/// model to run is the reader's call, and luxe has no favorite to land them on.
 #[tokio::test]
-async fn a_finished_login_lands_the_session_on_a_model_that_provider_serves() {
+async fn a_finished_login_opens_the_picker_at_the_top_and_chooses_nothing() {
     use crate::model_picker::{ModelEntry, ModelMenu};
     use luxe_core::auth::{CredentialKind, LoginOutcome};
     use luxe_core::provider::{ModelInfo, ModelRef};
@@ -127,15 +124,16 @@ async fn a_finished_login_lands_the_session_on_a_model_that_provider_serves() {
         entry("openai", "gpt-5.4"),
         entry("openai", "gpt-5.6"),
     ];
-    let outcome = |suggested: Option<&str>| LoginOutcome {
+    let outcome = || LoginOutcome {
         provider_id: "openai".into(),
         provider_name: "OpenAI".into(),
         kind: Some(CredentialKind::ApiKey),
         account: Some("acct-1".into()),
-        suggested_model: suggested.map(str::to_string),
         notes: vec!["2 models available".into()],
         advice: vec!["Enable it once in VS Code.".into()],
     };
+    let finished = || Msg::Auth(crate::auth_wizard::AuthUiMsg::Finished(Ok(outcome())));
+    let picker = |app: &App| app.overlays.model_picker.as_ref().expect("the picker opens").clone();
     let app_with = |catalog: Vec<ModelEntry>| {
         let (tx, _rx) = mpsc::channel(8);
         let mut app = App::new(
@@ -155,21 +153,20 @@ async fn a_finished_login_lands_the_session_on_a_model_that_provider_serves() {
         app
     };
 
-    // The flow named one, so that is the one.
+    // A first login: nothing chosen, the cursor on the first row, and a caption saying so
     let mut app = app_with(catalog.clone());
-    app.update(Msg::Auth(crate::auth_wizard::AuthUiMsg::Finished(Ok(outcome(Some("gpt-5.6"))))));
-    assert_eq!(app.status.model, "gpt-5.6");
+    app.update(finished());
+    assert_eq!(app.status.model, "", "the login picks no model for the reader");
+    assert_eq!(picker(&app).cursor(), 0, "the picker starts at its top");
+    assert!(picker(&app).note().iter().any(|line| line.contains("Choose a model to finish")));
 
-    // It named none, so any model of *that* provider does.
+    // A second provider while one is in use: still the top, and Esc keeps what is running
     let mut app = app_with(catalog.clone());
-    app.update(Msg::Auth(crate::auth_wizard::AuthUiMsg::Finished(Ok(outcome(None)))));
-    assert!(app.status.model.starts_with("gpt-5."), "got {}", app.status.model);
-
-    // It named one this provider does not serve, which is not a reason to leave the session on
-    // somebody else's model.
-    let mut app = app_with(vec![entry("anthropic", "claude-sonnet-5")]);
-    app.update(Msg::Auth(crate::auth_wizard::AuthUiMsg::Finished(Ok(outcome(Some("gpt-5.6"))))));
-    assert_eq!(app.status.model, "", "no model of that provider is no model");
+    app.apply_model_selection(catalog[2].info.clone());
+    app.update(finished());
+    assert_eq!(app.status.model, "gpt-5.6", "the session stays on what it was on");
+    assert_eq!(picker(&app).cursor(), 0, "not on the model in use either");
+    assert!(picker(&app).note().iter().any(|line| line.contains("esc to stay on gpt-5.6")));
 
     // And the whole of what the login said survives in the transcript, where the picker's
     // two-line caption cannot carry it.

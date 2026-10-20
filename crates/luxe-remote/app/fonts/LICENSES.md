@@ -16,7 +16,7 @@ subset keeps come from Material Design Icons (Apache-2.0), Font Awesome (OFL-1.1
 Extra (MIT) and [Codicons](https://github.com/microsoft/vscode-codicons) (© Microsoft Corporation,
 CC BY 4.0).
 
-Subset to Latin, Greek, Cyrillic, punctuation, arrows, maths and box drawing, plus every glyph Luxe
+Subset to Latin, Greek, Cyrillic, punctuation, arrows, maths and box drawing, plus every glyph luxe
 draws. Regular (400), Bold (700) and Italic.
 
 ## Adwaita Mono Nerd Font Mono
@@ -26,4 +26,4 @@ Invis) · Copyright (c) 2025, Jamie Gravendeel · Copyright (c) 2025, Florian M�
 <https://gitlab.gnome.org/GNOME/adwaita-fonts> · SIL Open Font License 1.1 · full text in
 `OFL-AdwaitaMono.txt`. Patched with Nerd Fonts, as above.
 
-Subset to only the marks Luxe draws that JetBrains Mono lacks, on the same 0.6em cell.
+Subset to only the marks luxe draws that JetBrains Mono lacks, on the same 0.6em cell.

@@ -168,7 +168,7 @@ pub enum Action {
         squash: bool,
     },
     /// Draft the pull request the open review would open, answered by `pull_request_prepared`.
-    /// Luxe keeps the draft for `open_pull_request`.
+    /// luxe keeps the draft for `open_pull_request`.
     PreparePullRequest {
         /// Names the draft
         request_id: crate::guided_review::PullRequestOpenId,
@@ -189,7 +189,7 @@ pub enum Action {
         draft: bool,
     },
     /// Draft the open review as a stack, one pull request per chapter, answered by
-    /// `stack_prepared`. Luxe keeps the layers for `open_stack`.
+    /// `stack_prepared`. luxe keeps the layers for `open_stack`.
     PrepareStack {
         /// Names the stack
         request_id: crate::guided_review::PullRequestOpenId,
@@ -205,7 +205,7 @@ pub enum Action {
         draft: bool,
     },
     /// Read what posting the open pull request review needs, answered by
-    /// `pull_request_post_prepared`. Luxe keeps it for `post_pull_request_review`.
+    /// `pull_request_post_prepared`. luxe keeps it for `post_pull_request_review`.
     PreparePullRequestPost {
         /// Names the preview
         request_id: crate::guided_review::PullRequestPostId,
@@ -293,7 +293,7 @@ pub enum Action {
         repository: Option<String>,
     },
     /// Work out what restacking the checked-out branch's stack would do, answered by
-    /// `restack_planned`. Luxe keeps the plan for the `restack` that confirms it.
+    /// `restack_planned`. luxe keeps the plan for the `restack` that confirms it.
     PlanRestack {
         /// Names the plan
         request_id: crate::restack::RestackId,
@@ -331,7 +331,7 @@ pub enum Action {
         /// Project-relative file
         path: String,
     },
-    /// Whether the client's window has focus, which paces Luxe's background GitHub refreshes.
+    /// Whether the client's window has focus, which paces luxe's background GitHub refreshes.
     SetFocus {
         /// Whether it now has focus
         focused: bool,

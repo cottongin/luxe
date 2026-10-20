@@ -1,11 +1,11 @@
 ---
-title: "Extending Luxe"
+title: "Extending luxe"
 summary: "Which kind of extension you need, how to install one, and what stays stable across updates."
 order: 1
 group: "Extend"
 ---
 
-Luxe extends through files and programs, never through code loaded into Luxe itself. A file carries
+luxe extends through files and programs, never through code loaded into luxe itself. A file carries
 instructions or settings; a program carries behavior, and runs with the same access you have.
 Installing an extension is copying a file.
 
@@ -13,13 +13,13 @@ Installing an extension is copying a file.
 
 | To | Use | Runs |
 | --- | --- | --- |
-| Change how Luxe looks, or which tools exist | [Configuration](configuration.md) and [themes](appearance.md#make-a-theme) | Nothing |
+| Change how luxe looks, or which tools exist | [Configuration](configuration.md) and [themes](appearance.md#make-a-theme) | Nothing |
 | Teach the agent a procedure or house style | [Skills](skills.md) and [`AGENTS.md`](project-context.md) | Nothing |
 | Point the agent at your tracker or runbooks with `@` | [Mention sources](mention-sources.md) | Your program, when its tab opens |
 | Give the agent new tools | [An MCP server](mcp.md) | Your program, when the agent calls it |
 | Block, rewrite, audit or react to what the agent does | [Hooks](hooks.md) | Your program, at points in a turn |
-| Use an endpoint or model Luxe does not know | [Custom providers](custom-providers.md) | Nothing, or your `!command` for a key |
-| Drive Luxe from your own program, or build a new front end: conversation, Guided Review and GitHub | [The RPC protocol](rpc.md) | Your program, driving Luxe |
+| Use an endpoint or model luxe does not know | [Custom providers](custom-providers.md) | Nothing, or your `!command` for a key |
+| Drive luxe from your own program, or build a new front end: conversation, Guided Review and GitHub | [The RPC protocol](rpc.md) | Your program, driving luxe |
 | Open another terminal tool with a key | [Launchers](configuration.md#launchers) | Your program, on a key |
 
 The rows are in order of effort; the first that fits is usually right. [Recipes](recipes.md) puts
@@ -64,7 +64,7 @@ releases.
 
 `.luxe/` writes its own `.gitignore`, which keeps everything in it out of Git except
 `permissions.json`, `mcp.json`, `hooks.json` and `skills/`. To share more with your team, such as the
-project's `config.json`, write that `.gitignore` yourself: Luxe rewrites its own copy, but leaves
+project's `config.json`, write that `.gitignore` yourself: luxe rewrites its own copy, but leaves
 alone one it did not write.
 
 ## Trust
@@ -73,11 +73,11 @@ alone one it did not write.
 `gate.commands` run only with `--trust-project`, and its permission rules can only make yours
 stricter. MCP servers, language servers and formatters it brings start, by default, only in an
 interactive session or with `--trust-project`; `lsp.project_servers` in your own config changes
-that, see [Tools](tools.md#a-server-the-project-installed). This is about which programs Luxe starts. A
+that, see [Tools](tools.md#a-server-the-project-installed). This is about which programs luxe starts. A
 language server itself may run project code, as rust-analyzer does with `build.rs`, so open an
-unfamiliar repository in Luxe the way you would build it.
+unfamiliar repository in luxe the way you would build it.
 
-**A repository can still write instructions.** Its `AGENTS.md` and skills reach the model. Luxe
+**A repository can still write instructions.** Its `AGENTS.md` and skills reach the model. luxe
 removes text a reviewer cannot see, but plain text is still instructions, so read an unfamiliar
 repository's `AGENTS.md` as you would its `Makefile`.
 
@@ -86,7 +86,7 @@ repository's `AGENTS.md` as you would its `Makefile`.
 | | Across updates |
 | --- | --- |
 | `config.json`, `models.json`, `keybindings.json`, `lsp-servers.json`, `debug-adapters.json` | **Only added to.** An old file always loads. An unknown key is ignored, and no key changes meaning. |
-| Sessions in `.luxe/sessions/` | A newer Luxe reads every older session. An older Luxe skips what it does not know in a newer one. |
+| Sessions in `.luxe/sessions/` | A newer luxe reads every older session. An older luxe skips what it does not know in a newer one. |
 | The RPC protocol | Adding to it changes nothing. Removing or renaming anything changes `protocol_version`. |
 | Hook points | Added, never renamed. An unknown point skips that hook alone, with a warning in the log. |
 | Tool arguments | A renamed argument still accepts its old name. |
@@ -97,8 +97,8 @@ Before 1.0, a minor release may change the RPC protocol and the hook points, and
 will say so. Config files and sessions keep the stronger promise regardless, since they are the two
 you cannot regenerate.
 
-## What Luxe will not add
+## What luxe will not add
 
-- **Plugins loaded into Luxe.** A plugin would have all of Luxe's access, however it was sandboxed.
+- **Plugins loaded into luxe.** A plugin would have all of luxe's access, however it was sandboxed.
 - **A network listener for RPC.** It would turn a local program into a service that needs
   authentication.

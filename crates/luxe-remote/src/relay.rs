@@ -106,7 +106,7 @@ async fn line_to_device(
 }
 
 /// Whether `line` is the session refusing the bridge's `introduce`. Only a session started before
-/// its Luxe knew the action does, and it carries on without the device's name; the refusal is of a
+/// its luxe knew the action does, and it carries on without the device's name; the refusal is of a
 /// frame the device never sent, so showing it there reads as a fault. Decoded only when it could
 /// be one, so every other line still passes untouched.
 fn refuses_introduction(line: &str) -> bool {

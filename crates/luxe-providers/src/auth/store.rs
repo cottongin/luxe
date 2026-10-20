@@ -1,6 +1,6 @@
 //! Credential store — `~/.config/luxe/auth.json`, `0600`, and never lossy.
 //!
-//! The file is a superset of the one Luxe already read: a few reserved keys keep their
+//! The file is a superset of the one luxe already read: a few reserved keys keep their
 //! [`crate::config::ModelsConfig`] meaning, and every *other* top-level key is one provider's
 //! [`Credential`]. An existing hand-written file keeps working, and a file written by another tool
 //! that uses the same convention can be dropped in.
@@ -34,7 +34,7 @@ impl AuthStore {
         Self { file: JsonFile::new(path, FileMode::OwnerOnly) }
     }
 
-    /// The default store: `auth.json` in Luxe's config directory, or where an older build left it.
+    /// The default store: `auth.json` in luxe's config directory, or where an older build left it.
     pub fn default_path() -> Self {
         Self::new(luxe_core::user_dirs::luxe_config_file("auth.json"))
     }

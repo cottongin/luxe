@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { guidePages, grouped, markdownHref } from "../lib/guide";
 
 /**
- * The guide's table of contents for a language model, per llmstxt.org: what Luxe is, then every
+ * The guide's table of contents for a language model, per llmstxt.org: what luxe is, then every
  * page as a markdown link with its summary, under its group.
  */
 export const GET: APIRoute = async ({ site }) => {
@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ site }) => {
         .join("\n"),
   );
   const body = [
-    "# Luxe",
+    "# luxe",
     "",
     "> A coding agent for your terminal: write, review and ship code in one workflow, with Guided Review, Git and GitHub, and any model.",
     "",

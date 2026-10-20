@@ -384,7 +384,7 @@ async fn a_push_from_patch_1_after_opening_mara_main_moves_only_patch_1() {
     assert_eq!(sh(&fork, &["rev-parse", "main"]), fork_main, "and the fork's main did not");
 }
 
-/// A fork remote that was already here, which Luxe did not add, still gets the renamed branch's
+/// A fork remote that was already here, which luxe did not add, still gets the renamed branch's
 /// route, so a plain push from it lands on the fork's `main`.
 #[tokio::test]
 async fn a_pre_existing_fork_remote_still_routes_a_renamed_branch() {
@@ -398,7 +398,7 @@ async fn a_pre_existing_fork_remote_still_routes_a_renamed_branch() {
     assert_eq!(sh(&hub.join("mara/app-fork.git"), &["rev-parse", "main"]), fixed);
 }
 
-/// The remote-wide mapping an earlier Luxe wrote is moved off the shared remote; a rule of the
+/// The remote-wide mapping an earlier luxe wrote is moved off the shared remote; a rule of the
 /// reader's own on it is left as it is.
 #[tokio::test]
 async fn an_earlier_mapping_is_migrated_and_a_readers_rule_kept() {

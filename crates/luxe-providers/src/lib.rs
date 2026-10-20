@@ -1,7 +1,7 @@
 //! luxe-providers — LLM provider adapters.
 //!
 //! Hand-rolled thin adapters for OpenAI-compatible APIs, Anthropic, and Gemini.
-//! Depends on `luxe-core` for the `Provider` trait. [`catalog`] resolves what Luxe knows
+//! Depends on `luxe-core` for the `Provider` trait. [`catalog`] resolves what luxe knows
 //! about a model — layering the embedded models.dev snapshot, the refreshed cache, and the
 //! user's config — so every entry point runs on the same metadata. [`auth`] owns credentials:
 //! the curated provider catalog, the `0600` store, the OAuth flows, and the per-request auth the

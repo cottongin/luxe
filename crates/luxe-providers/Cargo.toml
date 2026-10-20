@@ -3,7 +3,7 @@ name = "luxe-providers"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "LLM provider adapters for Luxe: OpenAI-compatible and Anthropic streaming, tool calls, usage, and auth"
+description = "LLM provider adapters for luxe: OpenAI-compatible and Anthropic streaming, tool calls, usage, and auth"
 repository.workspace = true
 homepage.workspace = true
 
@@ -11,7 +11,7 @@ homepage.workspace = true
 # Provides LLM provider adapters (OpenAI-compat, Anthropic, Gemini).
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.3" }
+luxe-core = { path = "../luxe-core", version = "0.1.4" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

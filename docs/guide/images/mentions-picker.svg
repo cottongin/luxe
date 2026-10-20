@@ -2,7 +2,7 @@
   <rect width="1000" height="484" fill="#12100e"/>
   <g shape-rendering="crispEdges">
     <rect x="20" y="88" width="90" height="22" fill="#2e2b27"/>
-    <rect x="20" y="132" width="960" height="22" fill="#2e2b27"/>
+    <rect x="20" y="132" width="950" height="22" fill="#2e2b27"/>
     <rect x="0" y="462" width="110" height="22" fill="#ddc084"/>
     <rect x="110" y="462" width="10" height="22" fill="#aa9467"/>
     <rect x="120" y="462" width="10" height="22" fill="#786849"/>
@@ -210,23 +210,32 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 121.00L995.00 110.00M995.00 121.00L995.00 132.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 143.00L5.00 132.00M5.00 143.00L5.00 154.00"/>
     <path fill="#2e2b27" d="M15.00 132.00h5.00v22.00h-5.00z"/>
-    <path fill="#2e2b27" d="M980.00 132.00h5.00v22.00h-5.00z"/>
+    <path fill="#2e2b27" d="M970.00 132.00h5.00v22.00h-5.00z"/>
+    <path fill="#ddc084" d="M985.00 132.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 143.00L995.00 132.00M995.00 143.00L995.00 154.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 165.00L5.00 154.00M5.00 165.00L5.00 176.00"/>
+    <path fill="#ddc084" d="M985.00 154.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 165.00L995.00 154.00M995.00 165.00L995.00 176.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 187.00L5.00 176.00M5.00 187.00L5.00 198.00"/>
+    <path fill="#ddc084" d="M985.00 176.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 187.00L995.00 176.00M995.00 187.00L995.00 198.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 209.00L5.00 198.00M5.00 209.00L5.00 220.00"/>
+    <path fill="#ddc084" d="M985.00 198.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 209.00L995.00 198.00M995.00 209.00L995.00 220.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 231.00L5.00 220.00M5.00 231.00L5.00 242.00"/>
+    <path fill="#ddc084" d="M985.00 220.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 231.00L995.00 220.00M995.00 231.00L995.00 242.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 253.00L5.00 242.00M5.00 253.00L5.00 264.00"/>
+    <path fill="#ddc084" d="M985.00 242.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 253.00L995.00 242.00M995.00 253.00L995.00 264.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 275.00L5.00 264.00M5.00 275.00L5.00 286.00"/>
+    <path fill="#2e2b27" d="M988.75 264.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 275.00L995.00 264.00M995.00 275.00L995.00 286.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 297.00L5.00 286.00M5.00 297.00L5.00 308.00"/>
+    <path fill="#2e2b27" d="M988.75 286.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 297.00L995.00 286.00M995.00 297.00L995.00 308.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 319.00L5.00 308.00M5.00 319.00L5.00 330.00"/>
+    <path fill="#2e2b27" d="M988.75 308.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 319.00L995.00 308.00M995.00 319.00L995.00 330.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 341.00L5.00 330.00M5.00 341.00L5.00 352.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M15.00 341.00L20.00 341.00M15.00 341.00L10.00 341.00"/>
@@ -630,15 +639,15 @@
   <text x="0" y="83.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084">  󰁥 </tspan><tspan fill="#e4dfd6" font-weight="700">Mention</tspan><tspan>                                                                                         </tspan></text>
   <text x="0" y="105.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084" font-weight="700">󰈔 Files</tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">  󱐋 Skills    󰊤 GitHub    󰌃 Jira  </tspan><tspan>                                                     </tspan><tspan> </tspan></text>
   <text x="0" y="127.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
-  <text x="0" y="149.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">❯ </tspan><tspan fill="#97938c">crates/luxe-tui/src/</tspan><tspan fill="#e4dfd6" font-weight="700">picker.rs</tspan><tspan fill="#faaa51">  M</tspan><tspan>                                                             </tspan><tspan> </tspan><tspan> </tspan></text>
-  <text x="0" y="171.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-tui/src/</tspan><tspan fill="#e4dfd6">ref_provider.rs</tspan><tspan fill="#faaa51">  M</tspan><tspan>                                                        </tspan><tspan> </tspan></text>
-  <text x="0" y="193.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-tui/tests/</tspan><tspan fill="#e4dfd6">mention_flyout_render.rs</tspan><tspan fill="#81caa0">  ?</tspan><tspan>                                             </tspan><tspan> </tspan></text>
-  <text x="0" y="215.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">CONTRIBUTING.md</tspan><tspan>                                                                               </tspan><tspan> </tspan></text>
-  <text x="0" y="237.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Cargo.toml</tspan><tspan>                                                                                    </tspan><tspan> </tspan></text>
-  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">README.md</tspan><tspan>                                                                                     </tspan><tspan> </tspan></text>
-  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-core/src/</tspan><tspan fill="#e4dfd6">mcp_client.rs</tspan><tspan>                                                            </tspan><tspan> </tspan></text>
-  <text x="0" y="303.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-core/src/</tspan><tspan fill="#e4dfd6">output_limit.rs</tspan><tspan>                                                          </tspan><tspan> </tspan></text>
-  <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-mcp/src/</tspan><tspan fill="#e4dfd6">oauth.rs</tspan><tspan>                                                                  </tspan><tspan> </tspan></text>
+  <text x="0" y="149.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">❯ </tspan><tspan fill="#97938c">crates/luxe-tui/src/</tspan><tspan fill="#e4dfd6" font-weight="700">picker.rs</tspan><tspan fill="#faaa51">  M</tspan><tspan>                                                            </tspan><tspan> </tspan><tspan>  </tspan></text>
+  <text x="0" y="171.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-tui/src/</tspan><tspan fill="#e4dfd6">ref_provider.rs</tspan><tspan fill="#faaa51">  M</tspan><tspan>                                                       </tspan><tspan>  </tspan></text>
+  <text x="0" y="193.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-tui/tests/</tspan><tspan fill="#e4dfd6">mention_flyout_render.rs</tspan><tspan fill="#81caa0">  ?</tspan><tspan>                                            </tspan><tspan>  </tspan></text>
+  <text x="0" y="215.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">CONTRIBUTING.md</tspan><tspan>                                                                              </tspan><tspan>  </tspan></text>
+  <text x="0" y="237.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Cargo.toml</tspan><tspan>                                                                                   </tspan><tspan>  </tspan></text>
+  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#e4dfd6">README.md</tspan><tspan>                                                                                    </tspan><tspan>  </tspan></text>
+  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-core/src/</tspan><tspan fill="#e4dfd6">mcp_client.rs</tspan><tspan>                                                           </tspan><tspan> </tspan><tspan> </tspan></text>
+  <text x="0" y="303.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-core/src/</tspan><tspan fill="#e4dfd6">output_limit.rs</tspan><tspan>                                                         </tspan><tspan> </tspan><tspan> </tspan></text>
+  <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan fill="#97938c">crates/luxe-mcp/src/</tspan><tspan fill="#e4dfd6">oauth.rs</tspan><tspan>                                                                 </tspan><tspan> </tspan><tspan> </tspan></text>
   <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="369.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">tab</tspan><tspan fill="#e4dfd6"> switch</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">enter</tspan><tspan fill="#e4dfd6"> insert</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">ctrl+r</tspan><tspan fill="#e4dfd6"> refresh</tspan><tspan>                                                       </tspan><tspan> </tspan></text>
   <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>

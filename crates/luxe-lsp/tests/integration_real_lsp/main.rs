@@ -43,16 +43,16 @@ fn text(result: &ToolResultData) -> String {
     }
 }
 
-/// A tool result as the model receives it: its text, and whether Luxe called the call a failure.
+/// A tool result as the model receives it: its text, and whether luxe called the call a failure.
 fn answer(result: &ToolResultData) -> (bool, String) {
     (result.is_error, text(result))
 }
 
-/// Whether Luxe declined the request by naming the server that would not run.
+/// Whether luxe declined the request by naming the server that would not run.
 ///
 /// A host is entitled to have no *working* server for a language even though one resolves on
 /// `PATH` — a version-manager shim with no version set is exactly that, and [`have`] cannot see
-/// it. Luxe failing the call and naming the server, in the server's own words, is this contract
+/// it. luxe failing the call and naming the server, in the server's own words, is this contract
 /// holding rather than breaking. What must never pass is the silent empty answer, which a reader
 /// cannot tell apart from "your file is fine".
 fn declined(failed: bool, out: &str, server: &str) -> bool {

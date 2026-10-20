@@ -280,7 +280,7 @@ pub fn page(title: &str, message: &str, accent: &str) -> String {
     format!(
         "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">\
          <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\
-         <title>Luxe</title><style>\
+         <title>luxe</title><style>\
          :root{{color-scheme:light dark;--bg:#fbfbfc;--card:#fff;--line:#e4e4e7;--text:#18181b;\
          --muted:#6b7280;--accent:{accent}}}\
          @media(prefers-color-scheme:dark){{:root{{--bg:#101114;--card:#17181c;--line:#2a2c33;\

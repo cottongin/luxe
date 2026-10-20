@@ -78,7 +78,7 @@ const START_SCREENS: [&str; 3] = ["launcher", "minimal", "off"];
 pub enum Applies {
     /// The moment it is written
     Now,
-    /// Once Luxe starts again: read when the engine or the terminal is set up
+    /// Once luxe starts again: read when the engine or the terminal is set up
     NextLaunch,
 }
 
@@ -87,7 +87,7 @@ impl Applies {
     pub fn note(self) -> &'static str {
         match self {
             Self::Now => "Takes effect now",
-            Self::NextLaunch => "Takes effect the next time Luxe starts",
+            Self::NextLaunch => "Takes effect the next time luxe starts",
         }
     }
 }

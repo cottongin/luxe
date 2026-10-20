@@ -89,7 +89,7 @@ impl FileRefProvider {
     /// list was given rather than read.
     ///
     /// Read again off the render thread whenever the picker opens, since a file created or moved
-    /// outside Luxe never produces a workspace snapshot and would stay impossible to mention.
+    /// outside luxe never produces a workspace snapshot and would stay impossible to mention.
     pub fn set_listing(&mut self, files: Vec<String>) {
         if !self.given {
             self.set_files(files);

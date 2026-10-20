@@ -135,7 +135,7 @@ pub(crate) async fn build_engine(
 
     let model = settings.launch_model();
 
-    // Provider routing: the adapter the settings selected, plus a registry of every provider Luxe
+    // Provider routing: the adapter the settings selected, plus a registry of every provider luxe
     // knows about, so an in-session model switch *or* a mid-session `/login` reaches the right one.
     let provider = build_active_adapter(settings);
     let providers = build_provider_registry(settings, &provider);
@@ -183,8 +183,9 @@ pub(crate) async fn build_engine(
         external_work: Some(services::shared_external_work()),
         review_context_files: config.review.context_files.clone(),
         review_exclude: config.review.exclude.clone(),
-        // A real session remembers what the user picked; embedders and tests leave no trace.
-        remember_runtime_state: config.agent.remember_model(),
+        // A real session remembers what the user picked, here and anywhere; embedders and tests
+        // leave no trace.
+        remember_choices_in: config.agent.remember_model().then(|| settings.work_root.clone()),
         cache_warming: config.agent.cache_warming(),
         // Ground Guided Review in real structure (relevant files + test gaps) from the warm graph.
         review_insight_provider: Some(Arc::new(crate::review_insight::GraphReviewInsight::new(
@@ -322,8 +323,8 @@ fn assemble_hooks(
     (hook_registry, session_end_budget)
 }
 
-/// The hook that reports the agent's state to the Herdr pane Luxe runs in, so its sidebar tracks
-/// Luxe. `None` outside Herdr, under `LUXE_HERDR=0`, or with `"herdr": false`.
+/// The hook that reports the agent's state to the Herdr pane luxe runs in, so its sidebar tracks
+/// luxe. `None` outside Herdr, under `LUXE_HERDR=0`, or with `"herdr": false`.
 fn herdr_hook(config: &luxe_core::config::Config) -> Option<luxe_core::hooks::herdr::HerdrHook> {
     config.herdr().then(luxe_core::hooks::herdr::HerdrHook::detect).flatten()
 }

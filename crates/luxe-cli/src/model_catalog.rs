@@ -1,7 +1,7 @@
 //! Model catalog wiring — cache location, refresh scheduling, and the `/model` menu.
 //!
 //! Metadata itself is resolved by [`luxe_providers::catalog`]; this module owns the parts that
-//! depend on where Luxe keeps files and when it's allowed to touch the network. Resolution is
+//! depend on where luxe keeps files and when it's allowed to touch the network. Resolution is
 //! always offline-safe — it reads the embedded snapshot plus a local cache and never blocks —
 //! while [`spawn_refresh`] keeps that cache current in the background.
 
@@ -71,7 +71,7 @@ pub(crate) fn build_menu(settings: &AgentSettings) -> ModelMenu {
         push(&mut entries, resolve_model(&config, provider, id).0, true);
     }
 
-    // Then everything the catalog knows for providers Luxe can actually route to: the ones with a
+    // Then everything the catalog knows for providers luxe can actually route to: the ones with a
     // config block, anything the user has signed in to (a Copilot login is worthless if its models
     // never appear), and the launch's own provider when the launch itself carries the credentials
     // to reach it.

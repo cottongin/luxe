@@ -1,9 +1,9 @@
-//! The built-ins — every command Luxe ships.
+//! The built-ins — every command luxe ships.
 
 use super::{id, Command, Need};
 use luxe_core::keymap::UiAction;
 
-/// Every command Luxe ships, in no particular order: a menu sorts them.
+/// Every command luxe ships, in no particular order: a menu sorts them.
 ///
 /// Left out on purpose, because they are keys rather than commands and the key card lists them:
 /// moving around a review or a diff, block selection, scrolling, the editor's own mechanics
@@ -17,10 +17,10 @@ pub(super) fn built_in() -> Vec<Command> {
         // === Anywhere ===
         Command::action(UiAction::Quit)
             .with_slash("/quit")
-            .summary("Leaves Luxe; the session is saved as it goes, so nothing is lost.")
+            .summary("Leaves luxe; the session is saved as it goes, so nothing is lost.")
             .keywords(&["exit", "close"]),
-        Command::slash(id::UPDATE, "Update Luxe", "/update")
-            .summary("Quits Luxe and updates it with the command for however you installed it.")
+        Command::slash(id::UPDATE, "Update luxe", "/update")
+            .summary("Quits luxe and updates it with the command for however you installed it.")
             .detail(
                 "The same as `luxe update`: each command is shown before it runs, in this \
                  terminal. A copy your system's package manager owns is left to it.",
@@ -43,7 +43,7 @@ pub(super) fn built_in() -> Vec<Command> {
             .needs(&[Chat])
             .summary("Opens the model picker; the session carries on with whichever you choose.")
             .detail(
-                "Every model Luxe knows for the providers it can reach, yours first. The context \
+                "Every model luxe knows for the providers it can reach, yours first. The context \
                  window, output cap, reasoning levels and pricing move with it.",
             )
             .keywords(&["switch", "provider", "llm"]),
@@ -402,7 +402,7 @@ pub(super) fn built_in() -> Vec<Command> {
             .keywords(&["api key", "credentials"]),
         Command::slash(id::LOGOUT, "Sign out", "/logout")
             .needs(&[Chat])
-            .summary("Removes the credential Luxe stored for a provider.")
+            .summary("Removes the credential luxe stored for a provider.")
             .detail("Bare, it lists what is signed in.")
             .usage(&[("/logout <provider>", "")])
             .keywords(&["credentials"]),

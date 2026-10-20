@@ -66,7 +66,7 @@ function ModelPicker({ listing, current, pick }) {
 
 /** What the model list is waiting on, when it's not just a list. @param {{ state: string, empty: boolean }} props */
 function ListingNote({ state, empty }) {
-  if (state === "unsupported") return html`<p class="dim">Update Luxe on your computer to switch models from here.</p>`;
+  if (state === "unsupported") return html`<p class="dim">Update luxe on your computer to switch models from here.</p>`;
   if (state === "lost") return html`<p class="dim">Not connected.</p>`;
   if (state === "asking" && empty) return html`<p class="dim">Loading models…</p>`;
   if (state === "listed" && empty) return html`<p class="dim">No other models configured.</p>`;

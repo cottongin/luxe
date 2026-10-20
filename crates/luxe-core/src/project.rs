@@ -24,21 +24,21 @@
 //!
 //! Up from the starting directory, as far as the nearest [`VCS_MARKERS`] entry:
 //!
-//! 1. The nearest directory on the way holding `.luxe/` is the root. An existing Luxe project
-//!    outranks the repository it sits in, which makes `git init` in a directory Luxe has already
-//!    worked in a no-op rather than an amnesia event, and lets someone scope Luxe to one package of
+//! 1. The nearest directory on the way holding `.luxe/` is the root. An existing luxe project
+//!    outranks the repository it sits in, which makes `git init` in a directory luxe has already
+//!    worked in a no-op rather than an amnesia event, and lets someone scope luxe to one package of
 //!    a monorepo on purpose by creating the directory there.
 //! 2. Otherwise the top of that working copy is the root.
 //! 3. With no working copy at all, the starting directory, unchanged.
 //!
 //! A `.luxe/` claims nothing outside its own checkout: every session writes one, so honoring the
-//! nearest anywhere would make launching Luxe once in `~/.config` or `/tmp` turn every directory
+//! nearest anywhere would make launching luxe once in `~/.config` or `/tmp` turn every directory
 //! under it into that project. A checkout has a top every tool agrees on; a loose directory does
 //! not, and the only honest answer for one is where you stood, as Codex and Claude Code say.
 
 use std::path::{Path, PathBuf};
 
-/// The directory Luxe keeps a project's own state in.
+/// The directory luxe keeps a project's own state in.
 pub const PROJECT_DIR: &str = ".luxe";
 
 /// Entries that mark the top of a working copy.
@@ -110,7 +110,7 @@ pub fn is_working_copy(directory: &Path) -> bool {
     VCS_MARKERS.iter().any(|marker| directory.join(marker).exists())
 }
 
-/// Where the shell was standing when Luxe started, if that was below the project root.
+/// Where the shell was standing when luxe started, if that was below the project root.
 static LAUNCHED_FROM: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
 
 /// Records where the shell was standing, before the process moves to the project root.
@@ -127,7 +127,7 @@ pub fn launched_from() -> Option<PathBuf> {
     LAUNCHED_FROM.get().cloned()
 }
 
-/// The directory whose instruction chain applies to a session rooted at `root`: where Luxe was
+/// The directory whose instruction chain applies to a session rooted at `root`: where luxe was
 /// launched, else `root` itself.
 ///
 /// What the engine reads for the prompt, so a surface listing those files asks this rather than

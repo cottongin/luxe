@@ -1,6 +1,6 @@
-//! `luxe join` — a session another Luxe is running, over stdin and stdout.
+//! `luxe join` — a session another luxe is running, over stdin and stdout.
 //!
-//! The running Luxe shares its session on a local endpoint (`cli::share`), and this command is the
+//! The running luxe shares its session on a local endpoint (`cli::share`), and this command is the
 //! plain way in: it picks the session from the records in the runtime folder, connects, and copies
 //! bytes both ways. What crosses is the `--rpc` protocol untouched, so a client written for
 //! `luxe --rpc` drives a joined session by launching `luxe join` instead.
@@ -63,7 +63,7 @@ fn nothing_to_join(running: &[LiveSession], target: Option<&str>, cwd: &str) -> 
     };
     if running.is_empty() {
         return format!(
-            "{wanted}, and none is running on this machine that can be joined. A Luxe shares \
+            "{wanted}, and none is running on this machine that can be joined. A luxe shares \
              its session unless `joinable` is off or LUXE_JOINABLE=0."
         );
     }

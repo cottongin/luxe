@@ -184,6 +184,19 @@ fn setup_takes_the_screen_only_when_no_dashboard_can_point_at_it() {
     );
 }
 
+/// The first-run questions are for a new machine. Each sign of an earlier install, on its own,
+/// keeps them away; so does a terminal nobody is watching.
+#[test]
+fn the_first_run_is_skipped_by_any_sign_of_an_earlier_install() {
+    assert!(first_run_from(true, false, false), "a fresh, watched terminal is asked");
+    assert!(!first_run_from(true, true, false), "a config file means it ran before");
+    assert!(
+        !first_run_from(true, false, true),
+        "a stored login means it ran before, config file or not"
+    );
+    assert!(!first_run_from(false, false, false), "nobody is there to answer");
+}
+
 /// Every Configuration row is the app's to apply except the editor handoff, which needs the
 /// terminal back — so that one, and only that one, ends the TUI.
 #[test]

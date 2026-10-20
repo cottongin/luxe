@@ -190,7 +190,7 @@ impl Engine {
                 .read()
                 .map_err(|_| SessionError::Other("session store lock poisoned".to_string()))?;
             let entries = store.load(&id)?;
-            // Before anything changes, so a session open in another Luxe leaves this one as it was
+            // Before anything changes, so a session open in another luxe leaves this one as it was
             let claim = store.claim(&id)?;
             let leaf = crate::session::latest_leaf(&entries);
             let active = match leaf.as_ref() {

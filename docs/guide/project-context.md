@@ -1,6 +1,6 @@
 ---
 title: "Project context"
-summary: "Give the agent your project's conventions in AGENTS.md, and how Luxe finds the project."
+summary: "Give the agent your project's conventions in AGENTS.md, and how luxe finds the project."
 order: 3
 group: "Customize"
 ---
@@ -11,12 +11,12 @@ Put your project's conventions in an `AGENTS.md` at its root, and the agent read
 every session. In a project folder a `CLAUDE.md` works too; when both exist, `AGENTS.md` is used.
 The global files below are read only by those names, so `~/.claude/CLAUDE.md` is not.
 
-Luxe reads, in order:
+luxe reads, in order:
 
 1. `~/.agents/AGENTS.md`, the file many people keep for every agent they use
-2. `~/.config/luxe/agents.md`, for every project in Luxe
+2. `~/.config/luxe/agents.md`, for every project in luxe
 3. `AGENTS.md` at the top of the repository
-4. One `AGENTS.md` per folder down to where you started Luxe
+4. One `AGENTS.md` per folder down to where you started luxe
 
 So a monorepo can keep shared rules at the root and package rules beside the code, and `luxe`
 started in `packages/app` reads both. Nothing above the repository is read. Outside a repository,
@@ -32,7 +32,7 @@ agent is told with your next message.
 
 An `AGENTS.md` in a folder below the repository's top, but not on the way to where you started,
 joins when the agent first opens, writes or searches a path in that folder. It's added to that
-tool result, once, and Luxe shows **Following** and the file's path. The system prompt doesn't
+tool result, once, and luxe shows **Following** and the file's path. The system prompt doesn't
 change, so the cache holds. Ignored folders, such as `node_modules`, are skipped. If a rewind or a
 compaction drops the file, it joins again the next time the agent goes there.
 `LUXE_NESTED_INSTRUCTIONS=0` turns this off.
@@ -40,7 +40,7 @@ compaction drops the file, it joins again the next time the agent goes there.
 **Project context** lists every file a turn reads, and says whose rules each one carries:
 **global**, **project** or **folder** context. Type `context` on the start screen and open it.
 `enter` opens a file in your editor, or creates one from a template. The template's guidance is in
-comments, which Luxe removes and reports, so replace them with your own lines.
+comments, which luxe removes and reports, so replace them with your own lines.
 
 ### Duplicates
 
@@ -76,7 +76,7 @@ lists and architecture overviews do not; the agent reads those from the code.
 An `AGENTS.md` over 24,000 characters is cut off, with a note telling the agent to read the rest of
 the file itself.
 
-### What Luxe removes
+### What luxe removes
 
 Two kinds of text are removed from `AGENTS.md` and skill files before the agent sees them, because
 neither is visible to someone reviewing the file:
@@ -87,13 +87,13 @@ neither is visible to someone reviewing the file:
   and soft hyphens and other marks that draw nothing, written as characters or as references
   such as `&#x202E;`
 
-A file that repeats one link label so often that Luxe cannot check every definition is left out
-entirely. For an `AGENTS.md`, Luxe says what it removed or left out when it starts; a skill file is
+A file that repeats one link label so often that luxe cannot check every definition is left out
+entirely. For an `AGENTS.md`, luxe says what it removed or left out when it starts; a skill file is
 cleaned without a notice.
 
 ## Where the project begins
 
-Luxe works on one project, found by walking up from where you started it:
+luxe works on one project, found by walking up from where you started it:
 
 1. Inside a repository (`.git`, `.jj` or `.hg`), the nearest folder with a `.luxe/` in it, up to
    the top of the repository
@@ -111,5 +111,5 @@ mkdir -p packages/app/.luxe
 
 The package keeps its own sessions and still reads the `AGENTS.md` at the top of the repository.
 
-Outside a repository, a `.luxe/` claims only its own folder. Luxe writes one wherever it runs, so
+Outside a repository, a `.luxe/` claims only its own folder. luxe writes one wherever it runs, so
 starting it once in `~/.config` does not make `~/.config/herdr` part of that project.

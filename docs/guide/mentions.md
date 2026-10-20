@@ -2,7 +2,7 @@
 title: "Mentions"
 summary: "Point the agent at a file, skill, issue, MCP server or your own tracker with `@`."
 order: 5
-group: "Using Luxe"
+group: "Using luxe"
 ---
 
 Type `@` at the start of a word in the composer to mention something. The picker opens on your

@@ -65,6 +65,8 @@ where
     /// Rows the list keeps whatever it holds, so moving between tabs never moves the frame, with
     /// an empty or loading message in the middle of them; `None` fits the list to its rows
     pub rows: Option<usize>,
+    /// Which list the wheel and the bar move
+    pub list: crate::mouse::OverlayList,
 }
 
 /// Rows a picker with tabs keeps. Odd, so an empty tab's message has a middle row to sit on; nine,
@@ -127,19 +129,23 @@ pub fn render_picker<Row, Hit>(
     };
     let capacity = flyout_height.saturating_sub(2 + tab_rows + footer_rows) as usize;
     let window = Window::new(view.item_count, divider, view.selected, capacity);
+    let lines = Window::lines(view.item_count, divider);
+    let rows_width = crate::widgets::list_rows_width(list_width, lines, capacity as u16);
     let items = build_picker_window(
         &view,
         &window,
         hit,
-        (flyout_area, list_width, pane_width, tab_rows),
+        (flyout_area, rows_width, pane_width, tab_rows),
         theme,
     );
     let body = render_picker_header(f, flyout_area, &view, theme);
     let list_area = Rect { width: list_width.min(body.width), ..body };
     match (view.item_count, view.rows) {
         (0, Some(_)) => render_centered(f, list_area, view.empty_message, theme),
-        _ => f.render_widget(List::new(items), list_area),
+        _ => f.render_widget(List::new(items), Rect { width: rows_width.min(body.width), ..body }),
     }
+    let shown = (window.top(), lines);
+    crate::widgets::list_scrollbar(f, &mut hit.borrow_mut(), list_area, view.list, shown, theme);
     if let (Some(detail), Some(width)) = (view.detail, pane_width) {
         render_pane(f, body, list_width, width, &detail(view.selected), theme);
     }

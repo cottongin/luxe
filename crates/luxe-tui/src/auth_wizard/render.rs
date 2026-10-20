@@ -118,7 +118,7 @@ impl AuthWizardState {
         match self.scope() {
             LoginScope::Any => None,
             LoginScope::Subscription => {
-                Some("Signs in to a plan you already pay for. Luxe never sees your password.")
+                Some("Signs in to a plan you already pay for. luxe never sees your password.")
             }
             LoginScope::ApiKey => {
                 Some("Paste a key from the provider's console. Stored 0600 in auth.json.")

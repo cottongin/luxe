@@ -273,7 +273,7 @@ fn symlink_target_kind(root: &Path, link: &Path) -> Option<EntryKind> {
     Some(if target.is_dir() { EntryKind::Directory } else { EntryKind::File })
 }
 
-/// A path as the rest of Luxe spells it: forward slashes, no leading or trailing one.
+/// A path as the rest of luxe spells it: forward slashes, no leading or trailing one.
 fn normalized(relative: &str) -> String {
     crate::paths::slashify(relative.trim_matches('/'))
 }

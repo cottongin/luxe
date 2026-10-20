@@ -154,7 +154,7 @@ fn test_redact_key_value_assignments() {
 /// The reported failure. Tool output is redacted at the dispatch choke point *before the model
 /// reads it*, so a pattern that fires on ordinary code does not merely over-redact a log — it
 /// hands the agent source that no longer says what the file says. These eight shapes stood for
-/// 238 wrong substitutions across Luxe's own tree.
+/// 238 wrong substitutions across luxe's own tree.
 #[test]
 fn ordinary_code_reaches_the_model_exactly_as_written() {
     for code in [

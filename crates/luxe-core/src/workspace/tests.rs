@@ -223,7 +223,7 @@ fn the_pull_request_presence_wire_shape_is_pinned() {
 }
 
 /// `--rpc` clients read the `/mcp` rows too, so they are pinned the same way; and a row from a
-/// Luxe that predates `tools` and `signed_in` still reads, as nothing discovered and no sign-in.
+/// luxe that predates `tools` and `signed_in` still reads, as nothing discovered and no sign-in.
 #[test]
 fn the_mcp_server_status_wire_shape_is_pinned() {
     let status = McpServerStatus {
@@ -245,7 +245,7 @@ fn the_mcp_server_status_wire_shape_is_pinned() {
     assert_eq!((read.tools.len(), read.signed_in), (0, None));
 }
 
-/// A snapshot from a Luxe that predates the field still reads, as not asked yet.
+/// A snapshot from a luxe that predates the field still reads, as not asked yet.
 #[test]
 fn a_snapshot_without_a_pull_request_reads_as_unknown() {
     let snapshot = WorkspaceSnapshot::empty(

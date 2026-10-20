@@ -248,7 +248,7 @@ pub(super) fn worktree_notice(
     )
 }
 
-/// Leaves the session's worktree and removes it, saying how it went on the terminal Luxe has
+/// Leaves the session's worktree and removes it, saying how it went on the terminal luxe has
 /// just handed back.
 pub(super) async fn remove_worktree(project: &std::path::Path, path: &std::path::Path) {
     if let Err(error) = std::env::set_current_dir(project) {

@@ -21,7 +21,7 @@ pub(super) fn fit_segments(
 ) {
     // Least actionable first. Token counts are trivia next to the percentage that says whether the
     // window is about to run out; a path repeats the project name; and of the two identities, the
-    // project is the one that tells two Luxe windows apart, so the branch goes first.
+    // project is the one that tells two luxe windows apart, so the branch goes first.
     let removal_order: &[SegmentKind] = if context_replacement {
         &[
             SegmentKind::Cwd,

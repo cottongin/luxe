@@ -105,7 +105,7 @@ const GREP_MAX_LINES: usize = 200;
 
 /// Character budget for one search, the second half of the bound the schema promises.
 ///
-/// Sized against Luxe's own tree, where a broad pattern's 200 rows measure ~21 KB and the worst
+/// Sized against luxe's own tree, where a broad pattern's 200 rows measure ~21 KB and the worst
 /// measured — one reaching generated assets — came to 72 KB. So this leaves an ordinary search
 /// untouched and cuts the pathological one to a third.
 const GREP_MAX_CHARS: usize = 24_000;

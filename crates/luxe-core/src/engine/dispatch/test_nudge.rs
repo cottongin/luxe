@@ -4,7 +4,7 @@ use super::*;
 
 impl Engine {
     /// Nudge toward the `debug` tool when tests keep failing — runtime reinforcement for models
-    /// that default to print-and-retry (the debugger is a Luxe differentiator, but under-used).
+    /// that default to print-and-retry (the debugger is a luxe differentiator, but under-used).
     /// Fires once per failing streak (≥3 consecutive failing test runs); a passing test resets it.
     /// Disable with `LUXE_DEBUG_NUDGE=0`.
     pub(super) async fn maybe_nudge_debugger(&self, is_test: bool, result: &mut ToolResultData) {

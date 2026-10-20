@@ -22,7 +22,7 @@ pub fn icon(mode: &str) -> Icon {
 /// The color a mode's composer border and title wear.
 ///
 /// Plan wears its own; every other mode, a custom one included, wears the border accent every
-/// other panel does, as its icon is build's, so a session that never plans looks the way Luxe
+/// other panel does, as its icon is build's, so a session that never plans looks the way luxe
 /// always has.
 pub(crate) fn accent(mode: &str, styles: &ThemeStyles) -> Style {
     match mode {
@@ -61,7 +61,7 @@ mod tests {
         assert_eq!(accent(luxe_core::mode::BUILD, &theme), theme.border_accent);
     }
 
-    /// A mode Luxe does not know looks like one thing, not half build and half plan.
+    /// A mode luxe does not know looks like one thing, not half build and half plan.
     ///
     /// The break this catches: the icon fell back to build and the color to plan, so a custom
     /// mode wore build's icon in plan's color.

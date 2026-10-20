@@ -24,7 +24,7 @@ fn break_first_line(path: &Path) {
     fs::write(path, bytes).unwrap();
 }
 
-// The break this catches: a cache that never looks at the file again, so another Luxe's entries
+// The break this catches: a cache that never looks at the file again, so another luxe's entries
 // (or a write this store didn't make) never show up
 #[test]
 fn entries_another_store_appends_are_read_on() {

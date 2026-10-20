@@ -154,7 +154,7 @@ impl App {
 /// a configured theme that names nothing.
 ///
 /// A theme that falls back looks like a theme that is not very different, so a warning in the log
-/// alone left someone tuning a file Luxe had never read.
+/// alone left someone tuning a file luxe had never read.
 pub(crate) fn theme_notices(config: &Config, registry: &ThemeRegistry) -> Vec<String> {
     let mut notices: Vec<String> =
         registry.problems().iter().map(|problem| format!("theme not loaded — {problem}")).collect();
@@ -175,7 +175,7 @@ pub(crate) fn theme_notices(config: &Config, registry: &ThemeRegistry) -> Vec<St
     notices
 }
 
-/// A notice for each mention source whose kind one of Luxe's own tabs uses, so the tab it no longer
+/// A notice for each mention source whose kind one of luxe's own tabs uses, so the tab it no longer
 /// gets is explained rather than missing.
 pub(crate) fn mention_notices(config: &Config) -> Vec<String> {
     config
@@ -184,7 +184,7 @@ pub(crate) fn mention_notices(config: &Config) -> Vec<String> {
         .filter(|source| source.reserved())
         .map(|source| {
             format!(
-                "mention source `{}` is not listed — `@[{}:…]` belongs to Luxe's own tab. Give it a \
+                "mention source `{}` is not listed — `@[{}:…]` belongs to luxe's own tab. Give it a \
                  `kind` of its own in {}",
                 source.name,
                 source.kind(),

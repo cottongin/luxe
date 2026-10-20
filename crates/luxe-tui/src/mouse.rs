@@ -97,6 +97,31 @@ pub enum ScrollRegionId {
     ReviewFeedback,
     /// The pull request opening's description.
     PullRequestBody,
+    /// A modal list whose window follows its cursor (walks its rows).
+    ///
+    /// Args: which list.
+    OverlayList(OverlayList),
+}
+
+/// A modal list whose window follows its cursor, which its wheel and its bar both move.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OverlayList {
+    /// The model picker
+    Models,
+    /// The login wizard's providers
+    Providers,
+    /// The command palette
+    Palette,
+    /// The theme picker
+    Themes,
+    /// The session picker
+    Sessions,
+    /// The `/` flyout, its commands or a command's forms
+    Slash,
+    /// The `@` flyout's open tab
+    Mention,
+    /// Whichever list the configuration surface is showing: settings, or a setup step
+    Configuration,
 }
 
 /// A clickable target, resolved from the cursor position to an action on left-click.

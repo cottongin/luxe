@@ -470,7 +470,7 @@ fn an_image_scrolls_through_the_viewport_without_leaving_anything_behind() {
 }
 
 /// The tool the reader never asked to watch. `activate_tools` loads a deferred tool's schema — a
-/// fact about Luxe's request budget, not a step in anyone's task — and it lands directly in front
+/// fact about luxe's request budget, not a step in anyone's task — and it lands directly in front
 /// of the tool that actually did something. A successful one leaves no card; a failed one does,
 /// because a call nobody can see cannot explain the stall it caused.
 #[test]

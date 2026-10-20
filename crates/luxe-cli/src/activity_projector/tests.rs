@@ -62,7 +62,7 @@ fn a_failed_call_summarizes_its_own_error() {
             "edited before reading the file",
         ),
         (
-            "Error: 'src/lib.rs' exists and has no read on record for this Luxe run \
+            "Error: 'src/lib.rs' exists and has no read on record for this luxe run \
                  (read-before-write guard), so overwriting it would be blind.",
             "overwrote a file it hadn't read",
         ),

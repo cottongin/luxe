@@ -267,7 +267,7 @@ pub(super) fn sentence(error: &GitHubError) -> String {
         }
         GitHubError::Run { source, .. } => format!("Could not run `gh`: {source}."),
         GitHubError::Unreadable(_) => {
-            "`gh` answered with something Luxe could not read. Updating the GitHub CLI may fix it."
+            "`gh` answered with something luxe could not read. Updating the GitHub CLI may fix it."
                 .into()
         }
         GitHubError::RateLimited => {

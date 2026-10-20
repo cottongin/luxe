@@ -565,7 +565,7 @@ fn init_repo(path: &std::path::Path) -> bool {
     };
     run(&["init", "--quiet"])
         && run(&["config", "user.email", "test@luxe.invalid"])
-        && run(&["config", "user.name", "Luxe Test"])
+        && run(&["config", "user.name", "luxe Test"])
         // A signing key the machine may not have would fail every commit here.
         && run(&["config", "commit.gpgsign", "false"])
 }

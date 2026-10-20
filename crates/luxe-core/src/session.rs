@@ -89,7 +89,7 @@ pub enum SessionError {
     NotFound(SessionId),
     #[error("entry not found: {0}")]
     EntryNotFound(EntryId),
-    #[error("session {0} is open in another Luxe")]
+    #[error("session {0} is open in another luxe")]
     OpenElsewhere(SessionId),
     #[error("{0}")]
     Other(String),
@@ -173,7 +173,7 @@ pub trait SessionStore: Send + Sync {
     /// Returns `(SessionId, mtime)` pairs so the dashboard can display age and sort consistently.
     fn recent_sessions(&self, limit: usize) -> Vec<(SessionId, SystemTime)>;
 
-    /// Claim `session` for this process to write, so a second Luxe can't write it at once.
+    /// Claim `session` for this process to write, so a second luxe can't write it at once.
     ///
     /// [`SessionError::OpenElsewhere`] when another process holds it. A store other processes
     /// can't reach, like one in memory, has nothing to guard and returns `None`.

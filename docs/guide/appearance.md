@@ -13,13 +13,13 @@ Every setting on this page goes in `~/.config/luxe/config.json`, or a project's 
 `/theme` previews each theme as you move through the list. `enter` keeps one and saves it to your
 config; `esc` puts back the theme you had.
 
-Luxe's own theme is `luxe`, a warm graphite with a brass accent. Every accent clears a 4.5:1
+luxe's own theme is `luxe`, a warm graphite with a brass accent. Every accent clears a 4.5:1
 contrast ratio against the background, and body text 7:1. The others are dark versions of
 community favorites and of Omarchy's themes:
 
 | | |
 | --- | --- |
-| Luxe | `luxe` |
+| luxe | `luxe` |
 | Editors | `jetbrains` (Darcula), `vscode` (Visual Studio 2017 Dark), `xcode` (Default Dark) |
 | Community | `aura`, `ayu`, `catppuccin`, `dracula`, `everforest`, `github` (Dark Dimmed), `gruvbox`, `kanagawa`, `monokai`, `noctis-bordo`, `nord`, `one-dark`, `panda`, `rose-pine`, `tokyo-night`, `vesper`, `zenburn` |
 | Omarchy | `ethereal`, `hackerman`, `last-horizon`, `lumon`, `matte-black`, `miasma`, `osaka-jade`, `retro-82`, `ristretto`, `solitude`, `vantablack` |
@@ -28,7 +28,7 @@ community favorites and of Omarchy's themes:
 { "theme": "nord" }
 ```
 
-An unknown name falls back to `luxe`, and Luxe says so when the session opens. See them all on
+An unknown name falls back to `luxe`, and luxe says so when the session opens. See them all on
 [luxe.dev](https://luxe.dev/#craft).
 
 Code is colored by the theme too: in answers, tool cards, diffs and the preview, keywords take the
@@ -56,7 +56,7 @@ The names are the ones a theme file uses; [`luxe.json`](https://github.com/evanw
 lists every one.
 
 One more name is optional: `modePlan`, the color [plan mode](agent.md#plan-then-build) wears on the
-composer and the menus and questions around it. Without it, Luxe picks the first of the theme's
+composer and the menus and questions around it. Without it, luxe picks the first of the theme's
 other colors that reads as different from its accent.
 
 ### Make a theme
@@ -78,12 +78,12 @@ for a complete one.
 
 ### On Omarchy
 
-Leave `theme` unset, or set it to `omarchy`, and Luxe wears your desktop's theme and changes with
+Leave `theme` unset, or set it to `omarchy`, and luxe wears your desktop's theme and changes with
 it, within a couple of seconds, in a running session. It uses, in order:
 
 1. A `luxe.json` in the current Omarchy theme. To give every theme one, write a template at
    `~/.config/omarchy/themed/luxe.json.tpl` and Omarchy renders it from each theme's colors.
-2. Luxe's built-in theme of the same name, when both are dark.
+2. luxe's built-in theme of the same name, when both are dark.
 3. A theme made on the spot from the Omarchy theme's `colors.toml`, with text lifted until it is
    readable. This is how a light Omarchy theme comes out.
 
@@ -139,12 +139,12 @@ When the bar runs out of room, it drops modules in this order: `cwd`, `tokens`, 
 
 ## Icons and fonts
 
-`glyphs` sets which icons Luxe draws. Every icon has a word beside it, so nothing is lost at any
+`glyphs` sets which icons luxe draws. Every icon has a word beside it, so nothing is lost at any
 setting.
 
 | `glyphs` | Draws | Needs |
 | --- | --- | --- |
-| `auto` | `nerd` when Luxe can confirm your font has every icon, otherwise `unicode` | |
+| `auto` | `nerd` when luxe can confirm your font has every icon, otherwise `unicode` | |
 | `nerd` | Nerd Font icons | A Nerd Font |
 | `nerd_wide` | The same icons, each given two cells | A Nerd Font whose icons are drawn wide |
 | `unicode` | Plain shapes: `■ ► ▪ ○ ●` | UTF-8 |
@@ -159,7 +159,7 @@ which brings its own. On macOS and Windows without fontconfig, it picks `unicode
 have a Nerd Font. If icons sit flush against the word beside them, you have the wide build of your Nerd
 Font: switch to its `Mono` build (see [Fonts](install.md#fonts)), or set `nerd_wide`.
 
-Fonts that draw every character Luxe uses, measured against the font files:
+Fonts that draw every character luxe uses, measured against the font files:
 
 | Font | Missing | Width |
 | --- | --- | --- |
@@ -235,7 +235,7 @@ Screenshots and images the agent reads are drawn in the conversation where the t
 ```
 
 Double-click an image, or select its message (`alt+k`) and press `alt+i`, to view it full-window.
-`/images` says which setting is in effect and why. A change to `images` applies the next time Luxe
+`/images` says which setting is in effect and why. A change to `images` applies the next time luxe
 starts.
 
 ## The start screen

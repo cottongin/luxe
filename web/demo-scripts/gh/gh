@@ -4,7 +4,7 @@
 The toy project under `web/demo` is fictional, and so is its repository: `acme/todo`. A take that
 shows the `@` picker's GitHub tab needs issues and pull requests to list, and pointing a recording at
 a real repository would put strangers' names and titles on the website. So the recorder puts this
-directory first on `PATH` (`#: bin gh` in a script) and Luxe lists what's here instead.
+directory first on `PATH` (`#: bin gh` in a script) and luxe lists what's here instead.
 
 Everything else about the take is real: the picker, the chips, the model, the tools it calls. The
 answers are the shapes `gh` actually prints (see `crates/luxe-core/src/github/fixtures/`), and it

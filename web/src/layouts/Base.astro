@@ -68,13 +68,13 @@ const githubMark =
       <div class="page masthead__inner">
         {/* Drift only. The shine is punctuation, and punctuation on a sticky header that follows
             the reader down every page is a flicker in the corner of the eye rather than polish. */}
-        <a class="masthead__mark" href="/" aria-label="Luxe — home">
+        <a class="masthead__mark" href="/" aria-label="luxe — home">
           <Wordmark />
         </a>
         <nav class="masthead__nav">
           {nav.map(({ href, label }) => <a href={href}>{label}</a>)}
           {/* The mark says GitHub on its own, and leaves room for the nav beside the wordmark on a phone */}
-          <a class="masthead__repo" href={repo} aria-label="Luxe on GitHub" title="Luxe on GitHub">
+          <a class="masthead__repo" href={repo} aria-label="luxe on GitHub" title="luxe on GitHub">
             <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d={githubMark}></path></svg>
           </a>
         </nav>
@@ -96,7 +96,7 @@ const githubMark =
         </p>
         <p class="muted footer__meta">
           {/* HEAD, not a branch name: GitHub resolves it to whatever the default branch is called */}
-          Luxe is free software under <a href={`${repo}/blob/HEAD/LICENSE-MIT`}>MIT</a>
+          luxe is free software under <a href={`${repo}/blob/HEAD/LICENSE-MIT`}>MIT</a>
           or <a href={`${repo}/blob/HEAD/LICENSE-APACHE`}>Apache 2.0</a>.
         </p>
         <p class="muted footer__meta">

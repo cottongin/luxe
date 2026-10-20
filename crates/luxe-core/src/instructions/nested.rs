@@ -1,7 +1,7 @@
 //! Nested instructions — the `AGENTS.md` files off the launch chain, read when work reaches them.
 //!
-//! The system prompt carries the files from the top of the checkout down to where Luxe started,
-//! and it's written once per session. A file in a folder off that chain (`web/AGENTS.md` when Luxe
+//! The system prompt carries the files from the top of the checkout down to where luxe started,
+//! and it's written once per session. A file in a folder off that chain (`web/AGENTS.md` when luxe
 //! started at the root) can't join it without rewriting the prompt every later request is cached
 //! against. So it rides on the result of the first tool call that reaches its folder: an append,
 //! like any other result. Whether the model already has one is read off the conversation by the

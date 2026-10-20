@@ -90,7 +90,7 @@ pub enum SourceStoreError {
         /// Underlying JSON error.
         error: serde_json::Error,
     },
-    /// The artifact uses a schema this Luxe version does not understand.
+    /// The artifact uses a schema this luxe version does not understand.
     #[error("review source artifact uses unsupported schema {schema_version}")]
     UnsupportedSchema {
         /// Schema version found in the manifest.

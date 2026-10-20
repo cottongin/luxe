@@ -307,12 +307,12 @@ impl OAuthClient {
 fn landing(server: &str, outcome: &Result<(), OAuthError>) -> (u16, &'static str, String) {
     match outcome {
         Ok(()) => {
-            (200, "Signed in", format!("Luxe signed in to {server}. You can close this tab."))
+            (200, "Signed in", format!("luxe signed in to {server}. You can close this tab."))
         }
         Err(error) => (
             400,
-            "Luxe couldn't finish the sign-in",
-            format!("Luxe could not sign in to {server}: {error}"),
+            "luxe couldn't finish the sign-in",
+            format!("luxe could not sign in to {server}: {error}"),
         ),
     }
 }

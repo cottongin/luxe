@@ -44,7 +44,7 @@ export function createTranscript() {
 }
 
 // The engine says a turn started with turn_started; the message that opened it, or anything it
-// streams, stands in for that from a session whose Luxe predates the event
+// streams, stands in for that from a session whose luxe predates the event
 const TURN_SIGNS = new Set(["turn_started", "token_delta", "thinking_delta", "tool_call_composing"]);
 
 /** @param {State} state @param {Frame} frame */

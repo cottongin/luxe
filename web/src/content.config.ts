@@ -4,7 +4,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 /** Sidebar groups, in order. `scripts/docs-check.py` holds the same list. */
-export const GROUPS = ["Get started", "Using Luxe", "Customize", "Extend", "Reference"] as const;
+export const GROUPS = ["Get started", "Using luxe", "Customize", "Extend", "Reference"] as const;
 
 /**
  * The manual, loaded straight out of `docs/guide/` at the repo root.

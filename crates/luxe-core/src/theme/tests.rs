@@ -159,7 +159,7 @@ fn theme_merged_over_override_wins() {
 #[test]
 fn schema_is_valid_json() {
     let schema: serde_json::Value = serde_json::from_str(Theme::schema_json()).unwrap();
-    assert_eq!(schema["title"], "Luxe theme");
+    assert_eq!(schema["title"], "luxe theme");
 }
 
 /// The full set of shipped built-in theme ids.
@@ -274,7 +274,7 @@ fn contrast(fore: Option<&ColorValue>, back: Option<&ColorValue>) -> Option<f32>
     Some((lighter + 0.05) / (darker + 0.05))
 }
 
-/// Luxe's own themes hold a contrast floor, so a later tweak to a hue cannot quietly cost
+/// luxe's own themes hold a contrast floor, so a later tweak to a hue cannot quietly cost
 /// legibility.
 ///
 /// Only `luxe` is held to it: the other built-ins are faithful ports of palettes

@@ -129,7 +129,7 @@ pub(super) fn lines(block: &ConvoBlock, ctx: &BlockContext<'_>) -> Vec<MarkdownL
         ConvoBlock::User { text, attached, chips } => user_lines(text, attached, chips, style, ctx),
         ConvoBlock::Image { key, .. } => image_lines(key, ctx, style),
         ConvoBlock::Assistant(text) => {
-            // What the agent wrote for Luxe — a remediation report, a draft — is shown where it lands
+            // What the agent wrote for luxe — a remediation report, a draft — is shown where it lands
             let text = &*luxe_core::briefs::for_the_reader(text);
             if text.trim().is_empty() {
                 return Vec::new();

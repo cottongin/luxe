@@ -4,7 +4,7 @@
 #   scripts/tool-bench.sh NAME=REPO:CASES ...
 #
 # Each argument is a checkout to measure in and the cases to run there (scripts/tool-bench/);
-# Luxe's own checkout is always measured last, with the cases built into the example. The first
+# luxe's own checkout is always measured last, with the cases built into the example. The first
 # repository is the one the page draws its bars from.
 #
 # A recording, not a generated asset: the numbers depend on the trees they run in, build output
@@ -25,8 +25,8 @@ for spec in "$@"; do
 	(cd "$repo" && TOOL_BENCH_CASES="$root/$cases" "$bench" "$out/$name.json")
 	names+=("$name")
 done
-"$bench" "$out/Luxe.json"
-names+=("Luxe")
+"$bench" "$out/luxe.json"
+names+=("luxe")
 python3 - "$out" "${names[@]}" <<'PY' > web/src/data/tool-bench.json
 import json, sys
 out, names = sys.argv[1], sys.argv[2:]

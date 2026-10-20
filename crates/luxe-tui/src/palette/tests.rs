@@ -1,5 +1,7 @@
+use super::render::row;
 use super::*;
 use crate::commands::{CommandContext, CommandRegistry, Surface};
+use crate::picker::{Slot, Window};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use luxe_core::keymap::KeyMap;
 

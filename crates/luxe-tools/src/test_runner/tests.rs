@@ -296,7 +296,7 @@ async fn a_filtered_run_says_it_proves_nothing_about_what_it_skipped() {
 /// Probes with a real run rather than `--version`, because those are different questions: an
 /// installed pytest that autoloads a broken third-party plugin answers `--version` happily and
 /// then dies during collection, which failed this test on a machine where nothing was wrong with
-/// Luxe. Probe the capability you need, not a proxy for it.
+/// luxe. Probe the capability you need, not a proxy for it.
 async fn pytest_can_run(dir: &Path) -> bool {
     let Some(python) = luxe_core::program::resolve("python3") else {
         return false;

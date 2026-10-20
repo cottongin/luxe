@@ -58,7 +58,7 @@ pub enum ReviewBase {
         /// First parent, absent for a root commit.
         parent_oid: Option<String>,
     },
-    /// Complete pre-turn baseline retained by Luxe.
+    /// Complete pre-turn baseline retained by luxe.
     TurnBaseline {
         /// Immutable baseline revision identifier.
         revision_id: ReviewRevisionId,
@@ -201,7 +201,7 @@ pub struct ReviewStats {
     pub binary_files: u64,
     /// Number of explicit non-text file items.
     pub non_text_files: u64,
-    /// Files left out of the review by `review.exclude` or as Luxe's own artifacts.
+    /// Files left out of the review by `review.exclude` or as luxe's own artifacts.
     ///
     /// Counted, never silent: a review that shows less than the diff has to say so.
     #[serde(default)]

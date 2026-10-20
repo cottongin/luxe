@@ -139,7 +139,7 @@ fn is_zero(count: &u32) -> bool {
 ///
 /// Not cosmetic: a subscription provider's published rates are what the same tokens would have cost
 /// on the API, and presenting that as *spend* tells a user they were charged money they weren't.
-/// Luxe keeps the number — it's a useful measure of what a turn was worth — and reports it in its
+/// luxe keeps the number — it's a useful measure of what a turn was worth — and reports it in its
 /// own column so a plan's usage is never mistaken for a bill.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

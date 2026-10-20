@@ -5,13 +5,13 @@ order: 6
 group: "Extend"
 ---
 
-Luxe knows how to reach every provider in [Models and providers](providers.md), and the
+luxe knows how to reach every provider in [Models and providers](providers.md), and the
 [models.dev](https://models.dev) catalog tells it each model's context window, output limit,
 thinking levels and price. This page is for what neither covers: your own endpoint, a model the
 catalog does not know, or a local server that needs its requests shaped a particular way.
 
 Everything here goes in `~/.config/luxe/models.json`. `luxe models show <provider>/<id>` shows what
-Luxe resolved for a model, and where each value came from.
+luxe resolved for a model, and where each value came from.
 
 ## Add an endpoint
 
@@ -38,7 +38,7 @@ Then `luxe --model gateway/qwen3-coder-480b`, or choose it in `/model`.
 | Provider key | Does |
 | --- | --- |
 | `base_url` | The endpoint, including its version, such as `/v1` |
-| `api_key` | The key: the value, `$VAR`, `${VAR}` or `$env:VAR`, or `!command`, which runs each time a request needs the key. An unset `${VAR}` is empty, as in `mcp.json`, and Luxe logs which one. |
+| `api_key` | The key: the value, `$VAR`, `${VAR}` or `$env:VAR`, or `!command`, which runs each time a request needs the key. An unset `${VAR}` is empty, as in `mcp.json`, and luxe logs which one. |
 | `api` | The API it speaks: `openai-completions` (the default), `openai-responses`, `anthropic-messages` |
 | `auth` | How the key is sent: `bearer`, `x-api-key`, `api-key`, or `foundry` for both of the last two |
 | `models_dev` | The models.dev provider to take model details from, when the names differ |
@@ -46,12 +46,12 @@ Then `luxe --model gateway/qwen3-coder-480b`, or choose it in `/model`.
 | `sampling_params` | Samplers for every model it serves; see [Samplers](#samplers) |
 
 A provider in `models.json` replaces the same provider's block in `auth.json` whole, so keep a
-provider's key and endpoint in one file. A provider Luxe already knows keeps everything you do not
-write. A key in a provider Luxe knows is used when its own variable, such as `OPENAI_API_KEY`, is
+provider's key and endpoint in one file. A provider luxe already knows keeps everything you do not
+write. A key in a provider luxe knows is used when its own variable, such as `OPENAI_API_KEY`, is
 unset; for one it does not know, the key you write comes first and `OPENAI_API_KEY` is the
 fallback. A key you signed in with comes before either.
 
-A file Luxe cannot parse is skipped with a warning in the log, and a misspelled key is ignored, so
+A file luxe cannot parse is skipped with a warning in the log, and a misspelled key is ignored, so
 check the result with `luxe models show <provider>/<id>` after editing.
 
 ## Model settings
@@ -64,7 +64,7 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | Key | Does |
 | --- | --- |
 | `context_window` | The model's context window, in tokens |
-| `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. Luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
+| `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
 | `name` | The name shown in the picker and statusline |
 | `reasoning` | Whether it can think |
 | `thinking` | The level a session starts at for this model |
@@ -74,14 +74,14 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | `compat`, `sampling_params` | Override the provider's, key by key |
 
 A model the catalog does not know gets a 128k context window and no output limit until you set
-them. Anthropic endpoints require a limit, so there Luxe asks for 128k. If the model allows less,
-Anthropic's refusal names its real limit, and Luxe retries with that and uses it for the rest of the
+them. Anthropic endpoints require a limit, so there luxe asks for 128k. If the model allows less,
+Anthropic's refusal names its real limit, and luxe retries with that and uses it for the rest of the
 session.
 
 ## Thinking levels
 
-`thinking_level_map` says what each of Luxe's levels sends to the model. `null` marks a level the
-model cannot do, removing it from `/thinking`; a level Luxe needs falls back to the nearest one that
+`thinking_level_map` says what each of luxe's levels sends to the model. `null` marks a level the
+model cannot do, removing it from `/thinking`; a level luxe needs falls back to the nearest one that
 is left. `ultra` is the name for a provider's `max`.
 
 ```json title="~/.config/luxe/models.json"
@@ -107,12 +107,12 @@ is left. `ultra` is the name for a provider's `max`.
 A level you do not map sends its own name, and `off` sends `none`; `xhigh` and `ultra` are offered
 only once mapped. Setting a map also marks the model as one that reasons.
 
-An endpoint Luxe does not know sends no thinking setting at all until its `compat` says how: for
+An endpoint luxe does not know sends no thinking setting at all until its `compat` says how: for
 most OpenAI-compatible servers, `"thinking_format": "openai"`, which sends `reasoning_effort` on
 every request, `off` included. See [Request format](#request-format).
 
-For Anthropic models, Luxe uses adaptive thinking with an effort level where the model supports
-it, and a token budget for older ones. If a model refuses how thinking was requested, Luxe tries
+For Anthropic models, luxe uses adaptive thinking with an effort level where the model supports
+it, and a token budget for older ones. If a model refuses how thinking was requested, luxe tries
 the other way once and remembers it for the session. `compat.force_adaptive_thinking` forces
 adaptive thinking for an endpoint the catalog does not know.
 
@@ -150,7 +150,7 @@ to every model the provider serves; on a model, only the keys you write override
 | `force_adaptive_thinking` | Use Anthropic's adaptive thinking |
 | `supports_long_cache_retention` | Ask Anthropic to keep cached prompts for an hour rather than five minutes. Each cache write costs 2x input instead of 1.25x. Off by default, since not every Anthropic-compatible endpoint accepts it. |
 | `stream_tool_arguments` | Stream a `write` call's file from Anthropic as it is written, so its card fills in live. On by default; turn off for an endpoint that rejects a tool's `eager_input_streaming` field. |
-| `defer_tool_loading` | Load a tool the agent asks for with `activate_tools` where it asked, so the cached prompt stays cached. On by default. Luxe stops on its own for an endpoint that refuses it; turn it off for one that accepts it and then misbehaves. Anthropic and Responses endpoints only. |
+| `defer_tool_loading` | Load a tool the agent asks for with `activate_tools` where it asked, so the cached prompt stays cached. On by default. luxe stops on its own for an endpoint that refuses it; turn it off for one that accepts it and then misbehaves. Anthropic and Responses endpoints only. |
 | `copilot_headers`, `openrouter_headers` | Send those services' identifying headers. With `copilot_headers`, each model also goes to the Copilot endpoint it takes. |
 | `use_responses_api` | Use OpenAI's Responses API. Provider only; prefer `"api": "openai-responses"`. |
 
@@ -164,7 +164,7 @@ provider's.
 
 A local model's card often gives a sampling recipe with settings the OpenAI format has no field for,
 such as `top_k`, `min_p` and `repeat_penalty`. `sampling_params` is added to the request as written,
-after Luxe's own fields, so its values win:
+after luxe's own fields, so its values win:
 
 ```json title="~/.config/luxe/models.json"
 {
@@ -212,9 +212,9 @@ sent as written. LM Studio ignores `chat_template_kwargs`; use `"thinking_format
 
 ## Model details
 
-Luxe takes a model's details from three places, each overriding the one before, value by value:
+luxe takes a model's details from three places, each overriding the one before, value by value:
 
-1. The models.dev catalog built into Luxe, which works offline
+1. The models.dev catalog built into luxe, which works offline
 2. A fresher copy, refreshed in the background into `~/.cache/luxe/models-dev.json`
 3. Your `models.json`
 
@@ -231,7 +231,7 @@ anthropic/claude-opus-5
   cost /Mtok        $5.00/$25.00  [models.dev]
 ```
 
-Each value names where it came from: `snapshot` for the catalog built into Luxe, `models.dev` for
+Each value names where it came from: `snapshot` for the catalog built into luxe, `models.dev` for
 the refreshed copy, `config` for your `models.json`, and `default` where none of them said.
 
 | Variable | Does |
@@ -245,7 +245,7 @@ the refreshed copy, `config` for your `models.json`, and `default` where none of
 
 ### Keyless sign-in with Microsoft Entra ID
 
-If your Foundry resource has key sign-in turned off, give Luxe a command that prints a token:
+If your Foundry resource has key sign-in turned off, give luxe a command that prints a token:
 
 ```json title="~/.config/luxe/models.json"
 {
@@ -265,9 +265,9 @@ Run `az login` first. Only the Claude provider needs `auth`; the others already 
 token. The command runs for each request and nothing is kept, so a token from `az`, which lasts
 about an hour, is replaced as it expires and a long session carries on.
 
-### Choose which deployments Luxe offers
+### Choose which deployments luxe offers
 
-Luxe records what a resource has deployed in each provider's `served_models`, and the model behind
+luxe records what a resource has deployed in each provider's `served_models`, and the model behind
 any deployment named something else in `deployments`, which is where it looks up the context window
 and price. If your key cannot list deployments, or you want to choose the list yourself, turn
 discovery off and write both:
@@ -284,7 +284,7 @@ discovery off and write both:
 }
 ```
 
-`discover_deployments: false` on any of the three providers stops Luxe asking the resource at all.
+`discover_deployments: false` on any of the three providers stops luxe asking the resource at all.
 
 ### Thinking on partner models
 
@@ -306,14 +306,14 @@ Use `reasoning_effort` only: Foundry refuses DeepSeek's own `thinking` format. F
 report these models' thinking tokens, so `/cost` counts them as output.
 
 A Foundry deployment can have a different context window and price from the vendor's own API.
-Luxe uses Azure's figures for Foundry models.
+luxe uses Azure's figures for Foundry models.
 
 ## OpenRouter
 
-- Luxe asks OpenRouter to cache prompts for Claude models, which it otherwise does not, and which
+- luxe asks OpenRouter to cache prompts for Claude models, which it otherwise does not, and which
   makes later turns of a session far cheaper. `"cache_control_format": null` in the provider's
   `compat` stops it.
-- Some models on OpenRouter cannot turn thinking off. For those, Luxe leaves the setting out and
+- Some models on OpenRouter cannot turn thinking off. For those, luxe leaves the setting out and
   the model thinks at its own default. `luxe models show openrouter/<id>` says `never off`.
-- Luxe identifies itself to OpenRouter with its `HTTP-Referer` and `X-Title` headers, which carry
+- luxe identifies itself to OpenRouter with its `HTTP-Referer` and `X-Title` headers, which carry
   nothing about you. `"openrouter_headers": false` in `compat` drops them.

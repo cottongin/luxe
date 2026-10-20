@@ -1,4 +1,4 @@
-//! GitHub — the one seam between Luxe and GitHub.
+//! GitHub — the one seam between luxe and GitHub.
 //!
 //! Everything that reads or writes a pull request or an issue goes through [`GitHub`], so there is
 //! one module that knows `gh` exists. [`GhCli`] is the implementation: it runs the user's own `gh`
@@ -41,7 +41,7 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
-/// What Luxe needs from a code host: every role, as the engine holds it.
+/// What luxe needs from a code host: every role, as the engine holds it.
 ///
 /// Deliberately small: each method is something a caller in the tree actually uses, so the traits
 /// grow with the features rather than ahead of them. The methods live in role traits, so code that
@@ -310,7 +310,7 @@ impl Repository {
 /// [`classify_failure`], so rewording an error here never changes behavior somewhere else.
 #[derive(Debug, thiserror::Error)]
 pub enum GitHubError {
-    /// `gh` is not installed anywhere Luxe can find it.
+    /// `gh` is not installed anywhere luxe can find it.
     #[error("the GitHub CLI (`gh`) is not installed")]
     NotInstalled,
     /// `gh` is installed but has no working sign-in for the host.
@@ -340,8 +340,8 @@ pub enum GitHubError {
         #[source]
         source: std::io::Error,
     },
-    /// `gh` answered with output Luxe could not read.
-    #[error("gh answered with something Luxe could not read")]
+    /// `gh` answered with output luxe could not read.
+    #[error("gh answered with something luxe could not read")]
     Unreadable(#[source] serde_json::Error),
     /// GitHub refused for rate: this sign-in's hourly budget, or its secondary limit, is spent.
     #[error("GitHub's rate limit for this account is spent")]

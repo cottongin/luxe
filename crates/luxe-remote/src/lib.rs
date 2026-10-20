@@ -1,6 +1,6 @@
-//! Luxe remote — the bridge between your own devices and the sessions running on this machine.
+//! luxe remote — the bridge between your own devices and the sessions running on this machine.
 //!
-//! Each running Luxe shares its session on a local endpoint only this user can open
+//! Each running luxe shares its session on a local endpoint only this user can open
 //! (`luxe_core::local_endpoint`). The bridge is the one thing that puts those sessions on a
 //! network, and only on the loopback interface: Tailscale Serve carries it to your tailnet and does
 //! the HTTPS. A phone lists the sessions over HTTP and joins one over a WebSocket, which the bridge

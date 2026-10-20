@@ -7,6 +7,10 @@ fn a_record_round_trips() {
     let state = RuntimeState {
         schema_version: RUNTIME_STATE_SCHEMA_VERSION,
         model: Some(RememberedModel { provider: "anthropic".into(), id: "claude-opus-5".into() }),
+        project_models: vec![ProjectModel {
+            project: "/work/app".into(),
+            model: RememberedModel { provider: "lmstudio".into(), id: "qwen3".into() },
+        }],
         thinking: Some(ThinkingLevel::High),
         recent_commands: vec!["cmd.model".into(), "cmd.new".into()],
         panes: PaneWidths { dock: Some(50), review_guide: None, peek: Some(90) },
@@ -88,6 +92,20 @@ fn the_persisted_shape_is_pinned_and_an_older_record_still_reads() {
         serde_json::to_value(&dragged).unwrap()["panes"],
         serde_json::json!({ "dock": 50, "peek": 90 })
     );
+
+    let per_project = RuntimeState {
+        project_models: vec![ProjectModel {
+            project: "/work/app".into(),
+            model: RememberedModel { provider: "lmstudio".into(), id: "qwen3".into() },
+        }],
+        ..dragged
+    };
+    assert_eq!(
+        serde_json::to_value(&per_project).unwrap()["project_models"],
+        serde_json::json!([
+            { "project": "/work/app", "model": { "provider": "lmstudio", "id": "qwen3" } }
+        ])
+    );
 }
 
 /// A dragged width is kept beside everything else the record holds, and survives a relaunch.
@@ -141,6 +159,45 @@ fn remembering_a_command_keeps_the_model() {
     assert_eq!(read.recent_commands, ["cmd.new", "cmd.pr"]);
 }
 
+fn model(provider: &str, id: &str) -> RememberedModel {
+    RememberedModel { provider: provider.into(), id: id.into() }
+}
+
+/// A pick is kept for its project and as the latest anywhere: the project gets its own back, and a
+/// project with none gets the latest.
+#[test]
+fn a_pick_is_remembered_for_its_project_and_anywhere() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("state.json");
+    let (app, docs, fresh) = (Path::new("/work/app"), Path::new("/work/docs"), Path::new("/new"));
+    RuntimeState::remember_model_at(&path, app, "lmstudio", "qwen3");
+    RuntimeState::remember_model_at(&path, docs, "anthropic", "claude-opus-5");
+
+    let state = RuntimeState::load_from(&path);
+    assert_eq!(state.model_for(app), Some(&model("lmstudio", "qwen3")), "its own pick");
+    assert_eq!(state.model_for(docs), Some(&model("anthropic", "claude-opus-5")));
+    assert_eq!(state.model_for(fresh), Some(&model("anthropic", "claude-opus-5")), "the latest");
+}
+
+/// Picking again in a project moves it to the front once, and the oldest project falls off.
+#[test]
+fn project_picks_are_kept_once_each_and_bounded() {
+    let mut state = RuntimeState::default();
+    for index in 0..PROJECT_MODELS_KEPT + 1 {
+        state.note_model(Path::new(&format!("/p{index}")), model("x", "m"));
+    }
+    assert_eq!(state.project_models.len(), PROJECT_MODELS_KEPT);
+    assert!(
+        !state.project_models.iter().any(|entry| entry.project == "/p0"),
+        "the oldest fell off"
+    );
+
+    assert!(state.note_model(Path::new("/p5"), model("x", "m")), "moving to the front is a change");
+    assert_eq!(state.project_models[0].project, "/p5");
+    assert_eq!(state.project_models.iter().filter(|entry| entry.project == "/p5").count(), 1);
+    assert!(!state.note_model(Path::new("/p5"), model("x", "m")), "the same pick again is not");
+}
+
 #[test]
 fn a_missing_record_is_simply_empty() {
     let directory = tempfile::tempdir().unwrap();
@@ -181,7 +238,7 @@ fn the_path_follows_the_state_directory_convention() {
 }
 
 /// Remembering what is already remembered writes nothing: a file nobody changed keeps its
-/// contents, so two Luxe processes that agree do not race to rewrite it.
+/// contents, so two luxe processes that agree do not race to rewrite it.
 #[test]
 fn an_unchanged_record_is_not_written() {
     let directory = tempfile::tempdir().unwrap();

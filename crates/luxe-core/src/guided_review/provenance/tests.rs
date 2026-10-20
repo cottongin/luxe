@@ -204,7 +204,7 @@ fn a_path_outside_the_project_is_not_recorded() {
     assert!(provenance.written_paths.is_empty(), "nothing outside the project is attributed");
 }
 
-/// The `test` tool is the one Luxe tells models to prefer, and its command is auto-detected,
+/// The `test` tool is the one luxe tells models to prefer, and its command is auto-detected,
 /// so an argument-less call still ran the suite.
 #[test]
 fn the_test_tool_counts_as_a_command_that_verifies() {

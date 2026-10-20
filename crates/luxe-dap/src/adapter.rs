@@ -148,7 +148,7 @@ pub enum TransportConfig {
 }
 
 /// A user-configured adapter from `~/.config/luxe/debug-adapters.json`. Lets users (or a model
-/// working in Luxe) add debuggers for more languages without a code change, reusing a built-in
+/// working in luxe) add debuggers for more languages without a code change, reusing a built-in
 /// launch dialect.
 #[derive(Debug, Clone, Deserialize)]
 pub struct CustomAdapter {

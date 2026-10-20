@@ -237,7 +237,7 @@ pub(crate) fn serialize_tool_result_blocks(
 
 /// Find a `System`-role message's text, for a caller that passes the prompt that way.
 ///
-/// Luxe's engine does not — it uses [`CompletionRequest::system`] — so this is a fallback.
+/// luxe's engine does not — it uses [`CompletionRequest::system`] — so this is a fallback.
 pub(crate) fn find_system_message(messages: &[Message]) -> Option<String> {
     messages.iter().find(|m| m.role == luxe_core::message::Role::System).map(Message::text)
 }

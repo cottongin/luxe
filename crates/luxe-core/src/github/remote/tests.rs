@@ -117,7 +117,7 @@ fn remotes_are_read_from_git_remote_v() {
 fn the_matching_remote_is_found_by_where_it_points() {
     let remotes = vec![
         ("origin".to_string(), "git@github.com:me/luxe.git".to_string()),
-        ("upstream".to_string(), "https://github.com/Someone/Luxe".to_string()),
+        ("upstream".to_string(), "https://github.com/Someone/luxe".to_string()),
     ];
     assert_eq!(
         matching_remote(&remotes, "github.com", "someone", "luxe"),

@@ -7,7 +7,7 @@ const SECRET_PREFIXES: &[&str] = &["sk-", "sk_live_", "ghp_", "gho_", "xoxb-", "
 
 /// Minimum run of key-shaped characters after a prefix before it counts as a credential.
 ///
-/// Without this, reading Luxe's own `redact.rs` — whose source *contains* every prefix — reports a
+/// Without this, reading luxe's own `redact.rs` — whose source *contains* every prefix — reports a
 /// leak on every audit. The prefix alone is prose; the prefix plus a key is a secret.
 const SECRET_BODY: usize = 16;
 

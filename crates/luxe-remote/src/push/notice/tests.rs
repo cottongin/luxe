@@ -38,7 +38,7 @@ fn a_prompt_says_what_waits_and_never_the_detail() {
     let asked = reading().read(&event(PERMISSION), now);
     assert_eq!(asked, Some(Heard::Prompt("perm:1".into(), notice("Approve bash", true))));
     let asked = reading().read(&event(QUESTION), now);
-    let expected = Heard::Prompt("ask:1".into(), notice("Luxe has a question", true));
+    let expected = Heard::Prompt("ask:1".into(), notice("The agent has a question for you", true));
     assert_eq!(asked, Some(expected));
     assert_eq!(reading().read(&event(CLOSED), now), Some(Heard::Closed("perm:1".into())));
 }
