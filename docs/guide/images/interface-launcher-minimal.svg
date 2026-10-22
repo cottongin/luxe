@@ -132,6 +132,15 @@
     <path fill="#6d5f43" d="M700.00 220.00h10.00v11.00h-10.00z"/>
     <path fill="#6d5f43" d="M710.00 220.00h10.00v11.00h-10.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 286.00Q25.00 275.00 30.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M35.00 275.00L40.00 275.00M35.00 275.00L30.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M45.00 275.00L50.00 275.00M45.00 275.00L40.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M55.00 275.00L60.00 275.00M55.00 275.00L50.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M65.00 275.00L70.00 275.00M65.00 275.00L60.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M75.00 275.00L80.00 275.00M75.00 275.00L70.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M85.00 275.00L90.00 275.00M85.00 275.00L80.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M95.00 275.00L100.00 275.00M95.00 275.00L90.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M105.00 275.00L110.00 275.00M105.00 275.00L100.00 275.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M115.00 275.00L120.00 275.00M115.00 275.00L110.00 275.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M125.00 275.00L130.00 275.00M125.00 275.00L120.00 275.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M135.00 275.00L140.00 275.00M135.00 275.00L130.00 275.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M145.00 275.00L150.00 275.00M145.00 275.00L140.00 275.00"/>
@@ -303,8 +312,8 @@
   <text x="0" y="193.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                               </tspan><tspan>  </tspan><tspan>      </tspan><tspan>  </tspan><tspan>    </tspan><tspan>  </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan>        </tspan><tspan>                                 </tspan></text>
   <text x="0" y="215.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                               </tspan><tspan>     </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>      </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>  </tspan><tspan>                            </tspan></text>
   <text x="0" y="237.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan>   </tspan><tspan>  </tspan><tspan>   </tspan><tspan>    </tspan><tspan>     </tspan><tspan>    </tspan><tspan>  </tspan><tspan>                            </tspan></text>
-  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                       </tspan><tspan>  </tspan></text>
+  <text x="0" y="259.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan>                                                                                         </tspan></text>
+  <text x="0" y="281.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan>                                                                                                </tspan><tspan>  </tspan></text>
   <text x="0" y="303.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#4d4a45">Ask anything, or type to find a session or a command</tspan><tspan>                                         </tspan><tspan> </tspan><tspan>  </tspan></text>
   <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#ddc084">                                                                      ↓ </tspan><tspan fill="#97938c">sessions and commands </tspan><tspan>  </tspan><tspan>  </tspan></text>
   <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>

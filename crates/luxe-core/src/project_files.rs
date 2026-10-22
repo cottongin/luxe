@@ -211,36 +211,47 @@ fn walk(folder: &Path, ignoring: bool) -> impl Iterator<Item = ignore::DirEntry>
 
 /// Read one project-relative file for the preview.
 pub fn read_file(root: &Path, relative: &str) -> Result<ProjectFile, ProjectFileFailure> {
+    read_at(&resolve(root, relative)?, normalized(relative))
+}
+
+/// Reads the file at `path` for the preview, answered under `label`. Whether `path` may be read at
+/// all is the caller's question, already settled.
+pub(crate) fn read_at(path: &Path, label: String) -> Result<ProjectFile, ProjectFileFailure> {
     use std::io::Read;
 
-    let path = resolve(root, relative)?;
-    if !path.is_file() {
+    let meta = std::fs::metadata(path).map_err(|error| match error.kind() {
+        std::io::ErrorKind::NotFound => ProjectFileFailure::NotFound,
+        _ => unreadable(error),
+    })?;
+    if !meta.is_file() {
         return Err(ProjectFileFailure::WrongKind);
     }
-    let bytes = std::fs::metadata(&path).map(|meta| meta.len()).map_err(unreadable)?;
     let mut content = Vec::new();
-    std::fs::File::open(&path)
+    std::fs::File::open(path)
         .map_err(unreadable)?
         .take(MAX_FILE_BYTES as u64)
         .read_to_end(&mut content)
         .map_err(unreadable)?;
+    let truncated = meta.len() > content.len() as u64;
+    let (text, binary) = decode(content);
+    Ok(ProjectFile { path: label, text, bytes: meta.len(), truncated, binary })
+}
+
+/// The text in `content` and whether it is binary instead, in which case the text is empty.
+fn decode(content: Vec<u8>) -> (String, bool) {
     let binary = content.iter().take(BINARY_SNIFF).any(|byte| *byte == 0)
         || std::str::from_utf8(&content).is_err_and(|error| error.error_len().is_some());
-    let truncated = bytes > content.len() as u64;
-    let text = match binary {
-        true => String::new(),
-        // A cut can land inside a character; drop the partial one rather than the whole file
-        false => match String::from_utf8(content) {
-            Ok(text) => text,
-            Err(error) => {
-                let valid = error.utf8_error().valid_up_to();
-                let mut bytes = error.into_bytes();
-                bytes.truncate(valid);
-                String::from_utf8(bytes).unwrap_or_default()
-            }
-        },
-    };
-    Ok(ProjectFile { path: normalized(relative), text, bytes, truncated, binary })
+    if binary {
+        return (String::new(), true);
+    }
+    // A cut can land inside a character; drop the partial one rather than the whole file
+    let text = String::from_utf8(content).unwrap_or_else(|error| {
+        let valid = error.utf8_error().valid_up_to();
+        let mut bytes = error.into_bytes();
+        bytes.truncate(valid);
+        String::from_utf8(bytes).unwrap_or_default()
+    });
+    (text, false)
 }
 
 /// `relative` under `root`, refused when it climbs out lexically or through a symlink.

@@ -197,8 +197,9 @@ pub enum MouseTarget {
     PeekSelection(PeekSelectionAction),
     /// A row of an open context menu, by index.
     ContextMenuItem(usize),
-    /// The Context Dock footer's model-name row (opens the model picker).
-    DockModelRow,
+    /// The Context Dock's provider or model row, which opens the model picker on the providers or
+    /// the models. Args: the step it opens on.
+    DockModelRow(crate::model_picker::PickerStart),
     /// The statusline's changes module (opens the Changes pane).
     StatuslineChanges,
     /// The Context Dock footer's mode row, which switches to the next mode

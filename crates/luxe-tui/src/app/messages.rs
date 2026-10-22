@@ -53,6 +53,17 @@ pub(super) fn reduce(app: &mut App, msg: Msg) {
     }
 }
 
+/// Lays the frame out again for a new terminal size.
+fn resize(app: &mut App, width: u16, height: u16) {
+    app.workspace_layout = crate::workspace_layout::resolve_workspace_layout(width).layout;
+    app.guided_review_workspace.set_terminal_size(width, height);
+    // A font-size change arrives as a resize and nothing else, and it moves the only number an
+    // image is scaled against, so ask the terminal again rather than trusting what it said at
+    // startup.
+    app.images.set_cell_size(crate::graphics::CellSize::detect());
+    app.with_review(|workspace, review| workspace.clamp_column_offset(&review.files));
+}
+
 fn reduce_inner(app: &mut App, msg: Msg) {
     match msg {
         Msg::OpenChanges(_)
@@ -125,15 +136,7 @@ fn reduce_inner(app: &mut App, msg: Msg) {
                 app.apply_wizard_outcome(outcome);
             }
         }
-        Msg::TerminalResized { width, height } => {
-            app.workspace_layout = crate::workspace_layout::resolve_workspace_layout(width).layout;
-            app.guided_review_workspace.set_terminal_size(width, height);
-            // A font-size change arrives as a resize and nothing else, and it moves the only
-            // number an image is scaled against — so ask the terminal again rather than trusting
-            // what it said at startup.
-            app.images.set_cell_size(crate::graphics::CellSize::detect());
-            app.with_review(|workspace, review| workspace.clamp_column_offset(&review.files));
-        }
+        Msg::TerminalResized { width, height } => resize(app, width, height),
         Msg::ExitGuidedReview => super::navigation::exit_guided_review(app),
         Msg::GuidedReviewSelectDiffRow(_)
         | Msg::GuidedReviewSelectFile(_)
@@ -167,6 +170,7 @@ fn reduce_inner(app: &mut App, msg: Msg) {
         | Msg::GuidedReviewToggleSplit
         | Msg::GuidedReviewToggleWordWrap
         | Msg::GuidedReviewToggleHelp
+        | Msg::GuidedReviewDescription(_)
         | Msg::GuidedReviewToggleSourcePicker
         | Msg::GuidedReviewSourcePickerNext
         | Msg::GuidedReviewSourcePickerPrevious
@@ -205,7 +209,7 @@ fn reduce_inner(app: &mut App, msg: Msg) {
             app.panes.save();
         }
         Msg::FinishPaneResize => app.panes.save(),
-        Msg::OpenModelPicker => app.open_model_picker(),
+        Msg::OpenModelPicker(start) => app.open_model_picker_at(start),
         Msg::CopyText(text) => app.record_copy(text),
         Msg::OpenImageExternally(key) => app.open_image_externally(&key),
         Msg::OpenImageViewer(key) => {

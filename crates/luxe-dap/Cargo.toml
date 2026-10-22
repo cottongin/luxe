@@ -11,7 +11,7 @@ homepage.workspace = true
 # Provides a native Debug Adapter Protocol client + the `debug` tool.
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.4" }
+luxe-core = { path = "../luxe-core", version = "0.1.5" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

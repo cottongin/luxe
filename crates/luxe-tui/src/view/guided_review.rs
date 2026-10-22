@@ -25,7 +25,7 @@ use diff_render::render_content;
 use github_post::render_github_post;
 use overlays::{
     render_commit_preview, render_finding_details, render_finding_draft, render_finding_fix,
-    render_finish_review, render_help, render_source_picker,
+    render_finish_review, render_help, render_pull_request_description, render_source_picker,
 };
 use pull_request_fix::render_pull_request_fix;
 use pull_request_opening::render_pull_request_opening;
@@ -207,6 +207,7 @@ fn render_ready_columns(
 fn review_modal_open(app: &App) -> bool {
     matches!(app.guided_review_workspace.source_picker, ReviewSourcePickerState::Open { .. })
         || app.guided_review_workspace.help_visible
+        || app.guided_review_workspace.description_scroll.is_some()
         || app.guided_review_workspace.finding_details_visible
         || app.guided_review_workspace.finding_fix_visible
         || app.guided_review_workspace.finding_draft.is_some()
@@ -313,6 +314,9 @@ fn render_review_overlays(frame: &mut Frame, inner: Rect, app: &App) {
     }
     if let Some(preview) = app.guided_review_workspace.commit_preview.as_ref() {
         render_commit_preview(frame, inner, app, preview);
+    }
+    if let Some(scroll) = app.guided_review_workspace.description_scroll {
+        render_pull_request_description(frame, inner, app, scroll);
     }
 }
 

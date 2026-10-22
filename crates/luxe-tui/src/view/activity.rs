@@ -1,4 +1,5 @@
-//! Activity — the row above the composer: the turn's activity bar, a copy toast, or a hint.
+//! Activity — the row above the composer: the mode button, then the turn's activity bar, a copy
+//! toast, or a hint.
 
 use crate::app::App;
 use ratatui::{
@@ -29,7 +30,11 @@ const ACTIVITY_BAR_WIDTH: usize = 24;
 /// design — one line here and one in the dock, never a modal, never an auto-opened review — because
 /// the reviewable unit is the increment and the only way that stays small is if the count is always
 /// in view.
+///
+/// The mode button always leads the row, so everything else here starts to its right.
 pub(super) fn render_composer_activity(f: &mut Frame, area: Rect, app: &App) {
+    let badge = super::input::render_mode_badge(f, area, app);
+    let area = Rect { x: area.x + badge, width: area.width - badge, ..area };
     if crate::statusline::activity_parts(app).is_none() {
         if let Some(line) =
             unreviewed_invitation(app).or_else(|| first_steps(app, usize::from(area.width)))

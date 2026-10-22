@@ -31,25 +31,34 @@ impl App {
     /// between — and a list of models that cannot authenticate is worse than no list, because
     /// picking one looks like progress and fails on the first turn.
     pub fn open_model_picker(&mut self) {
-        self.open_model_picker_with(Vec::new());
+        self.open_model_picker_at(crate::model_picker::PickerStart::Models);
     }
 
-    /// The same, opening with something to say first. Args: `(note)`.
-    pub(crate) fn open_model_picker_with(&mut self, note: Vec<String>) {
+    /// The same, on the step `start` names: the provider in use's models, or the providers.
+    pub fn open_model_picker_at(&mut self, start: crate::model_picker::PickerStart) {
         let active = self.active_model_info.as_ref().map(|info| info.r#ref.clone());
-        self.open_model_picker_on(note, active);
+        self.open_model_picker_on(Vec::new(), active, |picker| picker.starting_on(start));
     }
 
-    /// The same, with the cursor on the first row rather than the model in use. Args: `(note)`.
-    pub(crate) fn open_model_picker_at_top(&mut self, note: Vec<String>) {
-        self.open_model_picker_on(note, None);
+    /// The same, on the models of `provider`, which a login just reached, with the cursor on the
+    /// first and something to say first. Args: `(note, provider)`.
+    ///
+    /// Not the provider in use: a login can land on another, and its models are the ones the
+    /// reader signed in for.
+    pub(crate) fn open_model_picker_after_login(&mut self, note: Vec<String>, provider: &str) {
+        let active = self.active_model_info.as_ref().map(|info| info.r#ref.clone());
+        self.open_model_picker_on(note, active, |picker| picker.about_provider(provider));
     }
 
-    /// Opens the picker with the cursor on `start`, or the top. Args: `(note, start)`.
+    /// Opens the picker with `active` marked, moved to its first step by `step`.
+    /// Args: `(note, active, step)`.
     fn open_model_picker_on(
         &mut self,
         note: Vec<String>,
-        start: Option<luxe_core::provider::ModelRef>,
+        active: Option<luxe_core::provider::ModelRef>,
+        step: impl FnOnce(
+            crate::model_picker::ModelPickerState,
+        ) -> crate::model_picker::ModelPickerState,
     ) {
         if let Some(sources) = &self.model_sources {
             self.model_catalog = (sources.build)().catalog;
@@ -58,10 +67,9 @@ impl App {
             self.explain_no_models();
             return;
         }
-        self.overlays.model_picker = Some(
-            crate::model_picker::ModelPickerState::open(self.model_catalog.clone(), start)
-                .with_note(note),
-        );
+        let picker =
+            crate::model_picker::ModelPickerState::open(self.model_catalog.clone(), active);
+        self.overlays.model_picker = Some(step(picker).with_note(note));
         // Drawn from what is on disk, then corrected by whatever a local server says when it
         // answers. The picker is already on screen either way: a list that updates a moment late
         // beats a frame that waits on a socket.

@@ -52,8 +52,8 @@ pub(super) fn render_configuration(f: &mut Frame, size: ratatui::layout::Rect, a
 /// Draw the start screen: the wordmark, the session's own composer as its prompt, the list joined
 /// under it, and the statusline the session will have.
 ///
-/// The composer is the one a session draws — same widget, same wrapping, same title — so sending
-/// from here does not change what the prompt is, only what is around it.
+/// The composer is the one a session draws — same widget, same wrapping, same mode button on the
+/// row above it — so sending from here does not change what the prompt is, only what is around it.
 pub(super) fn render_dashboard(f: &mut Frame, size: Rect, app: &mut App) {
     if app.dashboard.is_none() {
         return;
@@ -76,6 +76,10 @@ pub(super) fn render_dashboard(f: &mut Frame, size: Rect, app: &mut App) {
     let Some(dashboard) = app.dashboard.as_ref() else { return };
     let composer = dashboard.view(f, body, &app.theme_styles, &app.hit, app.banner, rows, border);
     input::composer(f, composer, app, &layout);
+    // The row above is the gap under the wordmark; with no wordmark there is no gap to use
+    if composer.y > body.y {
+        input::render_mode_badge(f, Rect { y: composer.y - 1, height: 1, ..composer }, app);
+    }
     if let Some(dashboard) = app.dashboard.as_ref() {
         dashboard.finish(f, composer, &app.theme_styles, border);
         // An empty prompt says what it is for, past the caret, in the quietest ink there is

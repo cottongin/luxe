@@ -65,11 +65,12 @@ pub(super) fn footer_lines(
 }
 
 /// The telemetry rows a click lands on, for a block starting at line `start`. The provider and the
-/// model are one choice in the picker, so both rows open it.
+/// model rows are separate targets, so each lights up alone and opens its own step of the picker.
 fn clickable_rows(start: usize) -> Vec<(usize, crate::mouse::MouseTarget)> {
+    use crate::model_picker::PickerStart;
     vec![
-        (start + PROVIDER_ROW, crate::mouse::MouseTarget::DockModelRow),
-        (start + MODEL_ROW, crate::mouse::MouseTarget::DockModelRow),
+        (start + PROVIDER_ROW, crate::mouse::MouseTarget::DockModelRow(PickerStart::Providers)),
+        (start + MODEL_ROW, crate::mouse::MouseTarget::DockModelRow(PickerStart::Models)),
         (start + MODE_ROW, crate::mouse::MouseTarget::DockModeRow),
     ]
 }
@@ -199,25 +200,11 @@ pub(super) fn telemetry_lines(app: &App) -> Vec<Line<'static>> {
 fn model_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>> {
     let styles = &app.theme_styles;
     let status = &app.status;
-    let mut lines: Vec<Line<'static>> = Vec::new();
-
-    lines.push(section_heading_line(Section::Model, app));
-    lines.push(provider_row(app, row, column));
-    let room = telemetry_value_width(row, column).saturating_sub(icon_cells(Icon::Model.glyph()));
-    // Nothing chooses a model for the reader, so this row says which it is either way — and stays
-    // the affordance that opens the picker, which is the whole reason a reader with none needs it.
-    let (name, ink) = match status.model.is_empty() {
-        true => ("no model".to_string(), styles.warning),
-        false => (truncate_cells(&status.model, room), styles.text),
-    };
-    lines.push(telemetry_affordance(
-        "model",
-        icon_label(Icon::Model.glyph(), &name),
-        ink,
-        column,
-        app,
-        &crate::mouse::MouseTarget::DockModelRow,
-    ));
+    let mut lines = vec![
+        section_heading_line(Section::Model, app),
+        provider_row(app, row, column),
+        model_row(app, row, column),
+    ];
     lines.push(telemetry_row(
         "thinking",
         icon_label(Icon::Thinking.glyph(), thinking_label(&status.thinking)),
@@ -254,6 +241,33 @@ fn model_telemetry(app: &App, row: usize, column: usize) -> Vec<Line<'static>> {
     lines
 }
 
+/// The model, wearing its maker's mark.
+///
+/// Nothing chooses a model for the reader, so this row says which it is either way, and stays the
+/// affordance that opens the picker, which is the whole reason a reader with none needs it.
+fn model_row(app: &App, row: usize, column: usize) -> Line<'static> {
+    let styles = &app.theme_styles;
+    let model = app.status.model.as_str();
+    let icon = crate::widgets::model_icon(model_id(app)).glyph();
+    let room = telemetry_value_width(row, column).saturating_sub(icon_cells(icon));
+    let (name, ink) = match model.is_empty() {
+        true => ("no model".to_string(), styles.warning),
+        false => (truncate_cells(model, room), styles.text),
+    };
+    let target = crate::mouse::MouseTarget::DockModelRow(crate::model_picker::PickerStart::Models);
+    telemetry_affordance("model", icon_label(icon, &name), ink, column, app, &target)
+}
+
+/// The id of the model the dock names, which picks its mark even where config gave it a name of
+/// its own. Taken from the active model while it is the one reported, else the name shown.
+pub(super) fn model_id(app: &App) -> &str {
+    let status = &app.status;
+    app.active_model_info
+        .as_ref()
+        .filter(|info| info.r#ref.provider == status.provider && info.display() == status.model)
+        .map_or(status.model.as_str(), |info| info.r#ref.id.as_str())
+}
+
 /// Who serves the model, wearing that provider's mark. Always drawn, so the rows under it keep
 /// their place: before the engine names a provider it says `none`, dimmed.
 fn provider_row(app: &App, row: usize, column: usize) -> Line<'static> {
@@ -265,14 +279,9 @@ fn provider_row(app: &App, row: usize, column: usize) -> Line<'static> {
         true => ("none".to_string(), styles.dim),
         false => (truncate_cells(provider, room), styles.text),
     };
-    telemetry_affordance(
-        "provider",
-        icon_label(icon, &name),
-        ink,
-        column,
-        app,
-        &crate::mouse::MouseTarget::DockModelRow,
-    )
+    let target =
+        crate::mouse::MouseTarget::DockModelRow(crate::model_picker::PickerStart::Providers);
+    telemetry_affordance("provider", icon_label(icon, &name), ink, column, app, &target)
 }
 
 /// The SESSION block, once a turn has something to measure or someone has joined: the window,

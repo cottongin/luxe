@@ -90,10 +90,8 @@ pub(super) fn pull_request_account(
         lines.push(Line::default());
         lines.extend(prose_lines(&opening, app, width, " "));
         if more {
-            lines.push(Line::from(Span::styled(
-                " The rest of the description is on GitHub \u{b7} o",
-                styles.dim,
-            )));
+            let whole = " Read the whole description \u{b7} p";
+            lines.push(Line::from(Span::styled(whole, styles.dim)));
         }
     }
     if !pr.closing_issues.is_empty() {
@@ -299,15 +297,18 @@ fn discussion_item(
     lines
 }
 
-/// Characters of a pull request's description the brief shows before pointing at GitHub.
-const DESCRIPTION_OPENING_CHARS: usize = 600;
+/// Characters of a pull request's description the brief shows before pointing at the whole of it:
+/// a few lines of the guide, enough to hear the author's claim in their own words.
+pub(super) const DESCRIPTION_OPENING_CHARS: usize = 320;
 
 /// The first paragraphs of a description, and whether there is more.
 ///
 /// The guide scrolls to keep the current chapter in view, so a long description in full pushes the
 /// chapters down and opens the pane in the middle of someone's prose with its heading gone — which
-/// the first real pull request did. The guide's prompt still gets all of it. Template headings and
-/// a bare `Fixes #n` are skipped: the issues it closes have their own section.
+/// the first real pull request did. Even one paragraph is cut, at a sentence where it can be,
+/// since an agent's opening paragraph alone can fill the pane and `p` reads the rest. The guide's
+/// prompt still gets all of it. Template headings and a bare `Fixes #n` are skipped: the issues
+/// it closes have their own section.
 pub(super) fn description_opening(body: &str) -> (String, bool) {
     let paragraphs: Vec<&str> = body
         .split("\n\n")
@@ -316,21 +317,41 @@ pub(super) fn description_opening(body: &str) -> (String, bool) {
         .filter(|paragraph| !paragraph.starts_with('#') || paragraph.contains('\n'))
         .filter(|paragraph| !is_closing_reference(paragraph))
         .collect();
-    let mut opening = String::new();
-    let mut taken = 0;
-    for paragraph in &paragraphs {
-        if taken > 0
-            && opening.chars().count() + paragraph.chars().count() > DESCRIPTION_OPENING_CHARS
-        {
+    let Some(first) = paragraphs.first() else { return (String::new(), false) };
+    let mut opening = clip_at_sentence(first, DESCRIPTION_OPENING_CHARS);
+    let mut taken = 1;
+    let cut = opening.len() < first.len();
+    for paragraph in paragraphs.iter().skip(1).take_while(|_| !cut) {
+        if opening.chars().count() + paragraph.chars().count() > DESCRIPTION_OPENING_CHARS {
             break;
         }
-        if taken > 0 {
-            opening.push_str("\n\n");
-        }
+        opening.push_str("\n\n");
         opening.push_str(paragraph);
         taken += 1;
     }
-    (opening, taken < paragraphs.len())
+    (opening, cut || taken < paragraphs.len())
+}
+
+/// `text` cut to at most `limit` characters: at the last sentence or line end in the second half
+/// of that, or failing one, at a word with an ellipsis.
+fn clip_at_sentence(text: &str, limit: usize) -> String {
+    if text.chars().count() <= limit {
+        return text.to_owned();
+    }
+    let head: String = text.chars().take(limit).collect();
+    // The punctuation is ASCII, so one byte past it is still a character boundary
+    let sentence_end = head
+        .char_indices()
+        .filter(|(at, mark)| matches!(mark, '.' | '!' | '?') && head[at + 1..].starts_with(' '))
+        .map(|(at, _)| at + 1)
+        .next_back();
+    match sentence_end.max(head.rfind('\n')).filter(|end| *end >= head.len() / 2) {
+        Some(end) => head[..end].trim_end().to_owned(),
+        None => {
+            let word = head.rfind(char::is_whitespace).unwrap_or(head.len());
+            format!("{}\u{2026}", head[..word].trim_end())
+        }
+    }
 }
 
 /// `Fixes #12`, `closes owner/repo#3`: a line GitHub reads as a link to an issue, and nothing more.

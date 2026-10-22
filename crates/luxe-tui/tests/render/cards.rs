@@ -509,10 +509,11 @@ fn a_copy_is_confirmed_above_the_prompt_and_bound_to_the_terminal_copy_chords() 
     // Flush to the composer's own right margin, and wearing a bold accent on a background so it
     // catches an eye on its way to the prompt.
     assert_eq!(buffer[(width - 2, toast)].bg, chip, "the chip runs to the inset right edge");
-    let start = text.find('\u{f0c5}').expect("the clipboard glyph") as u16;
+    // Columns, not bytes: the mode button's icon shares the row
+    let start = column_of(&text, "\u{f0c5}");
     assert_eq!(buffer[(start, toast)].bg, chip);
     assert_ne!(buffer[(start - 2, toast)].bg, chip, "and stops there");
-    let label = text.find("Copied").expect("the label") as u16;
+    let label = column_of(&text, "Copied");
     assert!(buffer[(label, toast)].modifier.contains(ratatui::style::Modifier::BOLD));
     assert_eq!(buffer[(label, toast)].fg, app.theme_styles.accent.fg.expect("the accent"));
 

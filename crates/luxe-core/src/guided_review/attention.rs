@@ -2,9 +2,13 @@
 //!
 //! The guide is written by the same agent whose work is under review, so it is the right narrator
 //! for everything it can be expected to disclose and the wrong one for the rest. That line decides
-//! what belongs here: a file edited without ever being read, a credential-shaped addition, a
-//! weakened gate. The agent cannot report the first — it does not know — and has every incentive to
-//! soften the other two. luxe can see all three because it is the harness that produced the change.
+//! what belongs here: a file edited without ever being read, and a credential-shaped addition. The
+//! agent cannot report the first — it does not know — and may not notice the second. luxe can see
+//! both because it is the harness that produced the change.
+//!
+//! Guessing that a gate was weakened is not here either. Its shapes (a removed `#[test]`, a CI
+//! file touched) are what moving a test into its own file or editing a workflow look like, so it
+//! fired on ordinary work far more often than on a real weakening.
 //!
 //! Who wrote a change is deliberately not here: read off the transcript it is a guess, wrong often
 //! enough to cost more than it tells anyone, since a formatter, a pasted file, or a path spelled
@@ -27,8 +31,6 @@ use serde::{Deserialize, Serialize};
 pub enum AttentionKind {
     /// An added line looks like a committed credential.
     SecretShaped,
-    /// A test, gate, or CI guarantee was weakened.
-    GateWeakened,
     /// The agent edited this file without ever reading it.
     BlindEdit,
 }
@@ -38,7 +40,6 @@ impl AttentionKind {
     pub fn badge(self) -> &'static str {
         match self {
             Self::SecretShaped => "secret?",
-            Self::GateWeakened => "gate",
             Self::BlindEdit => "unread",
         }
     }
@@ -47,7 +48,6 @@ impl AttentionKind {
     pub const fn plural(self) -> &'static str {
         match self {
             Self::SecretShaped => "credential-shaped lines",
-            Self::GateWeakened => "weakened gates",
             Self::BlindEdit => "files edited without being read",
         }
     }
@@ -74,19 +74,10 @@ pub struct AttentionSignal {
     pub hunk_id: Option<HunkId>,
 }
 
-/// Paths whose changes weaken a gate by definition.
-fn is_gate_path(path: &str) -> bool {
-    path.starts_with(".github/workflows/")
-        || matches!(
-            path.rsplit('/').next().unwrap_or(path),
-            "deny.toml" | "nextest.toml" | "codecov.yml" | ".codecov.yml"
-        )
-}
-
 /// Rows one signal kind may occupy before the rest collapse into a counted aggregate.
 ///
 /// Two, not ten. A real review produced 236 `untested` rows and pushed every other call-out — a
-/// possible credential, a weakened gate, a blind edit — off the screen. A list that can be dominated
+/// possible credential, a blind edit — off the screen. A list that can be dominated
 /// by its cheapest signal is not a ranking.
 const MAX_ROWS_PER_KIND: usize = 2;
 
@@ -97,8 +88,7 @@ const MAX_ROWS_PER_KIND: usize = 2;
 /// reading list is decided from [`review_flags`], which the cap never touches.
 pub fn review_attention(review: &GuidedReview) -> Vec<AttentionSignal> {
     let mut signals = review_flags(review);
-    // Exact repeats only: one file can legitimately weaken a gate in more than one way, and
-    // collapsing those would hide half the reason it needs attention.
+    // Exact repeats only: two hunks of one file tripping the same detector say the same thing
     signals.dedup_by(|left, right| left.kind == right.kind && left.detail == right.detail);
     cap_per_kind(signals)
 }
@@ -154,83 +144,17 @@ fn cap_per_kind(signals: Vec<AttentionSignal>) -> Vec<AttentionSignal> {
     capped
 }
 
-/// Signals readable from the diff text alone.
+/// Signals readable from the diff text alone: one per added line shaped like a credential, in any
+/// file, since a key pasted into a README or a config is still a key.
 fn file_signals(file: &ReviewFile, path: &str) -> Vec<AttentionSignal> {
     let mut signals = Vec::new();
-    if is_gate_path(path) {
-        signals.push(AttentionSignal {
-            kind: AttentionKind::GateWeakened,
-            path: Some(path.to_owned()),
-            detail: format!("{path} changes CI or supply-chain gating"),
-            aggregate: false,
-            file_id: Some(file.id.clone()),
-            hunk_id: None,
-        });
-    }
-    // A file that *mentions* a gate has not weakened one: a plan quoting `-D warnings`, or a state
-    // file recording the command that ran it, would be a false alarm that teaches a reviewer to
-    // stop reading the list. The line heuristics below look for Rust attributes and lint flags,
-    // which only mean anything where code and scripts live. Credential shapes still count
-    // everywhere — a key pasted into a README or a config is a key.
-    let code = !is_prose_path(path) && !is_data_path(path);
     for hunk in &file.hunks {
-        for line in &hunk.lines {
-            let text = line.text.trim();
-            match line.kind {
-                ReviewLineKind::Addition => {
-                    if !code {
-                        if looks_like_secret(&line.text) {
-                            signals.push(secret_signal(file, hunk, path));
-                        }
-                        continue;
-                    }
-                    if text.starts_with("#[ignore")
-                        || text.starts_with("#[cfg_attr(") && text.contains("ignore")
-                    {
-                        signals.push(gate_signal(file, hunk, path, "a test was disabled"));
-                    } else if text.starts_with("#![allow(") {
-                        signals.push(gate_signal(
-                            file,
-                            hunk,
-                            path,
-                            "a crate-wide lint was allowed",
-                        ));
-                    } else if looks_like_secret(&line.text) {
-                        signals.push(secret_signal(file, hunk, path));
-                    }
-                }
-                ReviewLineKind::Deletion if code => {
-                    if text.starts_with("#[test]") || text.starts_with("#[tokio::test") {
-                        signals.push(gate_signal(file, hunk, path, "a test was removed"));
-                    } else if text.contains("-D warnings") {
-                        signals.push(gate_signal(file, hunk, path, "the warning gate was relaxed"));
-                    }
-                }
-                _ => {}
-            }
+        let added = hunk.lines.iter().filter(|line| line.kind == ReviewLineKind::Addition);
+        for _ in added.filter(|line| looks_like_secret(&line.text)) {
+            signals.push(secret_signal(file, hunk, path));
         }
     }
     signals
-}
-
-/// Whether a path is prose rather than code, so line-content gate heuristics do not apply.
-fn is_prose_path(path: &str) -> bool {
-    let name = path.rsplit('/').next().unwrap_or(path);
-    [".md", ".markdown", ".mdx", ".txt", ".rst", ".adoc", ".org"]
-        .iter()
-        .any(|extension| name.ends_with(extension))
-}
-
-/// Whether a path holds data rather than code or configuration that can gate anything.
-///
-/// Serialized records quote whatever they describe, including the exact `cargo clippy -- -D warnings`
-/// invocation that enforces the gate. CI workflows and `deny.toml` are deliberately absent: those
-/// really do gate, and [`is_gate_path`] flags them by definition.
-fn is_data_path(path: &str) -> bool {
-    let name = path.rsplit('/').next().unwrap_or(path);
-    [".json", ".jsonl", ".ndjson", ".lock", ".csv", ".tsv", ".svg", ".snap"]
-        .iter()
-        .any(|extension| name.ends_with(extension))
 }
 
 fn secret_signal(file: &ReviewFile, hunk: &super::ReviewHunk, path: &str) -> AttentionSignal {
@@ -238,22 +162,6 @@ fn secret_signal(file: &ReviewFile, hunk: &super::ReviewHunk, path: &str) -> Att
         kind: AttentionKind::SecretShaped,
         path: Some(path.to_owned()),
         detail: format!("{path} adds a line that looks like a credential"),
-        aggregate: false,
-        file_id: Some(file.id.clone()),
-        hunk_id: Some(hunk.id.clone()),
-    }
-}
-
-fn gate_signal(
-    file: &ReviewFile,
-    hunk: &super::ReviewHunk,
-    path: &str,
-    reason: &str,
-) -> AttentionSignal {
-    AttentionSignal {
-        kind: AttentionKind::GateWeakened,
-        path: Some(path.to_owned()),
-        detail: format!("{path}: {reason}"),
         aggregate: false,
         file_id: Some(file.id.clone()),
         hunk_id: Some(hunk.id.clone()),

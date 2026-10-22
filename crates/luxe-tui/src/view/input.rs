@@ -29,11 +29,11 @@ pub(super) fn height(layout: &TextLayout, terminal_height: u16) -> u16 {
     (rows as u16 + 2).min(terminal_height.saturating_sub(4).max(3))
 }
 
-/// The composer's title: the session's mode, in its own color, and a button under the pointer.
+/// The session's mode as its icon and name, in its own color, and a button under the pointer.
 ///
 /// Drawn in both modes rather than only when planning, because a button that appears only once you
 /// are in plan mode cannot be what gets you there.
-fn mode_title(app: &App) -> Line<'static> {
+fn mode_badge(app: &App) -> Line<'static> {
     let mode = app.status.mode.as_str();
     let hue = crate::modes::accent(mode, &app.theme_styles);
     let hovered = app.pointer.hover.as_ref() == Some(&crate::mouse::MouseTarget::ComposerMode);
@@ -53,12 +53,31 @@ fn mode_title(app: &App) -> Line<'static> {
     ])
 }
 
+/// Draws the mode button at the left end of `row`, the row above the composer, and returns the
+/// cells it took so the rest of the row starts after it.
+///
+/// Above the frame rather than in it, so it holds still at the left edge whatever the row beside it
+/// is saying: the activity bar while a turn runs, a hint when nothing does.
+pub(super) fn render_mode_badge(f: &mut Frame, row: Rect, app: &App) -> u16 {
+    if row.width == 0 || row.height == 0 {
+        return 0;
+    }
+    let badge = mode_badge(app);
+    let width = u16::try_from(badge.width()).unwrap_or(u16::MAX).min(row.width);
+    let at = Rect { width, height: 1, ..row };
+    f.render_widget(Paragraph::new(badge), at);
+    // The badge is the mode switch: a click moves to the next mode, as shift+tab does
+    app.hit.borrow_mut().push(at, crate::mouse::MouseTarget::ComposerMode);
+    width
+}
+
 /// Renders the prompt composer.
+///
+/// The frame wears the mode's color; the mode's name is on the row above, in
+/// [`render_mode_badge`].
 pub(super) fn composer(f: &mut Frame, area: Rect, app: &mut App, layout: &TextLayout) {
-    let title = mode_title(app);
     let block = crate::widgets::panel_block()
-        .border_style(crate::modes::accent(&app.status.mode, &app.theme_styles))
-        .title(title.clone());
+        .border_style(crate::modes::accent(&app.status.mode, &app.theme_styles));
     let inner = block.inner(area);
     let width = inner.width.max(1);
     app.editor.set_viewport_width(width);
@@ -93,17 +112,6 @@ pub(super) fn composer(f: &mut Frame, area: Rect, app: &mut App, layout: &TextLa
     let cursor = app.editor.cursor_in(layout);
     let scroll_y = cursor.row.saturating_sub(usize::from(inner.height.saturating_sub(1)));
     f.render_widget(Paragraph::new(lines).block(block).scroll((scroll_y as u16, 0)), area);
-    // The title is the mode switch: a click moves to the next mode, as shift+tab does
-    let title_width = u16::try_from(title.width()).unwrap_or(u16::MAX);
-    app.hit.borrow_mut().push(
-        Rect::new(
-            area.x.saturating_add(1),
-            area.y,
-            title_width.min(area.width.saturating_sub(2)),
-            1,
-        ),
-        crate::mouse::MouseTarget::ComposerMode,
-    );
 
     // A full-window overlay is drawn over the composer, so parking the caret here would leave a
     // blinking block sitting on top of someone else's surface.

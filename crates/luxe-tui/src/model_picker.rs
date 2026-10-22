@@ -1,29 +1,23 @@
-//! Model picker — the searchable overlay behind `/model` and the palette's "Change model".
+//! Model picker — the searchable overlay behind `/model`, the palette's "Change model" and the
+//! dock's provider and model rows.
 //!
 //! Pure state + rendering. The CLI assembles the [`ModelEntry`] catalog (configured models from
 //! `models.json`, enriched/extended by a cached models.dev catalog); this module only filters,
 //! renders, and returns the chosen [`ModelInfo`]. Selecting one sends `Action::SetModel`.
+//!
+//! Two steps, so choosing who serves a model and choosing the model are separate questions. The
+//! model step lists the models of the provider in use, and `tab` widens it to every provider. The
+//! provider step (`←`, or the dock's provider row) lists providers: choosing one that serves the
+//! model in use switches to it there, and any other opens the model step on its models.
 
-use crate::glyphs::Icon;
 use crate::picker::PickerNav;
-use crate::theme::styles::ThemeStyles;
-use crate::widgets::truncate_end as truncate;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use luxe_core::provider::{ModelInfo, ModelRef};
-use ratatui::{
-    layout::{Constraint, Direction, Layout, Rect},
-    style::{Modifier, Style},
-    text::{Line, Span},
-    widgets::{Block, Borders, Clear, List, ListItem, Paragraph},
-    Frame,
-};
-use unicode_width::UnicodeWidthStr;
 
 mod meta;
-use meta::meta_suffix;
-
-/// Panel label, shared by the rendered title and the modal-width computation.
-const TITLE: &str = "Select model";
+mod providers;
+mod render;
+use providers::ProviderStep;
 
 /// The model catalog + active model the TUI runner installs at startup.
 #[derive(Debug, Clone, Default)]
@@ -77,7 +71,7 @@ impl ModelSources {
 pub struct ModelEntry {
     /// Full model info sent to the engine on selection.
     pub info: ModelInfo,
-    /// Display name (models.dev name when known, else the model id).
+    /// What the row calls it: the name the user gave it in config, else the model id.
     pub label: String,
     /// Whether this model is declared in the user's config (vs. a models.dev browse extra).
     pub configured: bool,
@@ -95,6 +89,15 @@ impl ModelEntry {
     }
 }
 
+/// Which step the model picker opens on.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PickerStart {
+    /// The providers, for the dock's provider row
+    Providers,
+    /// The models of the provider in use, for everything else
+    Models,
+}
+
 /// Outcome of a model-picker keypress.
 #[derive(Clone, Debug, PartialEq)]
 pub enum ModelPickerOutcome {
@@ -109,24 +112,73 @@ pub enum ModelPickerOutcome {
 /// Pure state machine for the model picker overlay.
 #[derive(Debug, Clone)]
 pub struct ModelPickerState {
+    /// Every model in the catalog, whoever serves it
+    all: Vec<ModelEntry>,
+    /// The models on show: `all`, or the scoped provider's share of it
     items: Vec<ModelEntry>,
     nav: PickerNav,
     active: Option<ModelRef>,
     note: Vec<String>,
+    /// The provider the model step is about, when it serves anything
+    scope: Option<String>,
+    /// Whether `tab` widened the model step past [`Self::scope`] to every provider
+    widened: bool,
+    /// The provider step, while it is the one showing
+    providers: Option<ProviderStep>,
+    /// Whether the model step was reached from the provider step, which `esc` returns to
+    from_providers: bool,
 }
 
 impl ModelPickerState {
     /// Open the picker over a catalog, marking `active` as the current model.
+    ///
+    /// Opens on every model; [`Self::starting_on`] narrows it to the provider in use, or opens on
+    /// the providers.
     pub fn open(items: Vec<ModelEntry>, active: Option<ModelRef>) -> Self {
-        let mut nav = PickerNav::new(items.len());
+        let nav = PickerNav::new(items.len());
+        let (all, note) = (items.clone(), Vec::new());
+        let mut picker = Self {
+            all,
+            items,
+            nav,
+            active,
+            note,
+            scope: None,
+            widened: false,
+            providers: None,
+            from_providers: false,
+        };
         // Start on the active model when it's in the list, so the current choice is preselected.
         // Nothing is filtered yet, so an item's index is also its row.
+        let active = picker.active.as_ref();
         if let Some(row) =
-            active.as_ref().and_then(|it| items.iter().position(|entry| &entry.info.r#ref == it))
+            active.and_then(|it| picker.items.iter().position(|entry| &entry.info.r#ref == it))
         {
-            nav.select(row);
+            picker.nav.select(row);
         }
-        Self { items, nav, active, note: Vec::new() }
+        picker
+    }
+
+    /// Moves to the step `start` names: the provider in use's models, or the providers.
+    pub fn starting_on(mut self, start: PickerStart) -> Self {
+        let provider = self.active.as_ref().map(|active| active.provider.clone());
+        match start {
+            PickerStart::Models => self.show(provider, false),
+            PickerStart::Providers => self.show_providers(),
+        }
+        self
+    }
+
+    /// Moves to `provider`'s models with the cursor on the first, for a login that just reached
+    /// them.
+    ///
+    /// Those are the models the reader signed in for, whichever model is in use. The top row,
+    /// because a cursor resting on one reads as luxe recommending it. A local server's models
+    /// arrive when it answers, so until then the list is everything and [`Self::refresh`] narrows it.
+    pub fn about_provider(mut self, provider: &str) -> Self {
+        self.show(Some(provider.to_owned()), false);
+        self.nav.select(0);
+        self
     }
 
     /// Opens with something to say first — what a login landed, and which model it left you on.
@@ -155,45 +207,147 @@ impl ModelPickerState {
 
     /// Handle a key event. Returns the outcome (select/close/consumed).
     pub fn on_key(&mut self, key: &KeyEvent) -> ModelPickerOutcome {
+        let on_models = self.providers.is_none();
+        let ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
         match key.code {
-            KeyCode::Esc => ModelPickerOutcome::Close,
-            KeyCode::Enter => match self.selected_entry() {
-                Some(entry) => ModelPickerOutcome::Select(Box::new(entry.info.clone())),
-                None => ModelPickerOutcome::Consumed,
-            },
-            KeyCode::Up => {
-                self.move_up();
-                ModelPickerOutcome::Consumed
-            }
-            KeyCode::Down => {
-                self.move_down();
-                ModelPickerOutcome::Consumed
-            }
-            KeyCode::Char('p') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                self.move_up();
-                ModelPickerOutcome::Consumed
-            }
-            KeyCode::Char('n') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                self.move_down();
-                ModelPickerOutcome::Consumed
-            }
+            KeyCode::Esc => return self.escape(),
+            KeyCode::Enter => return self.enter(),
+            KeyCode::Right if !on_models => return self.enter(),
+            KeyCode::Tab if on_models => self.widen(),
+            KeyCode::Left if on_models => self.show_providers(),
+            KeyCode::Up => self.nav_mut().move_up(),
+            KeyCode::Char('p') if ctrl => self.nav_mut().move_up(),
+            KeyCode::Down => self.nav_mut().move_down(),
+            KeyCode::Char('n') if ctrl => self.nav_mut().move_down(),
+            // Everything else is swallowed: the picker is modal, so a stray key must not reach the
+            // composer behind it
             _ => {
-                self.nav.edit_query(key, || searchable(&self.items));
-                // Everything else is swallowed: the picker is modal, so a stray key must not
-                // reach the composer behind it.
-                ModelPickerOutcome::Consumed
+                let rows = self.searchable_rows();
+                self.nav_mut().edit_query(key, || rows);
             }
+        }
+        ModelPickerOutcome::Consumed
+    }
+
+    /// `esc`: back to the providers when they led here, else close.
+    fn escape(&mut self) -> ModelPickerOutcome {
+        if self.providers.is_some() || !self.from_providers {
+            return ModelPickerOutcome::Close;
+        }
+        self.show_providers();
+        ModelPickerOutcome::Consumed
+    }
+
+    /// `enter`: switch to the model under the cursor, or choose the provider under it.
+    fn enter(&mut self) -> ModelPickerOutcome {
+        if self.providers.is_some() {
+            return self.choose_provider();
+        }
+        match self.selected_entry() {
+            Some(entry) => ModelPickerOutcome::Select(Box::new(entry.info.clone())),
+            None => ModelPickerOutcome::Consumed,
+        }
+    }
+
+    /// Chooses the provider under the cursor.
+    ///
+    /// Another provider serving the model in use switches to it there and closes, since the model
+    /// was never the question. The provider in use, or one without that model, opens on its
+    /// models for the reader to choose from.
+    fn choose_provider(&mut self) -> ModelPickerOutcome {
+        let chosen = self.providers.as_ref().and_then(ProviderStep::selected);
+        let Some(provider) = chosen.map(|row| row.id.clone()) else {
+            return ModelPickerOutcome::Consumed;
+        };
+        if let Some(same) = self.same_model_from(&provider) {
+            return ModelPickerOutcome::Select(Box::new(same.info.clone()));
+        }
+        self.providers = None;
+        self.from_providers = true;
+        self.show(Some(provider), false);
+        ModelPickerOutcome::Consumed
+    }
+
+    /// The model in use as `provider` serves it, when that is a different provider and it does.
+    fn same_model_from(&self, provider: &str) -> Option<&ModelEntry> {
+        let active = self.active.as_ref().filter(|active| active.provider != provider)?;
+        self.all.iter().find(|entry| entry.info.r#ref == ModelRef::new(provider, &active.id))
+    }
+
+    /// `tab`: every provider's models, or back to the one the step is about.
+    fn widen(&mut self) {
+        let widened = !self.widened;
+        self.show(self.scope.clone(), widened);
+    }
+
+    /// Opens the provider step, on the provider the model step is about.
+    fn show_providers(&mut self) {
+        let current =
+            self.scope.clone().or_else(|| self.active.as_ref().map(|it| it.provider.clone()));
+        self.providers = Some(ProviderStep::new(&self.all, current.as_deref()));
+    }
+
+    /// Shows the model step about `scope`, widened or not, keeping the query and the cursor's model
+    /// where they still apply.
+    ///
+    /// The scope is kept even while it serves nothing, which is everything on show until a
+    /// refresh brings its models.
+    fn show(&mut self, scope: Option<String>, widened: bool) {
+        self.scope = scope;
+        self.widened = widened;
+        let items = match self.scoped_provider() {
+            Some(provider) => self
+                .all
+                .iter()
+                .filter(|entry| entry.info.r#ref.provider == provider)
+                .cloned()
+                .collect(),
+            None => self.all.clone(),
+        };
+        self.replace_items(items);
+    }
+
+    /// The provider the model list is narrowed to right now, if it is.
+    fn scoped_provider(&self) -> Option<&str> {
+        self.served_scope().filter(|_| !self.widened)
+    }
+
+    /// The provider the model step is about, while it serves anything.
+    fn served_scope(&self) -> Option<&str> {
+        let scope = self.scope.as_deref()?;
+        self.all.iter().any(|entry| entry.info.r#ref.provider == scope).then_some(scope)
+    }
+
+    /// The navigation of the step showing.
+    fn nav(&self) -> &PickerNav {
+        self.providers.as_ref().map_or(&self.nav, |step| &step.nav)
+    }
+
+    /// The navigation of the step showing, to move.
+    fn nav_mut(&mut self) -> &mut PickerNav {
+        match self.providers.as_mut() {
+            Some(step) => &mut step.nav,
+            None => &mut self.nav,
+        }
+    }
+
+    /// What a reader can type at the rows of the step showing.
+    fn searchable_rows(&self) -> Vec<String> {
+        match &self.providers {
+            Some(step) => step.searchable(),
+            None => searchable(&self.items),
         }
     }
 
     /// Moves the selection to `filtered_index` (a mouse click on that row); clamped to range.
     pub fn select(&mut self, filtered_index: usize) {
-        self.nav.select(filtered_index);
+        self.nav_mut().select(filtered_index);
     }
 
     /// Filters by pasted text, the way typing it would.
     pub fn paste(&mut self, text: &str) {
-        self.nav.paste_query(text, &searchable(&self.items));
+        let rows = self.searchable_rows();
+        self.nav_mut().paste_query(text, &rows);
     }
 
     /// Swap in a freshly-built catalog without disturbing the reader.
@@ -202,270 +356,57 @@ impl ModelPickerState {
     /// had chosen, so the row is re-found by id and the query survives. A model that has gone
     /// away takes the cursor to the top, which is the only honest answer left.
     pub fn refresh(&mut self, items: Vec<ModelEntry>) {
+        self.all = items;
+        self.show(self.scope.clone(), self.widened);
+        if let Some(step) = &self.providers {
+            let current = step.selected().map(|row| row.id.clone());
+            self.providers = Some(ProviderStep::new(&self.all, current.as_deref()));
+        }
+    }
+
+    /// Replaces the models on show, keeping the query and the model under the cursor.
+    fn replace_items(&mut self, items: Vec<ModelEntry>) {
         let chosen = self.selected_entry().map(ModelEntry::qualified_id);
         let query = self.nav.query().to_string();
         self.items = items;
         self.nav = PickerNav::new(self.items.len());
         self.nav.set_query(&query, &searchable(&self.items));
-        if let Some(chosen) = chosen {
-            if let Some(row) = self
-                .nav
-                .filtered_indices()
-                .iter()
-                .position(|index| self.items[*index].qualified_id() == chosen)
-            {
-                self.nav.select(row);
-            }
+        let row = chosen.and_then(|chosen| {
+            let filtered = self.nav.filtered_indices();
+            filtered.iter().position(|index| self.items[*index].qualified_id() == chosen)
+        });
+        if let Some(row) = row {
+            self.nav.select(row);
         }
     }
 
-    /// The currently highlighted entry, if any row matches.
+    /// The highlighted model, if any row of the model step matches.
     pub fn selected_entry(&self) -> Option<&ModelEntry> {
         self.items.get(self.nav.selected_item_index()?)
     }
 
+    /// Whether the provider step is the one showing.
+    pub fn choosing_provider(&self) -> bool {
+        self.providers.is_some()
+    }
+
     /// The cursor's row among the visible matches.
     pub(crate) fn cursor(&self) -> usize {
-        self.nav.selected()
+        self.nav().selected()
     }
 
     /// Number of visible matches.
     pub fn match_count(&self) -> usize {
-        self.nav.match_count()
+        self.nav().match_count()
     }
 
     /// The current search query.
     pub fn query(&self) -> &str {
-        self.nav.query()
-    }
-
-    fn move_up(&mut self) {
-        self.nav.move_up();
-    }
-
-    fn move_down(&mut self) {
-        self.nav.move_down();
-    }
-
-    /// Terminal-cell width for the picker modal: fit the widest model row (cursor + active
-    /// marker + label + qualified id + metadata), the footer, and the border title, then add
-    /// borders + one right-pad cell. Computed over ALL items so the width is query-stable.
-    ///
-    /// The row's own frame is part of the fit rather than a constant beside it: a modal sized to
-    /// the words alone clips the closing cap off its widest row the moment the frame changes.
-    fn content_modal_width(&self, available: u16) -> u16 {
-        let row_width = self
-            .items
-            .iter()
-            .map(|entry| {
-                crate::widgets::SELECTION_FRAME
-                    + 2
-                    + 2
-                    + UnicodeWidthStr::width(entry.label.as_str())
-                    + 2
-                    + UnicodeWidthStr::width(entry.qualified_id().as_str())
-                    + UnicodeWidthStr::width(meta_suffix(entry).as_str())
-            })
-            .max()
-            .unwrap_or(0);
-        let total = self.items.len();
-        let footer_width = UnicodeWidthStr::width(
-            format!(" {total}/{total} · enter switch · ↑/↓ choose · esc close ").as_str(),
-        );
-        let title_width = crate::widgets::panel_title_width(Icon::Model.glyph(), TITLE);
-        // The lead space each note line is drawn with comes out of the same three cells the
-        // borders take below, so the text's own width is the whole of what it asks for.
-        let note_width =
-            self.note.iter().map(|line| UnicodeWidthStr::width(line.as_str())).max().unwrap_or(0);
-        let natural = row_width.max(footer_width).max(title_width).max(note_width) as u16;
-        let max_width = available.saturating_sub(4).max(30);
-        natural.saturating_add(3).clamp(30, max_width)
-    }
-
-    /// Rows the picker wants in `area`: its list, its chrome, and a floor so it never reads as a
-    /// scrap of a list.
-    pub(crate) fn desired_height(&self, area: Rect) -> u16 {
-        // Borders, the search field and its rule, the rows, the footer
-        let desired = self.nav.filtered_indices().len().min(14) as u16
-            + 4
-            + crate::widgets::FOOTER_ROWS
-            + self.note_rows();
-        desired.max(10 + self.note_rows()).min(area.height.saturating_sub(2))
-    }
-
-    /// Renders the picker as a centered modal over the conversation.
-    pub fn view(
-        &self,
-        frame: &mut Frame,
-        area: Rect,
-        theme: &ThemeStyles,
-        hit: &std::cell::RefCell<crate::mouse::HitRegions>,
-    ) {
-        if area.width < 30 || area.height < 8 {
-            return;
-        }
-        // Fit the widest model row (stable across queries) + one right-pad cell, rather than a
-        // fixed-width box with trailing dead space.
-        let width = self.content_modal_width(area.width);
-        let height = self.desired_height(area);
-        self.view_in(frame, crate::widgets::centered_rect(width, height, area), theme, hit);
-    }
-
-    /// Renders the picker's panel at exactly `panel`, for a surface that has already placed it.
-    ///
-    /// The Configuration surface hands a finished login straight to this, in the region the wizard
-    /// was just in — "now pick a model" is the last step of setting one up, not a new screen.
-    pub(crate) fn view_in(
-        &self,
-        frame: &mut Frame,
-        panel: Rect,
-        theme: &ThemeStyles,
-        hit: &std::cell::RefCell<crate::mouse::HitRegions>,
-    ) {
-        frame.render_widget(Clear, panel);
-
-        let block = crate::widgets::titled_panel(Icon::Model.glyph(), TITLE, theme);
-        let inner = block.inner(panel);
-        frame.render_widget(block, panel);
-
-        let chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints([
-                Constraint::Length(self.note_rows()),
-                Constraint::Length(2),
-                Constraint::Min(2),
-                Constraint::Length(crate::widgets::FOOTER_ROWS),
-            ])
-            .split(inner);
-
-        if !self.note.is_empty() {
-            let room = usize::from(chunks[0].width).saturating_sub(1);
-            let lines: Vec<Line> = self
-                .note
-                .iter()
-                .map(|line| {
-                    Line::from(Span::styled(format!(" {}", truncate(line, room)), theme.muted))
-                })
-                .collect();
-            frame.render_widget(Paragraph::new(lines), chunks[0]);
-        }
-
-        let search = Paragraph::new(Line::from(vec![
-            Span::styled(" Search: ", theme.accent.add_modifier(Modifier::BOLD)),
-            Span::styled(self.query().to_string(), theme.text),
-        ]))
-        .block(Block::default().borders(Borders::BOTTOM).border_style(theme.border_muted));
-        frame.render_widget(search, chunks[1]);
-        let cursor_x = chunks[1]
-            .x
-            .saturating_add(9)
-            .saturating_add(UnicodeWidthStr::width(self.query()) as u16)
-            .min(chunks[1].right().saturating_sub(1));
-        frame.set_cursor_position((cursor_x, chunks[1].y));
-
-        if self.nav.filtered_indices().is_empty() {
-            frame
-                .render_widget(Paragraph::new(" No matching models").style(theme.muted), chunks[2]);
-        } else {
-            self.render_rows(frame, chunks[2], theme, hit);
-        }
-
-        let count = format!(
-            "{}/{}",
-            self.nav.selected().saturating_add(1).min(self.nav.filtered_indices().len()),
-            self.nav.filtered_indices().len()
-        );
-        crate::widgets::render_footer(
-            frame,
-            chunks[3],
-            "enter switch · ↑/↓ choose · esc close",
-            Some(&count),
-            theme,
-        );
-    }
-
-    fn render_rows(
-        &self,
-        frame: &mut Frame,
-        area: Rect,
-        theme: &ThemeStyles,
-        hit: &std::cell::RefCell<crate::mouse::HitRegions>,
-    ) {
-        let capacity = area.height as usize;
-        let start = self
-            .nav
-            .selected()
-            .saturating_add(1)
-            .saturating_sub(capacity)
-            .min(self.nav.filtered_indices().len().saturating_sub(capacity));
-        let total = self.nav.filtered_indices().len();
-        let end = start.saturating_add(capacity).min(total);
-        let width = crate::widgets::list_rows_width(area.width, total, area.height);
-        let available = width.saturating_sub(2 + crate::widgets::SELECTION_FRAME as u16) as usize;
-        {
-            let mut regions = hit.borrow_mut();
-            for offset in 0..end.saturating_sub(start) {
-                let row_y = area.y.saturating_add(offset as u16);
-                regions.push(
-                    Rect::new(area.x, row_y, width, 1),
-                    crate::mouse::MouseTarget::ModelRow(start + offset),
-                );
-            }
-            let list = crate::mouse::OverlayList::Models;
-            crate::widgets::list_scrollbar(frame, &mut regions, area, list, (start, total), theme);
-        }
-
-        let items: Vec<ListItem> = self.nav.filtered_indices()[start..end]
-            .iter()
-            .enumerate()
-            .map(|(offset, index)| {
-                let entry = &self.items[*index];
-                let selected = start + offset == self.nav.selected();
-                let is_active = self.active.as_ref() == Some(&entry.info.r#ref);
-                let background = if selected { theme.selected_bg } else { Style::default() };
-
-                let cursor = crate::glyphs::Mark::Cursor.gutter(selected);
-                let marker = if is_active { "● " } else { "  " };
-                let meta_text = meta_suffix(entry);
-
-                let label = truncate(&entry.label, available.saturating_sub(marker.len() + 3));
-                // The id, then what it is, in whatever the label leaves: a row that ran past the
-                // frame was cut by it mid-word, and took the selection's closing cap with it
-                let room = available
-                    .saturating_sub(UnicodeWidthStr::width(marker))
-                    .saturating_sub(UnicodeWidthStr::width(label.as_str()));
-                let id = truncate(&format!("  {}", entry.qualified_id()), room);
-                let meta_text =
-                    truncate(&meta_text, room.saturating_sub(UnicodeWidthStr::width(id.as_str())));
-                let mut spans = vec![
-                    Span::styled(cursor, theme.accent_on(selected)),
-                    Span::styled(
-                        marker,
-                        if is_active {
-                            theme.success.patch(background)
-                        } else {
-                            theme.muted.patch(background)
-                        },
-                    ),
-                    Span::styled(label, theme.label_on(selected)),
-                    Span::styled(id, theme.muted.patch(background)),
-                ];
-                if !meta_text.is_empty() {
-                    spans.push(Span::styled(meta_text, theme.secondary_on(selected)));
-                }
-                ListItem::new(crate::widgets::selection_row(
-                    spans,
-                    usize::from(width),
-                    selected,
-                    theme,
-                ))
-            })
-            .collect();
-        frame.render_widget(List::new(items), Rect { width, ..area });
+        self.nav().query()
     }
 }
 
-/// What a reader can type at a model row: its provider-qualified id and its display label.
+/// What a reader can type at a model row: its provider-qualified id and its label.
 fn searchable(items: &[ModelEntry]) -> Vec<String> {
     items.iter().map(|entry| format!("{} {}", entry.qualified_id(), entry.label)).collect()
 }

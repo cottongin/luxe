@@ -58,11 +58,10 @@ test that passed says so on its own header and stays in the diff. Lockfiles, gen
 moves and formatting-only changes fold away, each run of them in a file into one row; `f` opens
 them all.
 
-Three things are flagged and stay on the list, whatever else passed. Each flagged file says so on
+Two things are flagged and stay on the list, whatever else passed. Each flagged file says so on
 its row and in the walkthrough, and the guide gives the total for any kind with more than two:
 
 - A line that looks like a credential (`sk-…`, `ghp_…`, `AKIA…`, a `password = "…"`)
-- A weakened check: a deleted test, an added `#[ignore]`, an edit to CI or `deny.toml`
 - A file the agent edited without reading first
 
 If a test fixture needs a value that looks like a credential, mark that line with
@@ -137,7 +136,8 @@ agent opened. It needs the GitHub CLI, `gh`, signed in.
 - It is pinned to the commit GitHub reported and compared from where it branched, as GitHub's
   **Files changed** does. Nothing in your checkout moves.
 - The head says who opened it and where it stands: `by dependabot (bot) · 1 failing · changes requested`.
-- The author's description follows the guide, under its own heading.
+- The opening of the author's description follows the guide, under its own heading. `p` reads
+  the whole of it.
 - Review threads appear under the lines they are about. Anything without a line is under
   **Discussion on GitHub**.
 - `a` asks the agent about a line, at the pull request's commit.

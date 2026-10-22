@@ -137,7 +137,10 @@ async fn fetch_latest(url: &str) -> Result<String, String> {
     if !response.status().is_success() {
         return Err(format!("release manifest returned {}", response.status()));
     }
-    let body = bounded_body(response).await?;
+    let body = bounded_bytes(response, MAX_BODY_BYTES)
+        .await
+        .map_err(|error| format!("release manifest: {error}"))?;
+    let body = String::from_utf8(body).map_err(|_| "release manifest was not UTF-8".to_string())?;
 
     let parsed: serde_json::Value =
         serde_json::from_str(&body).map_err(|error| error.to_string())?;
@@ -156,20 +159,24 @@ async fn fetch_latest(url: &str) -> Result<String, String> {
     Ok(normalized.to_string())
 }
 
-/// Read a response body, refusing one that outgrows [`MAX_BODY_BYTES`].
-async fn bounded_body(response: reqwest::Response) -> Result<String, String> {
+/// Reads a response body, refusing one that outgrows `limit` bytes: what comes back is remote and
+/// untrusted, so a server that streams forever is cut off rather than exhausting memory.
+pub(crate) async fn bounded_bytes(
+    response: reqwest::Response,
+    limit: usize,
+) -> Result<Vec<u8>, String> {
     use futures::StreamExt;
 
     let mut stream = response.bytes_stream();
     let mut body = Vec::new();
     while let Some(chunk) = stream.next().await {
         let chunk = chunk.map_err(|error| error.to_string())?;
-        if body.len() + chunk.len() > MAX_BODY_BYTES {
-            return Err("release manifest is implausibly large".to_string());
+        if body.len() + chunk.len() > limit {
+            return Err(format!("the response is larger than {limit} bytes"));
         }
         body.extend_from_slice(&chunk);
     }
-    String::from_utf8(body).map_err(|_| "release manifest was not UTF-8".to_string())
+    Ok(body)
 }
 
 #[cfg(test)]

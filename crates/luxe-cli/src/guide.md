@@ -119,10 +119,10 @@ In order, the first that is set:
 4. The model you last chose anywhere
 5. `default_model` in `models.json`
 
-luxe never picks a model for you, and signing in doesn't either: the model picker opens at the top
-of the list for you to choose. With none of these set, sending a message opens the model picker,
-and `--headless` and the loop refuse to start. To always start from your configured default rather
-than your last choice:
+luxe never picks a model for you, and signing in doesn't either: the model picker opens on the
+provider you signed in to, at the top of its models, for you to choose. With none of these set,
+sending a message opens the model picker, and `--headless` and the loop refuse to start. To always
+start from your configured default rather than your last choice:
 
 ```json title="~/.config/luxe/config.json"
 { "agent": { "remember_model": false } }
@@ -882,14 +882,17 @@ it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
 | --- | --- |
-| The install script | `luxe-cli-update`, the updater it put beside `luxe` |
+| The install script | The install script again, downloaded from the new release |
 | Homebrew | `brew update`, then `brew upgrade luxe` |
 | Cargo | `cargo install --locked --force luxe-cli` |
 
-luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
-package manager owns is left to it, and a downloaded archive points you at the releases page. On
-Windows, a running program can't be overwritten, so luxe first renames itself to `luxe.exe.old`,
-and the next launch deletes it.
+luxe never replaces its own program; whatever installed it does. For the install script, that's
+the new release's copy of the same script, run into the folder the first install used. Its
+temporary files go in a folder luxe deletes afterwards, and what it prints is saved to
+`update.log` in luxe's logs folder (`~/.local/state/luxe/logs`, or `%LOCALAPPDATA%\luxe\logs` on
+Windows). A copy your system's package manager owns is left to it, and a downloaded archive
+points you at the releases page. On Windows, a running program can't be overwritten, so luxe
+first renames itself to `luxe.exe.old`, and the next launch deletes it.
 Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
 copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 
@@ -1058,7 +1061,7 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | --- | --- |
 | `context_window` | The model's context window, in tokens |
 | `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
-| `name` | The name shown in the picker and statusline |
+| `name` | The name shown in the picker and statusline, instead of the model ID |
 | `reasoning` | Whether it can think |
 | `thinking` | The level a session starts at for this model |
 | `thinking_level_map` | What each thinking level sends; see below |
@@ -1214,7 +1217,6 @@ luxe takes a model's details from three places, each overriding the one before, 
 ```console
 $ luxe models show anthropic/claude-opus-5
 anthropic/claude-opus-5
-  name              Claude Opus 5  [models.dev]
   context window    1.0M  [models.dev]
   max output        128k  [models.dev]
   reasoning         true  [models.dev]
@@ -1226,6 +1228,8 @@ anthropic/claude-opus-5
 
 Each value names where it came from: `snapshot` for the catalog built into luxe, `models.dev` for
 the refreshed copy, `config` for your `models.json`, and `default` where none of them said.
+
+A model goes by its ID everywhere luxe shows it, unless you give it a `name` in `models.json`.
 
 | Variable | Does |
 | --- | --- |
@@ -1791,11 +1795,10 @@ test that passed says so on its own header and stays in the diff. Lockfiles, gen
 moves and formatting-only changes fold away, each run of them in a file into one row; `f` opens
 them all.
 
-Three things are flagged and stay on the list, whatever else passed. Each flagged file says so on
+Two things are flagged and stay on the list, whatever else passed. Each flagged file says so on
 its row and in the walkthrough, and the guide gives the total for any kind with more than two:
 
 - A line that looks like a credential (`sk-…`, `ghp_…`, `AKIA…`, a `password = "…"`)
-- A weakened check: a deleted test, an added `#[ignore]`, an edit to CI or `deny.toml`
 - A file the agent edited without reading first
 
 If a test fixture needs a value that looks like a credential, mark that line with
@@ -1870,7 +1873,8 @@ agent opened. It needs the GitHub CLI, `gh`, signed in.
 - It is pinned to the commit GitHub reported and compared from where it branched, as GitHub's
   **Files changed** does. Nothing in your checkout moves.
 - The head says who opened it and where it stands: `by dependabot (bot) · 1 failing · changes requested`.
-- The author's description follows the guide, under its own heading.
+- The opening of the author's description follows the guide, under its own heading. `p` reads
+  the whole of it.
 - Review threads appear under the lines they are about. Anything without a line is under
   **Discussion on GitHub**.
 - `a` asks the agent about a line, at the pull request's commit.
@@ -2488,7 +2492,7 @@ conversation, or in its place below 80 columns.
 | **PLAN** | The agent's todo list, scrolled to what it is working on |
 | **FILES** | The project as a tree, with what changed marked in it. Click a file to [preview](#preview) it. |
 | **ELSEWHERE** | Files the session changed outside the project, when there are any |
-| **MODEL** | The provider, model, thinking level and [mode](agent.md#plan-then-build). Click the model to change it, or the mode to switch it. |
+| **MODEL** | The provider, model, thinking level and [mode](agent.md#plan-then-build). Click the provider or the model to change it, or the mode to switch it. |
 | **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. While a phone or another client has [joined](remote.md), a **joined** row names it. |
 
 `alt+d` shows or hides the dock, and `/dock left` or `/dock right` moves it. To set it for good:
@@ -3195,7 +3199,7 @@ group: "Using luxe"
 ## Sign in
 
 Open **Configuration** (on the start screen, or `/config`) and choose how to connect. When a
-provider connects, the model picker opens.
+provider connects, the model picker opens on its models; `tab` shows every provider's.
 
 | Option | For |
 | --- | --- |
@@ -3279,10 +3283,15 @@ A command runs each time a request needs the key.
 
 ## Choose a model
 
-`/model` opens the model picker: every model your providers can serve, configured providers first.
-Type to search. The session carries on with the new model, even across providers, and luxe
-remembers your choice for next time, in this project and as your latest anywhere
-([which model a session starts on](agent.md#which-model-a-session-starts-on)).
+`/model` opens the model picker on the models of the provider you're using. Type to search, and
+press `tab` to see every provider's models. The session carries on with the new model, even across
+providers, and luxe remembers your choice for next time, in this project and as your latest
+anywhere ([which model a session starts on](agent.md#which-model-a-session-starts-on)).
+
+To change who serves the model, press `←` in the picker, or click the provider in the dock. Choose
+a provider that serves the model you're on and luxe switches to it there, keeping the model.
+Choose any other and its models open for you to pick from. Clicking the model in the dock opens
+the models.
 
 From the command line, `--model` takes a model ID, or `provider/id` to pick the provider too:
 
@@ -4727,7 +4736,8 @@ There is no telemetry. luxe connects only to:
    when `web_fetch` clones a repository (`"tools": { "clone_repositories": false }` stops it)
 3. The models.dev catalog, to refresh model details (`LUXE_MODELS_DEV_REFRESH=0` stops it)
 4. The update check, once a day (`"update": { "check": false }` stops it), and when you run
-   `luxe update` or `/update`, which then runs your package manager's own update
+   `luxe update` or `/update`, which then runs your package manager's own update, or for the
+   install script, downloads the new release's script from GitHub and runs it
 5. GitHub, through your own `gh`, when you, the agent or an [RPC client](rpc.md#github-writes) work
    with pull requests and issues. A client can write there only if you start it with
    `--github-writes`.

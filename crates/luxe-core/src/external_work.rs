@@ -180,6 +180,44 @@ impl ExternalWork {
         self.state.lock().ok()?.files.get(path).cloned()
     }
 
+    /// Reads `requested` for the preview, when it is something this session changed outside the
+    /// project.
+    ///
+    /// The record is the permission. Any front-end, the phone among them, can name any absolute
+    /// path, so only what the session itself changed out there is read: a loose file it recorded,
+    /// or a file in a checkout it recorded that is still inside that checkout once `..` is refused
+    /// and symlinks are followed.
+    pub fn read_file(
+        &self,
+        requested: &str,
+    ) -> Result<crate::project_files::ProjectFile, crate::project_files::ProjectFileFailure> {
+        let path = Path::new(requested);
+        let climbs = path.components().any(|part| part == std::path::Component::ParentDir);
+        if climbs || !self.covers(path) {
+            return Err(crate::project_files::ProjectFileFailure::OutsideProject);
+        }
+        crate::project_files::read_at(path, requested.to_owned())
+    }
+
+    /// Whether `path` is a loose file this session recorded, or really sits in a recorded checkout.
+    fn covers(&self, path: &Path) -> bool {
+        let Ok(state) = self.state.lock() else {
+            return false;
+        };
+        if state.files.contains_key(path) {
+            return true;
+        }
+        let roots: Vec<PathBuf> = state.roots.iter().cloned().collect();
+        drop(state);
+        // Both sides resolved, so a link out of a checkout fails and a checkout reached through
+        // one (`/tmp` on macOS) still matches
+        let Ok(real) = path.canonicalize() else {
+            return false;
+        };
+        let real_roots = roots.iter().filter_map(|root| root.canonicalize().ok());
+        real_roots.into_iter().any(|root| crate::paths::contains(&root, &real))
+    }
+
     /// Whether anything outside the project has been touched.
     pub fn is_empty(&self) -> bool {
         self.state

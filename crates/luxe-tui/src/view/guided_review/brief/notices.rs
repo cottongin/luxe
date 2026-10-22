@@ -104,17 +104,17 @@ fn no_provenance(review: &GuidedReview) -> bool {
     })
 }
 
-/// Color by urgency: a possible credential or a weakened gate outranks an unread edit.
+/// Color by urgency: a possible credential outranks an unread edit.
 fn attention_style(app: &App, signal: &AttentionSignal) -> Style {
     use luxe_core::guided_review::AttentionKind;
     match signal.kind {
-        AttentionKind::SecretShaped | AttentionKind::GateWeakened => app.theme_styles.error,
+        AttentionKind::SecretShaped => app.theme_styles.error,
         AttentionKind::BlindEdit => app.theme_styles.warning,
     }
 }
 
-/// How many lines or files of `kind` the review flags: a credential or a weakened gate is a line,
-/// an unread edit a file.
+/// How many lines or files of `kind` the review flags: a credential is a line, an unread edit a
+/// file.
 fn flagged_total(app: &App, kind: luxe_core::guided_review::AttentionKind) -> usize {
     app.review.flags.iter().filter(|flag| flag.kind == kind).count()
 }

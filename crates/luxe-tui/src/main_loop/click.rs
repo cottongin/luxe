@@ -1,7 +1,7 @@
 //! What a click or a wheel notch means — the target under the pointer resolved to an action.
 
 use super::{RouteAction, ScrollAction};
-use crate::app::{App, Msg};
+use crate::app::{App, Msg, ViewMode};
 use crate::mouse::MouseTarget;
 use crossterm::event::KeyEvent;
 
@@ -159,8 +159,8 @@ pub(super) fn clicked_target(app: &mut App, target: MouseTarget) -> RouteAction 
         MouseTarget::PeekSelection(action) if app.changes.is_some() => {
             RouteAction::msg(Msg::PeekSelectionAction(action))
         }
-        MouseTarget::DockModelRow if app.current_view != crate::app::ViewMode::GuidedReview => {
-            RouteAction::msg(Msg::OpenModelPicker)
+        MouseTarget::DockModelRow(step) if app.current_view != ViewMode::GuidedReview => {
+            RouteAction::msg(Msg::OpenModelPicker(step))
         }
         // A click on a message opens whatever it is holding back — a card's output, a collapsed run
         // of calls, a previewed paste, a reasoning block — and does nothing at all on plain prose,
@@ -290,6 +290,13 @@ fn review_footer_message(action: crate::mouse::ReviewFooterAction) -> Msg {
 /// view's primary surface when the cursor is over unregistered space.
 pub(super) fn wheel(app: &App, col: u16, row: u16, up: bool) -> RouteAction {
     use crate::mouse::ScrollRegionId;
+    // The open description is what is being read, wherever the pointer happens to be
+    if app.current_view == crate::app::ViewMode::GuidedReview
+        && app.guided_review_workspace.description_scroll.is_some()
+    {
+        let step = crate::app::DescriptionStep::Scroll(if up { -3 } else { 3 });
+        return RouteAction::msg(Msg::GuidedReviewDescription(step));
+    }
     match app.hit.borrow().scroll_at(col, row) {
         Some(ScrollRegionId::Conversation) => conversation_wheel(app, up),
         Some(ScrollRegionId::ReviewDiff) => RouteAction::msg(if up {

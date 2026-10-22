@@ -11,16 +11,15 @@ fn copies() -> (tempfile::TempDir, PathBuf, PathBuf) {
     (dir, updated, other)
 }
 
-/// The installer's updater runs from beside the binary even off `PATH`; anything not there, cargo
-/// or brew, is found by name.
+/// An installer copy is updated by luxe running the script, a package manager's by its commands,
+/// and nothing runs for a check or for a copy with no known owner.
 #[test]
-fn a_program_beside_the_binary_runs_from_there() {
-    let dir = tempfile::tempdir().expect("tempdir");
-    let updater = dir.path().join(format!("luxe-cli-update{}", std::env::consts::EXE_SUFFIX));
-    std::fs::write(&updater, b"").expect("a stand-in updater");
-    assert_eq!(program_path("luxe-cli-update", Some(dir.path())), updater);
-    assert_eq!(program_path("brew", Some(dir.path())), PathBuf::from("brew"));
-    assert_eq!(program_path("luxe-cli-update", None), PathBuf::from("luxe-cli-update"));
+fn each_source_takes_its_own_route() {
+    assert_eq!(route(InstallSource::Installer, false), Some(Route::Installer));
+    let cargo = InstallSource::Cargo.update_steps().expect("cargo has steps");
+    assert_eq!(route(InstallSource::Cargo, false), Some(Route::Steps(cargo)));
+    assert_eq!(route(InstallSource::Archive, false), None, "no owner to ask");
+    assert_eq!(route(InstallSource::Installer, true), None, "a check runs nothing");
 }
 
 #[test]
@@ -73,4 +72,6 @@ fn the_instructions_name_the_owners_command_or_none() {
     assert!(check.contains("luxe update") && check.contains("cargo install"), "{check}");
     let download = instructions(InstallSource::Archive, false);
     assert!(download.contains("download it from"), "{download}");
+    // No second command to offer beside it, so it isn't named twice
+    assert_eq!(instructions(InstallSource::Installer, true), "To update: `luxe update`.");
 }

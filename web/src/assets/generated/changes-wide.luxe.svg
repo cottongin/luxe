@@ -329,24 +329,21 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1835.00 781.00L1835.00 770.00M1835.00 781.00L1835.00 792.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 803.00L425.00 792.00M425.00 803.00L425.00 814.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1835.00 803.00L1835.00 792.00M1835.00 803.00L1835.00 814.00"/>
-    <path fill="#151311" d="M1860.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1870.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1880.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1890.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1900.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1910.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1920.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M1930.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#171513" d="M1940.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#2e2b27" d="M1950.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#302d28" d="M1960.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#413c31" d="M1970.00 792.00h2.50v22.00h-2.50z"/>
-    <path fill="#514839" d="M1980.00 792.00h2.50v22.00h-2.50z"/>
-    <path fill="#7c6d50" d="M1990.00 792.00h3.75v22.00h-3.75z"/>
-    <path fill="#98855f" d="M2000.00 792.00h3.75v22.00h-3.75z"/>
-    <path fill="#e3cb9a" d="M2010.00 792.00h5.00v22.00h-5.00z"/>
-    <path fill="#2a2723" d="M2020.00 792.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M2030.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1950.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1960.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1970.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1980.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1990.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M2000.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M2010.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M2020.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M2030.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M2040.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#2e2b27" d="M2050.00 792.00h1.25v22.00h-1.25z"/>
+    <path fill="#37322c" d="M2060.00 792.00h2.50v22.00h-2.50z"/>
+    <path fill="#514839" d="M2070.00 792.00h2.50v22.00h-2.50z"/>
+    <path fill="#645944" d="M2080.00 792.00h3.75v22.00h-3.75z"/>
+    <path fill="#98855f" d="M2090.00 792.00h3.75v22.00h-3.75z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 825.00L425.00 814.00M425.00 825.00L425.00 836.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M445.00 825.00L450.00 825.00M445.00 825.00L440.00 825.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M455.00 825.00L460.00 825.00M455.00 825.00L450.00 825.00"/>
@@ -488,6 +485,15 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1815.00 825.00L1820.00 825.00M1815.00 825.00L1810.00 825.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1835.00 825.00L1835.00 814.00M1835.00 825.00L1835.00 836.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1855.00 836.00Q1855.00 825.00 1860.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1865.00 825.00L1870.00 825.00M1865.00 825.00L1860.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1875.00 825.00L1880.00 825.00M1875.00 825.00L1870.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1885.00 825.00L1890.00 825.00M1885.00 825.00L1880.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1895.00 825.00L1900.00 825.00M1895.00 825.00L1890.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1905.00 825.00L1910.00 825.00M1905.00 825.00L1900.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1915.00 825.00L1920.00 825.00M1915.00 825.00L1910.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1925.00 825.00L1930.00 825.00M1925.00 825.00L1920.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1935.00 825.00L1940.00 825.00M1935.00 825.00L1930.00 825.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1945.00 825.00L1950.00 825.00M1945.00 825.00L1940.00 825.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1955.00 825.00L1960.00 825.00M1955.00 825.00L1950.00 825.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1965.00 825.00L1970.00 825.00M1965.00 825.00L1960.00 825.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1975.00 825.00L1980.00 825.00M1975.00 825.00L1970.00 825.00"/>
@@ -763,14 +769,14 @@
   <text x="0" y="611.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan>    </tspan><tspan>  </tspan><tspan fill="#85c7d7"> </tspan><tspan fill="#faaa51">client.ts</tspan><tspan>        </tspan><tspan fill="#81caa0"> +18</tspan><tspan fill="#e68485"> −3</tspan><tspan fill="#faaa51"> M</tspan><tspan>   </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">basename always survives.</tspan><tspan>                             </tspan></text>
   <text x="0" y="633.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="655.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">MODEL</tspan><tspan>                                  </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Now the dock's tests, to check nothing else leaned</tspan><tspan>    </tspan></text>
-  <text x="0" y="677.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅣 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">on the old grouping.</tspan><tspan>                                  </tspan></text>
+  <text x="0" y="677.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅟 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">on the old grouping.</tspan><tspan>                                  </tspan></text>
   <text x="0" y="699.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="721.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">thinking       </tspan><tspan fill="#e4dfd6">󰌵 med                     </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="743.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">mode           </tspan><tspan fill="#e4dfd6">󱌣 build                   </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>   </tspan><tspan fill="#faaa51" font-weight="700">⠋ test</tspan><tspan fill="#e4dfd6">  cargo nextest run -p luxe-tui dock</tspan><tspan fill="#97938c">  6s</tspan><tspan>       </tspan></text>
   <text x="0" y="765.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="787.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#e4dfd6" font-weight="700">SESSION</tspan><tspan>                                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
-  <text x="0" y="809.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">context        </tspan><tspan fill="#e4dfd6"> 12% of 200k             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan>  </tspan><tspan>       </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">  38s · ctrl+esc to interrupt</tspan><tspan>       </tspan></text>
-  <text x="0" y="831.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">tokens         </tspan><tspan fill="#e4dfd6">↑21k ↓5.2k ↺21k           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                          </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                              </tspan></text>
+  <text x="0" y="809.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">context        </tspan><tspan fill="#e4dfd6"> 12% of 200k             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                            </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan> </tspan><tspan>         </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">  38s · ctrl+esc to interrupt</tspan><tspan> </tspan></text>
+  <text x="0" y="831.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">tokens         </tspan><tspan fill="#e4dfd6">↑21k ↓5.2k ↺21k           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                          </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                       </tspan></text>
   <text x="0" y="853.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">cost           </tspan><tspan fill="#e4dfd6">$0.45                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">alt+n </tspan><tspan fill="#97938c">next file</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">ctrl+b </tspan><tspan fill="#97938c">unified diff</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">alt+w </tspan><tspan fill="#97938c">stop wrapping</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">ctrl+g </tspan><tspan fill="#97938c">review this file</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">alt+o </tspan><tspan fill="#97938c">open in editor</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">esc </tspan><tspan fill="#97938c">close</tspan><tspan>                   </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                     </tspan><tspan> </tspan></text>
   <text x="0" y="875.0" textLength="2400" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">review         </tspan><tspan fill="#4d4a45">$0.03</tspan><tspan>                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                                                          </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                       </tspan></text>
 </svg>

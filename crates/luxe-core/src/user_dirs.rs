@@ -43,6 +43,15 @@ pub fn cache_dir() -> PathBuf {
         .unwrap_or_else(|| PathBuf::from(".").join(".cache"))
 }
 
+/// The folder dist's installer script keeps `app`'s install receipt in: `$XDG_CONFIG_HOME`, else
+/// `%LOCALAPPDATA%` on Windows, else `~/.config`, then `app`.
+///
+/// The script decides this, not luxe, which is why it is not [`config_home`]: on Windows that is
+/// `%APPDATA%`, and the receipt is never there.
+pub fn installer_receipt_dir(app: &str) -> Option<PathBuf> {
+    Some(resolve("XDG_CONFIG_HOME", "LOCALAPPDATA", &[".config"], env)?.join(app))
+}
+
 /// Where machine-local runtime state lives — things that describe *this* checkout or session rather
 /// than the user's preferences.
 pub fn state_dir() -> PathBuf {

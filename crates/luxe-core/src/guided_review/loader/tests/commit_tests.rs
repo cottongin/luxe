@@ -72,7 +72,7 @@ async fn each_chapter_commits_separately_with_its_rationale() {
     let body = git.run("read body", &["log", "-1", "--format=%b", "HEAD~1"]).await.unwrap();
     let body = String::from_utf8_lossy(&body);
     assert!(body.contains("Groups source-backed implementation changes."));
-    assert!(body.contains("Luxe-review: review:"));
+    assert!(!body.contains("Luxe-"), "no luxe ids in the message: {body}");
     drop(project);
 }
 

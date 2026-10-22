@@ -13,6 +13,7 @@ use std::path::Path;
 mod agent_activity;
 mod attention_in_walkthrough;
 mod composer;
+mod description;
 mod footer_contract;
 mod guide_interaction;
 mod rail_divider;

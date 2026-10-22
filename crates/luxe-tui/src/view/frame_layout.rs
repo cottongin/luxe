@@ -84,6 +84,7 @@ pub(super) fn build_chat_regions(app: &App, size: Rect) -> ChatRegions {
     // Everything between the top of the conversation column and the composer — the room a modal
     // that grows up from the prompt has to grow into.
     let above_composer = chat_column.height.saturating_sub(input_height);
+    let activity_rows = activity_strip_height(app, diff_column);
     let modal_rows = if dock_presentation == DockPresentation::Replacement {
         0
     } else {
@@ -91,20 +92,19 @@ pub(super) fn build_chat_regions(app: &App, size: Rect) -> ChatRegions {
             app,
             input::composer_area(chat_column, size).width,
             above_composer,
-            ACTIVITY_STRIP_HEIGHT + tray_height,
+            activity_rows + tray_height,
         )
     };
     // Top to bottom the conversation column reads chronologically: what was said, what the agent is
     // doing now, what the user has lined up next, and the prompt they are typing into. The activity
-    // strip is always reserved — a blank row and the indicator's own — so a turn starting or
-    // ending never shifts the composer out from under the cursor, and the prompt keeps its
-    // breathing room from the transcript when nothing is running.
+    // strip is always reserved, so a turn starting or ending never shifts the composer out from
+    // under the cursor.
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
             Constraint::Min(1),
             Constraint::Length(modal_rows),
-            Constraint::Length(ACTIVITY_STRIP_HEIGHT),
+            Constraint::Length(activity_rows),
             Constraint::Length(tray_height),
             Constraint::Length(input_height),
         ])
@@ -130,6 +130,16 @@ pub(super) fn build_chat_regions(app: &App, size: Rect) -> ChatRegions {
 /// Rows reserved between the transcript and the composer for the live activity indicator: a
 /// blank separator plus the indicator's own row.
 const ACTIVITY_STRIP_HEIGHT: u16 = 2;
+
+/// Rows the activity strip takes. Under a transcript, the blank separator keeps the prompt's
+/// breathing room from it when nothing is running; a peek standing in the transcript's place rules
+/// off its own footer, so there the separator would only be a gap and the indicator's row is all.
+fn activity_strip_height(app: &App, diff_column: Option<Rect>) -> u16 {
+    match app.changes.is_some() && diff_column.is_none() {
+        true => ACTIVITY_STRIP_HEIGHT - 1,
+        false => ACTIVITY_STRIP_HEIGHT,
+    }
+}
 
 /// Rows of conversation a modal may never take, however tall the panel wants to be.
 const MIN_TRANSCRIPT_ROWS: u16 = 1;

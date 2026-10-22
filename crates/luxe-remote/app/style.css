@@ -48,12 +48,28 @@
   --top-inset: env(safe-area-inset-top);
 }
 
-/* From the Home Screen, iOS 26 blurs a strip of the page just under the status bar, and a page has
-   no way to turn that off (only a native app's web view does). So the top bar's words start below
-   it, and only its background sits in the blur. A Safari tab has its own toolbar up there. */
+/* From the Home Screen, iOS blurs a strip of the page under the status bar unless a fixed element
+   with a solid background sits at the top edge (6px tall, 80% wide, within 4px of the top). The
+   sticky top bar doesn't count, so the backdrop is that element. The top bar's words also start a
+   little lower, out of whatever blur a newer iOS draws anyway. A Safari tab has its own toolbar up
+   there and needs neither. */
+.status-backdrop {
+  display: none;
+}
+
 @media (display-mode: standalone) {
   :root {
     --top-inset: calc(env(safe-area-inset-top) + 0.75lh);
+  }
+
+  .status-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10;
+    height: max(6px, env(safe-area-inset-top));
+    background: var(--luxe-background, #12100e);
+    pointer-events: none;
   }
 }
 

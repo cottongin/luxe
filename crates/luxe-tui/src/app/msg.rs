@@ -51,6 +51,10 @@ pub enum Msg {
     GuidedReviewConfirmCommit,
     GuidedReviewCancelCommit,
     GuidedReviewToggleHelp,
+    /// Opens, shuts or scrolls the pull request's whole description.
+    ///
+    /// Args: what to do with it.
+    GuidedReviewDescription(DescriptionStep),
     GuidedReviewRetry,
 
     // === Review: choosing a source ===
@@ -210,7 +214,8 @@ pub enum Msg {
     CopySelection,
     /// Moves the hover highlight to the target under the pointer (`None` when over empty space).
     HoverTarget(Option<crate::mouse::MouseTarget>),
-    OpenModelPicker,
+    /// Opens the model picker. Args: the step it opens on.
+    OpenModelPicker(crate::model_picker::PickerStart),
     CopyText(String),
     /// Hands an image to the desktop's own viewer, for a terminal that cannot draw it inline.
     OpenImageExternally(crate::graphics::ImageKey),
@@ -328,4 +333,13 @@ pub enum Msg {
     /// A model catalog rebuilt off the frame, after a local server was asked what it serves.
     /// Args: `(catalog)`.
     ModelCatalogRefreshed(Vec<crate::model_picker::ModelEntry>),
+}
+
+/// What a key or the wheel does to the pull request's description reader.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DescriptionStep {
+    /// Opens it at the top, or shuts it
+    Toggle,
+    /// Scrolls it, down when positive. Args: the rows.
+    Scroll(i32),
 }

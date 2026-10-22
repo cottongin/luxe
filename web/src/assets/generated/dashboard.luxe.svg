@@ -137,6 +137,15 @@
     <path fill="#6d5f43" d="M950.00 220.00h10.00v11.00h-10.00z"/>
     <path fill="#6d5f43" d="M960.00 220.00h10.00v11.00h-10.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M275.00 308.00Q275.00 297.00 280.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M285.00 297.00L290.00 297.00M285.00 297.00L280.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M295.00 297.00L300.00 297.00M295.00 297.00L290.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M305.00 297.00L310.00 297.00M305.00 297.00L300.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M315.00 297.00L320.00 297.00M315.00 297.00L310.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M325.00 297.00L330.00 297.00M325.00 297.00L320.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M335.00 297.00L340.00 297.00M335.00 297.00L330.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M345.00 297.00L350.00 297.00M345.00 297.00L340.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M355.00 297.00L360.00 297.00M355.00 297.00L350.00 297.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M365.00 297.00L370.00 297.00M365.00 297.00L360.00 297.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M375.00 297.00L380.00 297.00M375.00 297.00L370.00 297.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M385.00 297.00L390.00 297.00M385.00 297.00L380.00 297.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M395.00 297.00L400.00 297.00M395.00 297.00L390.00 297.00"/>
@@ -225,7 +234,7 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 308.00Q1225.00 297.00 1220.00 297.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M275.00 319.00L275.00 308.00M275.00 319.00L275.00 330.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 319.00L1225.00 308.00M1225.00 319.00L1225.00 330.00"/>
-    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M275.00 341.00L275.00 330.00M275.00 341.00L280.00 341.00M275.00 341.00L275.00 352.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M275.00 341.00L275.00 330.00M275.00 341.00L275.00 352.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M285.00 341.00L290.00 341.00M285.00 341.00L280.00 341.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M295.00 341.00L300.00 341.00M295.00 341.00L290.00 341.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M305.00 341.00L310.00 341.00M305.00 341.00L300.00 341.00"/>
@@ -320,7 +329,7 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1195.00 341.00L1200.00 341.00M1195.00 341.00L1190.00 341.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1205.00 341.00L1210.00 341.00M1205.00 341.00L1200.00 341.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1215.00 341.00L1220.00 341.00M1215.00 341.00L1210.00 341.00"/>
-    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 341.00L1225.00 330.00M1225.00 341.00L1225.00 352.00M1225.00 341.00L1220.00 341.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 341.00L1225.00 330.00M1225.00 341.00L1225.00 352.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M275.00 363.00L275.00 352.00M275.00 363.00L275.00 374.00"/>
     <path fill="#2e2b27" d="M285.00 352.00h5.00v22.00h-5.00z"/>
     <path fill="#2e2b27" d="M1210.00 352.00h5.00v22.00h-5.00z"/>
@@ -552,8 +561,8 @@
   <text x="0" y="215.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan>     </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>      </tspan><tspan>   </tspan><tspan>        </tspan><tspan>   </tspan><tspan>  </tspan><tspan>                                                     </tspan></text>
   <text x="0" y="237.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                         </tspan><tspan>    </tspan><tspan>    </tspan><tspan>    </tspan><tspan> </tspan><tspan>  </tspan><tspan>  </tspan><tspan>   </tspan><tspan>  </tspan><tspan>   </tspan><tspan>    </tspan><tspan>     </tspan><tspan>    </tspan><tspan>  </tspan><tspan>                                                     </tspan></text>
   <text x="0" y="259.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
-  <text x="0" y="281.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                                                                      </tspan></text>
-  <text x="0" y="303.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                       </tspan><tspan>                           </tspan></text>
+  <text x="0" y="281.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan>                                                                                                                  </tspan></text>
+  <text x="0" y="303.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan>                                                                                                </tspan><tspan>                           </tspan></text>
   <text x="0" y="325.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#4d4a45">Ask anything, or type to find a session or a command</tspan><tspan>                                         </tspan><tspan> </tspan><tspan>                           </tspan></text>
   <text x="0" y="347.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan>                                                                                              </tspan><tspan> </tspan><tspan>                           </tspan></text>
   <text x="0" y="369.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084" font-weight="700">❯</tspan><tspan> </tspan><tspan fill="#ddc084">󰋚</tspan><tspan> </tspan><tspan fill="#ddc084" font-weight="700">Resume</tspan><tspan>  </tspan><tspan fill="#e4dfd6">Refine the workspace overview</tspan><tspan>                                          </tspan><tspan fill="#97938c">12m ago</tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                           </tspan></text>

@@ -105,8 +105,9 @@ fn command_palette_filters_and_dispatches() {
     assert!(app.editor.current_input().is_empty(), "palette text must not leak to the editor");
 }
 
-/// A finished login opens the picker at its top row and leaves the session's model alone: which
-/// model to run is the reader's call, and luxe has no favorite to land them on.
+/// A finished login opens the picker on the provider it signed in to, at its top row, and leaves
+/// the session's model alone: which model to run is the reader's call, and luxe has no favorite to
+/// land them on.
 #[tokio::test]
 async fn a_finished_login_opens_the_picker_at_the_top_and_chooses_nothing() {
     use crate::model_picker::{ModelEntry, ModelMenu};
@@ -159,6 +160,9 @@ async fn a_finished_login_opens_the_picker_at_the_top_and_chooses_nothing() {
     assert_eq!(app.status.model, "", "the login picks no model for the reader");
     assert_eq!(picker(&app).cursor(), 0, "the picker starts at its top");
     assert!(picker(&app).note().iter().any(|line| line.contains("Choose a model to finish")));
+    assert_eq!(picker(&app).match_count(), 2, "the models of the provider just signed in to");
+    let top = picker(&app).selected_entry().map(ModelEntry::qualified_id);
+    assert_eq!(top.as_deref(), Some("openai/gpt-5.4"));
 
     // A second provider while one is in use: still the top, and Esc keeps what is running
     let mut app = app_with(catalog.clone());

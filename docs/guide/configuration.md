@@ -163,14 +163,17 @@ it, showing each one before it runs:
 
 | Installed with | `luxe update` runs |
 | --- | --- |
-| The install script | `luxe-cli-update`, the updater it put beside `luxe` |
+| The install script | The install script again, downloaded from the new release |
 | Homebrew | `brew update`, then `brew upgrade luxe` |
 | Cargo | `cargo install --locked --force luxe-cli` |
 
-luxe never downloads or replaces its own program; whatever installed it does. A copy your system's
-package manager owns is left to it, and a downloaded archive points you at the releases page. On
-Windows, a running program can't be overwritten, so luxe first renames itself to `luxe.exe.old`,
-and the next launch deletes it.
+luxe never replaces its own program; whatever installed it does. For the install script, that's
+the new release's copy of the same script, run into the folder the first install used. Its
+temporary files go in a folder luxe deletes afterwards, and what it prints is saved to
+`update.log` in luxe's logs folder (`~/.local/state/luxe/logs`, or `%LOCALAPPDATA%\luxe\logs` on
+Windows). A copy your system's package manager owns is left to it, and a downloaded archive
+points you at the releases page. On Windows, a running program can't be overwritten, so luxe
+first renames itself to `luxe.exe.old`, and the next launch deletes it.
 Afterwards it checks that the `luxe` your shell finds is the new version, and says so if another
 copy earlier on your `PATH` is in the way. `luxe update --check` only reports.
 

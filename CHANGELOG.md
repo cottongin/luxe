@@ -9,6 +9,48 @@ The version on `main` is always the next release. The first change to what ships
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
+## [0.1.5]
+
+### Added
+
+- Clicking the provider in the dock lists your providers. Choose one that serves the model you're
+  on and luxe switches to it there, keeping the model; choose any other and its models open. In
+  the model picker, `←` reaches the same list.
+- The guided review's pull request brief opens with the start of the description, then **Read the
+  whole description · p**. `p` shows all of it.
+- The FILE tab of the preview shows a file the session changed outside the project, highlighted
+  like any other. It reads only what the session itself changed out there.
+
+### Changed
+
+- The model picker opens on the models of the provider you're using, and `tab` shows every
+  provider's. Signing in opens it on the provider you just signed in to.
+- Models go by their ID everywhere, like `claude-opus-5`, unless you name one in `models.json`.
+- The dock's model row wears the maker's mark (Claude's for `claude-*`) and the provider row who
+  serves it. A provider with no mark of its own, Anthropic among them, gets a filled cloud, and a
+  ChatGPT subscription wears OpenAI's.
+- `luxe update` runs the same installer you first installed with, so an update lands where the
+  install did. The separate `luxe-cli-update` program is gone.
+- The mode sits above the composer.
+- The guided review's guide asks the model for less, and says less.
+- Commits from a guided review carry your message and nothing else. The `Luxe-review` and
+  `Luxe-revision` lines are gone.
+- The guided review no longer flags CI and supply-chain files as "weakened gates".
+- The start screen's launcher is ruled off with a muted line inside its frame.
+
+### Fixed
+
+- A one-line `bash` command on a tool card's header is highlighted, like the rest of the card.
+- The preview runs down to the activity row when it takes the conversation's place, without a
+  blank row between them.
+- The dock's provider and model rows light up and take clicks separately.
+- In the phone app added to an iPhone's Home Screen, iOS no longer blurs the top bar.
+
+### Security
+
+- `rustls-webpki` 0.103.16 and `webpki-roots` 1.0.10, for RUSTSEC-2026-0381 and RUSTSEC-2026-0382:
+  certificate checks could trust distrusted intermediates.
+
 ## [0.1.4]
 
 ### Added

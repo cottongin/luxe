@@ -1,5 +1,5 @@
 //! Guided Review overlays — findings drawer, finish/confirm dialogs, finding details,
-//! draft composer, outline, help, and the source picker.
+//! draft composer, outline, help, the source picker, and a pull request's whole description.
 //!
 //! Two overlay classes (design-tui-polish-and-mouse §A3, D5):
 //! - **Modal** (source picker, outline, help, finding details, draft composer, finish review):
@@ -8,12 +8,14 @@
 //! - **Drawer** (the findings panel): a non-modal right-edge companion with **no backdrop** —
 //!   the surface stays bright so the reviewer keeps the diff in view while triaging findings.
 
+mod description;
 mod evidence;
 mod finding;
 mod finish;
 mod help;
 
 use crate::app::App;
+pub(super) use description::render_pull_request_description;
 pub(super) use evidence::render_finding_fix;
 pub(super) use finding::{
     anchor_summary, chapter_kind_label, finding_state_glyph, finding_state_label,

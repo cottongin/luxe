@@ -316,7 +316,8 @@ There is no telemetry. luxe connects only to:
    when `web_fetch` clones a repository (`"tools": { "clone_repositories": false }` stops it)
 3. The models.dev catalog, to refresh model details (`LUXE_MODELS_DEV_REFRESH=0` stops it)
 4. The update check, once a day (`"update": { "check": false }` stops it), and when you run
-   `luxe update` or `/update`, which then runs your package manager's own update
+   `luxe update` or `/update`, which then runs your package manager's own update, or for the
+   install script, downloads the new release's script from GitHub and runs it
 5. GitHub, through your own `gh`, when you, the agent or an [RPC client](rpc.md#github-writes) work
    with pull requests and issues. A client can write there only if you start it with
    `--github-writes`.

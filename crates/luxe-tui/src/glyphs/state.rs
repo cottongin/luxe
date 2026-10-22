@@ -31,7 +31,7 @@ pub fn resolve_vocabulary(preference: GlyphStyle) {
 /// 3.5, Copilot's after 3.0. They stay out of the nerd-tier probe, so an older font keeps every
 /// other icon, and are drawn only when [`brands`] says a font on the machine has them.
 pub const RECENT_BRANDS: &[Icon] =
-    &[Icon::ProviderOpenAi, Icon::ProviderAnthropic, Icon::ProviderCopilot];
+    &[Icon::ProviderOpenAi, Icon::ModelClaude, Icon::ProviderCopilot];
 
 /// Whether the [`RECENT_BRANDS`] may be drawn. Off by default for the same reason as [`BRAILLE`]:
 /// a test or a site asset draws the same on any machine.

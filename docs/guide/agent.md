@@ -117,10 +117,10 @@ In order, the first that is set:
 4. The model you last chose anywhere
 5. `default_model` in `models.json`
 
-luxe never picks a model for you, and signing in doesn't either: the model picker opens at the top
-of the list for you to choose. With none of these set, sending a message opens the model picker,
-and `--headless` and the loop refuse to start. To always start from your configured default rather
-than your last choice:
+luxe never picks a model for you, and signing in doesn't either: the model picker opens on the
+provider you signed in to, at the top of its models, for you to choose. With none of these set,
+sending a message opens the model picker, and `--headless` and the loop refuse to start. To always
+start from your configured default rather than your last choice:
 
 ```json title="~/.config/luxe/config.json"
 { "agent": { "remember_model": false } }

@@ -1690,7 +1690,7 @@ checksum = "112b39cec0b298b6c1999fee3e31427f74f676e4cb9879ed1a121b43661a4154"
 
 [[package]]
 name = "luxe-cli"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1723,7 +1723,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-core"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-trait",
  "base16ct",
@@ -1754,7 +1754,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-dap"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-trait",
  "luxe-core",
@@ -1768,7 +1768,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-lsp"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-trait",
  "base16ct",
@@ -1792,7 +1792,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-mcp"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-trait",
  "futures-util",
@@ -1812,7 +1812,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-providers"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-trait",
  "base64",
@@ -1831,7 +1831,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-remote"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "axum",
  "base16ct",
@@ -1854,7 +1854,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-tools"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1880,7 +1880,7 @@ dependencies = [
 
 [[package]]
 name = "luxe-tui"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "arboard",
@@ -2963,9 +2963,9 @@ dependencies = [
 
 [[package]]
 name = "rustls-webpki"
-version = "0.103.15"
+version = "0.103.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3c3cf1d8b1e7d4927e2d154c3fcb02979afb9939629c62cd9048d4f07b60ac2"
+checksum = "4443b1b6d39d7c663139942cc4558262562d2c84123bb6282ef177009ca8b281"
 dependencies = [
  "ring",
  "rustls-pki-types",
@@ -4133,9 +4133,9 @@ dependencies = [
 
 [[package]]
 name = "webpki-roots"
-version = "1.0.8"
+version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf85cb06032201fa7c6f829d7db5a7e5aa45bcc0655327713065f6f0576731bf"
+checksum = "1c1c8e20c8a38fc7d65abfe74eb7280e4aa667e8eec8bc84996d2874810748d9"
 dependencies = [
  "rustls-pki-types",
 ]

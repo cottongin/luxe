@@ -4,7 +4,7 @@
 //! the feedback session; that is `review`'s. [`reduce`] takes the cursor's messages and hands the
 //! rest down one table at a time, so each stays short.
 
-use crate::app::{App, Msg};
+use crate::app::{App, DescriptionStep, Msg};
 use crate::guided_review::GuidedReviewWorkspace;
 use luxe_core::guided_review::{GuidedReview, ReviewFinding};
 
@@ -98,6 +98,7 @@ pub(super) fn reduce(app: &mut App, msg: Msg) {
 
 /// Search and the view toggles; the rest goes on to [`choose`].
 fn display(app: &mut App, msg: Msg) {
+    let has_description = review_has_description(app);
     let workspace = &mut app.guided_review_workspace;
     match msg {
         Msg::GuidedReviewBeginSearch => workspace.begin_search(),
@@ -125,8 +126,23 @@ fn display(app: &mut App, msg: Msg) {
         }),
         Msg::GuidedReviewToggleWordWrap => workspace.toggle_word_wrap(),
         Msg::GuidedReviewToggleHelp => workspace.toggle_help(),
+        // Only a pull request has a description to read; anywhere else the key does nothing
+        Msg::GuidedReviewDescription(DescriptionStep::Toggle) if has_description => {
+            workspace.toggle_description();
+        }
+        Msg::GuidedReviewDescription(DescriptionStep::Toggle) => {}
+        Msg::GuidedReviewDescription(DescriptionStep::Scroll(rows)) => {
+            workspace.scroll_description(rows);
+        }
         other => choose(app, other),
     }
+}
+
+/// Whether the review on screen is a pull request's with a description to open.
+fn review_has_description(app: &App) -> bool {
+    let pull_request =
+        app.guided_review.as_ref().and_then(|review| review.context.pull_request.as_ref());
+    pull_request.is_some_and(|pr| !pr.body.trim().is_empty())
 }
 
 /// The source picker and the findings window.

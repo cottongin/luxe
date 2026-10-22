@@ -102,7 +102,8 @@ impl Engine {
         });
     }
 
-    /// Reads one project file for the preview, off the loop.
+    /// Reads one file for the preview, off the loop: a project file, or one this session changed
+    /// outside the project.
     pub(crate) fn handle_read_project_file(
         &self,
         request_id: crate::project_files::FileReadRequestId,
@@ -110,19 +111,11 @@ impl Engine {
         event_tx: &mpsc::Sender<Event>,
     ) {
         let event_tx = event_tx.clone();
-        let root = self.config.guided_review_project_root.clone();
+        let reader = self.file_reader(path.clone());
         tokio::spawn(async move {
-            let asked = path.clone();
-            let read = match root {
-                Some(root) => tokio::task::spawn_blocking(move || {
-                    crate::project_files::read_file(&root, &asked)
-                })
-                .await
-                .unwrap_or_else(|error| {
-                    Err(crate::project_files::ProjectFileFailure::Unreadable(error.to_string()))
-                }),
-                None => Err(crate::project_files::ProjectFileFailure::OutsideProject),
-            };
+            let read = tokio::task::spawn_blocking(reader).await.unwrap_or_else(|error| {
+                Err(crate::project_files::ProjectFileFailure::Unreadable(error.to_string()))
+            });
             let event = match read {
                 Ok(file) => Event::ProjectFileRead { request_id, file: Box::new(file) },
                 Err(error) => {
@@ -132,5 +125,25 @@ impl Engine {
             };
             let _ = event_tx.send(event).await;
         });
+    }
+
+    /// What reading `path` for the preview takes. An absolute path is answered only by the
+    /// external-work record, which reads nothing the session did not change.
+    fn file_reader(
+        &self,
+        path: String,
+    ) -> impl FnOnce() -> Result<
+        crate::project_files::ProjectFile,
+        crate::project_files::ProjectFileFailure,
+    > + Send
+           + 'static {
+        let external = crate::file_diff::is_external_path(&path);
+        let work = self.config.external_work.clone().filter(|_| external);
+        let root = self.config.guided_review_project_root.clone().filter(|_| !external);
+        move || match (work, root) {
+            (Some(work), _) => work.read_file(&path),
+            (_, Some(root)) => crate::project_files::read_file(&root, &path),
+            _ => Err(crate::project_files::ProjectFileFailure::OutsideProject),
+        }
     }
 }
