@@ -1,7 +1,7 @@
 //! Turn provenance — what the agent was asked, what it did, and what it checked.
 //!
 //! A diff shows the result; the process is where the review-critical signals live. A skipped test,
-//! a file edited without ever being read, a weakened gate, work nobody asked for — none of those
+//! a file edited without ever being read, work nobody asked for — none of those
 //! appear in the patch. luxe is the harness, so it can read them off its own transcript instead of
 //! inferring intent from filenames.
 //!

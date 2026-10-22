@@ -23,8 +23,9 @@ installers = ["shell", "powershell", "homebrew"]
 # Not `~/.cargo/bin`, dist's default: a copy there reads as a cargo install, and `luxe update`
 # would rebuild it from source with a toolchain the installer's users may not have
 install-path = ["$LUXE_INSTALL_DIR/", "~/.local/bin"]
-# The installer's own updater, beside the binary; `luxe update` runs it for an installer copy
-install-updater = true
+# No separate updater beside the binary: `luxe update` reruns this release's installer script
+# itself, which finds the install through the receipt the script writes either way
+install-updater = false
 # The installers' last word. A new terminal, because one already open has the old PATH, which the
 # installer's own note then explains. Pasted into a double-quoted string in both scripts, so no
 # backticks (sh would run what they hold), no `$` and no double quotes

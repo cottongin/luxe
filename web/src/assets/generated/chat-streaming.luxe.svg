@@ -42,32 +42,41 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 671.00L425.00 660.00M425.00 671.00L425.00 682.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 693.00L425.00 682.00M425.00 693.00L425.00 704.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 715.00L425.00 704.00M425.00 715.00L425.00 726.00"/>
-    <path fill="#e3cb9a" d="M450.00 704.00h5.00v22.00h-5.00z"/>
-    <path fill="#2a2723" d="M460.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M470.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M480.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#221f1c" d="M490.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#1f1c19" d="M500.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#1c1917" d="M510.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#1c1917" d="M520.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#191714" d="M530.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#171513" d="M540.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M550.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M560.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M570.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M580.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M590.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M600.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M610.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M620.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M630.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M640.00 704.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M650.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#e3cb9a" d="M540.00 704.00h5.00v22.00h-5.00z"/>
+    <path fill="#2a2723" d="M550.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#262320" d="M560.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#262320" d="M570.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#221f1c" d="M580.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#1f1c19" d="M590.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#1c1917" d="M600.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#1c1917" d="M610.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#191714" d="M620.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#171513" d="M630.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M640.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M650.00 704.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M660.00 704.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M670.00 704.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M680.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M690.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M700.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M710.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M720.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M730.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M740.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M750.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M760.00 704.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M770.00 704.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 737.00L425.00 726.00M425.00 737.00L425.00 748.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M445.00 748.00Q445.00 737.00 450.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M455.00 737.00L460.00 737.00M455.00 737.00L450.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M465.00 737.00L470.00 737.00M465.00 737.00L460.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M475.00 737.00L480.00 737.00M475.00 737.00L470.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M485.00 737.00L490.00 737.00M485.00 737.00L480.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M495.00 737.00L500.00 737.00M495.00 737.00L490.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M505.00 737.00L510.00 737.00M505.00 737.00L500.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M515.00 737.00L520.00 737.00M515.00 737.00L510.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M525.00 737.00L530.00 737.00M525.00 737.00L520.00 737.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M535.00 737.00L540.00 737.00M535.00 737.00L530.00 737.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M545.00 737.00L550.00 737.00M545.00 737.00L540.00 737.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M555.00 737.00L560.00 737.00M555.00 737.00L550.00 737.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M565.00 737.00L570.00 737.00M565.00 737.00L560.00 737.00"/>
@@ -307,8 +316,8 @@
   <text x="0" y="655.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
   <text x="0" y="677.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
   <text x="0" y="699.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">MODEL</tspan><tspan>                                  </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
-  <text x="0" y="721.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅣 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan>            </tspan><tspan fill="#97938c">  0s · ctrl+esc to interrupt</tspan><tspan>                                                     </tspan></text>
-  <text x="0" y="743.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                                 </tspan></text>
+  <text x="0" y="721.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅟 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan>            </tspan><tspan fill="#97938c">  0s · ctrl+esc to interrupt</tspan><tspan>                                            </tspan></text>
+  <text x="0" y="743.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                          </tspan></text>
   <text x="0" y="765.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">thinking       </tspan><tspan fill="#e4dfd6">󰌵 off                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                        </tspan><tspan> </tspan></text>
   <text x="0" y="787.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">mode           </tspan><tspan fill="#e4dfd6">󱌣 build                   </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                          </tspan></text>
 </svg>

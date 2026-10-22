@@ -1,7 +1,7 @@
 # Functions allowed over clippy's too_many_lines threshold. See scripts/fn-length-check.py.
 # <lines[,lines…]> <path> <fn>  # reason
     406 crates/luxe-tui/src/commands/built_in.rs built_in  # the command catalog: one `Command` literal per entry, no logic to pull out, so a new command raises this by its own entry
-    366 crates/luxe-tui/src/app/messages.rs reduce_inner  # the `Msg` reducer, one arm per message and nearly all of them one call; the fat arms already live in `app::messages::*`
+    362 crates/luxe-tui/src/app/messages.rs reduce_inner  # the `Msg` reducer, one arm per message and nearly all of them one call; the fat arms already live in `app::messages::*`
     351 crates/luxe-tui/src/app/commands.rs dispatch_action  # maps each `UiAction` to the one call that handles it; arms are a line or two and a handler that grows moves out
     237 crates/luxe-tui/src/app/events.rs reduce  # the `Event` reducer, one arm per engine event; the long arms delegate to `app::events::*`
     218 crates/luxe-core/src/engine/run.rs run  # the engine action loop, a dispatch over `Action` where each arm is one handler call; the arms that did real work are methods
@@ -12,6 +12,6 @@
     107 crates/luxe-tui/src/app/construct.rs with_file_provider  # the `App` literal, one field per line; nothing in it is logic to extract
      97 crates/luxe-cli/src/cli/headless.rs headless_json_event  # one arm per `Event` the JSON stream reports, each building its small object
      93 crates/luxe-core/src/engine/turn/stream.rs read_stream  # one match over provider events whose arms share the accumulating reply and `break` the loop; the arms that did more are helpers
-     90 crates/luxe-tui/src/view/guided_review/overlays/help.rs help_groups  # the review keys card as a table of rows, one per line
      85 crates/luxe-lsp/src/tools/navigation.rs dispatch  # one arm per navigation action over the same arguments, each a call into its handler
+     85 crates/luxe-tui/src/view/guided_review/overlays/help.rs help_groups  # the review keys card as a table of rows, one per line
      84 crates/luxe-providers/src/anthropic/sse.rs map_anthropic_event  # one arm per wire event type, each mapping fields onto a `ProviderEvent`

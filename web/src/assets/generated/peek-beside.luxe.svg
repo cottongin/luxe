@@ -283,24 +283,21 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1155.00 1001.00L1155.00 990.00M1155.00 1001.00L1155.00 1012.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 1023.00L425.00 1012.00M425.00 1023.00L425.00 1034.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1155.00 1023.00L1155.00 1012.00M1155.00 1023.00L1155.00 1034.00"/>
-    <path fill="#151311" d="M1180.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1190.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1200.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1210.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1220.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1230.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M1240.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M1250.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#171513" d="M1260.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#2e2b27" d="M1270.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#302d28" d="M1280.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#413c31" d="M1290.00 1012.00h2.50v22.00h-2.50z"/>
-    <path fill="#514839" d="M1300.00 1012.00h2.50v22.00h-2.50z"/>
-    <path fill="#7c6d50" d="M1310.00 1012.00h3.75v22.00h-3.75z"/>
-    <path fill="#98855f" d="M1320.00 1012.00h3.75v22.00h-3.75z"/>
-    <path fill="#e3cb9a" d="M1330.00 1012.00h5.00v22.00h-5.00z"/>
-    <path fill="#2a2723" d="M1340.00 1012.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M1350.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1270.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1280.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1290.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1300.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1310.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1320.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1330.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1340.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M1350.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M1360.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#2e2b27" d="M1370.00 1012.00h1.25v22.00h-1.25z"/>
+    <path fill="#37322c" d="M1380.00 1012.00h2.50v22.00h-2.50z"/>
+    <path fill="#514839" d="M1390.00 1012.00h2.50v22.00h-2.50z"/>
+    <path fill="#645944" d="M1400.00 1012.00h3.75v22.00h-3.75z"/>
+    <path fill="#98855f" d="M1410.00 1012.00h3.75v22.00h-3.75z"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 1045.00L425.00 1034.00M425.00 1045.00L425.00 1056.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M445.00 1045.00L450.00 1045.00M445.00 1045.00L440.00 1045.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M455.00 1045.00L460.00 1045.00M455.00 1045.00L450.00 1045.00"/>
@@ -374,6 +371,15 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1135.00 1045.00L1140.00 1045.00M1135.00 1045.00L1130.00 1045.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M1155.00 1045.00L1155.00 1034.00M1155.00 1045.00L1155.00 1056.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1175.00 1056.00Q1175.00 1045.00 1180.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1185.00 1045.00L1190.00 1045.00M1185.00 1045.00L1180.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1195.00 1045.00L1200.00 1045.00M1195.00 1045.00L1190.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1205.00 1045.00L1210.00 1045.00M1205.00 1045.00L1200.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1215.00 1045.00L1220.00 1045.00M1215.00 1045.00L1210.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1225.00 1045.00L1230.00 1045.00M1225.00 1045.00L1220.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1235.00 1045.00L1240.00 1045.00M1235.00 1045.00L1230.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1245.00 1045.00L1250.00 1045.00M1245.00 1045.00L1240.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1255.00 1045.00L1260.00 1045.00M1255.00 1045.00L1250.00 1045.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1265.00 1045.00L1270.00 1045.00M1265.00 1045.00L1260.00 1045.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1275.00 1045.00L1280.00 1045.00M1275.00 1045.00L1270.00 1045.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1285.00 1045.00L1290.00 1045.00M1285.00 1045.00L1280.00 1045.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M1295.00 1045.00L1300.00 1045.00M1295.00 1045.00L1290.00 1045.00"/>
@@ -591,14 +597,14 @@
   <text x="0" y="831.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">basename always survives.</tspan><tspan>                             </tspan></text>
   <text x="0" y="853.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="875.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">MODEL</tspan><tspan>                                  </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Now the dock's tests, to check nothing else leaned</tspan><tspan>    </tspan></text>
-  <text x="0" y="897.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅣 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">on the old grouping.</tspan><tspan>                                  </tspan></text>
+  <text x="0" y="897.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅟 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">on the old grouping.</tspan><tspan>                                  </tspan></text>
   <text x="0" y="919.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="941.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">thinking       </tspan><tspan fill="#e4dfd6">󰌵 med                     </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="963.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">mode           </tspan><tspan fill="#e4dfd6">󱌣 build                   </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>   </tspan><tspan fill="#faaa51" font-weight="700">⠋ test</tspan><tspan fill="#e4dfd6">  cargo nextest run -p luxe-tui dock</tspan><tspan fill="#97938c">  6s</tspan><tspan>       </tspan></text>
   <text x="0" y="985.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
   <text x="0" y="1007.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#e4dfd6" font-weight="700">SESSION</tspan><tspan>                                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>                                                        </tspan></text>
-  <text x="0" y="1029.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">context        </tspan><tspan fill="#e4dfd6"> 12% of 200k             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan>  </tspan><tspan>       </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">  38s · ctrl+esc to interrupt</tspan><tspan>       </tspan></text>
-  <text x="0" y="1051.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">tokens         </tspan><tspan fill="#e4dfd6">↑21k ↓5.2k ↺21k           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                      </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                              </tspan></text>
+  <text x="0" y="1029.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">context        </tspan><tspan fill="#e4dfd6"> 12% of 200k             </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                        </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan> </tspan><tspan>         </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#97938c">  38s · ctrl+esc to interrupt</tspan><tspan> </tspan></text>
+  <text x="0" y="1051.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">tokens         </tspan><tspan fill="#e4dfd6">↑21k ↓5.2k ↺21k           </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                      </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                       </tspan></text>
   <text x="0" y="1073.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">cost           </tspan><tspan fill="#e4dfd6">$0.45                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">alt+n </tspan><tspan fill="#97938c">next file</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">ctrl+g </tspan><tspan fill="#97938c">review this file</tspan><tspan fill="#2e2b27"> · </tspan><tspan fill="#ddc084">esc </tspan><tspan fill="#97938c">close</tspan><tspan>                  </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                     </tspan><tspan> </tspan></text>
   <text x="0" y="1095.0" textLength="1720" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">review         </tspan><tspan fill="#4d4a45">$0.03</tspan><tspan>                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                      </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                       </tspan></text>
 </svg>

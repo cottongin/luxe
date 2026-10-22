@@ -15,6 +15,7 @@ mod fixtures;
 mod interruption;
 mod models;
 mod nested_instructions;
+mod project_reads;
 mod remediation;
 mod review_restore;
 mod turns;

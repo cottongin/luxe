@@ -233,6 +233,24 @@ fn manifest_rejects_unknown_and_duplicate_items_as_a_whole() {
     ));
 }
 
+/// The prompt asks the model to leave out an impact the rationale already gives. An empty or blank
+/// one is that same answer, not a reason to throw the batch away for a template guide.
+#[test]
+fn an_empty_impact_is_no_impact() {
+    let files = files();
+    let allowed = source_items(&files);
+    let ids: Vec<String> = allowed.iter().map(|item| item_key(item).to_owned()).collect();
+    for impact in ["", "  "] {
+        let reply = serde_json::json!({"chapters": [{
+            "title": "Core", "rationale": "Groups captured source items.", "impact": impact,
+            "kind": "core", "item_ids": ids,
+        }]});
+        let manifest = GuideManifest::from_model_json(&reply.to_string()).expect("parses");
+        let groups = manifest.into_groups(&allowed).expect("a blank impact is allowed");
+        assert_eq!(groups[0].impact, None, "{impact:?}");
+    }
+}
+
 #[test]
 fn model_output_rejects_missing_duplicate_and_fabricated_items() {
     let files = files();

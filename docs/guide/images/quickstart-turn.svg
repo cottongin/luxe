@@ -49,31 +49,40 @@
     <path fill="#ddc084" d="M995.00 286.00h5.00v22.00h-5.00z"/>
     <path fill="#ddc084" d="M995.00 308.00h5.00v22.00h-5.00z"/>
     <path fill="#ddc084" d="M995.00 330.00h5.00v22.00h-5.00z"/>
-    <path fill="#e3cb9a" d="M10.00 374.00h5.00v22.00h-5.00z"/>
-    <path fill="#2a2723" d="M20.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M30.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#262320" d="M40.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#221f1c" d="M50.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#1f1c19" d="M60.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#1c1917" d="M70.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#1c1917" d="M80.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#191714" d="M90.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#171513" d="M100.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M110.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#161311" d="M120.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M130.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M140.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M150.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M160.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M170.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M180.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M190.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M200.00 374.00h1.25v22.00h-1.25z"/>
-    <path fill="#151311" d="M210.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#e3cb9a" d="M100.00 374.00h5.00v22.00h-5.00z"/>
+    <path fill="#2a2723" d="M110.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#262320" d="M120.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#262320" d="M130.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#221f1c" d="M140.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#1f1c19" d="M150.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#1c1917" d="M160.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#1c1917" d="M170.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#191714" d="M180.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#171513" d="M190.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M200.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#161311" d="M210.00 374.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M220.00 374.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M230.00 374.00h1.25v22.00h-1.25z"/>
     <path fill="#151311" d="M240.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M250.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M260.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M270.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M280.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M290.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M300.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M310.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M320.00 374.00h1.25v22.00h-1.25z"/>
+    <path fill="#151311" d="M330.00 374.00h1.25v22.00h-1.25z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 418.00Q5.00 407.00 10.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M15.00 407.00L20.00 407.00M15.00 407.00L10.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 407.00L30.00 407.00M25.00 407.00L20.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M35.00 407.00L40.00 407.00M35.00 407.00L30.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M45.00 407.00L50.00 407.00M45.00 407.00L40.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M55.00 407.00L60.00 407.00M55.00 407.00L50.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M65.00 407.00L70.00 407.00M65.00 407.00L60.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M75.00 407.00L80.00 407.00M75.00 407.00L70.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M85.00 407.00L90.00 407.00M85.00 407.00L80.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M95.00 407.00L100.00 407.00M95.00 407.00L90.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M105.00 407.00L110.00 407.00M105.00 407.00L100.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M115.00 407.00L120.00 407.00M115.00 407.00L110.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M125.00 407.00L130.00 407.00M125.00 407.00L120.00 407.00"/>
@@ -268,7 +277,7 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 440.00Q995.00 451.00 990.00 451.00"/>
   </g>
   <text x="0" y="17.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                   </tspan><tspan> </tspan></text>
-  <text x="0" y="39.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#81caa0" font-weight="700">󰞷 bash</tspan><tspan fill="#e4dfd6">  cargo nextest run -p luxe-tui</tspan><tspan fill="#97938c">  2s</tspan><tspan>                                                        </tspan><tspan> </tspan></text>
+  <text x="0" y="39.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#81caa0" font-weight="700">󰞷 bash</tspan><tspan>  </tspan><tspan fill="#ddc084">cargo nextest run</tspan><tspan fill="#97938c"> -</tspan><tspan fill="#e4dfd6">p</tspan><tspan fill="#ddc084"> luxe-tui</tspan><tspan fill="#97938c">  2s</tspan><tspan>                                                        </tspan><tspan> </tspan></text>
   <text x="0" y="61.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                   </tspan><tspan> </tspan></text>
   <text x="0" y="83.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                   </tspan><tspan> </tspan></text>
   <text x="0" y="105.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                   </tspan><tspan> </tspan></text>
@@ -284,8 +293,8 @@
   <text x="0" y="325.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>     </tspan><tspan fill="#97938c">…</tspan><tspan>                                                                                             </tspan><tspan> </tspan></text>
   <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                   </tspan><tspan> </tspan></text>
   <text x="0" y="369.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan>            </tspan><tspan fill="#97938c"> · ctrl+esc to interrupt</tspan><tspan>                                                   </tspan></text>
-  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                           </tspan></text>
+  <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan>            </tspan><tspan fill="#97938c"> · ctrl+esc to interrupt</tspan><tspan>                                          </tspan></text>
+  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                            </tspan><tspan fill="#e4dfd6">󰌵 off</tspan><tspan>     </tspan><tspan fill="#12100e" font-weight="700">󰚩 qwen3.8-27b</tspan><tspan> </tspan></text>

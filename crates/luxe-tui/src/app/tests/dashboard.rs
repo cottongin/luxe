@@ -353,17 +353,19 @@ fn shift_tab_on_the_start_screen_switches_the_mode() {
     assert!(text.contains("shift+tab build mode"), "and back again:\n{text}");
 }
 
-/// The composer's title is the mode switch on the start screen too, since it is the same composer.
+/// The mode button above the composer is the mode switch on the start screen too, since it is the
+/// same composer.
 #[test]
-fn the_start_screen_composer_title_switches_the_mode() {
+fn the_start_screen_mode_button_switches_the_mode() {
     let (tx, mut rx) = mpsc::channel(100);
     let mut app = App::new(tx, KeyMap::defaults(), Default::default());
     app.enter_dashboard(crate::dashboard::DashboardState::new(Vec::new()));
     in_mode(&mut app, "build");
     let (text, _) = screen(&mut app, 100, 30);
-    let row = text.lines().position(|line| line.contains("build ─")).expect("a titled composer");
-    let line = text.lines().nth(row).expect("the row");
-    let column = line[..line.find("build").expect("the title")].chars().count() as u16;
+    assert!(!text.contains("build ─"), "the frame still carries the mode:\n{text}");
+    let row = text.lines().position(|line| line.contains('╭')).expect("the composer") - 1;
+    let line = text.lines().nth(row).expect("the row above it");
+    let column = line[..line.find("build").expect("the button")].chars().count() as u16;
     let click = crossterm::event::MouseEvent {
         kind: crossterm::event::MouseEventKind::Down(crossterm::event::MouseButton::Left),
         column,
@@ -374,6 +376,30 @@ fn the_start_screen_composer_title_switches_the_mode() {
     apply_on_start_screen(&mut app, routed);
     assert!(matches!(rx.try_recv(), Ok(Action::SetMode(mode)) if mode == "plan"));
     assert_eq!(app.current_view, ViewMode::Dashboard);
+}
+
+/// The divider under the launcher's input runs between the frame's plain sides, the way the rule
+/// over the key hints does, rather than teeing into them in a color the rule doesn't share.
+#[test]
+fn the_launcher_divider_does_not_tee_into_the_frame() {
+    let (tx, _rx) = mpsc::channel(100);
+    let mut app = App::new(tx, KeyMap::defaults(), Default::default());
+    app.enter_dashboard(crate::dashboard::DashboardState::new(Vec::new()));
+    let (text, buffer) = screen(&mut app, 100, 30);
+    let top = text.lines().position(|line| line.contains('╭')).expect("the composer");
+    let left = text.lines().nth(top).and_then(|line| line.chars().position(|c| c == '╭'));
+    let left = left.expect("the frame's corner");
+    // The first row under the input that is a rule, whatever its sides are drawn with
+    let rows: Vec<Vec<char>> = text.lines().map(|line| line.chars().collect()).collect();
+    let divider = (top + 1..rows.len()).find(|y| rows[*y][left + 1] == '─').expect("a divider");
+    let line = &rows[divider];
+    let right = line.iter().rposition(|cell| *cell != ' ').expect("a side");
+    assert_eq!((line[left], line[right]), ('│', '│'), "{line:?}");
+    assert!(line[left + 1..right].iter().all(|cell| *cell == '─'), "{line:?}");
+    let y = divider as u16;
+    let rule = buffer[(left as u16 + 1, y)].fg;
+    assert_eq!(rule, app.theme_styles.border_muted.fg.expect("a muted rule"));
+    assert_ne!(buffer[(left as u16, y)].fg, rule, "the sides keep the frame's color");
 }
 
 /// A command the start screen cannot host gets a session first, then runs in it.

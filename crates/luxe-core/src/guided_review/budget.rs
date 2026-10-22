@@ -135,7 +135,7 @@ impl ReviewBudget {
 /// Computes what the reviewer actually has to look at.
 ///
 /// Order of precedence matters: a *risk* signal always wins over an excuse. A hunk that adds a
-/// credential-shaped line, weakens a gate, or lives in a file the agent edited without reading stays
+/// credential-shaped line or lives in a file the agent edited without reading stays
 /// on the reading list even if a test covers it, because those are exactly the cases where "a test
 /// passed" is not the question being asked.
 pub fn review_budget(review: &GuidedReview, attention: &[AttentionSignal]) -> ReviewBudget {

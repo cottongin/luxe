@@ -76,6 +76,17 @@ fn help_groups(app: &App) -> Vec<HelpGroup> {
     if pull_request {
         feedback.push(row("o", "open on GitHub"));
     }
+    let mut read = vec![
+        (chord(UiAction::ReviewToggleGuide, "g"), "show or hide the guide".to_owned()),
+        row("z", "show or hide the prose"),
+        (chord(UiAction::ReviewToggleSplit, "ctrl+b"), "side-by-side or unified".to_owned()),
+        row("w", "wrap long lines"),
+        row("f  d", "open collapsed churn, say why"),
+        (letter(UiAction::ReviewOpenInEditor, "E"), "open the file in your editor".to_owned()),
+    ];
+    if pull_request {
+        read.push(row("p", "read the whole description"));
+    }
     vec![
         (
             "Move",
@@ -92,23 +103,7 @@ fn help_groups(app: &App) -> Vec<HelpGroup> {
                 row("/", "find"),
             ],
         ),
-        (
-            "Read",
-            vec![
-                (chord(UiAction::ReviewToggleGuide, "g"), "show or hide the guide".to_owned()),
-                row("z", "show or hide the prose"),
-                (
-                    chord(UiAction::ReviewToggleSplit, "ctrl+b"),
-                    "side-by-side or unified".to_owned(),
-                ),
-                row("w", "wrap long lines"),
-                row("f  d", "open collapsed churn, say why"),
-                (
-                    letter(UiAction::ReviewOpenInEditor, "E"),
-                    "open the file in your editor".to_owned(),
-                ),
-            ],
-        ),
+        ("Read", read),
         ("Feedback", feedback),
         (
             "Session",

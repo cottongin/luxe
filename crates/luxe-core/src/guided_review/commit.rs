@@ -36,7 +36,7 @@ pub struct ChapterCommit {
     pub chapter_id: ChapterId,
     /// Commit subject line.
     pub subject: String,
-    /// Full commit message including the body and review trailers.
+    /// Full commit message: the subject, then the body.
     pub message: String,
     /// Unified diff to stage, always applying cleanly against the reviewed base.
     pub patch: String,
@@ -80,8 +80,6 @@ pub fn squashed_commit(
     for commit in &commits {
         message.push_str(&format!("- {}\n", commit.subject));
     }
-    message.push('\n');
-    message.push_str(&trailers(review));
     Ok(ChapterCommit {
         chapter_id: first.chapter_id.clone(),
         subject,
@@ -102,17 +100,11 @@ fn chapter_commit(
     let subject = bounded_subject(&chapter.title);
     // The rationale is the reason the chapter exists; it is precisely what a future reader of the
     // log needs and precisely what a diff cannot say.
-    let mut message = format!("{subject}\n\n{}\n\n", chapter.rationale.trim());
+    let mut message = format!("{subject}\n\n{}\n", chapter.rationale.trim());
     if let Some(impact) = chapter.impact.as_deref().filter(|text| !text.trim().is_empty()) {
-        message.push_str(&format!("{}\n\n", impact.trim()));
+        message.push_str(&format!("\n{}\n", impact.trim()));
     }
-    message.push_str(&trailers(review));
     Ok(ChapterCommit { chapter_id: chapter.id.clone(), subject, message, patch, skipped })
-}
-
-/// Provenance trailers so a commit can be traced back to the review that produced it.
-fn trailers(review: &GuidedReview) -> String {
-    format!("Luxe-review: {}\nLuxe-revision: {}\n", review.id.as_str(), review.revision_id.as_str())
 }
 
 fn bounded_subject(title: &str) -> String {
@@ -282,8 +274,11 @@ mod tests {
         assert_eq!(commits[0].subject, "Core implementation");
         // The rationale is exactly what a diff cannot say, so it becomes the commit body.
         assert!(commits[0].message.contains("Groups source-backed implementation changes."));
-        assert!(commits[0].message.contains("Luxe-review: review:"));
-        assert!(commits[0].message.contains("Luxe-revision: revision:"));
+        // The message is the author's words and nothing else: no luxe ids tacked on the end
+        assert_eq!(
+            commits[0].message,
+            "Core implementation\n\nGroups source-backed implementation changes.\n"
+        );
         assert!(commits[0].patch.contains("--- a/src/lib.rs"));
         assert!(!commits[0].patch.contains("tests/lib.rs"), "chapters do not leak into each other");
         assert!(commits[1].patch.contains("--- a/tests/lib.rs"));

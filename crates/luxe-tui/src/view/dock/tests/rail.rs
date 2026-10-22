@@ -354,6 +354,25 @@ fn the_label_column_seats_every_label() {
     }
 }
 
+/// The model's mark comes from its id, so a model named in config still wears its maker's mark.
+/// Once another model is reported, the stale one's id no longer speaks for it.
+#[test]
+fn a_named_model_is_marked_by_its_id() {
+    let mut app = app();
+    app.active_model_info = Some(luxe_core::provider::ModelInfo {
+        r#ref: luxe_core::provider::ModelRef::new("anthropic", "claude-opus-5-5"),
+        display_name: Some("opus".into()),
+        ..Default::default()
+    });
+    app.status.model = "opus".into();
+    app.status.provider = "anthropic".into();
+    assert_eq!(super::telemetry::model_id(&app), "claude-opus-5-5");
+
+    app.status.model = "gpt-5".into();
+    app.status.provider = "openai".into();
+    assert_eq!(super::telemetry::model_id(&app), "gpt-5");
+}
+
 /// The provider is a row of its own, label left and value right like every other row, directly
 /// above the model it serves, and wears its own mark.
 #[test]

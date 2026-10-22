@@ -212,7 +212,9 @@ fn test_conversation_is_borderless_and_separate_from_composer() {
     assert!(!top.contains("Conversation"));
 
     assert!(row_text(&buffer, h - 4, w).trim_start().starts_with('╭'), "composer outline missing");
-    assert!(row_text(&buffer, h - 5, w).trim().is_empty(), "conversation gap missing");
+    let activity = row_text(&buffer, h - 5, w);
+    assert!(activity.trim().ends_with("build"), "the mode button leads the row: {activity:?}");
+    assert!(row_text(&buffer, h - 6, w).trim().is_empty(), "conversation gap missing");
     assert!(
         row_text(&buffer, h - 2, w).trim_start().starts_with('╰'),
         "composer should touch statusline"

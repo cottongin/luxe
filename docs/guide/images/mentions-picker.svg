@@ -440,6 +440,15 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M985.00 385.00L990.00 385.00M985.00 385.00L980.00 385.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 374.00Q995.00 385.00 990.00 385.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 418.00Q5.00 407.00 10.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M15.00 407.00L20.00 407.00M15.00 407.00L10.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 407.00L30.00 407.00M25.00 407.00L20.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M35.00 407.00L40.00 407.00M35.00 407.00L30.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M45.00 407.00L50.00 407.00M45.00 407.00L40.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M55.00 407.00L60.00 407.00M55.00 407.00L50.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M65.00 407.00L70.00 407.00M65.00 407.00L60.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M75.00 407.00L80.00 407.00M75.00 407.00L70.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M85.00 407.00L90.00 407.00M85.00 407.00L80.00 407.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M95.00 407.00L100.00 407.00M95.00 407.00L90.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M105.00 407.00L110.00 407.00M105.00 407.00L100.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M115.00 407.00L120.00 407.00M115.00 407.00L110.00 407.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M125.00 407.00L130.00 407.00M125.00 407.00L120.00 407.00"/>
@@ -651,7 +660,7 @@
   <text x="0" y="347.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="369.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">tab</tspan><tspan fill="#e4dfd6"> switch</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">enter</tspan><tspan fill="#e4dfd6"> insert</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">ctrl+r</tspan><tspan fill="#e4dfd6"> refresh</tspan><tspan>                                                       </tspan><tspan> </tspan></text>
   <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                           </tspan></text>
+  <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#e4dfd6">@</tspan><tspan>                                                                                                 </tspan><tspan> </tspan></text>
   <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#12100e" font-weight="700">󰉋 project</tspan><tspan>     </tspan><tspan fill="#97938c"> 3 files · ctrl+p</tspan><tspan>                                           </tspan><tspan fill="#e4dfd6">󰌵 off</tspan><tspan>     </tspan><tspan fill="#12100e" font-weight="700">󰚩 qwen3.8-27b</tspan><tspan> </tspan></text>

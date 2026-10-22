@@ -262,6 +262,27 @@ fn a_narrow_peek_gives_the_diff_the_whole_column() {
     assert!(!whole.contains("has to wait its turn"), "and the transcript waits: {whole}");
 }
 
+/// A peek in the transcript's place runs down to the activity row: its footer is already ruled off,
+/// so the blank row that sets the activity apart from a transcript would only be a gap.
+#[test]
+fn a_narrow_peek_runs_down_to_the_activity_row() {
+    let path = "src/module00/file00.rs";
+    let (width, height) = (110u16, 24);
+    let backend = test_backend(width, height);
+    let (mut app, mut rx) = create_app_with_engine();
+    app.update(Msg::TerminalResized { width, height });
+    app.dock.hide();
+    app.workspace = Some(changed_workspace("peek-activity-gap", 2));
+    open_changes_with(&mut app, &mut rx, path, Some(one_hunk_file(path)));
+
+    let buffer = render_app(&mut app, &backend);
+    let composer_top = (0..height)
+        .find(|&y| row_text(&buffer, y, width).trim_start().starts_with('╭'))
+        .expect("the composer's top border");
+    let above_activity = row_text(&buffer, composer_top - 2, width);
+    assert!(!above_activity.trim().is_empty(), "{}", buffer_to_string(&buffer));
+}
+
 /// A pane with room for two readable columns draws two; one without draws the unified list. Nobody
 /// has to ask for it, which is why the width test has to be conservative rather than eager.
 #[test]

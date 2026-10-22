@@ -266,8 +266,11 @@ impl GuideManifest {
         for proposed in self.chapters {
             let title = bounded_text(proposed.title, MAX_GUIDE_TITLE_CHARS, "title")?;
             let rationale = bounded_text(proposed.rationale, MAX_GUIDE_TEXT_CHARS, "rationale")?;
+            // The prompt has the model leave out an impact the rationale already gives, and an
+            // empty one is the same answer rather than a broken guide
             let impact = proposed
                 .impact
+                .filter(|text| !filtered(text).trim().is_empty())
                 .map(|text| bounded_text(text, MAX_GUIDE_TEXT_CHARS, "impact"))
                 .transpose()?;
             let mut items = Vec::with_capacity(proposed.item_ids.len());

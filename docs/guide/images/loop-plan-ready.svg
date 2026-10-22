@@ -339,6 +339,14 @@
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M985.00 473.00L990.00 473.00M985.00 473.00L980.00 473.00"/>
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M995.00 462.00Q995.00 473.00 990.00 473.00"/>
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M5.00 506.00Q5.00 495.00 10.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M15.00 495.00L20.00 495.00M15.00 495.00L10.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M25.00 495.00L30.00 495.00M25.00 495.00L20.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M35.00 495.00L40.00 495.00M35.00 495.00L30.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M45.00 495.00L50.00 495.00M45.00 495.00L40.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M55.00 495.00L60.00 495.00M55.00 495.00L50.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M65.00 495.00L70.00 495.00M65.00 495.00L60.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M75.00 495.00L80.00 495.00M75.00 495.00L70.00 495.00"/>
+    <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M85.00 495.00L90.00 495.00M85.00 495.00L80.00 495.00"/>
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M95.00 495.00L100.00 495.00M95.00 495.00L90.00 495.00"/>
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M105.00 495.00L110.00 495.00M105.00 495.00L100.00 495.00"/>
     <path fill="none" stroke="#d2a5cd" stroke-width="1.25" d="M115.00 495.00L120.00 495.00M115.00 495.00L110.00 495.00"/>
@@ -555,7 +563,7 @@
   <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">enter</tspan><tspan fill="#e4dfd6"> answer</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">↑/↓</tspan><tspan fill="#e4dfd6"> choose</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">esc</tspan><tspan fill="#e4dfd6"> cancel</tspan><tspan>                                                           </tspan><tspan> </tspan></text>
   <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="501.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#d2a5cd">  󰨸 </tspan><tspan fill="#d2a5cd" font-weight="700">plan</tspan><tspan>                                                                                            </tspan></text>
+  <text x="0" y="501.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="523.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="545.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="567.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                         </tspan><tspan fill="#e4dfd6"> 3.1%/1.0M</tspan><tspan>     </tspan><tspan fill="#e4dfd6">󰌵 high</tspan><tspan>     </tspan><tspan fill="#12100e" font-weight="700">󰚩 claude-opus-5</tspan><tspan> </tspan></text>

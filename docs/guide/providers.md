@@ -8,7 +8,7 @@ group: "Using luxe"
 ## Sign in
 
 Open **Configuration** (on the start screen, or `/config`) and choose how to connect. When a
-provider connects, the model picker opens.
+provider connects, the model picker opens on its models; `tab` shows every provider's.
 
 | Option | For |
 | --- | --- |
@@ -92,10 +92,15 @@ A command runs each time a request needs the key.
 
 ## Choose a model
 
-`/model` opens the model picker: every model your providers can serve, configured providers first.
-Type to search. The session carries on with the new model, even across providers, and luxe
-remembers your choice for next time, in this project and as your latest anywhere
-([which model a session starts on](agent.md#which-model-a-session-starts-on)).
+`/model` opens the model picker on the models of the provider you're using. Type to search, and
+press `tab` to see every provider's models. The session carries on with the new model, even across
+providers, and luxe remembers your choice for next time, in this project and as your latest
+anywhere ([which model a session starts on](agent.md#which-model-a-session-starts-on)).
+
+To change who serves the model, press `←` in the picker, or click the provider in the dock. Choose
+a provider that serves the model you're on and luxe switches to it there, keeping the model.
+Choose any other and its models open for you to pick from. Clicking the model in the dock opens
+the models.
 
 From the command line, `--model` takes a model ID, or `provider/id` to pick the provider too:
 

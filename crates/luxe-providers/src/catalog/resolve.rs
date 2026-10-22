@@ -263,11 +263,11 @@ fn merge_compat(
 }
 
 /// Apply one models.dev layer, touching only the fields it actually carries.
+///
+/// Its `name` is not one of them: luxe names a model by its id, lower case like every other value
+/// it shows, so `Claude Opus 5.5` never stands in for `claude-opus-5-5`. Only a name the user
+/// wrote in config replaces the id ([`apply_config`]).
 fn apply_dev(info: &mut ModelInfo, from: &mut Provenance, layer: Layer, dev: &Model) {
-    if let Some(name) = &dev.name {
-        info.display_name = Some(name.clone());
-        from.display_name = layer;
-    }
     if let Some(context) = dev.limit.as_ref().and_then(|l| l.context) {
         info.context_window = context;
         from.context_window = layer;

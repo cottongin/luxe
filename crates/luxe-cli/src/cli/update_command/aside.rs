@@ -1,7 +1,7 @@
 //! Moving the running copy aside — how `luxe update` gets out of its own way on Windows.
 //!
 //! Windows locks a running program's file against being overwritten or deleted, but not against
-//! being renamed. The running `luxe.exe` becomes `luxe.exe.old`, the owner's updater writes a new
+//! being renamed. The running `luxe.exe` becomes `luxe.exe.old`, the update writes a new
 //! `luxe.exe`, and the next launch deletes the leftover once nothing is running from it. Nothing
 //! here writes a binary: it only renames the one that is already there.
 

@@ -79,6 +79,10 @@ pub(crate) struct GuidedReviewWorkspace {
     pub(crate) feedback_scroll: u16,
     /// Rows the reading pane can scroll, as last drawn
     pub(crate) feedback_room: std::cell::Cell<u16>,
+    /// Rows the pull request's description is scrolled down, while it is open; `None` when shut
+    pub(crate) description_scroll: Option<u16>,
+    /// Rows the description can scroll, as last drawn
+    pub(crate) description_room: std::cell::Cell<u16>,
     /// Whether the narration band (section prose + this change's sentence) is shown above the diff;
     /// on by default, since the prose is the point, and `z` folds it for one who wants every row.
     pub(crate) narration_visible: bool,
@@ -189,6 +193,8 @@ impl Default for GuidedReviewWorkspace {
             drawn: std::cell::Cell::new(preview_guard::Drawn::ALL),
             feedback_scroll: 0,
             feedback_room: std::cell::Cell::new(0),
+            description_scroll: None,
+            description_room: std::cell::Cell::new(0),
             narration_visible: true,
             fold: Fold::default(),
             noise_details_visible: false,
@@ -276,6 +282,23 @@ impl GuidedReviewWorkspace {
     /// Toggles the local review shortcut reference.
     pub(crate) fn toggle_help(&mut self) {
         self.help_visible = !self.help_visible;
+    }
+
+    /// Opens the pull request's whole description at its top, or shuts it.
+    pub(crate) fn toggle_description(&mut self) {
+        self.description_scroll = match self.description_scroll {
+            Some(_) => None,
+            None => Some(0),
+        };
+    }
+
+    /// Scrolls the open description by `rows`, down when positive, within what it was last drawn
+    /// with, so scrolling past the end and back does not cost presses that move nothing.
+    pub(crate) fn scroll_description(&mut self, rows: i32) {
+        let Some(scroll) = self.description_scroll else { return };
+        let room = i32::from(self.description_room.get());
+        let at = i32::from(scroll).saturating_add(rows).clamp(0, room);
+        self.description_scroll = Some(u16::try_from(at).unwrap_or(0));
     }
 
     /// Opens the commit preview so the messages are read before history is written.

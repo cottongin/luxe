@@ -1,13 +1,15 @@
 //! Update notice — whether a newer luxe exists, and what *this* user should run to get it.
 //!
 //! luxe never rewrites its own binary. It notices that it is behind and says so in the dashboard
-//! footer, and on request runs the update command that matches how this copy was installed, so
-//! the install's owner does the replacing. Telling somebody who installed through Homebrew to run
-//! `cargo install --force` is worse than saying nothing: it is wrong, and following it leaves them
-//! with two Luxes and no idea which one is on `PATH`.
+//! footer, and on request runs the update that matches how this copy was installed, so the
+//! install's owner does the replacing: a package manager's command, or for a copy luxe's installer
+//! script put there, that same script again ([`installer`]). Telling somebody who installed through
+//! Homebrew to run `cargo install --force` is worse than saying nothing: it is wrong, and following
+//! it leaves them with two Luxes and no idea which one is on `PATH`.
 //!
-//! Everything here is pure or reads a local file. The one network call lives in `luxe-cli`, which
-//! is where outbound requests belong; this module only decides what to make of the answer. That
+//! Everything here is pure or reads a local file. The network calls (the release check, and the
+//! installer script `luxe update` downloads when asked) live in `luxe-cli`, which is where outbound
+//! requests belong; this module only decides what to ask for and what to make of the answer. That
 //! split is also what makes the interesting half testable without a server.
 //!
 //! # Why this is not a phone-home
@@ -22,6 +24,10 @@
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+pub mod installer;
+
+pub use installer::{InstallReceipt, InstallTarget, LEGACY_UPDATER};
 
 /// How long a completed check stays current. A day: releases are not hourly, and the notice is a
 /// convenience rather than a security control.
@@ -47,14 +53,11 @@ pub enum InstallSource {
     Homebrew,
     /// A path a distribution's package manager owns (`/usr/bin`, `/bin`).
     SystemPackage,
-    /// luxe's own installer script, known by the updater it puts beside the binary.
+    /// luxe's own installer script, known by the receipt it writes. `luxe update` reruns it.
     Installer,
     /// A release archive, `/usr/local/bin`, or a local build.
     Archive,
 }
-
-/// The updater luxe's installer script puts beside the binary, named `<package>-update` by dist.
-pub const INSTALLER_UPDATER: &str = "luxe-cli-update";
 
 impl InstallSource {
     /// Classify the running binary. Falls back to [`InstallSource::Archive`], which is the state
@@ -64,11 +67,21 @@ impl InstallSource {
         std::env::current_exe().map(|path| Self::from_install(&path)).unwrap_or(Self::Archive)
     }
 
-    /// Classify a binary by what sits beside it, then by its path. The installer's updater beside
-    /// it decides first: the installer puts it wherever it installs, `~/.cargo/bin` included when
-    /// told to, and no path says "installer" on its own.
+    /// Classify a binary by the installer's receipt, then by what sits beside it, then by its
+    /// path. The installer goes wherever it is told, `~/.cargo/bin` included, and no path says
+    /// "installer" on its own.
     pub fn from_install(binary: &Path) -> Self {
-        let updater = format!("{INSTALLER_UPDATER}{}", std::env::consts::EXE_SUFFIX);
+        Self::from_install_with(binary, InstallReceipt::load().as_ref())
+    }
+
+    /// [`Self::from_install`] with the receipt passed in, so it can be tested without writing one
+    /// where the real installer keeps it. A receipt that covers the binary marks an installer copy,
+    /// and so does the legacy updater beside it, for a copy installed before receipts were read.
+    pub fn from_install_with(binary: &Path, receipt: Option<&InstallReceipt>) -> Self {
+        if receipt.is_some_and(|receipt| receipt.covers(binary)) {
+            return Self::Installer;
+        }
+        let updater = format!("{LEGACY_UPDATER}{}", std::env::consts::EXE_SUFFIX);
         match binary.parent().map(|dir| dir.join(updater)) {
             Some(path) if path.is_file() => Self::Installer,
             _ => Self::from_path(binary),
@@ -101,7 +114,8 @@ impl InstallSource {
 
     /// The commands that update this install, in order, each as a program and its arguments, or
     /// `None` when the honest answer is "however you installed it". A wrong command is worse than
-    /// an absent one, so this refuses to guess.
+    /// an absent one, so this refuses to guess. An installer copy has none either: `luxe update`
+    /// reruns the installer script itself, and no command a person could type does that.
     ///
     /// Run directly rather than through a shell, so nothing in them is ever interpreted. Homebrew
     /// refreshes its index first, or `upgrade` can find nothing newer than the release the notice
@@ -110,7 +124,7 @@ impl InstallSource {
         match self {
             Self::Cargo => Some(&[&["cargo", "install", "--locked", "--force", "luxe-cli"]]),
             Self::Homebrew => Some(&[&["brew", "update"], &["brew", "upgrade", "luxe"]]),
-            Self::Installer => Some(&[&[INSTALLER_UPDATER]]),
+            Self::Installer => None,
             // Which package manager owns it is not knowable without querying one, and guessing
             // `apt` on an Arch machine is the failure this whole function exists to avoid.
             Self::SystemPackage => None,
@@ -128,6 +142,7 @@ impl InstallSource {
     pub fn advice(&self) -> String {
         match self.update_command() {
             Some(command) => format!("`{command}`"),
+            None if *self == Self::Installer => "`luxe update`".to_string(),
             None if *self == Self::SystemPackage => {
                 "update it with your system package manager".to_string()
             }

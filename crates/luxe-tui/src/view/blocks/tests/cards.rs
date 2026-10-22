@@ -92,10 +92,10 @@ pub(super) fn header(block: &ConvoBlock, styles: &ThemeStyles) -> Line<'static> 
 #[test]
 fn a_tool_card_reads_in_three_voices() {
     let styles = theme();
-    let line = header(&tool_item("bash", luxe_core::ToolActivityState::Succeeded), &styles);
+    let line = header(&tool_item("test", luxe_core::ToolActivityState::Succeeded), &styles);
 
     let name = &line.spans[0];
-    assert_eq!(name.content.as_ref(), format!("{} bash", tool_glyph("bash")));
+    assert_eq!(name.content.as_ref(), format!("{} test", tool_glyph("test")));
     assert!(name.style.add_modifier.contains(Modifier::BOLD), "the tool name is bold");
     assert_eq!(name.style.fg, styles.success.fg, "a landed call takes its outcome color");
 
@@ -233,7 +233,7 @@ fn a_header_does_not_restate_the_body_under_it() {
 
     // A one-line command has no body, so the header is the only place it can be.
     let one = card("bash", serde_json::json!({"command": "make build"}));
-    assert_eq!(header(&one, &styles).spans[1].content.as_ref(), "  make build");
+    assert!(header(&one, &styles).to_string().ends_with("  make build  5ms"));
 
     // And a `write`'s subject is the path while its body is the file: different things.
     let written = card("write", serde_json::json!({"path": "a.rs", "content": "fn main() {}"}));
@@ -251,6 +251,42 @@ fn a_header_does_not_restate_the_body_under_it() {
         !rendered.iter().any(|row| row.line.to_string().contains("make test")),
         "the rest is folded"
     );
+}
+
+/// A command the header carries is highlighted as shell, the way a card body draws one: a call with
+/// no `description` and one line has no body, so without this its command was the only one left
+/// plain. A described call's subject is prose, and stays body text.
+#[test]
+fn a_command_on_the_header_is_highlighted() {
+    let styles = theme();
+    let card = |arguments: serde_json::Value| {
+        let mut activity = luxe_core::ToolActivity::running(
+            "s",
+            "c",
+            "bash",
+            luxe_core::describe_call("bash", &arguments, "/project"),
+            1,
+        );
+        activity.card_body = luxe_core::tool_card_body("bash", &arguments, "/project");
+        ConvoBlock::Tool(Box::new(crate::app::ToolItem {
+            activity,
+            expanded: false,
+            details_toggled: false,
+            waited_on_user_ms: 0,
+        }))
+    };
+    let command = "cargo test --workspace 'a b'";
+    let row = header(&card(serde_json::json!({"command": command})), &styles);
+    let expected = crate::highlight::highlight_code(command, Some("sh"), &styles).remove(0);
+    assert_eq!(row.spans[1].content.as_ref(), "  ", "the gap stands apart from the command");
+    assert_eq!(&row.spans[2..], expected.spans.as_slice(), "drawn as the highlighter draws it");
+    let inks: std::collections::HashSet<_> = expected.spans.iter().map(|s| s.style.fg).collect();
+    assert!(inks.len() > 1, "more than one color, or this proves nothing: {expected:?}");
+
+    let described = serde_json::json!({"description": "Run the suite", "command": command});
+    let row = header(&card(described), &styles);
+    assert_eq!(row.spans[1].content.as_ref(), "  Run the suite");
+    assert_eq!(row.spans[1].style.fg, styles.text.fg, "a description is prose");
 }
 
 /// A call in flight reports how long it has been going, which is when that answers something.
@@ -287,7 +323,7 @@ fn a_call_waiting_on_you_does_not_spin() {
 fn a_call_in_flight_reports_how_long_it_has_been_going() {
     let styles = theme();
     let card = |state| {
-        let mut activity = luxe_core::ToolActivity::running("s", "c", "bash", "make test", 1);
+        let mut activity = luxe_core::ToolActivity::running("s", "c", "test", "make test", 1);
         activity.state = state;
         activity.elapsed_ms =
             matches!(state, luxe_core::ToolActivityState::Succeeded).then_some(2_500);
@@ -347,11 +383,13 @@ fn a_card_does_not_report_the_readers_own_deliberation() {
     };
 
     // Thirty of those thirty-one seconds were a permission prompt on screen.
+    // The clock is the header's last span; a command subject is several before it
+    let clock = |line: &Line<'static>| line.spans.last().map(|span| span.content.to_string());
     let gated = header(&card("bash", 30_000), &styles);
-    assert_eq!(gated.spans[2].content.as_ref(), "  1s");
+    assert_eq!(clock(&gated).as_deref(), Some("  1s"));
     // Nothing waited on, nothing to subtract.
     let plain = header(&card("bash", 0), &styles);
-    assert_eq!(plain.spans[2].content.as_ref(), "  31s");
+    assert_eq!(clock(&plain).as_deref(), Some("  31s"));
 
     // A `question` is that case taken to its limit: the whole call is a person thinking, so
     // there is no tool time to report at all.

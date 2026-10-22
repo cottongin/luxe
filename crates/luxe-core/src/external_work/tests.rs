@@ -45,6 +45,57 @@ fn the_first_look_is_the_one_that_counts() {
     assert_eq!(record.files[0].baseline.line_count(), Some(2));
 }
 
+/// What the session changed out there reads back for the FILE tab, answered under the name it was
+/// asked by, since the pane matches the answer to what it is showing by that string.
+#[test]
+fn a_file_the_session_changed_reads_back() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("notes.md");
+    let work = ExternalWork::new();
+    work.observe(&path);
+    write(&path, "# notes\n");
+
+    let asked = crate::paths::display(&path);
+    let file = work.read_file(&asked).unwrap();
+    assert_eq!((file.text.as_str(), file.path.as_str()), ("# notes\n", asked.as_str()));
+}
+
+/// The record is the permission: any client can name any absolute path, and only what the session
+/// changed is read, so a neighbor of a changed file, or a `..` out of a changed checkout, is not.
+#[test]
+fn only_what_the_session_changed_reads_back() {
+    let dir = tempfile::tempdir().unwrap();
+    let repo = dir.path().join("sibling");
+    std::fs::create_dir_all(repo.join(".git")).unwrap();
+    write(&repo.join("src/lib.rs"), "fn main() {}\n");
+    write(&dir.path().join("secret.md"), "hush\n");
+    let work = ExternalWork::new();
+    work.observe(&repo.join("src/lib.rs"));
+    work.observe(&dir.path().join("changed.md"));
+    let read = |path: PathBuf| work.read_file(&crate::paths::display(&path));
+
+    assert_eq!(read(repo.join("src/lib.rs")).unwrap().text, "fn main() {}\n", "its checkout");
+    let refused = Err(crate::project_files::ProjectFileFailure::OutsideProject);
+    assert_eq!(read(dir.path().join("secret.md")), refused, "a neighbor it never changed");
+    assert_eq!(read(repo.join("../secret.md")), refused, "a climb out of the checkout");
+}
+
+/// A link inside a changed checkout is followed before it is judged, so it cannot lead out.
+#[cfg(unix)]
+#[test]
+fn a_link_out_of_a_changed_checkout_is_refused() {
+    let dir = tempfile::tempdir().unwrap();
+    let repo = dir.path().join("sibling");
+    std::fs::create_dir_all(repo.join(".git")).unwrap();
+    write(&dir.path().join("secret.md"), "hush\n");
+    std::os::unix::fs::symlink(dir.path().join("secret.md"), repo.join("leak")).unwrap();
+    let work = ExternalWork::new();
+    work.observe(&repo.join("src/lib.rs"));
+
+    let refused = Err(crate::project_files::ProjectFileFailure::OutsideProject);
+    assert_eq!(work.read_file(&crate::paths::display(&repo.join("leak"))), refused);
+}
+
 #[test]
 fn a_file_in_a_worktree_is_recorded_as_its_root() {
     let dir = tempfile::tempdir().unwrap();

@@ -2,9 +2,10 @@
 //!
 //! The policy is [`luxe_core::update`]'s: which owner installed this copy, which commands update
 //! it, and a refusal where luxe cannot know them. This runs those commands one program at a time
-//! with the terminal attached, so the reader sees the package manager's own output, and luxe never
-//! writes a binary itself. `/update` on the dashboard comes here too, once the TUI has handed the
-//! terminal back.
+//! with the terminal attached, so the reader sees the package manager's own output. A copy luxe's
+//! installer script put there is updated by running that script again ([`installer`]). Either way
+//! luxe never writes a binary itself. `/update` on the dashboard comes here too, once the TUI has
+//! handed the terminal back.
 
 use anyhow::{anyhow, bail, Context};
 use luxe_core::update::{self, InstallSource};
@@ -24,31 +25,58 @@ pub(crate) async fn run(check_only: bool) -> anyhow::Result<()> {
     }
     println!("luxe {latest} is available (you have {current}).");
     let source = InstallSource::detect();
-    match (source.update_steps(), check_only) {
-        (Some(steps), false) => update_with(steps, &latest).await,
-        _ => {
+    match route(source, check_only) {
+        Some(route) => update_with(route, &latest).await,
+        None => {
             println!("{}", instructions(source, check_only));
             Ok(())
         }
     }
 }
 
-/// Runs the owner's steps over this copy, then checks the `luxe` a shell finds now.
+/// How `luxe update` updates a copy.
+#[derive(Debug, PartialEq, Eq)]
+enum Route {
+    /// The owner's own commands, in order
+    Steps(&'static [&'static [&'static str]]),
+    /// The release's installer script, run again over this copy
+    Installer,
+}
+
+/// The route for `source`, or `None` when luxe only says what to do: the reader asked just to
+/// check, or no owner's update is known.
+fn route(source: InstallSource, check_only: bool) -> Option<Route> {
+    if check_only {
+        return None;
+    }
+    match source {
+        InstallSource::Installer => Some(Route::Installer),
+        _ => source.update_steps().map(Route::Steps),
+    }
+}
+
+/// Updates this copy by `route`, then checks the `luxe` a shell finds now.
 ///
 /// Windows won't let a running program's file be overwritten, and `luxe update` is itself a
 /// running luxe. It does allow a rename, so the running copy steps aside first and the owner
 /// writes a new file where it was.
-async fn update_with(steps: &[&[&str]], latest: &str) -> anyhow::Result<()> {
+async fn update_with(route: Route, latest: &str) -> anyhow::Result<()> {
     let exe = std::env::current_exe().context("could not find the running luxe")?;
     let aside = match cfg!(windows) {
         true => Some(aside::MovedAside::move_running(&exe)?),
         false => None,
     };
-    let ran = run_steps(steps, exe.parent()).await;
+    let ran = match &route {
+        Route::Steps(steps) => run_steps(steps).await,
+        Route::Installer => installer::run(latest, &exe).await,
+    };
     if let Some(aside) = &aside {
         aside.restore_if_missing()?;
     }
     ran?;
+    if route == Route::Installer {
+        installer::remove_legacy_updater(&exe);
+    }
     report(installed_now(latest, &exe).await)
 }
 
@@ -61,14 +89,13 @@ fn instructions(source: InstallSource, check_only: bool) -> String {
     }
 }
 
-/// Runs each step in turn, the terminal attached, stopping at the first that fails. `beside` is
-/// the running binary's directory.
-async fn run_steps(steps: &[&[&str]], beside: Option<&Path>) -> anyhow::Result<()> {
+/// Runs each step in turn, the terminal attached, stopping at the first that fails.
+async fn run_steps(steps: &[&[&str]]) -> anyhow::Result<()> {
     for step in steps {
         let Some((program, args)) = step.split_first() else { continue };
         let line = step.join(" ");
         println!("Running: {line}");
-        let status = tokio::process::Command::new(program_path(program, beside))
+        let status = tokio::process::Command::new(program)
             .args(args)
             .status()
             .await
@@ -78,16 +105,6 @@ async fn run_steps(steps: &[&[&str]], beside: Option<&Path>) -> anyhow::Result<(
         }
     }
     Ok(())
-}
-
-/// Where to run `program` from: `beside` this binary when it is there, which is where the
-/// installer put its updater, whether or not that directory is on `PATH`; by name otherwise.
-fn program_path(program: &str, beside: Option<&Path>) -> PathBuf {
-    let name = format!("{program}{}", std::env::consts::EXE_SUFFIX);
-    beside
-        .map(|dir| dir.join(name))
-        .filter(|path| path.is_file())
-        .unwrap_or_else(|| PathBuf::from(program))
 }
 
 /// How the update landed, read from the `luxe` a shell would run now.
@@ -165,6 +182,7 @@ fn report(outcome: Outcome) -> anyhow::Result<()> {
 }
 
 mod aside;
+mod installer;
 
 #[cfg(test)]
 mod tests;

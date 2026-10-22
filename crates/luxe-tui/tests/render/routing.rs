@@ -258,7 +258,7 @@ fn a_finished_login_walks_into_the_model_picker_inside_the_surface() {
     let buffer = render_app(&mut app, &backend);
     let screen: String = buffer.content.iter().map(|cell| cell.symbol()).collect();
     assert!(screen.contains("Select model"), "{screen}");
-    assert!(screen.contains("GPT-5.6"), "{screen}");
+    assert!(screen.contains("gpt-5.6"), "{screen}");
     // What the login had to say rides along as the picker's opening line, and with no model
     // chosen for the reader, the line asks them to choose one.
     assert!(screen.contains("Signed in to OpenAI"), "{screen}");

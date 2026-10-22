@@ -48,6 +48,15 @@
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 671.00L425.00 660.00M425.00 671.00L425.00 682.00"/>
     <path fill="none" stroke="#2e2b27" stroke-width="1.25" d="M425.00 693.00L425.00 682.00M425.00 693.00L425.00 704.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M445.00 704.00Q445.00 693.00 450.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M455.00 693.00L460.00 693.00M455.00 693.00L450.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M465.00 693.00L470.00 693.00M465.00 693.00L460.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M475.00 693.00L480.00 693.00M475.00 693.00L470.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M485.00 693.00L490.00 693.00M485.00 693.00L480.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M495.00 693.00L500.00 693.00M495.00 693.00L490.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M505.00 693.00L510.00 693.00M505.00 693.00L500.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M515.00 693.00L520.00 693.00M515.00 693.00L510.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M525.00 693.00L530.00 693.00M525.00 693.00L520.00 693.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M535.00 693.00L540.00 693.00M535.00 693.00L530.00 693.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M545.00 693.00L550.00 693.00M545.00 693.00L540.00 693.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M555.00 693.00L560.00 693.00M555.00 693.00L550.00 693.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M565.00 693.00L570.00 693.00M565.00 693.00L560.00 693.00"/>
@@ -285,8 +294,8 @@
   <text x="0" y="611.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
   <text x="0" y="633.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                         </tspan><tspan> </tspan><tspan> </tspan><tspan>  </tspan><tspan fill="#e4dfd6">Added a byte-at-a-time table test covering split-token boundaries.</tspan><tspan>                                       </tspan></text>
   <text x="0" y="655.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>  </tspan><tspan fill="#12100e" font-weight="700">MODEL</tspan><tspan>                                  </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
-  <text x="0" y="677.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅣 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                           </tspan></text>
-  <text x="0" y="699.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                                 </tspan></text>
+  <text x="0" y="677.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">provider       </tspan><tspan fill="#e4dfd6">󰅟 lmstudio                </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan>                                                                                                 </tspan></text>
+  <text x="0" y="699.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">model          </tspan><tspan fill="#e4dfd6">󰚩 qwen3.8-27b             </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                          </tspan></text>
   <text x="0" y="721.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">thinking       </tspan><tspan fill="#e4dfd6">󰌵 off                     </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                        </tspan><tspan> </tspan></text>
   <text x="0" y="743.0" textLength="1500" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#97938c">mode           </tspan><tspan fill="#e4dfd6">󱌣 build                   </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                                                                                          </tspan></text>
 </svg>

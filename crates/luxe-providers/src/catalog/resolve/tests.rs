@@ -95,7 +95,7 @@ fn catalog_supplies_everything_config_omits() {
 
     assert_eq!(info.context_window, 1_000_000);
     assert_eq!(info.max_tokens, 128_000);
-    assert_eq!(info.display_name.as_deref(), Some("Claude Opus 5"));
+    assert_eq!(info.display_name, None, "a catalog's prose name is not shown; the id is");
     assert!(info.reasoning);
     assert_eq!(info.cost.input, 5.0);
     assert_eq!(info.cost.cache_read, 0.5);
@@ -144,6 +144,23 @@ fn long_prompt_tiers_come_through_from_the_catalog() {
     assert!(odd.cost.tiers.is_empty(), "a tier on something other than context is not guessed at");
 }
 
+/// The UI names a model by its id, as it names everything else, so a catalog's `Claude Opus 5` is
+/// dropped. A name the user wrote in config is a choice they made, and still shows.
+#[test]
+fn only_a_configured_name_replaces_the_id() {
+    let cache = catalog(OPUS_5);
+    let model = ModelConfig { name: Some("opus".into()), ..Default::default() };
+    let sources = Sources { cache: Some(&cache), model: Some(&model), ..<_>::default() };
+    let (named, from) = resolve("anthropic", "claude-opus-5", &sources);
+    assert_eq!(named.display_name.as_deref(), Some("opus"));
+    assert_eq!(from.display_name, Layer::Config);
+
+    let (plain, from) =
+        resolve("anthropic", "claude-opus-5", &Sources { cache: Some(&cache), ..<_>::default() });
+    assert_eq!(plain.display(), "claude-opus-5");
+    assert_ne!(from.display_name, Layer::Cache, "nothing came from the catalog");
+}
+
 #[test]
 fn cache_overrides_snapshot_and_config_overrides_both() {
     let snapshot = catalog(
@@ -169,7 +186,6 @@ fn cache_overrides_snapshot_and_config_overrides_both() {
     assert_eq!(from.context_window, Layer::Config);
     // … the fresher cache wins over the snapshot elsewhere …
     assert_eq!(info.max_tokens, 128_000);
-    assert_eq!(info.display_name.as_deref(), Some("Claude Opus 5"));
     assert_eq!(from.max_tokens, Layer::Cache);
     // … and a field only the snapshot knows still survives when the cache is missing it.
     let (snap_only, snap_from) = resolve(

@@ -151,6 +151,9 @@ impl DashboardState {
 
     /// Once the composer is drawn: cut its bottom edge into the divider over the list, or, with the
     /// list folded, say on that edge how to open it.
+    ///
+    /// The divider runs between plain sides, as the rule over the key hints does: a `├` `┤` pair
+    /// in the accent met a muted rule mid-edge, and read as a frame that changed color halfway.
     pub fn finish(&self, f: &mut Frame, composer: Rect, theme: &ThemeStyles, border: Style) {
         if composer.width < 2 || composer.height == 0 {
             return;
@@ -162,8 +165,8 @@ impl DashboardState {
         let y = composer.bottom() - 1;
         let buffer = f.buffer_mut();
         if self.list_shown() {
-            buffer[(composer.x, y)].set_symbol("├").set_style(border);
-            buffer[(composer.right() - 1, y)].set_symbol("┤").set_style(border);
+            buffer[(composer.x, y)].set_symbol("│").set_style(border);
+            buffer[(composer.right() - 1, y)].set_symbol("│").set_style(border);
             for x in composer.x + 1..composer.right() - 1 {
                 buffer[(x, y)].set_symbol("─").set_style(theme.border_muted);
             }

@@ -98,6 +98,15 @@
     <path fill="#ddc084" d="M995.00 616.00h5.00v22.00h-5.00z"/>
     <path fill="#ddc084" d="M995.00 638.00h5.00v22.00h-5.00z"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 726.00Q5.00 715.00 10.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M15.00 715.00L20.00 715.00M15.00 715.00L10.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 715.00L30.00 715.00M25.00 715.00L20.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M35.00 715.00L40.00 715.00M35.00 715.00L30.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M45.00 715.00L50.00 715.00M45.00 715.00L40.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M55.00 715.00L60.00 715.00M55.00 715.00L50.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M65.00 715.00L70.00 715.00M65.00 715.00L60.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M75.00 715.00L80.00 715.00M75.00 715.00L70.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M85.00 715.00L90.00 715.00M85.00 715.00L80.00 715.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M95.00 715.00L100.00 715.00M95.00 715.00L90.00 715.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M105.00 715.00L110.00 715.00M105.00 715.00L100.00 715.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M115.00 715.00L120.00 715.00M115.00 715.00L110.00 715.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M125.00 715.00L130.00 715.00M125.00 715.00L120.00 715.00"/>
@@ -322,8 +331,8 @@
   <text x="0" y="633.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#e4dfd6">Added </tspan><tspan fill="#faaa51">todo overdue</tspan><tspan fill="#e4dfd6">. It lists open tasks past their due date, oldest first, through a new</tspan><tspan>          </tspan><tspan> </tspan></text>
   <text x="0" y="655.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan fill="#faaa51">overdue</tspan><tspan fill="#e4dfd6"> in </tspan><tspan fill="#faaa51">src/filter.js</tspan><tspan fill="#e4dfd6">, and two tests cover it. All five pass.</tspan><tspan>                                  </tspan><tspan> </tspan></text>
   <text x="0" y="677.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="699.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="721.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                           </tspan></text>
+  <text x="0" y="699.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084"> 󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan> </tspan><tspan>                                                                                           </tspan></text>
+  <text x="0" y="721.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="743.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="765.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="787.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan fill="#e4dfd6"> 3.1%/1.0M</tspan><tspan>     </tspan><tspan fill="#e4dfd6">󰌵 med</tspan><tspan>     </tspan><tspan fill="#12100e" font-weight="700">󰚩 claude-sonnet-5</tspan><tspan> </tspan></text>

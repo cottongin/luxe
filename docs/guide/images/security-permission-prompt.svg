@@ -321,6 +321,15 @@
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M985.00 429.00L990.00 429.00M985.00 429.00L980.00 429.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M995.00 418.00Q995.00 429.00 990.00 429.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M5.00 462.00Q5.00 451.00 10.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M15.00 451.00L20.00 451.00M15.00 451.00L10.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M25.00 451.00L30.00 451.00M25.00 451.00L20.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M35.00 451.00L40.00 451.00M35.00 451.00L30.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M45.00 451.00L50.00 451.00M45.00 451.00L40.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M55.00 451.00L60.00 451.00M55.00 451.00L50.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M65.00 451.00L70.00 451.00M65.00 451.00L60.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M75.00 451.00L80.00 451.00M75.00 451.00L70.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M85.00 451.00L90.00 451.00M85.00 451.00L80.00 451.00"/>
+    <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M95.00 451.00L100.00 451.00M95.00 451.00L90.00 451.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M105.00 451.00L110.00 451.00M105.00 451.00L100.00 451.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M115.00 451.00L120.00 451.00M115.00 451.00L110.00 451.00"/>
     <path fill="none" stroke="#ddc084" stroke-width="1.25" d="M125.00 451.00L130.00 451.00M125.00 451.00L120.00 451.00"/>
@@ -534,7 +543,7 @@
   <text x="0" y="391.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="413.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan> </tspan><tspan fill="#ddc084">enter</tspan><tspan fill="#e4dfd6"> answer</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">1–4</tspan><tspan fill="#e4dfd6"> pick</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">↑/↓</tspan><tspan fill="#e4dfd6"> choose</tspan><tspan fill="#97938c"> · </tspan><tspan fill="#ddc084">esc</tspan><tspan fill="#e4dfd6"> deny</tspan><tspan>                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="435.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
-  <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan fill="#ddc084">  󱌣 </tspan><tspan fill="#ddc084" font-weight="700">build</tspan><tspan>                                                                                           </tspan></text>
+  <text x="0" y="457.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="479.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan> </tspan><tspan>                                                                                                  </tspan><tspan> </tspan></text>
   <text x="0" y="501.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                                                                    </tspan></text>
   <text x="0" y="523.0" textLength="1000" lengthAdjust="spacingAndGlyphs" xml:space="preserve"><tspan>                                                        </tspan><tspan fill="#e4dfd6"> 3.1%/1.0M</tspan><tspan>     </tspan><tspan fill="#e4dfd6">󰌵 med</tspan><tspan>     </tspan><tspan fill="#12100e" font-weight="700">󰚩 claude-sonnet-5</tspan><tspan> </tspan></text>

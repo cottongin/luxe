@@ -12,14 +12,16 @@
 
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
-use crate::app::{App, Msg};
+use crate::app::{App, DescriptionStep, Msg};
 
 /// The review's own overlay that takes typing, when one is open.
 ///
-/// In the order they take it: a search outranks the source reference field, which outranks the
-/// picker it was opened from. The help sheet takes no typing, only Esc.
+/// In the order they take it: the pull request's description, read over everything, outranks a
+/// search, which outranks the source reference field, which outranks the picker it was opened
+/// from. The help sheet takes no typing, only Esc.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum LocalOverlay {
+    Description,
     Search,
     SourceReference,
     SourcePicker,
@@ -29,7 +31,9 @@ enum LocalOverlay {
 
 impl LocalOverlay {
     fn of(workspace: &crate::guided_review::GuidedReviewWorkspace) -> Self {
-        if workspace.search.is_some() {
+        if workspace.description_scroll.is_some() {
+            LocalOverlay::Description
+        } else if workspace.search.is_some() {
             LocalOverlay::Search
         } else if workspace.source_reference_open() {
             LocalOverlay::SourceReference
@@ -77,7 +81,9 @@ pub fn claim(app: &mut App, key: &KeyEvent) -> Option<Msg> {
 
 /// Esc closes what is drawn on top — the help sheet first — and with nothing open leaves the review.
 fn escape(workspace: &crate::guided_review::GuidedReviewWorkspace) -> Msg {
-    if workspace.help_visible {
+    if workspace.description_scroll.is_some() {
+        Msg::GuidedReviewDescription(DescriptionStep::Toggle)
+    } else if workspace.help_visible {
         Msg::GuidedReviewToggleHelp
     } else if workspace.source_reference_open() {
         Msg::GuidedReviewCancelSourceReference
@@ -95,6 +101,9 @@ fn escape(workspace: &crate::guided_review::GuidedReviewWorkspace) -> Msg {
 /// A space in the source reference field is text too, though a reference is one token: typed, it
 /// is refused at submit with a reason, where passed through it stepped the walk behind the field.
 fn overlay_key(overlay: LocalOverlay, picker_open: bool, key: &KeyEvent) -> Option<Msg> {
+    if overlay == LocalOverlay::Description {
+        return Some(description_key(key));
+    }
     let plain = !key.modifiers.intersects(KeyModifiers::CONTROL | KeyModifiers::ALT);
     let msg = match (overlay, key.code) {
         (LocalOverlay::Search, KeyCode::Enter | KeyCode::Down) => Msg::GuidedReviewSearchNext,
@@ -127,6 +136,26 @@ fn overlay_key(overlay: LocalOverlay, picker_open: bool, key: &KeyEvent) -> Opti
     Some(msg)
 }
 
+/// Rows a page key moves the description. Short of a screen, so the last lines of one page are
+/// still in view at the top of the next.
+const DESCRIPTION_PAGE_ROWS: i32 = 10;
+
+/// A key while the description is open: it scrolls, `p` shuts it, and everything else is
+/// swallowed so nothing moves in the review behind it.
+fn description_key(key: &KeyEvent) -> Msg {
+    let step = match key.code {
+        KeyCode::Down | KeyCode::Char('j') => DescriptionStep::Scroll(1),
+        KeyCode::Up | KeyCode::Char('k') => DescriptionStep::Scroll(-1),
+        KeyCode::PageDown | KeyCode::Char(' ') => DescriptionStep::Scroll(DESCRIPTION_PAGE_ROWS),
+        KeyCode::PageUp => DescriptionStep::Scroll(-DESCRIPTION_PAGE_ROWS),
+        KeyCode::Home => DescriptionStep::Scroll(i32::MIN),
+        KeyCode::End => DescriptionStep::Scroll(i32::MAX),
+        KeyCode::Char('p' | 'q') => DescriptionStep::Toggle,
+        _ => return Msg::Tick,
+    };
+    Msg::GuidedReviewDescription(step)
+}
+
 /// The walkthrough's own keys, and a swallowed tick for anything else.
 fn surface_key(
     workspace: &crate::guided_review::GuidedReviewWorkspace,
@@ -148,6 +177,7 @@ fn surface_key(
         KeyCode::Char('z') => Msg::GuidedReviewToggleNarration,
         KeyCode::Char('d') => Msg::GuidedReviewToggleNoiseDetails,
         KeyCode::Char('s') => Msg::GuidedReviewToggleSourcePicker,
+        KeyCode::Char('p') if !picking => Msg::GuidedReviewDescription(DescriptionStep::Toggle),
         KeyCode::Char('r') if failed => Msg::GuidedReviewRetry,
         // ↑/↓ scroll what is being read and never anything else, whichever pane has focus
         KeyCode::Down if ctrl => Msg::GuidedReviewFileNext,

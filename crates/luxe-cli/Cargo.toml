@@ -18,14 +18,14 @@ name = "luxe"
 path = "src/main.rs"
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.4" }
-luxe-providers = { path = "../luxe-providers", version = "0.1.4" }
-luxe-tools = { path = "../luxe-tools", version = "0.1.4" }
-luxe-lsp = { path = "../luxe-lsp", version = "0.1.4" }
-luxe-dap = { path = "../luxe-dap", version = "0.1.4" }
-luxe-mcp = { path = "../luxe-mcp", version = "0.1.4" }
-luxe-tui = { path = "../luxe-tui", version = "0.1.4" }
-luxe-remote = { path = "../luxe-remote", version = "0.1.4", optional = true }
+luxe-core = { path = "../luxe-core", version = "0.1.5" }
+luxe-providers = { path = "../luxe-providers", version = "0.1.5" }
+luxe-tools = { path = "../luxe-tools", version = "0.1.5" }
+luxe-lsp = { path = "../luxe-lsp", version = "0.1.5" }
+luxe-dap = { path = "../luxe-dap", version = "0.1.5" }
+luxe-mcp = { path = "../luxe-mcp", version = "0.1.5" }
+luxe-tui = { path = "../luxe-tui", version = "0.1.5" }
+luxe-remote = { path = "../luxe-remote", version = "0.1.5", optional = true }
 # The pairing QR in the terminal. Without its defaults it is the encoder and text renderer alone,
 # with no dependencies.
 qrcode = { version = "0.14", default-features = false, optional = true }
@@ -53,9 +53,10 @@ unicode-width = { workspace = true }
 # Streaming the update manifest with a size cap, and comparing the version it reports.
 futures = { workspace = true }
 semver = { workspace = true }
+# The scratch folder `luxe update` runs the installer script in, removed when it finishes
+tempfile = "3"
 
 [dev-dependencies]
-tempfile = "3"
 # The guide check: what luxe would silently ignore in a config example
 serde_ignored = "0.1"
 

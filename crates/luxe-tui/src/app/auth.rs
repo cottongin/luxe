@@ -168,8 +168,9 @@ impl App {
     /// models it reached, any advice that only makes sense now) becomes the picker's opening line,
     /// and the transcript keeps the whole of it for a reader who scrolls back.
     ///
-    /// The picker opens at the top with nothing chosen: which model to run is the reader's call,
-    /// and a cursor already resting on one reads as luxe recommending it.
+    /// The picker opens on the provider just signed in to, at the top with nothing chosen: which
+    /// model to run is the reader's call, and a cursor already resting on one reads as luxe
+    /// recommending it. `tab` widens it to every provider.
     fn finish_login(&mut self, outcome: luxe_core::auth::LoginOutcome) {
         self.close_auth_wizard();
         self.refresh_configuration();
@@ -178,7 +179,7 @@ impl App {
         self.push_convo(ConvoBlock::System(login_report(&outcome)));
         let current = Some(self.status.model.as_str()).filter(|model| !model.is_empty());
         let note = login_note(&outcome, current);
-        self.open_model_picker_at_top(note);
+        self.open_model_picker_after_login(note, &outcome.provider_id);
     }
 
     /// Re-read what is configured, so the Configuration summary reflects a login that just landed.

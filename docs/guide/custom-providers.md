@@ -65,7 +65,7 @@ each replace the catalog's whole: a `cost` you write drops the catalog's long-pr
 | --- | --- |
 | `context_window` | The model's context window, in tokens |
 | `max_tokens` | The most it may write in one reply. Defaults to the model's own limit from the catalog. luxe lowers it per request to what the window has left, so setting the real limit is safe; setting a lower one is how replies get cut off. |
-| `name` | The name shown in the picker and statusline |
+| `name` | The name shown in the picker and statusline, instead of the model ID |
 | `reasoning` | Whether it can think |
 | `thinking` | The level a session starts at for this model |
 | `thinking_level_map` | What each thinking level sends; see below |
@@ -221,7 +221,6 @@ luxe takes a model's details from three places, each overriding the one before, 
 ```console
 $ luxe models show anthropic/claude-opus-5
 anthropic/claude-opus-5
-  name              Claude Opus 5  [models.dev]
   context window    1.0M  [models.dev]
   max output        128k  [models.dev]
   reasoning         true  [models.dev]
@@ -233,6 +232,8 @@ anthropic/claude-opus-5
 
 Each value names where it came from: `snapshot` for the catalog built into luxe, `models.dev` for
 the refreshed copy, `config` for your `models.json`, and `default` where none of them said.
+
+A model goes by its ID everywhere luxe shows it, unless you give it a `name` in `models.json`.
 
 | Variable | Does |
 | --- | --- |

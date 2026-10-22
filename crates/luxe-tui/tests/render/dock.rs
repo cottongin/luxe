@@ -219,24 +219,47 @@ fn clicking_the_dock_review_changes_affordance_opens_review() {
     }
 }
 
-/// Clicking the dock's model row opens the model picker (plan B3): in the wide layout the
+/// Clicking the dock's model row opens the model picker on the models: in the wide layout the
 /// statusline hides and MODEL telemetry relocates into the dock footer as a clickable row.
 #[test]
 fn clicking_the_dock_model_row_opens_the_model_picker() {
-    use crossterm::event::{MouseButton, MouseEvent, MouseEventKind};
-    let (width, height) = (160, 40);
-    let backend = test_backend(width, height);
+    use luxe_tui::model_picker::PickerStart;
+    let message = click_dock_row("test-model-xyz");
+    let opened = matches!(message, Msg::OpenModelPicker(PickerStart::Models));
+    assert!(opened, "the model row opens the picker on the models, got {message:?}");
+}
+
+/// The provider row is its own target, opening on the providers rather than on the models.
+#[test]
+fn clicking_the_dock_provider_row_opens_the_providers() {
+    use luxe_tui::model_picker::PickerStart;
+    let message = click_dock_row("test-provider-abc");
+    let opened = matches!(message, Msg::OpenModelPicker(PickerStart::Providers));
+    assert!(opened, "the provider row opens the picker on the providers, got {message:?}");
+}
+
+/// An app wide enough to show the dock, on `test-model-xyz` from `test-provider-abc`.
+fn app_on_test_model(width: u16, height: u16) -> App {
     let mut app = create_app();
     app.update(Msg::TerminalResized { width, height });
     app.workspace = Some(empty_workspace("dock-model-click"));
     app.status.model = "test-model-xyz".into();
+    app.status.provider = "test-provider-abc".into();
     app.status.context_window = 128_000;
     app.status.context_pct = 10.0;
+    app
+}
 
+/// The message a click on the dock row showing `text` sends.
+fn click_dock_row(text: &str) -> Msg {
+    use crossterm::event::{MouseButton, MouseEvent, MouseEventKind};
+    let (width, height) = (160, 40);
+    let backend = test_backend(width, height);
+    let mut app = app_on_test_model(width, height);
     let buffer = render_app(&mut app, &backend);
     let row = (0..height)
-        .find(|&y| row_text(&buffer, y, width).contains("test-model-xyz"))
-        .expect("the model row renders in the dock footer");
+        .find(|&y| row_text(&buffer, y, width).contains(text))
+        .unwrap_or_else(|| panic!("{text} renders in the dock"));
     let click = MouseEvent {
         kind: MouseEventKind::Down(MouseButton::Left),
         column: 5,
@@ -244,10 +267,8 @@ fn clicking_the_dock_model_row_opens_the_model_picker() {
         modifiers: KeyModifiers::NONE,
     };
     match route_mouse(&mut app, &click) {
-        RouteAction::Msg(message) => {
-            assert!(matches!(*message, Msg::OpenModelPicker), "the model row opens the picker")
-        }
-        other => panic!("expected an open-model-picker message, got {other:?}"),
+        RouteAction::Msg(message) => *message,
+        other => panic!("expected a message, got {other:?}"),
     }
 }
 

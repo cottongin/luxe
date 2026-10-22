@@ -375,7 +375,7 @@ git tag v0.2.0 && git push origin v0.2.0
 ```
 
 `.github/workflows/release.yml`, which `dist` generates from `dist-workspace.toml`, then builds
-every target, puts the archives, the install scripts and their updater on the GitHub release with
+every target, puts the archives and the install scripts on the GitHub release with
 an attestation for each file, publishes the Homebrew formula to `evanwhittaker/homebrew-tap`, and
 publishes the crates to crates.io (`publish-crates.yml`) before announcing. Never edit
 `release.yml`; change `dist-workspace.toml` and run `dist generate`.
@@ -384,6 +384,12 @@ The crates go up by crates.io Trusted Publishing, so no token is stored: each cr
 publisher is this repository's `release.yml`. A crate whose version crates.io already has is
 skipped, so a re-run after a partial publish carries on. `cargo publish --workspace --dry-run`
 packages and builds every crate the way the registry will, dependencies first.
+
+A new crate can't start that way: crates.io sets up Trusted Publishing only for a crate that
+exists. Publish its first version by hand (`cargo publish -p <crate>`), then on crates.io open the
+crate's **Settings → Trusted Publishing** and add GitHub for `evanwhittaker/luxe`, with workflow
+`release.yml` and no environment, before the next tag. Without it the release stops at that crate
+with "403 Forbidden: The provided access token is not valid", and every crate after it waits.
 
 ## Development-only files
 

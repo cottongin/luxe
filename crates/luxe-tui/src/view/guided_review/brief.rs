@@ -27,10 +27,10 @@ pub(crate) use files::FileOwners;
 use luxe_core::guided_review::GuidedReview;
 pub(super) use notices::notice_lines;
 #[cfg(test)]
-use pull_request::description_opening;
-#[cfg(test)]
 use pull_request::is_closing_reference;
 pub(super) use pull_request::pull_request_facts;
+#[cfg(test)]
+use pull_request::{description_opening, DESCRIPTION_OPENING_CHARS};
 use pull_request::{earlier_conversation_lines, pull_request_account};
 
 /// Judgement items past which a review is honestly more than one sitting.
@@ -165,12 +165,12 @@ mod tests {
     fn a_description_opens_with_its_first_paragraphs() {
         let body = format!(
             "Fixes #14404\n\n### Description\n\nThe owner casing differed.\n\n{}\n\n{}",
-            "a".repeat(300),
-            "b".repeat(400)
+            "a".repeat(200),
+            "b".repeat(200)
         );
         let (opening, more) = description_opening(&body);
         assert!(opening.starts_with("The owner casing differed."), "{opening}");
-        assert!(opening.contains(&"a".repeat(300)));
+        assert!(opening.contains(&"a".repeat(200)));
         assert!(!opening.contains('b'), "past the budget");
         assert!(!opening.contains("Fixes") && !opening.contains("###"), "{opening}");
         assert!(more);
@@ -180,8 +180,26 @@ mod tests {
             ("Short and complete.".into(), false)
         );
         assert_eq!(description_opening("Fixes #3"), (String::new(), false));
-        let lone = "x".repeat(900);
-        assert_eq!(description_opening(&lone), (lone.clone(), false), "one paragraph is never cut");
+    }
+
+    /// One long paragraph, the way an agent writes a description, is cut too: at its last
+    /// sentence that fits, and failing one, at a word. Either way it says there is more.
+    #[test]
+    fn a_long_first_paragraph_is_cut_at_a_sentence() {
+        let sentence = "This change moves the parser into its own module for reuse. ";
+        let long = sentence.repeat(10);
+        let (opening, more) = description_opening(&long);
+        assert!(more);
+        assert!(opening.ends_with("for reuse."), "cut after a whole sentence: {opening}");
+        assert!(opening.chars().count() <= DESCRIPTION_OPENING_CHARS, "{}", opening.len());
+
+        let words = "word ".repeat(100);
+        let (opening, more) = description_opening(&words);
+        assert!(more && opening.ends_with("word\u{2026}"), "{opening}");
+
+        // A paragraph that fits is whole, and nothing is said to follow it
+        let short = sentence.repeat(2);
+        assert_eq!(description_opening(&short), (short.trim().to_owned(), false));
     }
 
     #[test]

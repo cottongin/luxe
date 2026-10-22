@@ -172,18 +172,19 @@ icons! {
     Model => ["\u{f06a9}", "●", "%"],
     /// Model reasoning
     Thinking => ["\u{f0335}", "●", "~"],
-    /// Who serves the model, when it has no mark of its own (`md-cloud_outline`)
-    Provider => ["\u{f0163}", "○", "@"],
-    /// Google, serving Gemini (`md-google`)
+    /// Who serves the model, when it has no mark of its own (`md-cloud`), filled like the rest
+    Provider => ["\u{f015f}", "○", "@"],
+    /// Google, as a provider and as the maker of Gemini (`md-google`)
     ProviderGoogle => ["\u{f02ad}", "○", "@"],
     /// Microsoft Azure, serving Foundry (`md-microsoft_azure`)
     ProviderAzure => ["\u{f0805}", "○", "@"],
     /// Amazon Bedrock (`md-aws`)
     ProviderAws => ["\u{f0e0f}", "○", "@"],
-    /// OpenAI (`cod-openai`), one of the [`RECENT_BRANDS`]
+    /// OpenAI, as a provider and as the maker of GPT (`cod-openai`), one of the [`RECENT_BRANDS`]
     ProviderOpenAi => ["\u{ec81}", "○", "@"],
-    /// Anthropic (`cod-claude`), one of the [`RECENT_BRANDS`]
-    ProviderAnthropic => ["\u{ec82}", "○", "@"],
+    /// Claude, Anthropic's models (`cod-claude`), one of the [`RECENT_BRANDS`]. Nerd Fonts has no
+    /// mark for Anthropic itself, so the provider wears the plain one
+    ModelClaude => ["\u{ec82}", "●", "%"],
     /// GitHub Copilot (`cod-copilot`), one of the [`RECENT_BRANDS`]
     ProviderCopilot => ["\u{ec1e}", "○", "@"],
     // === Dashboard menu ===

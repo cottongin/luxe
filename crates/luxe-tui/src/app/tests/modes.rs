@@ -87,37 +87,54 @@ fn shift_tab_switches_mode_from_the_composer_only() {
     assert!(rx.try_recv().is_err(), "shift+tab in the `/` menu switched the mode");
 }
 
-/// The composer's title names the mode, in its own color, and clicking it switches.
+/// Where the mode button is, as `(column, row)` of its name: the row right above the composer's
+/// top edge, at its left end.
+pub(super) fn mode_badge_at(text: &str, mode: &str) -> Option<(u16, u16)> {
+    let lines: Vec<&str> = text.lines().collect();
+    let top = lines.iter().rposition(|line| line.contains('╭'))?;
+    let corner = lines[top].chars().position(|c| c == '╭')?;
+    let above = lines.get(top.checked_sub(1)?)?;
+    let at = above.find(mode)?;
+    let column = above[..at].chars().count();
+    // The icon and a pad come first, and nothing else may: the button leads the row
+    (column > corner && column <= corner + 4).then_some((column as u16, top as u16 - 1))
+}
+
+/// The mode is named on the row above the composer, at its left end, in its own color, and
+/// clicking it switches. The frame no longer carries it.
 #[test]
-fn the_composer_title_names_the_mode_and_is_a_button() {
+fn the_mode_button_leads_the_row_above_the_composer() {
     let (mut app, mut rx) = mode_app();
     in_mode(&mut app, "build");
     let (text, _) = screen(&mut app, 80, 20);
-    assert!(text.contains("build"), "the default mode is named too:\n{text}");
+    assert!(mode_badge_at(&text, "build").is_some(), "the default mode is named too:\n{text}");
 
     in_mode(&mut app, "plan");
     let (text, buffer) = screen(&mut app, 80, 20);
-    let row = text.lines().position(|line| line.contains("plan ─")).expect("a titled composer");
-    let column = text.lines().nth(row).unwrap().find("plan").unwrap();
-    let column = text.lines().nth(row).unwrap()[..column].chars().count() as u16;
+    assert!(!text.contains("plan ─"), "the frame still carries the mode:\n{text}");
+    let (column, row) = mode_badge_at(&text, "plan").expect("the mode button");
     assert_eq!(
-        buffer[(column, row as u16)].fg,
+        buffer[(column, row)].fg,
         app.theme_styles.mode_plan.fg.unwrap(),
-        "the title wears the plan color"
+        "the button wears the plan color"
     );
 
-    let click = crossterm::event::MouseEvent {
-        kind: crossterm::event::MouseEventKind::Down(crossterm::event::MouseButton::Left),
-        column,
-        row: row as u16,
-        modifiers: KeyModifiers::NONE,
-    };
-    if let crate::main_loop::RouteAction::Msg(message) =
-        crate::main_loop::route_mouse(&mut app, &click)
-    {
-        app.update(*message);
-    }
+    click_at(&mut app, column, row);
     assert!(matches!(rx.try_recv(), Ok(Action::SetMode(mode)) if mode == "build"));
+}
+
+/// A running turn's activity bar and time sit to the right of the mode button, which stays put.
+#[test]
+fn the_activity_row_keeps_the_mode_button_at_its_left() {
+    let (mut app, _rx) = mode_app();
+    in_mode(&mut app, "plan");
+    app.status.state = crate::app::AppState::Streaming;
+    app.status.on_turn_start();
+    let (text, _) = screen(&mut app, 80, 20);
+    let (column, row) = mode_badge_at(&text, "plan").expect("the button during a turn");
+    let line = text.lines().nth(usize::from(row)).unwrap();
+    let hint = line.find("to interrupt").expect("the activity is on the same row");
+    assert!(line[..hint].chars().count() > usize::from(column), "{line}");
 }
 
 /// Plan mode's color reaches the question the agent asks, and nothing further.
@@ -247,7 +264,7 @@ fn the_dock_names_the_mode_and_switches_it() {
     assert_eq!(buffer[(value, row)].fg, app.theme_styles.text.fg.unwrap());
 }
 
-/// A narrower terminal shows the bar instead, which leaves the mode to the composer: its title and
+/// A narrower terminal shows the bar instead, which leaves the mode to the composer: its button and
 /// color say it beside the bar already, and a third copy is noise.
 #[test]
 fn the_bar_leaves_the_mode_to_the_composer() {
@@ -258,7 +275,7 @@ fn the_bar_leaves_the_mode_to_the_composer() {
     let (text, buffer) = screen(&mut app, 110, 30);
     let bar = text.lines().last().unwrap();
     assert!(!bar.contains("plan"), "the bar names the mode: {bar}");
-    let (column, row) = find_on_screen(&text, "plan ─").expect("the composer's title");
+    let (column, row) = mode_badge_at(&text, "plan").expect("the composer's mode button");
     assert_eq!(buffer[(column, row)].fg, app.theme_styles.mode_plan.fg.unwrap());
 }
 

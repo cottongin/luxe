@@ -45,6 +45,7 @@ pub(super) fn tool_lines(
             icon,
             tool: &activity.name,
             subject: header_subject(activity),
+            command: subject_is_command(activity),
             elapsed_ms: header_duration(item, ctx.running_ms),
             summary,
             queued,
@@ -122,6 +123,8 @@ struct ToolHeader<'a> {
     tool: &'a str,
     /// The command, the path, the pattern — what the call was about.
     subject: &'a str,
+    /// Whether the subject is a shell command, and so drawn highlighted as one
+    command: bool,
     /// How long the call took, once it has taken it.
     elapsed_ms: Option<u64>,
     /// An outcome worth a slot, for the tools whose result says more than a green wash.
@@ -142,7 +145,7 @@ fn tool_header_line(header: ToolHeader<'_>, style: Style, styles: &ThemeStyles) 
     let mut spans = vec![Span::styled(icon_label(header.icon, header.tool), name_style)];
     let subject = safe_tool_text(header.subject);
     if !subject.trim().is_empty() {
-        spans.push(Span::styled(format!("{SUBJECT_GAP}{subject}"), styles.text));
+        spans.extend(subject_spans(&subject, header.command, styles));
     }
     if let Some(batch) = header.queued {
         spans.push(Span::styled(format!("  {}/{}", batch.index, batch.total), styles.muted));
@@ -155,6 +158,30 @@ fn tool_header_line(header: ToolHeader<'_>, style: Style, styles: &ThemeStyles) 
         spans.push(Span::styled(format!(" · {summary}"), style));
     }
     Line::from(spans)
+}
+
+/// The subject, after the gap that holds it off the tool's name.
+///
+/// A command is highlighted as shell, as a card body draws one. Most `bash` calls are one line with
+/// no description, so their header is the only place the command shows, and plain it was the one
+/// command in the transcript a reader had to parse unaided.
+fn subject_spans(subject: &str, command: bool, styles: &ThemeStyles) -> Vec<Span<'static>> {
+    let highlighted = command
+        .then(|| crate::highlight::highlight_code(subject, Some("sh"), styles))
+        .and_then(|lines| lines.into_iter().next())
+        .filter(|line| !line.spans.is_empty());
+    match highlighted {
+        Some(line) => {
+            std::iter::once(Span::styled(SUBJECT_GAP, styles.text)).chain(line.spans).collect()
+        }
+        None => vec![Span::styled(format!("{SUBJECT_GAP}{subject}"), styles.text)],
+    }
+}
+
+/// Whether a card's header subject is the command it ran: a `bash` call with no body, which is one
+/// with no description (that would be the subject instead) and only one line.
+fn subject_is_command(activity: &luxe_core::ToolActivity) -> bool {
+    activity.name == "bash" && activity.card_body.is_none()
 }
 
 /// What the header says the call was about, or nothing when the body below it already says it.
