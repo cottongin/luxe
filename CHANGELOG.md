@@ -9,6 +9,23 @@ The version on `main` is always the next release. The first change to what ships
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
+## [0.1.6]
+
+### Added
+
+- On macOS, `screenshot` with `mode=window` captures one window, even one on another desktop. It
+  matches the window's title first, then its app's name, and with no title it takes the frontmost
+  window. A miss lists the windows it saw.
+
+### Fixed
+
+- On Windows, a pasted line break no longer sends the message. The console types a paste out one
+  key at a time, so luxe gathers a burst of keys back into one paste.
+- On a scaled Windows display, `screenshot` captures the whole screen instead of its top-left
+  corner.
+- On a Mac with fontconfig installed, the OpenAI and Claude marks fall back to the robot and cloud
+  when no font has them, instead of drawing a box with a question mark.
+
 ## [0.1.5]
 
 ### Added

@@ -11,7 +11,7 @@ homepage.workspace = true
 # Provides a generic LSP client (rust-analyzer first).
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.5" }
+luxe-core = { path = "../luxe-core", version = "0.1.6" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

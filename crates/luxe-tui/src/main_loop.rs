@@ -10,6 +10,7 @@ mod launch;
 mod mouse;
 mod pacing;
 mod paste;
+mod paste_burst;
 
 use crate::app::{App, Msg};
 use crate::workspace_layout::Pane;

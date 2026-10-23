@@ -75,7 +75,7 @@ impl Tool for ScreenshotTool {
                     },
                     "window": {
                         "type": "string",
-                        "description": "window mode: case-sensitive title substring; omit for the active window (Hyprland/X11 only)"
+                        "description": "window mode: case-sensitive title substring; omit for the active window. Hyprland, X11 and macOS only; on macOS this also captures a window on another desktop, matching the title or the app's name"
                     },
                     "url": {
                         "type": "string",

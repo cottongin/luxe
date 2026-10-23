@@ -73,7 +73,18 @@ fn fontconfig_has_all(wanted: impl IntoIterator<Item = char>) -> bool {
         .args([charset.as_str(), "family"])
         .stderr(std::process::Stdio::null())
         .output()
-        .is_ok_and(|probe| probe.status.success() && !probe.stdout.is_empty())
+        .is_ok_and(|probe| probe.status.success() && names_a_real_font(&probe.stdout))
+}
+
+/// Whether `fc-list`'s family listing names a font a reader could have chosen.
+///
+/// macOS lists `.LastResort`, whose job is to draw a placeholder box for every codepoint, so it
+/// answers yes to any charset question and the probe would never say no. Fonts the system hides
+/// from its pickers carry a leading dot; none of them is a face a terminal is set to.
+fn names_a_real_font(listing: &[u8]) -> bool {
+    String::from_utf8_lossy(listing)
+        .lines()
+        .any(|family| !family.trim().is_empty() && !family.starts_with('.'))
 }
 
 /// Whether the Material icons can actually be drawn on this machine.
@@ -139,4 +150,26 @@ fn is_kitty() -> bool {
     }
     let multiplexed = term.starts_with("tmux") || term.starts_with("screen");
     multiplexed && std::env::var_os("KITTY_WINDOW_ID").is_some()
+}
+
+#[cfg(test)]
+mod probe_tests {
+    use super::names_a_real_font;
+
+    /// Copied from `fc-list ":charset=ec82 ec81 ec1e" family` on a Mac with Nerd Fonts older than 3.5.
+    #[test]
+    fn the_macos_placeholder_font_is_not_a_font_with_the_glyph() {
+        assert!(!names_a_real_font(b".LastResort\n"));
+    }
+
+    #[test]
+    fn a_hidden_font_beside_a_real_one_still_counts_the_real_one() {
+        assert!(names_a_real_font(b".LastResort\nHack Nerd Font\n"));
+    }
+
+    #[test]
+    fn an_empty_listing_names_no_font() {
+        assert!(!names_a_real_font(b""));
+        assert!(!names_a_real_font(b"\n"));
+    }
 }
