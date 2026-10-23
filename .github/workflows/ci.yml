@@ -337,15 +337,52 @@ jobs:
       - name: Render check
         run: ./scripts/site-check.sh --no-build
 
-      # One engine is not coverage. The render check above drives Chrome, and the site has since
-      # shipped two defects that Chrome could not see — a demo player whose dynamic import Firefox
-      # refused outright, and a layout that only Chrome's box metrics agreed with. WebKit is here
-      # for Safari, which nothing else in this pipeline speaks for.
-      #
-      # `--with-deps` because the WebKit build wants Ubuntu's ICU and libxml2 sonames; a rolling
-      # distro cannot supply them, which is why a contributor's local run skips it and CI does not.
-      - name: Install browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+  # One engine is not coverage. The render check above drives Chrome, and the site has since shipped
+  # two defects that Chrome could not see — a demo player whose dynamic import Firefox refused
+  # outright, and a layout that only Chrome's box metrics agreed with. WebKit is here for Safari,
+  # which nothing else in this pipeline speaks for.
+  #
+  # Inside Playwright's own image, which carries all three browsers and the Ubuntu libraries they
+  # load (WebKit wants Ubuntu's ICU and libxml2 sonames). `playwright install --with-deps` fetched
+  # those from Ubuntu's mirror on every run, about 120 MB, and a slow mirror held the job past its
+  # timeout. Its own job because the render check needs the runner's system Chrome, which the
+  # image doesn't have.
+  website-cross:
+    name: web cross-browser
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    container:
+      # The tag has to be web/'s Playwright version exactly, or the browsers it looks for aren't
+      # the ones in the image; the first step below checks
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      # Firefox won't run as root in a home it doesn't own, and Actions' home is the runner user's
+      options: --user 1001
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: The image matches web/'s Playwright
+        run: |
+          want=$(node -p "require('playwright/package.json').version")
+          if [ "$want" != "1.63.0" ]; then
+            echo "::error::web/ uses Playwright $want: set the web cross-browser image to v$want-noble"
+            exit 1
+          fi
+        working-directory: web
+
+      - name: Build
+        run: npm run build
         working-directory: web
 
       # The built site first — that is what a reader gets — then the dev server, which is where the
@@ -393,7 +430,7 @@ jobs:
   # was cancelled, `changes` included, and passes when each one passed or had nothing to check.
   passed:
     name: CI passed
-    needs: [changes, gate, portability, msrv, supply-chain, website, remote-app]
+    needs: [changes, gate, portability, msrv, supply-chain, website, website-cross, remote-app]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
