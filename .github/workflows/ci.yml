@@ -51,6 +51,8 @@ jobs:
     timeout-minutes: 5
     outputs:
       code: ${{ steps.diff.outputs.code }}
+      web_playwright: ${{ steps.playwright.outputs.web }}
+      app_playwright: ${{ steps.playwright.outputs.app }}
     steps:
       # Full history: the diff is taken from a merge base
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -66,6 +68,17 @@ jobs:
         run: python3 scripts/ci-changes.py "$BASE" >> "$GITHUB_OUTPUT"
         env:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+
+      # The browser suites run in Playwright's image, whose browsers only work with the Playwright
+      # that matches its tag. Read from the lockfiles, so a Dependabot bump moves the image with it
+      - name: Playwright versions
+        id: playwright
+        run: |
+          for suite in web=web app=crates/luxe-remote/app-tests; do
+            version=$(jq -r '.packages["node_modules/playwright"].version // empty' "${suite#*=}/package-lock.json")
+            [ -n "$version" ] || { echo "::error::no playwright in ${suite#*=}/package-lock.json"; exit 1; }
+            echo "${suite%%=*}=$version" >> "$GITHUB_OUTPUT"
+          done
 
   gate:
     name: build · test · clippy · fmt
@@ -165,18 +178,24 @@ jobs:
       # made `target/debug/luxe`: a job of its own would compile the workspace a second time, and
       # the binary is too large to hand between jobs cheaply. The app's types and unit tests need
       # no Rust, so they stay in `remote-app`.
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: crates/luxe-remote/app-tests/package-lock.json
-
+      #
+      # In Playwright's image, which has WebKit and the Ubuntu libraries it loads, rather than
+      # fetching those from Ubuntu's mirror on every run, where a slow mirror ran the job out of
+      # time. The workspace is mounted at its own path, so the test finds `target/debug/luxe`
+      # where it expects it, and runs as the runner's user, so what it writes stays cleanable.
+      #
+      # The build and test binaries leave the disk all but full, too full for the image, and
+      # `target/` can't give any back because the cache step saves it after this. The Android SDK
+      # the runner image ships is about 10 GB that nothing here uses.
       - name: Phone app end to end (WebKit)
-        working-directory: crates/luxe-remote/app-tests
         run: |
-          npm ci
-          npx playwright install --with-deps webkit
-          npm run e2e
+          sudo rm -rf /usr/local/lib/android
+          df -h / | tail -1
+          docker run --rm --ipc=host --user "$(id -u):$(id -g)" -e HOME=/tmp/home \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE/crates/luxe-remote/app-tests" \
+            "mcr.microsoft.com/playwright:v$PLAYWRIGHT-noble" sh -c 'npm ci && npm run e2e'
+        env:
+          PLAYWRIGHT: ${{ needs.changes.outputs.app_playwright }}
 
   # Does it build and pass on the platforms nobody develops on? Linux above is the canonical gate —
   # `fmt` is an answer about the source, not about the OS, so running it three times would only
@@ -353,9 +372,7 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     container:
-      # The tag has to be web/'s Playwright version exactly, or the browsers it looks for aren't
-      # the ones in the image; the first step below checks
-      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      image: mcr.microsoft.com/playwright:v${{ needs.changes.outputs.web_playwright }}-noble
       # Firefox won't run as root in a home it doesn't own, and Actions' home is the runner user's
       options: --user 1001
     timeout-minutes: 15
@@ -370,15 +387,6 @@ jobs:
 
       - name: Install
         run: npm ci
-        working-directory: web
-
-      - name: The image matches web/'s Playwright
-        run: |
-          want=$(node -p "require('playwright/package.json').version")
-          if [ "$want" != "1.63.0" ]; then
-            echo "::error::web/ uses Playwright $want: set the web cross-browser image to v$want-noble"
-            exit 1
-          fi
         working-directory: web
 
       - name: Build
