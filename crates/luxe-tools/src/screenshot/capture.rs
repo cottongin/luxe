@@ -2,8 +2,10 @@
 //!
 //! Shells out to the platform's native tool rather than linking a capture crate, keeping the
 //! dependency surface tiny and the gate clean: grim (+ hyprctl) on Wayland, maim/scrot/ImageMagick
-//! on X11, `screencapture` on macOS, and PowerShell + System.Drawing on Windows. Each writes a PNG
-//! that the tool then reads and returns inline.
+//! on X11, `screencapture` (plus `osascript` to find windows) on macOS, and PowerShell +
+//! System.Drawing on Windows. Each writes a PNG that the tool then reads and returns inline.
+
+mod macos;
 
 use anyhow::{anyhow, bail, Context, Result};
 use std::path::Path;
@@ -282,9 +284,7 @@ async fn capture_macos(target: &CaptureTarget, out: &Path) -> Result<()> {
             let rect = format!("{},{},{},{}", r.x, r.y, r.w, r.h);
             run("screencapture", &["-x".into(), "-R".into(), rect, out]).await
         }
-        CaptureTarget::Window { .. } => bail!(
-            "per-window capture on macOS needs a window id; use mode=fullscreen or mode=region"
-        ),
+        CaptureTarget::Window { title } => macos::capture_window(title.as_deref(), &out).await,
     }
 }
 
@@ -306,6 +306,16 @@ async fn capture_windows(target: &CaptureTarget, out: &Path) -> Result<()> {
         .await
 }
 
+/// Opts the PowerShell process out of DPI virtualization, as a script prefix.
+///
+/// Without it Windows reports the scaled screen size (1371x914 on a 2400x1600 panel at 175%) and
+/// `CopyFromScreen` copies only that many physical pixels, cropping the capture to the top-left.
+/// It has to run before anything touches `System.Windows.Forms`, so it leads the script. Regions
+/// are then in physical pixels too, which is what the image the model sees is measured in.
+const WINDOWS_DPI_AWARE: &str = "Add-Type -TypeDefinition 'using System.Runtime.InteropServices; \
+     public static class LuxeDpi { [DllImport(\"user32.dll\")] public static extern bool \
+     SetProcessDPIAware(); }'; [void][LuxeDpi]::SetProcessDPIAware(); ";
+
 /// Builds a PowerShell one-liner that captures the virtual screen (or `x,y,w,h`) to `out`.
 fn windows_capture_script(rect: &str, out: &str) -> String {
     let bounds = if rect == "virtual" {
@@ -321,7 +331,7 @@ fn windows_capture_script(rect: &str, out: &str) -> String {
         )
     };
     format!(
-        "Add-Type -AssemblyName System.Windows.Forms,System.Drawing; {bounds}; \
+        "{WINDOWS_DPI_AWARE}Add-Type -AssemblyName System.Windows.Forms,System.Drawing; {bounds}; \
          $bmp=New-Object System.Drawing.Bitmap($r.Width,$r.Height); \
          $g=[System.Drawing.Graphics]::FromImage($bmp); \
          $g.CopyFromScreen($r.Left,$r.Top,0,0,$bmp.Size); \
@@ -437,6 +447,17 @@ mod tests {
             assert!(which("sh"), "sh should resolve on unix");
         }
         assert!(!which("definitely-not-a-real-binary-xyzzy"));
+    }
+
+    /// Reading the screen size before opting into DPI awareness is what cropped Windows captures.
+    #[test]
+    fn windows_script_turns_on_dpi_awareness_before_reading_the_screen() {
+        for rect in ["virtual", "0,0,800,600"] {
+            let script = windows_capture_script(rect, "out.png");
+            let aware = script.find("SetProcessDPIAware();").expect("calls SetProcessDPIAware");
+            let forms = script.find("System.Windows.Forms").expect("loads Windows.Forms");
+            assert!(aware < forms, "{rect}: DPI awareness must come first: {script}");
+        }
     }
 
     #[test]

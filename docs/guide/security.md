@@ -256,8 +256,9 @@ needed, such as a passwordless `sudo` rule for one program:
 
 The `screenshot` tool's `url` mode renders a web page and captures only that. Its `fullscreen`,
 `region` and `window` modes capture whatever is on your screen, and the image goes to your model
-provider, so each **asks** first, and runs with nobody watching refuse them. To turn screen capture
-off entirely:
+provider, so each **asks** first, and runs with nobody watching refuse them. On macOS, `window` can
+also capture a window on another desktop, and when no window matches it tells the model the titles
+of the windows it saw. To turn screen capture off entirely:
 
 ```json title="~/.config/luxe/permissions.json"
 { "permission": { "screenshot": { "fullscreen": "deny", "region": "deny", "window": "deny" } } }

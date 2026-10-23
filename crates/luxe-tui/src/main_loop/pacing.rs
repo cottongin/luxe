@@ -1,6 +1,7 @@
 //! Frame pacing — how many queued events join a frame, and whether an iteration paints.
 
-use super::keys::{apply_terminal_event, collect_exit};
+use super::keys::collect_exit;
+use super::paste_burst::apply_folding_pastes;
 use super::TuiExit;
 use crate::app::{App, Msg};
 use crossterm::event::{Event, EventStream};
@@ -37,7 +38,7 @@ pub(super) async fn next_event(events: &mut Option<EventStream>) -> Option<std::
 ///
 /// Polled with the loop's own waker rather than a throwaway one, so a stream that answers with
 /// nothing here still wakes the loop's `select!` when its event does land.
-async fn queued_event(events: Option<&mut EventStream>) -> Option<Event> {
+pub(super) async fn queued_event(events: Option<&mut EventStream>) -> Option<Event> {
     let events = events?;
     std::future::poll_fn(|context| {
         std::task::Poll::Ready(match events.poll_next_unpin(context) {
@@ -80,13 +81,13 @@ pub(super) async fn apply_terminal_batch(
     first: Event,
     exit: &mut TuiExit,
 ) -> (bool, usize) {
-    let mut idle_motion = apply_terminal_event(app, first, exit);
+    let mut idle_motion = apply_folding_pastes(app, events, first, exit).await;
     let mut coalesced = 0;
     while may_coalesce(app, coalesced) {
         let Some(event) = queued_event(events.as_mut()).await else {
             break;
         };
-        idle_motion &= apply_terminal_event(app, event, exit);
+        idle_motion &= apply_folding_pastes(app, events, event, exit).await;
         coalesced += 1;
     }
     (idle_motion, coalesced)
