@@ -26,6 +26,12 @@ changes add to that section until it ships; `scripts/version-check.py` holds the
 - On a Mac with fontconfig installed, the OpenAI and Claude marks fall back to the robot and cloud
   when no font has them, instead of drawing a box with a question mark.
 
+### Security
+
+- `clipboard-win` 5.4.3, since earlier releases were yanked: reading an HTML fragment with a bad
+  offset from the Windows clipboard could read past the end of a buffer. luxe reads only text and
+  images from the clipboard, so it never reached that code.
+
 ## [0.1.5]
 
 ### Added
