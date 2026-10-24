@@ -1,6 +1,6 @@
 //! Shades — fades, the slab and gauge ramps, depths and washes, derived from a theme's tokens.
 
-use super::color::{blend_rgb, rgb_color};
+use super::color::{blend_rgb, plan_hue, rgb_color, rgb_token};
 use ratatui::style::{Color as RatatuiColor, Modifier, Style};
 
 /// Shades in the activity comet's ramp, its leading cell first.
@@ -14,6 +14,39 @@ pub const ACTIVITY_TRAIL_LEN: usize = 10;
 /// About a word and a half: long enough to read as motion rather than a hard edge, short enough that
 /// the text you are actually reading is at full contrast.
 pub const STREAM_TRAIL_LEN: usize = 16;
+
+/// The activity comet's trails and the rail they sweep over.
+pub(super) struct ActivityShades {
+    /// Build's comet, and every mode's but plan's: from the accent
+    pub(super) trail: [Style; ACTIVITY_TRAIL_LEN],
+    /// Plan's comet: from plan's hue
+    pub(super) trail_plan: [Style; ACTIVITY_TRAIL_LEN],
+    pub(super) rail: [Style; ACTIVITY_TRAIL_LEN],
+}
+
+/// The comets for build and plan, and the rail under them.
+///
+/// Each comet fades from its hue into the rail, so its tail dissolves into the chrome instead of
+/// stopping at an edge. Both land on the one rail, so switching mode recolors the comet alone.
+pub(super) fn derived_activity_shades(
+    tokens: &super::Tokens<'_>,
+    accent: Style,
+    tint_base: Option<(u8, u8, u8)>,
+    light: bool,
+) -> ActivityShades {
+    let resolved = tokens.0;
+    let rail = rgb_token(resolved, "borderMuted")
+        .or_else(|| rgb_token(resolved, "dim"))
+        .or(tint_base)
+        .unwrap_or(if light { (255, 255, 255) } else { (0, 0, 0) });
+    let canvas = tint_base.unwrap_or(if light { (255, 255, 255) } else { (0, 0, 0) });
+    let comet = |hue| shade_ramp(hue, rail, light, COMET_FADE);
+    ActivityShades {
+        trail: comet(accent),
+        trail_plan: comet(plan_hue(resolved)),
+        rail: shade_ramp(tokens.fg("borderMuted"), canvas, light, RAIL_FADE),
+    }
+}
 
 /// How a ramp fades: its curve, what it keeps at the far end, and the lift on its near end.
 #[derive(Debug, Clone, Copy)]

@@ -11,8 +11,8 @@ use color::{blend_rgb, color_value_to_ratatui, plan_hue, rgb_color, rgb_token, t
 use luxe_core::theme::ColorValue;
 use ratatui::style::{Modifier, Style};
 use shades::{
-    shade_at, shade_ramp, Fade, COMET_FADE, CURSOR_LINE_WASH, GAUGE_FADE, PICK_WASH, RAIL_FADE,
-    STREAM_FADE,
+    derived_activity_shades, shade_at, shade_ramp, Fade, CURSOR_LINE_WASH, GAUGE_FADE, PICK_WASH,
+    RAIL_FADE, STREAM_FADE,
 };
 pub use shades::{
     Depth, GaugeShades, SlabShades, ACTIVITY_TRAIL_LEN, SLAB_DEPTHS, STREAM_TRAIL_LEN,
@@ -42,6 +42,8 @@ pub struct ThemeStyles {
     pub text: Style,
     /// Shades the activity comet wears, its leading cell first, fading toward the rail behind it.
     pub activity_trail: [Style; ACTIVITY_TRAIL_LEN],
+    /// The comet plan mode wears: the same fade, from plan's hue rather than the accent.
+    pub activity_trail_plan: [Style; ACTIVITY_TRAIL_LEN],
     /// Shades a spent unit wears as the comet's glow falls off it, nearest the comet first.
     ///
     /// The last is the canvas itself but for a whisper, so the rail dissolves with distance instead
@@ -134,8 +136,7 @@ impl ThemeStyles {
             diff_add_emphasis,
             diff_del_emphasis,
         } = derived_bands(&tokens, tint_base);
-        let (activity_trail, activity_rail) =
-            derived_activity_shades(&tokens, accent, tint_base, light);
+        let activity = derived_activity_shades(&tokens, accent, tint_base, light);
 
         ThemeStyles {
             accent,
@@ -151,8 +152,9 @@ impl ThemeStyles {
             muted: fg("muted"),
             dim: fg("dim"),
             text: fg("text"),
-            activity_trail,
-            activity_rail,
+            activity_trail: activity.trail,
+            activity_trail_plan: activity.trail_plan,
+            activity_rail: activity.rail,
             paste_indicator,
             chip,
             thinking_text: fg("thinkingText"),
@@ -425,27 +427,6 @@ fn derived_bands(tokens: &Tokens<'_>, tint_base: Option<(u8, u8, u8)>) -> Bands 
         diff_add_emphasis: emphasis_bg("diffAddEmphasisBg", "success", diff_add_bg),
         diff_del_emphasis: emphasis_bg("diffDelEmphasisBg", "error", diff_del_bg),
     }
-}
-
-/// The activity comet's trail and the rail it sweeps over.
-///
-/// The comet fades from the accent into the rail, so its tail dissolves into the chrome instead of
-/// stopping at an edge.
-fn derived_activity_shades(
-    tokens: &Tokens<'_>,
-    accent: Style,
-    tint_base: Option<(u8, u8, u8)>,
-    light: bool,
-) -> ([Style; ACTIVITY_TRAIL_LEN], [Style; ACTIVITY_TRAIL_LEN]) {
-    let resolved = tokens.0;
-    let rail = rgb_token(resolved, "borderMuted")
-        .or_else(|| rgb_token(resolved, "dim"))
-        .or(tint_base)
-        .unwrap_or(if light { (255, 255, 255) } else { (0, 0, 0) });
-    let activity_trail = shade_ramp(accent, rail, light, COMET_FADE);
-    let canvas = tint_base.unwrap_or(if light { (255, 255, 255) } else { (0, 0, 0) });
-    let activity_rail = shade_ramp(tokens.fg("borderMuted"), canvas, light, RAIL_FADE);
-    (activity_trail, activity_rail)
 }
 
 /// Fraction of the status hue mixed into the canvas for a tool-call band. Deliberately low so the

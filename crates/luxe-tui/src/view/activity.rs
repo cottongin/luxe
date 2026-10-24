@@ -177,9 +177,9 @@ fn first_steps(app: &App, width: usize) -> Option<Line<'static>> {
 
 /// One row of the sweeping activity bar, as spans that can share a line with text.
 ///
-/// The comet sweeps in shades of the theme accent, and the rail it travels is lit by the comet
-/// rather than drawn at a fixed weight, so the indicator belongs to the chrome and the motion is the
-/// only thing that draws the eye.
+/// The comet sweeps in shades of the theme accent, or of plan's hue while the session plans, and the
+/// rail it travels is lit by the comet rather than drawn at a fixed weight, so the indicator belongs
+/// to the chrome and the motion is the only thing that draws the eye.
 fn activity_bar_spans(app: &App, width: usize) -> Vec<Span<'static>> {
     use crate::widgets::ActivityGlyphs;
     use luxe_core::config::ActivityBarStyle;
@@ -197,7 +197,7 @@ fn activity_bar_spans(app: &App, width: usize) -> Vec<Span<'static>> {
         app.status.spinner_frame as u64,
         width,
         glyphs,
-        &styles.activity_trail,
+        crate::modes::activity_trail(&app.status.mode, styles),
         &styles.activity_rail,
     )
 }
