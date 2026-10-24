@@ -78,7 +78,7 @@ impl Tool for GitTool {
                     "args": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "What the action operates on: paths for `add`, a branch for `checkout`, a subcommand for `stash`, a `gh pr` command line for `pr` (e.g. [\"create\", \"--title\", \"...\", \"--body\", \"...\"]; the branch is pushed for you if it has no upstream), a `gh issue` command line for `issue` (e.g. [\"view\", \"12\", \"--comments\"]), a PR number for `checks` (default: this branch's), otherwise git's own flags. Never the commit message."
+                        "description": "What the action operates on: paths for `add`, a branch for `checkout`, a subcommand for `stash`, a `gh pr` command line for `pr` (e.g. [\"create\", \"--title\", \"...\", \"--body\", \"...\"]; the branch is pushed for you if it has no upstream), a `gh issue` command line for `issue` (e.g. [\"view\", \"12\", \"--comments\"]), a PR number for `checks` (default: this branch's), with `-R owner/name` for another repository's, otherwise git's own flags. Never the commit message."
                     }
                 },
                 "required": ["action"]
