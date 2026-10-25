@@ -10,6 +10,7 @@ mod files;
 mod plan;
 mod telemetry;
 mod tree;
+mod usage;
 
 use crate::app::App;
 use crate::workspace_dock::{DockPresentation, DockSectionModel};

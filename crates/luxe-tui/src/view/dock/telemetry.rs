@@ -192,6 +192,7 @@ pub(super) fn telemetry_lines(app: &App) -> Vec<Line<'static>> {
     let row = row_width(app);
     let column = telemetry_label_width(row, WIDEST_TELEMETRY_LABEL);
     let mut lines = model_telemetry(app, row, column);
+    lines.extend(super::usage::usage_telemetry(app, column));
     lines.extend(session_telemetry(app, row, column));
     lines
 }
@@ -386,7 +387,7 @@ fn review_spending(app: &App) -> bool {
 ///
 /// `ink` is body text for a measurement, dim for a share of one above it, and the severity hue for
 /// the window, which is the one value that is also a warning.
-fn telemetry_row(
+pub(super) fn telemetry_row(
     label: &str,
     value: String,
     ink: ratatui::style::Style,

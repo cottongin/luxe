@@ -65,6 +65,7 @@ pub(super) enum Section {
     Files,
     Elsewhere,
     Model,
+    Usage,
     Session,
 }
 
@@ -77,6 +78,7 @@ impl Section {
             Self::Files => "FILES",
             Self::Elsewhere => "ELSEWHERE",
             Self::Model => "MODEL",
+            Self::Usage => "USAGE",
             Self::Session => "SESSION",
         }
     }
@@ -94,7 +96,7 @@ impl Section {
         match self {
             Self::Project | Self::Model => Depth::Hero,
             Self::Plan | Self::Files => Depth::Raised,
-            Self::Elsewhere | Self::Session => Depth::Recessed,
+            Self::Elsewhere | Self::Usage | Self::Session => Depth::Recessed,
         }
     }
 }

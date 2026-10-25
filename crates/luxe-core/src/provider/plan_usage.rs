@@ -48,6 +48,16 @@ impl PlanWindow {
         };
         Some(label)
     }
+
+    /// A fixed-width meter such as `▓▓▓░░░░░░░`, filled in proportion to the share used.
+    ///
+    /// Rounds to the nearest cell so a nearly-full window never reads as empty, and clamps so a
+    /// provider reporting over 100% can't draw past the edge.
+    pub fn bar(&self, cells: usize) -> String {
+        let share = (self.used_percent / 100.0).clamp(0.0, 1.0);
+        let filled = ((share * cells as f32).round() as usize).min(cells);
+        format!("{}{}", "▓".repeat(filled), "░".repeat(cells - filled))
+    }
 }
 
 /// A subscription's remaining headroom, as reported alongside a response.
@@ -144,6 +154,18 @@ mod plan_tests {
         assert_eq!(window(0.0, 60, Some(7_200)).reset_label().as_deref(), Some("2h"));
         assert_eq!(window(0.0, 60, Some(603_553)).reset_label().as_deref(), Some("6d 23h"));
         assert!(window(0.0, 60, None).reset_label().is_none());
+    }
+
+    #[test]
+    fn a_bar_fills_in_proportion_and_never_overflows() {
+        assert_eq!(window(0.0, 60, None).bar(10), "░░░░░░░░░░");
+        assert_eq!(window(50.0, 60, None).bar(10), "▓▓▓▓▓░░░░░");
+        assert_eq!(window(100.0, 60, None).bar(10), "▓▓▓▓▓▓▓▓▓▓");
+        // over-reported and negative values clamp instead of panicking on the subtraction
+        assert_eq!(window(250.0, 60, None).bar(4), "▓▓▓▓");
+        assert_eq!(window(-5.0, 60, None).bar(4), "░░░░");
+        // a window that is nearly spent must not round down to an empty-looking bar
+        assert_eq!(window(96.0, 60, None).bar(10), "▓▓▓▓▓▓▓▓▓▓");
     }
 
     /// The status line has room for one window, and it should be whichever is about to bite.

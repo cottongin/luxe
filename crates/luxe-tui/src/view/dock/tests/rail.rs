@@ -38,6 +38,42 @@ fn the_rail_reports_a_session_that_is_approving_its_own_asks() {
     assert!(row.contains("auto-approve"), "{row}");
 }
 
+/// An API-key provider reports no allowance, and a USAGE heading over nothing would be noise.
+#[test]
+fn the_rail_has_no_usage_block_without_a_plan() {
+    let mut app = app();
+    app.status.model = "claude-sonnet-5".into();
+    let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
+    assert!(!rendered.iter().any(|row| row.contains("USAGE")), "{rendered:?}");
+}
+
+/// The point of the block: the share spent and the time left, one row per window the plan has.
+#[test]
+fn the_rail_shows_each_plan_window_with_its_meter_and_reset() {
+    use luxe_core::provider::{PlanUsage, PlanWindow};
+    let mut app = app();
+    app.status.model = "gpt-5".into();
+    app.status.plan_usage = Some(PlanUsage {
+        primary: Some(PlanWindow {
+            used_percent: 30.0,
+            window_minutes: 10_080,
+            resets_in_secs: Some(274_000),
+        }),
+        secondary: Some(PlanWindow {
+            used_percent: 80.0,
+            window_minutes: 300,
+            resets_in_secs: Some(1_800),
+        }),
+        ..PlanUsage::default()
+    });
+    let rendered: Vec<String> = telemetry_lines(&app).iter().map(text).collect();
+    assert!(rendered.iter().any(|row| row.contains("USAGE")), "{rendered:?}");
+    let weekly = rendered.iter().find(|row| row.starts_with("weekly")).expect("weekly row");
+    assert!(weekly.contains("▓▓▓░░░░░░░ 30% · 3d 4h"), "{weekly}");
+    let short = rendered.iter().find(|row| row.starts_with("5h")).expect("5h row");
+    assert!(short.contains("▓▓▓▓▓▓▓▓░░ 80% · 30m"), "{short}");
+}
+
 /// The surface behind the span carrying `needle` — the slab the badge is cut from.
 pub(super) fn surface_behind(line: &Line<'_>, needle: &str) -> Color {
     line.spans
@@ -65,7 +101,7 @@ fn the_rail_is_anchored_at_both_ends_and_recedes_between_them() {
     for live in [Section::Plan, Section::Files] {
         assert_eq!(surface(live), shades.at(Depth::Raised), "{live:?} is one step back");
     }
-    for ambient in [Section::Elsewhere, Section::Session] {
+    for ambient in [Section::Elsewhere, Section::Usage, Section::Session] {
         assert_eq!(surface(ambient), shades.at(Depth::Recessed), "{ambient:?} is two");
     }
     // Or every assertion above passes on a theme with no ramp at all.
