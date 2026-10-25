@@ -9,6 +9,14 @@ The version on `main` is always the next release. The first change to what ships
 `Cargo.toml`, `Cargo.lock`) after a release bumps it one step and opens its section here, and later
 changes add to that section until it ships; `scripts/version-check.py` holds them to it.
 
+## [0.1.7]
+
+### Added
+
+- The dock has a **USAGE** section between MODEL and SESSION while a ChatGPT or Copilot plan reports
+  what is left of it. Each window the plan has gets a row with a bar, the share used and, when the
+  provider says, the time until it resets, such as `weekly  ▓▓▓░░░░░░░ 30% · 3d 4h`.
+
 ## [0.1.6]
 
 ### Added

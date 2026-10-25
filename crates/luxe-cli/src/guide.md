@@ -2493,6 +2493,7 @@ conversation, or in its place below 80 columns.
 | **FILES** | The project as a tree, with what changed marked in it. Click a file to [preview](#preview) it. |
 | **ELSEWHERE** | Files the session changed outside the project, when there are any |
 | **MODEL** | The provider, model, thinking level and [mode](agent.md#plan-then-build). Click the provider or the model to change it, or the mode to switch it. |
+| **USAGE** | What is left of a ChatGPT or Copilot plan, one row for each window the plan has: a bar, the share used and, when the provider says, the time until it resets. It shows only once the plan has reported, after your first reply, and never on an API key. |
 | **SESSION** | Context used, tokens and cost, with what a review and compaction cost on rows of their own. A review's row shows its full cost once its guide or drafted summary is done. While a phone or another client has [joined](remote.md), a **joined** row names it. |
 
 `alt+d` shows or hides the dock, and `/dock left` or `/dock right` moves it. To set it for good:
@@ -3337,7 +3338,8 @@ Usage on a ChatGPT or Copilot subscription is counted in full but never added to
 `plan ≈$0.42 of usage over 12 calls, covered by your subscription`. On a
 ChatGPT plan, the statusline shows how much of the plan is used, such as `12% weekly`, and `/cost`
 shows when it resets. On a Copilot plan it shows the month's allowance the same way, such as `19%
-monthly`.
+monthly`. The dock's [USAGE section](interface.md#the-dock) shows the same windows as a bar, with the
+time until each resets when the provider says.
 
 luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
 for each request. A Copilot plan billed by the token spends its monthly allowance at those rates.

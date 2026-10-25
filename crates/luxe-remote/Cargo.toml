@@ -18,7 +18,7 @@ exclude = ["app-tests/"]
 # reqwest and the workspace's rustls.
 
 [dependencies]
-luxe-core = { path = "../luxe-core", version = "0.1.6" }
+luxe-core = { path = "../luxe-core", version = "0.1.7" }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 serde = { workspace = true }

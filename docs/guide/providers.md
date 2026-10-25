@@ -146,7 +146,8 @@ Usage on a ChatGPT or Copilot subscription is counted in full but never added to
 `plan ≈$0.42 of usage over 12 calls, covered by your subscription`. On a
 ChatGPT plan, the statusline shows how much of the plan is used, such as `12% weekly`, and `/cost`
 shows when it resets. On a Copilot plan it shows the month's allowance the same way, such as `19%
-monthly`.
+monthly`. The dock's [USAGE section](interface.md#the-dock) shows the same windows as a bar, with the
+time until each resets when the provider says.
 
 luxe prices Copilot usage at Copilot's per-token rates, so the figure matches what Copilot reports
 for each request. A Copilot plan billed by the token spends its monthly allowance at those rates.
