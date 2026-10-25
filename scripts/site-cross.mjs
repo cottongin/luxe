@@ -100,6 +100,13 @@ const MIME = {
 	".wasm": "application/wasm",
 };
 
+/**
+ * Where both servers listen and every browser and probe connects: an address, not `localhost`.
+ * In a container `localhost` can name `::1` to the server binding it and `127.0.0.1` to the
+ * client dialing it, and in Playwright's image the dev server came up and refused every request.
+ */
+const LOOPBACK = "127.0.0.1";
+
 /** Serves `web/dist` the way a static host would, including the `.wasm` type the player needs. */
 function serveBuilt(root) {
 	return new Promise((resolve) => {
@@ -123,7 +130,7 @@ function serveBuilt(root) {
 			}
 			response.writeHead(404).end("not found");
 		});
-		server.listen(0, () => resolve({ server, port: server.address().port }));
+		server.listen(0, LOOPBACK, () => resolve({ server, port: server.address().port }));
 	});
 }
 
@@ -144,10 +151,35 @@ async function serveDev(port) {
 	// shell that launched this with it. Spawned directly, `child.kill()` is the server.
 	const child = spawn(
 		process.execPath,
-		[join(web, "node_modules/astro/bin/astro.mjs"), "dev", "--port", String(port)],
-		{ cwd: web, stdio: "ignore" },
+		[join(web, "node_modules/astro/bin/astro.mjs"), "dev", "--host", LOOPBACK, "--port", String(port)],
+		{ cwd: web, stdio: ["ignore", "pipe", "pipe"] },
 	);
-	return { child, port };
+	return watchServer({ child, port, output: [], exit: null });
+}
+
+/**
+ * Keeps the last of what `target`'s server prints, and how it ended, so a server that never
+ * answers can say why. Read either way: a pipe nobody drains fills up and stalls its server.
+ */
+function watchServer(target) {
+	const keep = (chunk) => {
+		target.output.push(...String(chunk).split("\n").filter((line) => line.trim()));
+		target.output.splice(0, Math.max(0, target.output.length - 30));
+	};
+	target.child.stdout.on("data", keep);
+	target.child.stderr.on("data", keep);
+	target.child.on("exit", (code, signal) => {
+		target.exit = signal ?? `exit code ${code}`;
+	});
+	return target;
+}
+
+/** Why `target`'s server never answered, with the last of what it printed. */
+function reportSilentServer(name, target) {
+	const why = target.exit ? `it ended (${target.exit})` : "it was still running";
+	console.log(`✗ ${name.padEnd(9)} the dev server never answered; ${why}`);
+	console.log(`    the last ask got: ${target.lastAnswer ?? "nothing yet"}`);
+	for (const line of target.output) console.log(`    ${line}`);
 }
 
 function shutdown(target) {
@@ -157,13 +189,15 @@ function shutdown(target) {
 	}
 }
 
-async function waitForServer(port, seconds = 90) {
-	for (let attempt = 0; attempt < seconds * 2; attempt += 1) {
+async function waitForServer(target, seconds = 90) {
+	for (let attempt = 0; attempt < seconds * 2 && !target.exit; attempt += 1) {
 		try {
-			const response = await fetch(`http://localhost:${port}/`);
+			const response = await fetch(`http://${LOOPBACK}:${target.port}/`);
 			if (response.ok) return true;
-		} catch {
-			/* not up yet */
+			target.lastAnswer = `HTTP ${response.status}: ${(await response.text()).slice(0, 300)}`;
+		} catch (error) {
+			// Not up yet, usually; the cause is what tells a refused port from a wrong address
+			target.lastAnswer = `${error.message}${error.cause ? ` (${error.cause.code ?? error.cause.message})` : ""}`;
 		}
 		await new Promise((done) => setTimeout(done, 500));
 	}
@@ -210,7 +244,7 @@ async function demosFit(browser, port, path) {
 	const tab = await context.newPage();
 	const problems = [];
 	try {
-		await tab.goto(`http://localhost:${port}${path}`, { waitUntil: "networkidle" });
+		await tab.goto(`http://${LOOPBACK}:${port}${path}`, { waitUntil: "networkidle" });
 		await settleHero(tab);
 		const demos = tab.locator(".demo");
 		const count = await demos.count();
@@ -279,7 +313,7 @@ async function checkEngine(engine, name, port) {
 				noise.push(`request failed: ${request.url()} (${request.failure()?.errorText})`);
 			});
 
-			await tab.goto(`http://localhost:${port}${page.path}`, { waitUntil: "networkidle" });
+			await tab.goto(`http://${LOOPBACK}:${port}${page.path}`, { waitUntil: "networkidle" });
 			await settleHero(tab);
 
 			if (page.demos) {
@@ -366,8 +400,8 @@ for (const [name, engine] of [
 	if (!built) {
 		shutdown(current);
 		current = await serveDev((port += 1));
-		if (!(await waitForServer(current.port))) {
-			console.log(`✗ ${name.padEnd(9)} the dev server never answered`);
+		if (!(await waitForServer(current))) {
+			reportSilentServer(name, current);
 			failed = true;
 			continue;
 		}

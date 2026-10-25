@@ -31,6 +31,20 @@ pub(crate) fn accent(mode: &str, styles: &ThemeStyles) -> Style {
     }
 }
 
+/// The comet the activity bar sweeps while a turn runs in `mode`.
+///
+/// It follows the mode the engine reports, never the key just pressed: each tool call is judged
+/// against that mode as it starts, so the color says what the turn can do from here on.
+pub(crate) fn activity_trail<'a>(
+    mode: &str,
+    styles: &'a ThemeStyles,
+) -> &'a [Style; crate::theme::styles::ACTIVITY_TRAIL_LEN] {
+    match mode {
+        luxe_core::mode::PLAN => &styles.activity_trail_plan,
+        _ => &styles.activity_trail,
+    }
+}
+
 /// The theme, with the border accent swapped for the mode's color.
 ///
 /// Borrowed in every mode but plan, so the surfaces that take it cost nothing until somebody plans.
@@ -71,6 +85,7 @@ mod tests {
         assert!(matches!(icon("review"), Icon::ModeBuild));
         assert_eq!(accent("review", &theme), theme.border_accent);
         assert!(matches!(styles("review", &theme), Cow::Borrowed(_)));
+        assert_eq!(activity_trail("review", &theme), &theme.activity_trail);
     }
 
     #[test]

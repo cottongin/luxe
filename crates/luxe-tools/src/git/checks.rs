@@ -7,7 +7,7 @@
 //! cannot see. Reading only; re-running a job stays behind the permission engine's `ask`.
 
 use luxe_core::github::{
-    Branches, CheckLog, Checks, Discovery, FailingCheck, GitHubError, PullRequests,
+    Branches, CheckLog, Checks, Discovery, FailingCheck, GitHubError, PullRequests, Repository,
 };
 use std::path::Path;
 
@@ -27,27 +27,23 @@ struct Target {
     pending: Option<usize>,
 }
 
+/// What `checks` was asked about, read from its `args`.
+#[derive(Debug, PartialEq, Eq)]
+struct Request {
+    /// Pull request named, when one was
+    number: Option<u64>,
+    /// Repository named with `-R`, when it isn't this checkout's
+    repository: Option<Repository>,
+}
+
 /// Why checks are failing on the branch's pull request, on pull request `#n` when `args` names one,
-/// or on `HEAD` when the branch has no pull request.
+/// or on `HEAD` when the branch has no pull request. `-R owner/name` reads another repository's.
 pub(super) async fn checks(
     github: &(impl Discovery + PullRequests + Branches + Checks + ?Sized),
     cwd: &Path,
     args: &[String],
 ) -> Result<String, String> {
-    let repository = github.repository(cwd).await.map_err(|error| failure(&error))?;
-    let target = match args.first().map(|arg| arg.trim_start_matches('#')) {
-        Some(number) => {
-            let number: u64 =
-                number.parse().map_err(|_| format!("`{number}` is not a pull request number."))?;
-            let pr = github.pull_request(&repository, number).await.map_err(|e| failure(&e))?;
-            Target {
-                oid: pr.head_oid,
-                name: format!("#{} · {}", pr.number, luxe_core::github::untrusted(&pr.title, 120)),
-                pending: Some(pr.checks.pending),
-            }
-        }
-        None => branch_target(github, cwd, &repository).await?,
-    };
+    let (repository, target) = resolve(github, cwd, parse_request(args)?).await?;
     let failing = github
         .failing_checks(&repository, &target.oid, LOG_TAIL)
         .await
@@ -55,11 +51,120 @@ pub(super) async fn checks(
     Ok(render(&target, &failing))
 }
 
+/// Why `-R` alone is refused: the branch-to-pull-request lookup only knows this checkout.
+const REPO_NEEDS_NUMBER: &str = "Name the pull request as well as `-R`: the branch here belongs \
+                                 to this checkout, not that repository.";
+
+/// The repository and commit `request` asks about. A repository named with `-R` is named in the
+/// answer too, so it can't be mistaken for this checkout's.
+async fn resolve(
+    github: &(impl Discovery + PullRequests + Branches + ?Sized),
+    cwd: &Path,
+    request: Request,
+) -> Result<(Repository, Target), String> {
+    if let Some(repository) = request.repository {
+        let number = request.number.ok_or(REPO_NEEDS_NUMBER)?;
+        let mut target = named_target(github, &repository, number).await?;
+        target.name = format!("{}{}", repository.slug(), target.name);
+        return Ok((repository, target));
+    }
+    let repository = github.repository(cwd).await.map_err(|error| failure(&error))?;
+    let target = match request.number {
+        Some(number) => named_target(github, &repository, number).await?,
+        None => branch_target(github, cwd, &repository).await?,
+    };
+    Ok((repository, target))
+}
+
+/// The pull request number and `-R` repository in `args`. Anything else is refused rather than
+/// dropped: an argument skipped in silence answers a different question than the one asked.
+fn parse_request(args: &[String]) -> Result<Request, String> {
+    let mut request = Request { number: None, repository: None };
+    let mut args = args.iter().map(String::as_str);
+    while let Some(arg) = args.next() {
+        if let Some(slug) = repo_flag(arg, &mut args)? {
+            request.repository = Some(repository_from_slug(slug)?);
+        } else if request.number.replace(pull_request_number(arg)?).is_some() {
+            return Err("`checks` reads one pull request at a time.".into());
+        }
+    }
+    Ok(request)
+}
+
+/// The repository `arg` names when it is `-R`/`--repo` (taking the next argument) or `--repo=`.
+fn repo_flag<'a>(
+    arg: &'a str,
+    rest: &mut impl Iterator<Item = &'a str>,
+) -> Result<Option<&'a str>, String> {
+    match arg {
+        "-R" | "--repo" => {
+            rest.next().map(Some).ok_or_else(|| "`-R` needs a repository: `-R owner/name`.".into())
+        }
+        other => Ok(other.strip_prefix("--repo=")),
+    }
+}
+
+/// `arg` as a pull request number, `#` or not; a flag `checks` doesn't know is refused by name.
+fn pull_request_number(arg: &str) -> Result<u64, String> {
+    if arg.starts_with('-') {
+        return Err(format!(
+            "`checks` doesn't take `{arg}`. It takes a pull request number, and `-R owner/name` \
+             for a repository other than this checkout's."
+        ));
+    }
+    let number = arg.trim_start_matches('#');
+    number.parse().map_err(|_| format!("`{number}` is not a pull request number."))
+}
+
+/// The repository `owner/name` names on github.com, or `host/owner/name` on another host, as
+/// `gh -R` reads it.
+fn repository_from_slug(slug: &str) -> Result<Repository, String> {
+    let (host, owner, name) = slug_parts(slug)
+        .ok_or_else(|| format!("`{slug}` is not a repository: `-R` takes owner/name."))?;
+    Ok(Repository {
+        host: host.to_ascii_lowercase(),
+        owner: owner.to_string(),
+        name: name.to_string(),
+        // Reading a pull request's checks never consults either, so neither is looked up
+        default_branch: String::new(),
+        remote: None,
+    })
+}
+
+/// Host, owner and name, when each part of `slug` is one GitHub would accept.
+fn slug_parts(slug: &str) -> Option<(&str, &str, &str)> {
+    let valid = |part: &str| {
+        !part.is_empty()
+            && part.chars().all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.'))
+    };
+    let parts: Vec<&str> = slug.split('/').collect();
+    let (host, owner, name) = match parts.as_slice() {
+        [owner, name] => ("github.com", *owner, *name),
+        [host, owner, name] => (*host, *owner, *name),
+        _ => return None,
+    };
+    [host, owner, name].into_iter().all(valid).then_some((host, owner, name))
+}
+
+/// Pull request `number`'s head, by its number and title.
+async fn named_target(
+    github: &(impl PullRequests + ?Sized),
+    repository: &Repository,
+    number: u64,
+) -> Result<Target, String> {
+    let pr = github.pull_request(repository, number).await.map_err(|e| failure(&e))?;
+    Ok(Target {
+        oid: pr.head_oid,
+        name: format!("#{} · {}", pr.number, luxe_core::github::untrusted(&pr.title, 120)),
+        pending: Some(pr.checks.pending),
+    })
+}
+
 /// The branch's pull request head, or `HEAD` when there is no pull request to ask about.
 async fn branch_target(
     github: &(impl Branches + ?Sized),
     cwd: &Path,
-    repository: &luxe_core::github::Repository,
+    repository: &Repository,
 ) -> Result<Target, String> {
     let head = luxe_core::github::branch_head(cwd).await;
     if let Some(head) = head {

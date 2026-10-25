@@ -137,6 +137,54 @@ fn the_activity_row_keeps_the_mode_button_at_its_left() {
     assert!(line[..hint].chars().count() > usize::from(column), "{line}");
 }
 
+/// The colors the activity row is drawn in to the right of the mode button, at a frame with the
+/// comet's head mid-bar.
+fn activity_colors(app: &mut App) -> Vec<ratatui::style::Color> {
+    app.status.spinner_frame = 24;
+    let mode = app.status.mode.clone();
+    let (text, buffer) = screen(app, 80, 20);
+    let (column, row) = mode_badge_at(&text, &mode).expect("the mode button during a turn");
+    let bar = column + mode.chars().count() as u16 + 1;
+    (bar..80).map(|x| buffer[(x, row)].fg).collect()
+}
+
+/// The engine moving to `mode` while a turn runs, which reports the turn as still streaming.
+fn switched_mid_turn(app: &mut App, mode: &str) {
+    app.update(Msg::Engine(Event::StateChanged(luxe_core::event::EngineState {
+        model: luxe_core::event::ModelRef::new("openai", "test-model"),
+        streaming: true,
+        status: format!("mode: {mode}"),
+        mode: mode.into(),
+        thinking: luxe_core::provider::ThinkingLevel::Off,
+    })));
+}
+
+/// The activity bar's comet wears the mode the engine reports, switched mid-turn too: that is the
+/// mode each tool call is judged by as it starts, so it is what the turn can do from here on.
+///
+/// The break this catches: a comet in the accent whatever the mode, or one that recolors on the
+/// keypress before the engine has moved the mode the calls are judged by.
+#[test]
+fn the_activity_bar_wears_the_mode_the_engine_reports() {
+    let (mut app, _rx) = mode_app();
+    in_mode(&mut app, "build");
+    app.status.state = crate::app::AppState::Streaming;
+    app.status.on_turn_start();
+    let build = app.theme_styles.activity_trail[0].fg.unwrap();
+    let plan = app.theme_styles.activity_trail_plan[0].fg.unwrap();
+    assert_ne!(build, plan, "the theme has to tell the two comets apart");
+    let colors = activity_colors(&mut app);
+    assert!(colors.contains(&build) && !colors.contains(&plan), "build's comet: {colors:?}");
+
+    app.update(Msg::Key(KeyEvent::new(KeyCode::BackTab, KeyModifiers::SHIFT)));
+    let colors = activity_colors(&mut app);
+    assert!(colors.contains(&build) && !colors.contains(&plan), "asked, not applied: {colors:?}");
+
+    switched_mid_turn(&mut app, "plan");
+    let colors = activity_colors(&mut app);
+    assert!(colors.contains(&plan) && !colors.contains(&build), "plan's comet: {colors:?}");
+}
+
 /// Plan mode's color reaches the question the agent asks, and nothing further.
 #[test]
 fn plan_mode_tints_the_agent_s_question() {

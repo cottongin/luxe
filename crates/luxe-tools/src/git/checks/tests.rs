@@ -108,7 +108,8 @@ fn a_short_oid_is_seven_characters_or_all_of_it() {
     assert_eq!(short("abc"), "abc");
 }
 
-/// A GitHub double with one pull request, #7, whose head has one failing Actions job.
+/// A GitHub double for this checkout's `me/app`, whose pull request #7 has one failing Actions job,
+/// and for `other/site`, whose #19 has one too: reachable only by naming that repository.
 struct Scripted {
     signed_in: bool,
     /// Whether the branch has a pull request
@@ -148,15 +149,17 @@ impl luxe_core::github::Discovery for Scripted {
 impl luxe_core::github::PullRequests for Scripted {
     async fn pull_request(
         &self,
-        _: &luxe_core::github::Repository,
+        repository: &luxe_core::github::Repository,
         number: u64,
     ) -> Result<luxe_core::github::PullRequest, GitHubError> {
-        if number != 7 {
-            return Err(GitHubError::NotFound);
-        }
+        let (title, head_oid) = match (repository.slug().as_str(), number) {
+            ("me/app", 7) => ("Topic", "7777777aaaa"),
+            ("other/site", 19) => ("Site", "1919191bbbb"),
+            _ => return Err(GitHubError::NotFound),
+        };
         Ok(luxe_core::github::PullRequest {
-            number: 7,
-            title: "Topic".into(),
+            number,
+            title: title.into(),
             body: String::new(),
             url: String::new(),
             author: luxe_core::github::Author { login: "me".into(), bot: false },
@@ -165,7 +168,7 @@ impl luxe_core::github::PullRequests for Scripted {
             base_ref: "main".into(),
             base_oid: "b".into(),
             head_ref: "topic".into(),
-            head_oid: "7777777aaaa".into(),
+            head_oid: head_oid.into(),
             cross_repository: false,
             review_decision: None,
             checks: luxe_core::github::CheckRollup { pending: 1, ..Default::default() },
@@ -261,14 +264,17 @@ impl luxe_core::github::Branches for Scripted {
 impl luxe_core::github::Checks for Scripted {
     async fn failing_checks(
         &self,
-        _: &luxe_core::github::Repository,
+        repository: &luxe_core::github::Repository,
         head_oid: &str,
         log_tail: usize,
     ) -> Result<Vec<FailingCheck>, GitHubError> {
         assert_eq!(log_tail, LOG_TAIL);
-        if head_oid != "7777777aaaa" {
-            return Ok(Vec::new());
-        }
+        let owner = match head_oid {
+            "7777777aaaa" => "me/app",
+            "1919191bbbb" => "other/site",
+            _ => return Ok(Vec::new()),
+        };
+        assert_eq!(repository.slug(), owner, "checks are read where the pull request lives");
         Ok(vec![check("test", CheckLog::NotRead)])
     }
 }
@@ -290,6 +296,67 @@ async fn a_named_pull_request_reads_its_head() {
         .await
         .unwrap_err();
     assert!(error.contains("gh auth login"), "{error}");
+}
+
+/// The break this catches: `-R` dropped in silence, which reads the same number in this checkout's
+/// repository instead, a different pull request entirely or none at all.
+#[tokio::test]
+async fn a_repository_named_with_r_is_the_one_read() {
+    let github = Scripted { signed_in: true, pull_request: true };
+    let spellings: [&[&str]; 3] = [
+        &["19", "-R", "other/site"],
+        &["--repo", "other/site", "#19"],
+        &["--repo=other/site", "19"],
+    ];
+    for args in spellings {
+        let args: Vec<String> = args.iter().map(|arg| arg.to_string()).collect();
+        let text = checks(&github, Path::new("."), &args).await.unwrap();
+        assert!(text.starts_with("1 check failing on other/site#19 · Site (1919191)."), "{text}");
+    }
+
+    let error = checks(&github, Path::new("."), &["19".into()]).await.unwrap_err();
+    assert!(error.contains("never pushed has no checks"), "#19 isn't this checkout's: {error}");
+}
+
+/// The break this catches: an argument `checks` doesn't understand skipped rather than refused.
+#[tokio::test]
+async fn an_argument_checks_does_not_take_is_refused() {
+    let github = Scripted { signed_in: true, pull_request: true };
+    let refused = |args: &[&str]| {
+        let args: Vec<String> = args.iter().map(|arg| arg.to_string()).collect();
+        let github = &github;
+        async move { checks(github, Path::new("."), &args).await.unwrap_err() }
+    };
+
+    let error = refused(&["7", "--json"]).await;
+    assert!(error.contains("doesn't take `--json`"), "{error}");
+    let error = refused(&["7", "8"]).await;
+    assert!(error.contains("one pull request at a time"), "{error}");
+    let error = refused(&["7", "-R"]).await;
+    assert!(error.contains("`-R` needs a repository"), "{error}");
+    let error = refused(&["-R", "other/site"]).await;
+    assert_eq!(error, REPO_NEEDS_NUMBER, "no branch here belongs to that repository");
+    let error = refused(&["7", "-R", "luxe"]).await;
+    assert!(error.contains("`luxe` is not a repository"), "{error}");
+}
+
+/// `-R` reads a repository the way `gh -R` does, and refuses what GitHub couldn't name.
+#[test]
+fn a_repository_is_owner_and_name_or_host_owner_and_name() {
+    let on_github = repository_from_slug("evanwhittaker/luxe").unwrap();
+    assert_eq!(
+        (on_github.host.as_str(), on_github.slug().as_str()),
+        ("github.com", "evanwhittaker/luxe")
+    );
+    let elsewhere = repository_from_slug("GHE.example.com/team/app.rs").unwrap();
+    assert_eq!(
+        (elsewhere.host.as_str(), elsewhere.slug().as_str()),
+        ("ghe.example.com", "team/app.rs")
+    );
+
+    for slug in ["luxe", "a/b/c/d", "owner/", "/name", "my owner/app", "owner/app?x=1", ""] {
+        assert!(repository_from_slug(slug).is_err(), "`{slug}` names no repository");
+    }
 }
 
 /// With nothing named, the branch's own pull request is the one read.

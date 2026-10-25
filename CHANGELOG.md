@@ -17,14 +17,29 @@ changes add to that section until it ships; `scripts/version-check.py` holds the
   matches the window's title first, then its app's name, and with no title it takes the frontmost
   window. A miss lists the windows it saw.
 
+### Changed
+
+- The activity bar above the composer sweeps in plan's color while the session plans. A switch
+  mid-turn recolors it once luxe has made the switch, the moment the agent's next tool call is held
+  to the new mode.
+
 ### Fixed
 
+- The `git` tool's `checks` reads another repository's pull request when given `-R owner/name`.
+  It used to drop the flag and answer with this checkout's pull request of the same number. It now
+  refuses any argument it doesn't understand instead of skipping it.
 - On Windows, a pasted line break no longer sends the message. The console types a paste out one
   key at a time, so luxe gathers a burst of keys back into one paste.
 - On a scaled Windows display, `screenshot` captures the whole screen instead of its top-left
   corner.
 - On a Mac with fontconfig installed, the OpenAI and Claude marks fall back to the robot and cloud
   when no font has them, instead of drawing a box with a question mark.
+
+### Security
+
+- `clipboard-win` 5.4.3, since earlier releases were yanked: reading an HTML fragment with a bad
+  offset from the Windows clipboard could read past the end of a buffer. luxe reads only text and
+  images from the clipboard, so it never reached that code.
 
 ## [0.1.5]
 
